@@ -1,0 +1,79 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Builder design patterns: passing parameters from client to the builder &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1076490 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1076490" class="post-1076490 software type-software status-publish hentry category-software tag-design-patterns"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Builder design patterns: passing parameters from client to the builder</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">design-patterns</span></p><div class="entry-content"><p>Does the builder design pattern allow passing parameters?<br /> If yes, what is right way to achieve it?</p><h2>Overview</h2><p>The builder pattern is about hiding the details of object constructon, it places two layers of abstraction between the product and the client: builder and director</p><ul><li>builder is the interface for product construction, the idea is<br /> polymorphism: same methods are used to set different products</li><li>director separates client from the building process</li><li>Builder pattern is meant for complex products, so the builder interface could be large: <code>setPart1()</code>, <code>setPart2()</code>, &#8230; <code>setPart100()</code></li><li>director has small and simple interface: <code>constructProduct()</code>, <code>getProduct()</code></li><li>same director could use different concrete builders for different concrete products</li><li>but also same builder interface could be used by different directors</li></ul><p>What if some properties of the product cannot be hidden from the client.</p><h2>Example problem</h2><p>Assume we have the complex product such as computer set.</p><pre><code>class ComputerSet {
+private:
+    string procName;
+    string hddName;
+    int hddCapacity;
+public:
+    ComputerSet(string p) : procName(p) {}
+    void setHdd(string name, int capacity);
+};
+
+void ComputerSet::setHdd(string name, int capacity) {
+  hddName = name;
+  hddCapacity = capacity;
+}
+</code></pre><p>Actually, it is not so complex. The product has only 3 parts to set: <code>procName</code>, <code>hddName</code>, <code>hddCapacity</code>. The reason is to make example small. Let&#39;s say the computer set could have many components.</p><p>Dividing <em>HDD</em> part into two parts (<em>name</em> and <em>capacity</em>) has been done for the simplicity of the example. They have different nature: <code>hddName</code> is <em>builder-constant</em>, <code>hddCapacity</code> is <em>builder-variant</em>.</p><p>Let&#39;s assume there is the concrete product: computer set with <code>procName=&#34;Amdel&#34;</code> and <code>hddName=&#34;Orange&#34;</code>. These details could be hidden from the client. The client:</p><ul><li>creates the instance of the Director</li><li>creates the instance of the AmdelBuilder</li><li>passes AmbelBuilder to the Director</li><li>uses Director&#39;s inteface to get the product</li><li>does not know about &#34;Amdel&#34; and &#34;Orange&#34; strings</li></ul><p>But there could be many HDD capacities to choose: 250, 500, 750, 1000, 1500, 2000.</p><p>One way is to create the builder for each capacity: AmdelBuilder250, AmdelBuilder500, AmdelBuilder750, AmdelBuilder1000, AmdelBuilder1500, AmdelBuilder2000.</p><p>What about designing only one <code>AmbelBuilder</code> for each capacities and passing <code>hddCapacity</code> parameter just before the product is created?<br /> How to pass the parameter:</p><ul><li><p>contain it <strong>inside the builder</strong> as its property (data member);<br /> two kinds of settings both <strong>from the client level</strong></p><ul><li>set with constructor (once per instance)</li><li>set with the setter (setting multiple values per single instance)</li></ul></li><li><p>make it <strong>the argument of the builder method</strong>, it has to be passed <strong>from the director level</strong></p><ul><li>make it the argument of the director construction method</li><li>contain it inside the director as its property (data member)</li></ul></li></ul><h2>First Approach</h2><p>The Builder stores the <code>hddCapacity</code> as own data field</p><pre><code>class Builder {
+protected:
+    ComputerSet *cs;
+    int hddCapacity;
+public:
+    Builder(int capacity = 250) : hddCapacity(capacity) {  }
+    virtual void createComputerSet() = 0;
+    virtual void setHdd() = 0;
+    ComputerSet* returnComputerSet() { return cs; }
+};
+</code></pre><p>Concrete builder&#39;s <code>setHdd()</code> method does not need parameters</p><pre><code>class AmdelBuilder : public Builder {
+public:
+    void createComputerSet();
+    void setHdd();
+    AmdelBuilder(int capacity = 500) : Builder(capacity) { }
+};
+
+void AmdelBuilder::createComputerSet() {
+    cs = new ComputerSet(&#34;Amdel&#34;);
+}
+void AmdelBuilder::setHdd() {
+    cs-&gt;setHdd(&#34;Orange&#34;, hddCapacity);
+}
+</code></pre><p>The director does not know about the <code>hddCapacity</code> parameter</p><pre><code>class Director {
+private:
+    Builder *builder;
+public:
+    void setBuilder(Builder *b) { builder = b; }
+    void constructComputerSet();
+    ComputerSet* getComputerSet() { return builder-&gt;returnComputerSet(); }
+};
+
+void Director::constructComputerSet() {
+    builder-&gt;createComputerSet();
+    builder-&gt;setHdd();
+}
+</code></pre><p>because the client sets <code>AmdelBuilder.hddCapacity</code> when the client creates the <code>Builder</code> instance</p><pre><code>Director* d = new Director();
+Builder* ba = new AmdelBuilder(750); // Amdel + Orange HDD 750
+d-&gt;setBuilder(ba);
+d-&gt;constructComputerSet();
+ComputerSet* csa750 = d-&gt;getComputerSet();
+</code></pre><h2>Other solution</h2><p>Builder does not store <code>hddCapacity</code>, but the <code>setHdd()</code> method requires <code>hddCapacity</code> parameter.</p><pre><code>class Builder {
+protected:
+    ComputerSet *cs;
+public:
+    Builder() {  }
+    virtual void createComputerSet() = 0;
+    virtual void setHdd(int hddCapacity) = 0;
+    ComputerSet* returnComputerSet() { return cs; }
+};
+</code></pre><p>The director is the direct user of the Builder&#39;s API. So the director must know the <code>hddCapacity</code> value.</p><h2>Question</h2><p>What should is the best practice that does not violate the OO principles and the encapsulation idea of the builder pattern?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I believe neither of your approaches violate anything and both can be used just fine.</p><p>Passing parameters to the builder can be done either using constructor or setter methods. I do not see any problem with it.</p><p>I tend to pass parameters via constructor if there are not so many of them. If I have more than 3-5 configuration parameters I switch to using methods to configure Builder.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-use-decorator-and-factory-together-to-extend-objects/'>Java &#8211; Use decorator and factory together to extend objects</a></li><li class="list-group-item"><a href='../one-subclass-instead-of-composite-when-using-the-factory-method-design-pattern/'>One subclass instead of composite when using the Factory Method design pattern</a></li><li class="list-group-item"><a href='../object-oriented-avoiding-constructors-with-many-arguments/'>Object-oriented &#8211; Avoiding constructors with many arguments</a></li><li class="list-group-item"><a href='../java-why-would-a-type-be-coupled-with-its-builder/'>Java &#8211; Why would a type be coupled with its builder</a></li><li class="list-group-item"><a href='../what-are-the-advantages-of-builder-pattern-of-gof/'>What are the advantages of Builder Pattern of GoF</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

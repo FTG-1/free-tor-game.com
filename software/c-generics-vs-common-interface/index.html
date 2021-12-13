@@ -1,0 +1,84 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Generics vs common interface &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1064869 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1064869" class="post-1064869 software type-software status-publish hentry category-software tag-c tag-generics tag-interfaces tag-object-oriented"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Generics vs common interface</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">generics</span><span class="mr-2 badge badge-warning">interfaces</span><span class="mr-2 badge badge-primary">object-oriented</span></p><div class="entry-content"><p>I don&#39;t remember when I wrote generic class last time. Every time I think I need it after some thinking I make a conclusion I don&#39;t.</p><p>The second answer to <a href="https://softwareengineering.stackexchange.com/questions/191275/what-problems-can-be-solved-using-generics">this question</a> made me to ask for clarification (since i can&#39;t comment yet, i made a new question).</p><p>So let&#39;s take given code as an example of case where one needs generics:</p><pre><code>public class Repository&lt;T&gt; where T : class, IBusinessOBject
+{
+  T Get(int id)
+  void Save(T obj);
+  void Delete(T obj);
+}
+</code></pre><p>It has type constraints: <code>IBusinessObject</code></p><p>My usual way of thought is: the class is constrained to use <code>IBusinessObject</code>, so are the classes that use this <code>Repository</code> are. Repository stores these <code>IBusinessObject</code>s, most likely clients of this <code>Repository</code> will want to get and use objects through <code>IBusinessObject</code> interface. So why not just to</p><pre><code>public class Repository
+{
+  IBusinessOBject Get(int id)
+  void Save(IBusinessOBject obj);
+  void Delete(IBusinessOBject obj);
+}
+</code></pre><p>Tho, the example is not good, as it is just another collection type and generic collection is classics. In this case type constraint looks odd too.</p><p>In fact the example <code>class Repository&lt;T&gt; where T : class, IBusinessbBject</code> looks<br /> pretty much similar to <code>class BusinessObjectRepository</code> to me. Which is the thing generics are made to fix.</p><p>The whole point is: are generics good for anything except collections and don&#39;t type constraints make generic as specialized, as the use of this type constraint instead of generic type parameter inside the class does?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Let&#39;s first talk about pure parametric polymorphism and get into bounded polymorphism later.</p><h1><a href="https://wikipedia.org/wiki/Parametric_polymorphism" rel="noreferrer">Parametric Polymorphism</a></h1><p>What does parametric polymorphism mean? Well, it means that a type, or rather type constructor is <em>parameterized</em> by a type. Since the type is passed in as a parameter, you cannot know in advance what it might be. You cannot make any assumptions based on it. Now, if you don&#39;t know what it might be, then what is the use? What can you do with it?</p><p>Well, you could store and retrieve it, for example. That&#39;s the case you already mentioned: collections. In order to store an item in a list or an array, I need to know nothing about the item. The list or array can be completely oblivious to the type.</p><p>But what about the <code>Maybe</code> type? If you are not familiar with it, <code>Maybe</code> is a type which maybe has a value and maybe doesn&#39;t. Where would you use it? Well, for example, when getting an item out of a dictionary: the fact that an item might not be in the dictionary is not an exceptional situation, so you really shouldn&#39;t throw an exception if the item isn&#39;t there. Instead, you return an instance of a subtype of <code>Maybe&lt;T&gt;</code>, which has exactly two subtypes: <code>None</code> and <code>Some&lt;T&gt;</code>. <code>int.Parse</code> is another candidate of something that really should return a <code>Maybe&lt;int&gt;</code> instead of throwing an exception or the whole <code>int.TryParse(out bla)</code> dance.</p><p>Now, you might argue that <code>Maybe</code> is kinda-sorta like a list which can only have zero or one elements. And thus kinda-sorta a collection.</p><p>Then what about <code>Task&lt;T&gt;</code>? It&#39;s a type which promises to return a value at some point in the future, but doesn&#39;t necessarily have a value right now.</p><p>Or what about <code>Func&lt;T, …&gt;</code>? How would you represent the concept of a function from one type to another type if you cannot abstract over types?</p><p>Or, more generally: considering that abstraction and reuse are the two <em>fundamental</em> operations of software engineering, why <em>wouldn&#39;t</em> you want to be able to abstract over types?</p><h1><a href="https://wikipedia.org/wiki/Bounded_quantification" rel="noreferrer">Bounded Polymorphism</a></h1><p>So, let&#39;s now talk about bounded polymorphism. Bounded polymorphism is basically where parametric polymorphism and subtype polymorphism meet: instead of a type constructor being completely oblivious about its type parameter, you can <em>bind</em> (or constrain) the type to be a subtype of some specified type.</p><p>Let&#39;s go back to collections. Take a hashtable. We said above that a list doesn&#39;t need to know anything about its elements. Well, a hashtable does: it needs to know that it can hash them. (Note: in C#, all objects are hashable, just like all objects can be compared for equality. That&#39;s not true for all languages, though, and is sometimes considered to be design mistake even in C#.)</p><p>So, you want to constrain your type parameter for the key type in the hashtable to be an instance of <code>IHashable</code>:</p><pre><code>class HashTable&lt;K, V&gt; where K : IHashable
+{
+  Maybe&lt;V&gt; Get(K key);
+  bool Add(K key, V value);
+}
+</code></pre><p>Imagine if instead you had this:</p><pre><code>class HashTable
+{
+    object Get(IHashable key);
+    bool Add(IHashable key, object value);
+}
+</code></pre><p>What would you do with a <code>value</code> you get out of there? You can&#39;t do anything with it, you only know it&#39;s an object. And if you iterate over it, all you get yielded is a pair of something you know is an <code>IHashable</code> (which doesn&#39;t help you much because it only has one property <code>Hash</code>) and something you know is an <code>object</code> (which helps you even less).</p><p>Or something based on your example:</p><pre><code>class Repository&lt;T&gt; where T : ISerializable
+{
+    T Get(int id);
+    void Save(T obj);
+    void Delete(T obj);
+}
+</code></pre><p>The item needs to be serializable because it is going to be stored on disk. But what if you have this instead:</p><pre><code>class Repository
+{
+    ISerializable Get(int id);
+    void Save(ISerializable obj);
+    void Delete(ISerializable obj);
+}
+</code></pre><p>With the generic case, if you put a <code>BankAccount</code> in, you get a <code>BankAccount</code> back, with methods and properties like <code>Owner</code>, <code>AccountNumber</code>, <code>Balance</code>, <code>Deposit</code>, <code>Withdraw</code>, etc. Something you can work with. Now, the other case? You put in a <code>BankAccount</code> but you get back a <code>Serializable</code>, which has just one property: <code>AsString</code>. What are you going to do with that?</p><p>There are also some neat tricks you can do with bounded polymorphism:</p><h1><a href="https://wikipedia.org/wiki/Bounded_quantification#F-bounded_quantification" rel="noreferrer">F-bounded polymorphism</a></h1><p>F-bounded quantification is basically where the type variable appears again in the constraint. This can be useful in some circumstances. E.g. how do you write an <code>ICloneable</code> interface? How do you write a method where the return type is the type of the implementing class? In a language with a <em>MyType</em> feature, that&#39;s easy:</p><pre><code>interface ICloneable
+{
+    public this Clone(); // syntax I invented for a MyType feature
+}
+</code></pre><p>In a language with bounded polymorphism, you can do something like this instead:</p><pre><code>interface ICloneable&lt;T&gt; where T : ICloneable&lt;T&gt;
+{
+    public T Clone();
+}
+
+class Foo : ICloneable&lt;Foo&gt;
+{
+    public Foo Clone()
+    {
+        // …
+    }
+}
+</code></pre><p>Note that this is not as safe as the MyType version, because there is nothing stopping someone from simply passing the &#34;wrong&#34; class to the type constructor:</p><pre><code>class EvilBar : ICloneable&lt;SomethingTotallyUnrelatedToBar&gt;
+{
+    public SomethingTotallyUnrelatedToBar Clone()
+    {
+        // …
+    }
+}
+</code></pre><h1>Abstract Type Members</h1><p>As it turns out, if you have abstract type members and subtyping, you can actually get by completely without parametric polymorphism and still do all the same things. Scala is heading in this direction, being the first major language that started out <em>with</em> generics and then trying to remove them, which is exactly the other way around from e.g. Java and C#.</p><p>Basically, in Scala, just like you can have fields and properties and methods as members, you can also have types. And just like fields and properties and methods can be left abstract to be implemented in a subclass later, type members can also be left abstract. Let&#39;s go back to collections, a simple <code>List</code>, that would look something like this, if it were supported in C#:</p><pre><code>class List
+{
+    T; // syntax I invented for an abstract type member
+    T Get(int index) { /* … */ }
+    void Add(T obj) { /* … */ }
+}
+
+class IntList : List
+{
+    T = int;
+}
+// this is equivalent to saying `List&lt;int&gt;` with generics
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-protecting-the-uninitiated-developer-from-generics/'>C# &#8211; Protecting the uninitiated (developer) from generics</a></li><li class="list-group-item"><a href='../object-oriented-we-preferably-use-first-class-collections/'>Object-oriented &#8211;  we preferably use first class collections</a></li><li class="list-group-item"><a href='../c-why-is-there-a-new-constraint-in-c-but-no-other-similar-constraint/'>C# &#8211; Why is there a new() constraint in C# but no other similar constraint</a></li><li class="list-group-item"><a href='../c-force-derived-class-to-implement-static-method-c/'>C# &#8211; Force Derived Class to Implement Static Method C#</a></li><li class="list-group-item"><a href='../object-oriented-extend-wrap-or-both-to-add-generics-to-a-class-that-should-have-had-them/'>Object-oriented &#8211; Extend, wrap, or both to add generics to a class that should have had them</a></li><li class="list-group-item"><a href='../java-is-using-generics-to-indicate-some-class-method-is-aware-of-a-type-good-idea/'>Java &#8211; Is using generics to indicate some class/method is aware of a type good idea</a></li><li class="list-group-item"><a href='../object-oriented-the-reason-of-using-an-interface-versus-a-generically-constrained-type/'>Object-oriented &#8211;  the reason of using an interface versus a generically constrained type</a></li><li class="list-group-item"><a href='../java-using-generics-on-interfaces-when-implementation-is-not-generic/'>Java &#8211; Using generics on interfaces when implementation is not generic</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

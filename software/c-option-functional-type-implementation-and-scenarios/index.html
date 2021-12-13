@@ -1,0 +1,132 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Option functional type implementation and scenarios &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1071780 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1071780" class="post-1071780 software type-software status-publish hentry category-software tag-c tag-design-patterns tag-object-oriented-design tag-value-object"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Option<T> functional type implementation and scenarios</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">design-patterns</span><span class="mr-2 badge badge-warning">object-oriented-design</span><span class="mr-2 badge badge-primary">value-object</span></p><div class="entry-content"><p>Have you ever being implementing <code>Option&lt;T&gt;</code> functional type? It is discussed here:<br /> <a href="https://app.pluralsight.com/library/courses/tactical-design-patterns-dot-net-control-flow/table-of-contents" rel="noreferrer">https://app.pluralsight.com/library/courses/tactical-design-patterns-dot-net-control-flow/table-of-contents</a></p><p>Basically it is about using <code>IEnumerable&lt;T&gt;</code> with no or only one element instead of potentially nullable object reference in C#. We can empower LINQ functionality to streamline processing reducing cyclomatic complexity because of no &#34;if(null)&#34; conditions anymore.</p><p>My adoption of the idea looks this way:</p><pre><code>public struct Optional&lt;T&gt; : IEnumerable&lt;T&gt;
+    where T : class
+{
+    public static implicit operator Optional&lt;T&gt;(T value)
+    {
+        return new Optional&lt;T&gt;(value);
+    }
+
+    public static implicit operator T(Optional&lt;T&gt; optional)
+    {
+        return optional.Value;
+    }
+
+    Optional(T value)
+        : this()
+    {
+        Value = value;
+    }
+
+    public IEnumerator&lt;T&gt; GetEnumerator()
+    {
+        if (HasValue)
+            yield return Value;
+    }
+
+    T Value { get; }
+    bool HasValue =&gt; Value != null;
+    IEnumerator IEnumerable.GetEnumerator() =&gt; GetEnumerator();
+    public override string ToString() =&gt; Value?.ToString();
+}
+</code></pre><p>It is not so bad, we can use it as argument/return type with automatic conversion to/from T when necessary. Consumption example might look like this:</p><pre><code>     var p = new Product(&#34;Milk&#34;);
+     var basket = ShoppingBasket.Empty
+            .Place(p)
+            .Place(p)
+            .Place(null);
+</code></pre><p>It creates basket with single basket entry for two milk boxes if the following is defined:</p><pre><code>public static class ShoppingBasket
+{
+    public static readonly IEnumerable&lt;BasketItem&gt; Empty =
+        Enumerable.Empty&lt;BasketItem&gt;();
+
+    public static IEnumerable&lt;BasketItem&gt; Place(
+        this IEnumerable&lt;BasketItem&gt; basket, 
+        Optional&lt;Product&gt; product) =&gt;
+            basket
+                .SetOrAdd(
+                    i =&gt; product.Contains(i.Product), 
+                    i =&gt; i.OneMore(), 
+                    product.Select(p =&gt; new BasketItem(p, 1)))
+                .ToArray();  
+}
+</code></pre><p>Where:</p><pre><code>public class BasketItem
+{
+    public BasketItem(Product product, int quantity)
+    {
+        Product = product;
+        Quantity = quantity;
+    }
+
+    public Product Product { get; }
+    public int Quantity { get; }
+    public BasketItem OneMore() =&gt; 
+        new BasketItem(Product, Quantity + 1);
+}
+
+public class Product
+{
+    public Product(string name)
+    {
+        Name = name;
+    }
+
+    public string Name { get; }
+}
+</code></pre><p>I use this general <code>IEnumerable&lt;T&gt;</code> extension:</p><pre><code>public static class EnumerableHelper
+{
+    public static IEnumerable&lt;T&gt; SetOrAdd&lt;T&gt;(
+        this IEnumerable&lt;T&gt; source,
+        Func&lt;T, bool&gt; predicate,
+        Func&lt;T, T&gt; set,
+        params T[] add)
+    {
+        return source
+            .SetOrAdd(predicate, set, add as IEnumerable&lt;T&gt;);
+    } 
+
+    public static IEnumerable&lt;T&gt; SetOrAdd&lt;T&gt;(
+        this IEnumerable&lt;T&gt; source,
+        Func&lt;T, bool&gt; predicate,
+        Func&lt;T, T&gt; set,
+        IEnumerable&lt;T&gt; add)
+    {
+        var empty = Enumerable.Empty&lt;T&gt;();
+        foreach (var item in source)
+            if (predicate(item))
+            {
+                yield return set(item);
+                add = empty;
+            }
+            else
+                yield return item;
+
+        foreach (var item in add)
+            yield return item;
+    }
+}
+</code></pre><p>Well, it is pretty functional as far as I can see. But the question is: does it make any sense? Cyclomatic complexity is very low in ShoppingBasket class. But the same time we still have three &#34;virtual paths&#34; of execution to test &#8211; for &#34;add&#34; and &#34;replace&#34; in the Place() method + we also need to test for null product argument.</p><p>The problem is that they are almost invisible. What do you say? Would you personally prefer to maintain such kind of code in C#?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>If I&#39;m understanding correctly, you&#39;re talking about expressing everything, including single object instaces, as enumerations. My solution to this is just to make your element an enumerable and then use Linq, like so:</p><pre><code>public static IEnumerable&lt;T&gt; AsSingleOrEmptyEnumerable&lt;T&gt;(this T element)
+    where T: class
+{
+        if (Equals(element, default(T)))
+            return Enumerable.Empty&lt;T&gt;();
+        return element.AsSingleEnumerable();
+}
+
+private static IEnumerable&lt;T&gt; AsSingleEnumerable&lt;T&gt;(this T element)
+{
+    yield return element;
+}
+</code></pre><p>That way, when you have some element you want to process with Linq-like code, you just call .AsSingleEnumerable() or .AsSingleOrEmptyEnumerable() on it and off you go.</p><p>I apologize if this isn&#39;t what you were trying to achieve - let me know.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-immutable-string-in-array-reference-type-vs-value-type/'>C# &#8211; immutable string in array, reference type vs value type</a></li><li class="list-group-item"><a href='../java-should-constructors-ever-be-used-only-for-side-effects/'>Java &#8211; Should constructors ever be used only for side-effects</a></li><li class="list-group-item"><a href='../value-reference-type-object-and-semantics/'>Value/reference type, object and semantics</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,84 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Php &#8211; `trigger_error` vs `throw Exception` in the context of PHP&#8217;s magic methods &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1069745 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1069745" class="post-1069745 software type-software status-publish hentry category-software tag-error-handling tag-php"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Php &#8211; `trigger_error` vs `throw Exception` in the context of PHP&#8217;s magic methods</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">error handling</span><span class="mr-2 badge badge-info">PHP</span></p><div class="entry-content"><p>I&#39;m having a debate with a colleague over the correct usage (if any) of <a href="http://php.net/manual/en/function.trigger-error.php"><code>trigger_error</code></a> in the context of <a href="http://www.php.net/manual/en/language.oop5.magic.php">magic methods</a>. Firstly, I think that <code>trigger_error</code> should be avoided <em>except</em> for this one case.</p><p>Say we have a class with one method <code>foo()</code></p><pre><code>class A {
+    public function foo() {
+        echo &#39;bar&#39;;
+    }
+}
+</code></pre><p>Now say we want to provide the exact same interface but use a magic method to catch all method calls</p><pre><code>class B {
+    public function __call($method, $args) {
+        switch (strtolower($method)) {
+        case &#39;foo&#39;:
+            echo &#39;bar&#39;;
+            break;
+        }
+    }
+}
+
+$a = new A;
+$b = new B;
+
+$a-&gt;foo(); //bar
+$b-&gt;foo(); //bar
+</code></pre><p>Both classes are the same in the way they respond to <code>foo()</code> but differ when calling an invalid method.</p><pre><code>$a-&gt;doesntexist(); //Error
+$b-&gt;doesntexist(); //Does nothing
+</code></pre><p>My argument is that magic methods should call <code>trigger_error</code> when a unknown method is caught</p><pre><code>class B {
+    public function __call($method, $args) {
+        switch (strtolower($method)) {
+        case &#39;foo&#39;:
+            echo &#39;bar&#39;;
+            break;
+        default:
+            $class = get_class($this);
+            $trace = debug_backtrace();
+            $file = $trace[0][&#39;file&#39;];
+            $line = $trace[0][&#39;line&#39;];
+            trigger_error(&#34;Call to undefined method $class::$method() in $file on line $line&#34;, E_USER_ERROR);
+            break;
+        }
+    }
+}
+</code></pre><p>So that both classes behave (almost) identically</p><pre><code>$a-&gt;badMethod(); //Call to undefined method A::badMethod() in [..] on line 28
+$b-&gt;badMethod(); //Call to undefined method B::badMethod() in [..] on line 32
+</code></pre><p>My use-case is an ActiveRecord implementation. I use <code>__call</code> to catch and handle methods that essentially do the same thing but have modifiers such as <code>Distinct</code> or <code>Ignore</code>, e.g.</p><pre><code>selectDistinct()
+selectDistinctColumn($column, ..)
+selectAll()
+selectOne()
+select()
+</code></pre><p>or</p><pre><code>insert()
+replace()
+insertIgnore()
+replaceIgnore()
+</code></pre><p>Methods like <code>where()</code>, <code>from()</code>, <code>groupBy()</code>, etc. are hard-coded.</p><p>My argument is highlighted when you accidentally call <code>insret()</code>. If my active record implementation hardcoded all of the methods then it would be an error.</p><p>As with any good abstraction, the user should be unaware of the implementation details and rely solely on the interface. Why should the implementation that uses magic methods behave any differently? Both should be an error.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Take two implementations of the same ActiveRecord interface (<code>select()</code>, <code>where()</code>, etc.)</p><pre><code>class ActiveRecord1 {
+    //Hardcodes all methods
+}
+
+class ActiveRecord2 {
+    //Uses __call to handle some methods, hardcodes the rest
+}
+</code></pre><p>If you call an invalid method on the first class, e.g. <code>ActiveRecord1::insret()</code>, the default PHP behaviour is to trigger an <strong>error</strong>. An invalid function/method call is not a condition that a reasonable application would want to catch and handle. Sure, you can catch it in languages like Ruby or Python where an error <em>is an</em> exception, but others (JavaScript / any static language / more?) will fail.</p><p>Back to PHP - if both classes implement the same interface, why shouldn&#39;t they exhibit the same behaviour?</p><p>If <code>__call</code> or <code>__callStatic</code> detect an invalid method, they should trigger an error to mimic the default behaviour of the language</p><pre><code>$class = get_class($this);
+$trace = debug_backtrace();
+$file = $trace[0][&#39;file&#39;];
+$line = $trace[0][&#39;line&#39;];
+trigger_error(&#34;Call to undefined method $class::$method() in $file on line $line&#34;, E_USER_ERROR);
+</code></pre><p>I&#39;m not arguing whether errors should be used over exceptions (they 100% shouldn&#39;t), however I believe that PHP&#39;s magic methods are an exception - pun intended :) - to this rule <em>in the context of the language</em></p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/object-oriented-advantages-to-multiple-methods-over-switch/'>Object-oriented &#8211; Advantages to Multiple Methods over Switch</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/javascript-correct-echoing-of-html-in-js/'>Javascript &#8211; Correct echoing of html in js</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/php-mvc-error-handling-view-display-and-user-permissions/'>PHP MVC error handling, view display and user permissions</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/php-on-implementing-a-dynamic-proxy-in-php/'>Php &#8211; On implementing a dynamic proxy in PHP</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/defining-error-codes/'>Defining error codes</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

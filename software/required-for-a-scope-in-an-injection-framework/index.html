@@ -1,0 +1,137 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Required for a scope in an injection framework &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1081582 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1081582" class="post-1081582 software type-software status-publish hentry category-software tag-algorithms tag-design-patterns tag-scope"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Required for a scope in an injection framework</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">algorithms</span><span class="mr-2 badge badge-info">design-patterns</span><span class="mr-2 badge badge-warning">scope</span></p><div class="entry-content"><p>Working with libraries like Seam, Guice and Spring I have become accustomed to dealing with variables within a scope.  These libraries give you a handful of scopes and allow you to define your own.  This is a very handy pattern for dealing with variable lifecycles and dependency injection.</p><p>I have been trying to identify where scoping is the proper solution, or where another solution is more appropriate (context variable, singleton, etc).  I have found that if the scope lifecycle is not well defined it is very difficult and often failure prone to manage injections in this way.</p><p>I have searched on this topic but have found little discussion on the pattern.  Is there some good articles discussing where to use scoping and what are required/suggested prerequisites for scoping?</p><p>I interested in both reference discussion or your view on what is required or suggested for a proper scope implementation.  Keep in mind that I am referring to scoping as a general idea, this includes things like globally scoped singletons, request or session scoped web variable, conversation scopes, and others.</p><p><strong>Edit:</strong></p><p>Some simple background on custom scopes: <a href="https://stackoverflow.com/questions/9429221/google-guice-custom-scope/9435182#9435182">https://stackoverflow.com/questions/9429221/google-guice-custom-scope/9435182#9435182</a></p><p>Some definitions relevant to above:</p><p><em>“scoping”</em> &#8211; A set of requirements that define what objects get injected at what time.  A simple example of this is Thread scope, based on a ThreadLocal.  This scope would inject a variable based on what thread instantiated the class.  Here&#39;s an example of this:</p><p><em>“context variable”</em> &#8211; A repository passed from one object to another holding relevant variables.  Much like scoping this is a more brute force way of accessing variables based on the calling code.</p><p>Example:</p><pre><code>methodOne(Context context){
+    methodTwo(context);
+}
+
+methodTwo(Context context){
+    ...
+    //same context as method one, if called from method one
+}
+</code></pre><p><em>“globally scoped singleton”</em> &#8211; Following the singleton pattern, there is one object per application instance.  This applies to scopes because there is a basic lifecycle to this object: there is only one of these objects instantiated.</p><p>Here&#39;s an example of a JSR330 Singleton scoped object:</p><pre><code>@Singleton
+public void SingletonExample{
+...
+}
+</code></pre><p>usage:</p><pre><code>public class One {
+     @Inject
+     SingeltonExample example1;
+}
+
+public class Two {
+     @Inject
+     SingeltonExample example2;
+}
+</code></pre><p>After instantiation:</p><pre><code>one.example1 == two.example2 //true;
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p><strong>Limit the use of scopes</strong> or more concretely <strong>Use scopes for wiring only</strong>.</p><p>Used properly, scopes can reduce a lot of factory boiler plate. I use scopes to wire together sub-processes that may need access to its name and arguments. This is similar to the <code>RequestScope</code>s provided by Guice and Spring.</p><p>But scopes are effectively a thread-local map of string to object. This is practically a Global Variable Depot. This is why I limit my scope usage.</p><p>This leads to the corollary:</p><p><strong>Hide the scopes</strong> or more generally <strong>Hide your DI Framework</strong></p><p>Because scopes (and DI frameworks) are essentially <em>Global Variable Depots</em>, I prefer to encapsulate the DIF such that the only thing that knows there is a DIF is the main method.</p><p>To do this, I define my own scope interface and my own ProcessFactory that I define within a Guice module.</p><p>Because of this, my process manager is free of references to Guice. In fact, it is little more than this method:</p><pre><code>void run(final ProcessContext context) {
+    try {
+        this.scope.enter(context.processArgs());
+        this.factory.create(args.processName());
+    } finally {
+        this.scope.exit();
+    }
+}
+</code></pre><p>Here&#39;s the complete Guice module that binds and hides my use of a Guice. It implements my own ProcessScope and ProcessFactory interfaces. It binds @ProcessParameters so they can be injected and a few convienience objects as well (@ProcessName String and ProcessConfig).</p><pre><code>public class ProcessRunnerModule extends AbstractModule {
+    private static final String PROCESS_RUN_SCOPE = &#34;ProcessRunScope&#34;;
+
+    /**
+     * Objects of type Map&lt;String, Object&gt; parameterized by @ProcessParameters
+     * are injected in the ProcessRunScope
+     */
+    static final Key&lt;Map&lt;String, Object&gt;&gt; PROCESS_PARAMETERS_KEY;
+    static {
+        final TypeLiteral&lt;Map&lt;String, Object&gt;&gt; MAP_TYPE = new TypeLiteral&lt;Map&lt;String, Object&gt;&gt;() {
+        };
+        PROCESS_PARAMETERS_KEY = Key.get(MAP_TYPE, ProcessParameters.class);
+    }
+
+
+    /**
+     * Wraps Guice scope to ProcessScope. Injects the @ProcessParameters into guice
+     */
+    private static class GuiceScopeAdapter implements ProcessScope {
+
+        private final SimpleScope scope;
+
+        @Inject @SuppressWarnings(&#34;unused&#34;)
+        public GuiceScopeAdapter(@Named(PROCESS_RUN_SCOPE) SimpleScope scope) {
+            this.scope = scope;
+        }
+
+        @Override
+        public void enterScope(Map&lt;String, Object&gt; parameters) {
+            scope.enter();
+            scope.seed(PROCESS_PARAMETERS_KEY, parameters);
+        }
+
+        @Override
+        public void exitScope() {
+            scope.exit();
+        }
+    }
+
+    /**
+     * Processes are run and bound in @ProcessRunScope.
+     */
+    protected void configure() {
+        final SimpleScope processRunScope = new SimpleScope();
+        bindScope(ProcessRunScope.class, processRunScope);
+        bind(SimpleScope.class)
+            .annotatedWith(Names.named(PROCESS_RUN_SCOPE))
+            .to(processRunScope);
+    }
+
+    /**
+     * This wraps Processes bound via MapBinder to a ProcessFactory
+     */
+    @Provides @Singleton
+    ProcessFactory createProcessFactory(final Map&lt;String, Provider&lt;Process&gt;&gt; processFactories) {
+        log.info(&#34;Instantiating process factory&#34;, &#34;known-processes&#34;, processFactories.keySet());
+        return new ProcessFactory() {
+            @Override
+            public Process create(final String name) {
+                return processFactories.get(name).get();
+            }
+        };
+    }
+
+    /**
+     * ProcessRunner does not know about Guice
+     */
+    @Provides @Singleton
+    ProcessRunner createProcessRunner(
+            final ProcessScope processScope,
+            final ProcessFactory processFactory) {
+
+        return new ProcessRunner(processScope, processFactory);
+    }
+
+
+    /**
+     * Convienience: bind a @ProcessName extracted from the @ProcessParameters
+     */
+    @Provides @ProcessName @ProcessRunScope
+    String bindProcessName(final @ProcessParameters Map&lt;String, Object&gt; params) {
+        return params.get(ProcessRunner.PROCESS_NAME_KEY).toString();
+    }
+
+    /**
+     * Convienience: bind a ProcessConfig wrapping the @ProcessParameters
+     */
+    @Provides @ProcessRunScope
+    ProcessConfig createParamHelper(final @ProcessParameters Map&lt;String, Object&gt; params) {
+        return new ProcessConfig(params);
+    }
+}
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../alternatives-to-the-singleton-pattern/'>Alternatives to the singleton pattern</a></li><li class="list-group-item"><a href='../java-how-to-design-extension-mechanism-for-java-app/'>Java &#8211; How to design extension mechanism for java app</a></li><li class="list-group-item"><a href='../php-using-the-command-pattern-for-a-sequence-of-tasks/'>Php &#8211; Using the command pattern for a sequence of tasks</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

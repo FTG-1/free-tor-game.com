@@ -1,0 +1,137 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Looking for an effective pattern to cope with switch statements in C# &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1077189 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1077189" class="post-1077189 software type-software status-publish hentry category-software tag-c tag-design-patterns tag-object-oriented tag-switch-statement"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Looking for an effective pattern to cope with switch statements in C#</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">design-patterns</span><span class="mr-2 badge badge-warning">object-oriented</span><span class="mr-2 badge badge-primary">switch statement</span></p><div class="entry-content"><p>I sometimes end up with services encapsulating the responsibility of doing some sort of business process for which there are several possible outputs. Typically one of those output is success and the others represent the possible failures of the process itself.</p><p>To fix the idea consider the following interfaces and classes:</p><pre><code>  interface IOperationResult 
+  {
+  }
+
+  class Success : IOperationResult 
+  {
+    public int Result { get; }
+    public Success(int result) =&gt; Result = result;
+  }
+
+  class ApiFailure : IOperationResult 
+  {
+    public HttpStatusCode StatusCode { get; }
+    public ApiFailure(HttpStatusCode statusCode) =&gt; StatusCode = statusCode;
+  }
+
+  class ValidationFailure : IOperationResult 
+  {
+    public ReadOnlyCollection&lt;string&gt; Errors { get; }
+
+    public ValidationFailure(IEnumerable&lt;string&gt; errors)
+    {
+      if (errors == null)
+        throw new ArgumentNullException(nameof(errors));
+
+      this.Errors = new List&lt;string&gt;(errors).AsReadOnly();
+    }
+  }
+
+  interface IService 
+  {
+    IOperationResult DoWork(string someFancyParam);
+  }
+</code></pre><p>The classes consuming the <code>IService</code> abstraction are required to process the returned <code>IOperationResult</code> instance. The straightforward way to do so is writing a plain old <code>switch</code> statement and decide what to do in each case:</p><pre><code>      switch (result) 
+      {
+        case Success success:
+          Console.WriteLine($&#34;Success with result {success.Result}&#34;);
+          break;
+
+        case ApiFailure apiFailure:
+          Console.WriteLine($&#34;Api failure with status code {apiFailure.StatusCode}&#34;);
+          break;
+
+        case ValidationFailure validationFailure:
+          Console.WriteLine(
+            $&#34;Validation failure with the following errors: {string.Join(&#34;, &#34;, validationFailure.Errors)}&#34;
+          );
+          break;
+
+        default:
+          throw new NotSupportedException($&#34;Unknown type of operation result {result.GetType().Name}&#34;);
+      }
+</code></pre><p>Writing this type of code in different points of the codebase quickly generates a mess, because this basically violates the open closed principle.</p><p>Each time the implementation of <code>IService</code> gets modified by introducing a new implementation of <code>IOperationResult</code> there are several switch statements that must be modified too. The developer implementing the new feature <strong>must</strong> be aware of their existence, unless there are well written tests which can automatically detect the missing modifications in the points where the code switches over <code>IOperationResult</code> instances.</p><p>Maybe the switch statement can be avoided at all.</p><p>This is easy to do when <code>IService</code> is used for one specific purpose. As an example, when I write ASP.NET core MVC controllers in order to keep action methods simple and lean I inject a service in the controller and delegate to it all the processing logic. This way the action method only cares about handling the HTTP request, validating the parameters and returning an HTTP response to the caller. In this scenario the <code>switch</code> statement can be avoided from the beginning by using polymorphism. The trick is modifying <code>IOperationResult</code> this way:</p><pre><code>  interface IOperationResult 
+  {
+    IActionResult ToActionResult();
+  }
+</code></pre><p>The action method simply calls <code>ToActionResult</code> on the <code>IOperationResult</code> instance and returns the result.</p><p>In some cases the <code>IService</code> abstraction must be used by different callers and we need to let them the freedom to decide what to do with the operation result.</p><p>One possible solution is defining one higher order function, lets call it <em>processor</em> for simplicity, having the responsibility of processing a given instance of <code>IOperationResult</code>. It&#39;s something like this:</p><pre><code>  static class Processors 
+  {
+    static T Process&lt;T&gt;(
+      IOperationResult operationResult,
+      Func&lt;Success, T&gt; successProcessor,
+      Func&lt;ApiFailure, T&gt; apiFailureProcessor,
+      Func&lt;ValidationFailure, T&gt; validationFailureProcessor) =&gt; 
+        operationResult switch
+        {
+          Success success =&gt; successProcessor(success),
+          ApiFailure apiFailure =&gt; apiFailureProcessor(apiFailure),
+          ValidationFailure validationFailure =&gt; validationFailureProcessor(validationFailure),
+          _ =&gt; throw new ArgumentException($&#34;Unknown type of operation result: {operationResult.GetType().Name}&#34;)
+        };
+  }
+</code></pre><p>The advantages here are the following:</p><ul><li>there is only one point where the <code>switch</code> statement is done</li><li>each time a new implementation of <code>IOperationResult</code> is defined there is only one point that needs to be modified. Doing so the signature of the <code>Process</code> function gets modified too.</li><li>the modification done at the previous point produces several compile time errors where the <code>Process</code> function gets called. This errors must be fixed, but we can trust the compiler being able to find all the points to be modified</li></ul><p>A more object oriented alternative is modifying the definition of <code>IOperationResult</code> by adding one method per each intended usage of the operation result, so that the <code>switch</code> statement can be avoided once more and the only thing to do is actually writing a new implementation of the interface.</p><p>This is an example in the hypothesis that there are two different consumers of <code>IService</code>:</p><pre><code>  interface IOperationResult 
+  {
+    string ToEmailMessage(); // used by the email sender service
+    ICommand ToCommand(); // used by the command sender service
+  }
+</code></pre><p>Any thoughts ? Are there other or better alternatives ?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><h2>The problem</h2><p>The purpose of having these result classes derive from the same interface is so that the interface becomes what the consumer knows and works with. The consumer doesn&#39;t care about the specific implementing classes.</p><p>However, your interface doesn&#39;t contain anything. You&#39;re using it as a marker interface. If I, as a consumer, receive an <code>IOperationResult</code> object, what can I do with it? <strong>Nothing</strong>. Because the <code>IOperationResult</code> interface defines no contract whatsoever.</p><p>That defeats the purpose of having your result classes share the same interface. You&#39;ve essentially enforced them all to comply to the same contract, but put an empty contract in place so it&#39;s literally impossible to <em>not</em> comply with it.</p><hr/><h2>Your first solution</h2><p>Your <code>Processors</code> class is effectively trying to reinvent the event delegation wheel. You&#39;re defining specific event handlers (the <code>Func</code> objects) that handle every outcome.</p><p>But this still violates OCP for the exact same reason. You still have the switch which needs to be expanded whenever a new result type is developed. All consumers will still need to add a new handler for a new result type.</p><p>It&#39;s still the same problem. You&#39;ve just obfuscated it with some additional complexity.</p><hr/><h2>Your second solution</h2><p>You&#39;ve found a new way to violate OCP. Now, instead of having to expand the code every time a result type is developed, you&#39;re having to expand the interface whenever a new consumer is developed.</p><p>It&#39;s the same problem all over again.</p><p>On top of that, now your core logic needs to somehow <em>know</em> how each consumer wants its own result to be handled, and your core logic is going to have to pre-chew the result exactly how every particular customer wants it.<br/> This will lead to sheer insanity in your core logic that now has to account for the <em>handling</em> of its own outcome (based on every individual consumer&#39;s needs); which means you&#39;re violating SRP on top of OCP.</p><hr/><h2>My proposed solution</h2><p>Overall, it seems like you&#39;ve quite understood the core issue of OCP, as you&#39;ve not avoided it in any of the solutions you&#39;ve claimed were solutions.</p><p>How you develop your interface correctly depends on what you want to do with it. Based on your usage example in the switch case, it seems you&#39;re primarily interested in two things: whether it was a success, and a possible message to inform the consumer further. Taking that, your interface becomes straightforward:</p><pre><code>public interface IOperationResult
+{
+    bool IsSuccess { get; }
+    string Message { get; }
+}
+</code></pre><p>And your implementations become straightforward:</p><pre><code>public class Success : IOperationResult
+{
+    public bool IsSuccess =&gt; true;
+    public string Message { get; set; }
+}
+
+public class ApiFailure : IOperationResult
+{
+    public bool IsSuccess =&gt; false;
+    public string Message { get; set; }
+}
+</code></pre><p>However, in the interest of not overengineering, there is a simpler approach here. Based on your current needs, you don&#39;t really need separate classes. The only thing that&#39;s different is going to be the <em>values</em> contained in the result object, not the structure of the result object itself.</p><p>It&#39;s a lot cleaner here to do away with the interface and simply use a straightforward DTO class. What you now call derivations (success, API failure, ...) can be expressed as static methods, which you essentially use as &#34;constructors with a name&#34;, like so:</p><pre><code>public class OperationResult
+{
+    public bool IsSuccess { get; private set; }
+    public string Message { get; private set; }
+
+    //This ensures you can only instantiate an object via the static methods
+    private OperationResult() {}
+
+    public static OperationResult Success()
+    {
+        return new OperationResult()
+        {
+           IsSuccess = true,
+           Message = String.Empty
+        };
+    }
+
+    public static OperationResult ValidationFailure(string message)
+    {
+        return new OperationResult()
+        {
+           IsSuccess = false,
+           Message = message
+        };
+    }
+}
+</code></pre><p>Which you can then use wherever you need it:</p><pre><code>if( a == b )
+    return OperationResult.Success();
+else
+    return OperationResult.ValidationFailure(&#34;a does not equal b&#34;);
+</code></pre><p>In this example, I made it so that a message would only be given for a failure. That&#39;s just an example of how you can force certain outcomes to have certain values, which enables you to set your resulting values exactly how you want them in every case.</p><p>For the situation you described in the question, the above class suffices. As a general rule, don&#39;t overengineer simple things. It&#39;s just going to cost  time and effort now, and in the future when you have to maintain it.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../refactoring-switch-statements-and-is-there-any-real-use-for-switch-statements-at-all/'>Refactoring Switch Statements and is there any real use for Switch Statements at all</a></li><li class="list-group-item"><a href='../java-best-way-to-load-application-settings/'>Java &#8211; Best way to load application settings</a></li><li class="list-group-item"><a href='../c-when-are-enums-not-a-code-smell/'>C# &#8211; When are enums NOT a code smell</a></li><li class="list-group-item"><a href='../c-most-efficient-method-for-large-switch-statements/'>C# &#8211; Most efficient method for large switch statements</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

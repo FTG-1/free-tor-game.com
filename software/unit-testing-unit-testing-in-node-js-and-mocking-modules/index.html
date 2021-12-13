@@ -1,0 +1,67 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Unit-testing &#8211; Unit testing in node.js and mocking modules &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1078748 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1078748" class="post-1078748 software type-software status-publish hentry category-software tag-node-js tag-unit-testing"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Unit-testing &#8211; Unit testing in node.js and mocking modules</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">node.js</span><span class="mr-2 badge badge-info">unit testing</span></p><div class="entry-content"><p>I&#39;m trying to test this wrapper to <a href="http://npmjs.org/package/request" rel="nofollow">request</a> that I made:</p><pre class="lang-js prettyprint-override"><code>// lib/http-client.js
+var app = require(&#39;app&#39;),
+    request = require(&#39;request&#39;);
+
+exports.search = function(searchTerm, next) {
+  var options = {
+    url: &#39;https://api.datamarket.azure.com/Bing/Search/Web&#39;,
+    qs: {
+      &#39;Query&#39;: &#39;\&#39;&#39; + searchTerm + &#39;\&#39;&#39;,
+      &#39;Adult&#39;: &#39;\&#39;Off\&#39;&#39;,
+      &#39;$format&#39;: &#39;json&#39;,
+      &#39;$top&#39;: 10
+    },
+    auth: {
+      user: app.get(&#39;bing identifier&#39;),
+      pass: app.get(&#39;bing identifier&#39;)
+    }
+  };
+
+  request(options, function(err, res, body){
+
+    if (err) return next(err);
+    // TODO: parse JSON and return results
+  });
+};
+</code></pre><p>where <code>app</code> is an instance of <a href="https://npmjs.org/package/express" rel="nofollow">express</a>.  The question is, how do I test the function of this &#34;module&#34; without having to touch the internet? If I was to do this in other languages I would have mocked the request module but I don&#39;t know if that&#39;s the best way to do it in node.js.</p><pre class="lang-js prettyprint-override"><code>// NODE_PATH=lib
+
+describe(&#39;Http Client&#39;, function(){
+  it(&#39;should return error if transport failed&#39;, function(){
+    var c = require(&#39;http-client&#39;),
+        results = &#39;foo&#39;;
+    // request mock should return results when called
+    c.search(&#39;foo&#39;, function(err, results){
+      results.should.eql(res);
+    });
+    // TODO
+  });
+  it(&#39;should return an error if JSON parsing failed&#39;, function(){
+    // TODO
+  });
+  it(&#39;should return results&#39;, function(){
+    // TODO
+  });
+});
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>If your module has a constructor that takes the app and request as constructor arguments (in other words dependency injection), you can just provided a stubbed/mocked implementation of request in your test. <br/> If not: I know you can override in tests what RequireJS returns when requiring something, so I would assume the same would be possible in node.js. So if you can change the configuration of the module loader in a test, you can configure it to return a stubbed/mocked implementation of request. <br/> Personally, I&#39;d go the dependency injection route. Having to configure your module loader in tests is a pain in the backside...</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/java-is-mocking-for-unit-testing-appropriate-in-this-scenario/'>Java &#8211; Is mocking for unit testing appropriate in this scenario</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/javascript-node-js-app-private-modules-where-to-put-them/'>Javascript &#8211; Node.js app private modules. Where to put them</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-how-to-setup-build-system-for-unit-testing-mocking/'>C++ &#8211; How to setup build system for unit testing + mocking</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/how-to-structure-big-node-js-modules/'>How to structure big Node.JS modules</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

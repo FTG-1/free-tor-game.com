@@ -1,0 +1,59 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Moving from mock to real objects &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1073892 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1073892" class="post-1073892 software type-software status-publish hentry category-software tag-design-patterns tag-mocking tag-stub tag-tdd"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Moving from mock to real objects</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">design-patterns</span><span class="mr-2 badge badge-info">mocking</span><span class="mr-2 badge badge-warning">stub</span><span class="mr-2 badge badge-primary">tdd</span></p><div class="entry-content"><p>I&#39;m like doing TDD so I started everything mocking objects, creating interface, stubbing, great.</p><p>The design seems to work, now I&#39;ll implement the stuff, a lot of the code used in the stubs are going to be reused in my real implementation yay!</p><p>Now should I duplicate the tests to use the real object implementation (but keeping the mocks object of the sensitive stuff like Database and &#34;services&#34; that are out of my context (http calls, etc&#8230;)) Or just change the mocks and stubs of the actual tests to use the real objects&#8230;&#8230;.</p><p>So the question is that, keep two tests or replace the stubs, mocks?</p><p>And after that, I should keep designing with the mocks, stubs or just go with real objects?</p><p><em>(Just making myself clear I&#39;ll keep the mock object of the sensitive stuff like database and services that are out of my context, in both situations.)</em></p><p>EDIT</p><pre class="lang-csh prettyprint-override"><code>[Fact]
+public void Change_status()
+{
+    var dbContext = MockRepository.GenerateStub&lt;IDbContext&gt;();
+    var repository = MockRepository.GenerateMock&lt;IRepository&lt;Foo&gt;&gt;();
+
+    var predicate = MockRepository.GenerateStub&lt;Func&lt;Foo, bool&gt;&gt;();
+    repository.Expect(x =&gt; x.Get(predicate)).Return(_foo).Repeat.Once();
+    dbContext.Expect(x =&gt; x.Commit());
+
+    var ctl = MockRepository.GenerateStub&lt;IFooCtl&gt;();
+    ctl.Stub(x =&gt; x.RejectRequest(_fooView)).WhenCalled(delegate
+    {
+        var foo = repository.Get(predicate);
+        foo.Status = Status.Rejected;
+        _fooView.Status = Status.Rejected.ToString();
+
+    }).Return(true);
+
+    ctl.RejectRequest(_fooView);
+
+    repository.VerifyAllExpectations();
+    dbContext.VerifyAllExpectations();
+    Assert.True(_fooView.Status == &#34;Rejected&#34;);
+    Assert.True(result.Count() == 1);
+}
+</code></pre><p>This is a test, where I mock the repository, context and stub the facade. So what I&#39;m trying to say is if I should change the stub of the facade to use the &#34;real&#34; code so this should be tested as</p><pre class="lang-csh prettyprint-override"><code>[Fact]
+public void Change_status()
+{
+    var dbContext = MockRepository.GenerateStub&lt;IDbContext&gt;();
+    var repository = MockRepository.GenerateMock&lt;IRepository&lt;Foo&gt;&gt;();
+
+    var predicate = MockRepository.GenerateStub&lt;Func&lt;Foo, bool&gt;&gt;();
+    repository.Expect(x =&gt; x.Get(predicate)).Return(_foo).Repeat.Once();
+    dbContext.Expect(x =&gt; x.Commit());
+
+    var ctl = new FooCtl(loanRepository, happyLoanDbContext);
+    var result = ctl.RejectRequest(_loanView);
+
+    repository.VerifyAllExpectations();
+    dbContext.VerifyAllExpectations();
+    Assert.True(_result);
+}
+</code></pre><p>Or if I should leave everything mocking and stubbing that tests the designs and create new ones that tests the implementation.</p><p>EDIT</p><p>Thanks for all your answer, I think I understand it better, I must know which is my SUT and test that, no mock or stub the SUT just the components that will help the SUT to pass the test</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><blockquote><p>Or if I should leave everything mocking and stubbing that tests the
+ designs and create new ones that tests the implementation.</p></blockquote><p>A unit test never tests abstractions, or <em>designs</em> as you put it. It always tests <strong>one</strong> concrete implementation, that of the class under test.</p><p>In other words, if you have a test fixture for class A where you mock or stub out A&#39;s dependencies B and C, then you&#39;re <strong>not</strong> testing B and C&#39;s behavior or design. You&#39;re only testing A&#39;s behavior and that it is able to talk to B and C properly. In order to test concrete implementations of B and C, you have to create dedicated tests fixtures for both of them.</p><p>From a purely isolated unit test perspective, you neither need to substitute mocks for real implementations afterwards, nor to create integration test counterparts besides your unit tests (integration tests = tests involving several concrete implementations at the same time). Your isolated unit tests should stay as they are, with all the mocks and stubs. They stand on their own provided that you test all concrete implementations and their interactions with their dependencies.</p><p>As Erik points out, you <em>could</em> create integration tests, but keep in mind that they come at a cost, both in terms of processing time and maintenance time, and they shouldn&#39;t replace unit tests as your primary test harness IMO.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../php-are-mocks-in-unit-tests-dangerous-in-dynamic-languages/'>Php &#8211; Are mocks in unit tests dangerous in dynamic languages</a></li><li class="list-group-item"><a href='../unit-testing-are-in-memory-database-a-form-of-integration-tests/'>Unit-testing &#8211; Are in-memory database a form of integration tests</a></li><li class="list-group-item"><a href='../unit-testing-how-to-really-write-tests-without-mocking-stubbing/'>Unit-testing &#8211; How to really write tests without mocking/stubbing</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

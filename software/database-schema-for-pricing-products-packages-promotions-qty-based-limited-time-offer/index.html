@@ -1,0 +1,219 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Database Schema for Pricing Products (packages, promotions, qty based, limited time offer&#8230;) &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1065561 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1065561" class="post-1065561 software type-software status-publish hentry category-software tag-database tag-database-design tag-relationships tag-schema tag-web-development"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Database Schema for Pricing Products (packages, promotions, qty based, limited time offer&#8230;)</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">database</span><span class="mr-2 badge badge-info">database-design</span><span class="mr-2 badge badge-warning">relationships</span><span class="mr-2 badge badge-primary">schema</span><span class="mr-2 badge badge-danger">web-development</span></p><div class="entry-content"><p>I&#39;m working on a new point of sale for a company that products for different prices depending on the product mix.</p><p>All products have a base price.</p><p>To explain my problem, I will use the following info:</p><pre><code>Product         Category        Price
+A               1               45
+B               1               70
+Q               2               20
+R               2               27
+S               2               15
+X               3               17
+Y               3               22
+Z               3               16
+</code></pre><p>The company has Packages, for example Package &#34;Combo&#34;: for product A or B, if you choose 1 of Q or R and 1 of X, Y or Z you get a $20 discount.</p><p><strong>Case A:</strong> Sometimes customers add on to a base product when placing an order, for example:<br /> They wan&#39;t one of Product A, and they add Product Q and Product P to that to create a package that has a discounted price. Then they might add that they want 1 of product B with 1 R and 1 Z.</p><p><strong>Case B:</strong> Sometimes customers will add 1 A and 2 B, 2 Q, 1 S, 2 X and 1 Z. According to the rules set forth by &#34;Combo&#34; Package, only 2 combos would apply because S is not a combo item.</p><p>Other promotions are dependent on quantity, so if you buy 2 of B you get 20% off and/or dependent upon time, it is only valid after 5 PM or before 10% off if before 10am. Another promotion might depend on when your last purchase occured or if you have purchase more than $X in Y timeframe.</p><p><strong>My Problems:</strong></p><p>1) How do I structure the tables so I my create the different packages or promotions in a way that is very flexible to add different types of promotions with different requirements?</p><p>2) When they order like Case B (or a mix of Case A and Case B) how do I structure my query so that I can test to see what product mix(es) are in the order, and update the prices/descriptions accordingly? Ultimately, the best result for this query would return which packages and promotions have requirements fulfilled in order of which gives the most benefit to the customer (i.e. maybe what they ordered fulfills requirements for promotion 1 and 3, but promotion 3 is less expensive. This must work with multiple promotions).</p><p>Thanks in advance for the help!</p><p><strong>UPDATE #1</strong></p><p>To better describe the problems at hand and to update the work done thus far to solve them <a href="http://www.gliffy.com/go/publish/4732703" rel="noreferrer" title="optional Title for link">I&#39;m incluiding an ERD of the Product Model limited to the entities and attributes that affect the issue</a> (i.e. inventory is not at play here, so no inventory entities are present).</p><p><img src="../../../i.stack.imgur.com/JaKxi.png" alt="enter image description here"/></p><p>I&#39;m also including sample data from the entities and attributes that affect this question (to simplify reading the data, I&#39;m putting in name/descriptions in place of Foreign Keys):</p><p><a href="http://www.gliffy.com/go/publish/4732791" rel="noreferrer" title="optional Title">Here is a link to a flow chart giving an example of a combo, a fast and visual way to understand the table structure.</a></p><pre><code>PRODUCT
+---------
+ID  Name
+================================
+1   Hamburger
+2   Cheeseburger
+3   Bacon Hamburger
+4   Bacon Cheeseburger
+5   Orange Juice
+6   Apple Juice
+7   Coffee
+8   Coke
+9   French Fries
+10  Onion Rings
+11  Soup du Jour
+12  Hamburger Combo
+13  CheeseBurger Combo
+14  Bacon Hamburger Combo
+15  Bacon Cheeseburger Combo
+16  Combo Side
+17  Combo Beverage
+18  Small Orange Juice
+19  Large Orange Juice
+20  Small Apple Juice
+21  Large Apple Juice
+22  Add Extra Patty
+23  Add Avocado
+
+PRODUCT COMPONENT
+------------------
+productFrom                 productTo       
+===================================================
+Hamburger Combo             Hamburger
+Hamburger Combo             Combo Side
+Hamburger Combo             Combo Beverage
+CheeseBurger Combo          Cheeseburger
+CheeseBurger Combo          Combo Side
+CheeseBurger Combo          Combo Beverage
+Bacon Hamburger Combo       Bacon Hamburger
+Bacon Hamburger Combo       Combo Side
+Bacon Hamburger Combo       Combo Beverage
+Bacon Cheeseburger Combo    Bacon Cheeseburger
+Bacon Cheeseburger Combo    Combo Side
+Bacon Cheeseburger Combo    Combo Beverage
+
+PRODUCT FEATURE
+----------------
+ID  Description
+=======================
+1   Combo Side Option
+2   Combo Beverage
+3   Juice
+4   Orange Juice Size
+5   Apple Juice Size
+6   Extras
+
+PRODUCT FEATURE APPLICABILITY
+------------------------------
+product                     productFeature  ProductFeatureApplicabilityType
+============================================================================
+Hamburger Combo             Combo Side      Required
+Hamburger Combo             Juice Flavor    Required
+Cheeseburger Combo          Combo Side      Required
+Cheeseburger Combo          Juice Flavor    Required
+Bacon Hamburger Combo       Combo Side      Required
+Bacon Hamburger Combo       Juice Flavor    Required
+Bacon Cheeseburger Combo    Combo Side      Required
+Bacon Cheeseburger Combo    Juice Flavor    Required
+
+
+PRODUCT FEATURE APPLICABILITY
+------------------------------
+productFeature  product             ProductFeatureApplicabilityType
+============================================================================
+Combo Side      Hamburger Combo             Required
+Combo Beverage  Hamburger Combo             Required
+Extras          Hamburger Combo             Optional
+Combo Side      Cheeseburger Combo          Required
+Combo Beverage  Cheeseburger Combo          Required
+Extras          Cheeseburger Combo          Optional
+Combo Side      Bacon Hamburger Combo       Required
+Combo Beverage  Bacon Hamburger Combo       Required
+Extras          Bacon Hamburger Combo       Optional
+Combo Side      Bacon Cheeseburger Combo    Required
+Combo Beverage  Bacon Cheeseburger Combo    Required
+Extras          Bacon Cheeseburger Combo    Optional
+
+
+
+
+OPTIONAL FEATURE
+------------------
+productFeatureFrom  Product             ProductFeatureTo        
+=============================================================
+Combo Side Option   French Fries
+Combo Side Option   Onion Rings
+Combo Side Option   Soup du Jour
+Combo Beverage                          Juice
+Combo Beverage      Coffee
+Juice                                   Orange Juice Size
+Juice                                   Apple Juice Size
+Orange Juice Size   Orange Apple Juice
+Orange Juice Size   Orange Apple Juice
+Apple Juice Size    Small Apple Juice
+Apple Juice Size    Large Apple Juice
+Extras              Add Extra Patty
+Extras              Add Avocado
+</code></pre><p>So, with the research and support provided by the community up until know, I have been able to solve Problem #1. In fact, I have done so with more flexibility than I thought I could do in the first deployment of the system.</p><p>All though there have been advances with Problem 2, it is not solved to satisfaction. There have been some ideas on how to do this, Neil McGuilgan asked a great question leading towards a possible solution using Relational Division (dba.stackexchange.com/questions/45829/what-is-the-name-of-this-type-of-query-and-what-is-an-efficient-example) and this book (www.amazon.com/books/dp/0471380237) helped a lot. However this solution at present, and as I understand it, only works with &#34;one&#34; record (combo) at a time. If a customer Walks up and says he wants 2 cheeseburgers, 1 hamburger, 1 small Apple Juice, 1 Coke, 1 French Fries and 2 onion Rings, I need a way to detect that there is only one combo in the mix and add the other products at base price. If there are multiple combo combinations, I&#39;m looking (ideally for an sql query) that can prioritize combo combinations by largest savings.</p><p>One idea I&#39;ve come up with to solve problem two is to add and attribute to PRODUCT COMPONENT flaggin the main product for the combo (i.e. hamburger). Then when running the pricing process, query what products in the order are main products in a &#34;package&#34;, relating the query to the discount given by the PRICE COMPONENT table and ordering by that value (descending), and in that order of packages check to see if you can create a &#34;package&#34; with the remaining non-main products with a query and loop the process until there are no more main products or there are no more non-main products in the remainder.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Although its a 3 years old thread, still I&#39;m replying it thinking that it might be helpful to somebody.</p><pre><code>Table Structure
+Table_Offer
+--------
+ID FK
+Name   
+start time  
+end time   
+
+MandatoryGroup
+--------
+ProductId (FK to product)
+
+MixGroup1
+--------
+ProductId (FK to product)
+
+
+MixGroup2
+--------
+ProductId (FK to product)
+
+
+Table_offerDetails
+------------------
+ID PK
+offerId (FK to table_offer)
+MandatoryProduct(FK to MandatoryProducts.productID
+firstProduct ( fk to MixGroup1.productId)
+secondProduct (FK to MixGroup2.productId)
+
+Offer
+----
+ ID    name    startDate  EndDate 
+---    ----     --------   ------
+1       COMBO   
+
+
+MandatoryGroup
+-------------
+ ID    name 
+ ---   ---- 
+1      A
+2      B
+
+
+MixGroup1
+---------
+ ID    name 
+ ---   ---- 
+ 3      P      
+ 4      Q
+
+MixGroup2
+---------
+ ID    name 
+ ---   ---- 
+ 5      x      
+ 6      Y
+ 7      Z
+
+
+
+ OfferHeader
+-------------
+ID  Customer count(B) B_disc time_disc  stat_disc DiscTotal orderPayableTotal
+--  --------- -------  ----   --------  ---------  --------  ------------    
+1     BOB     2         20      5         2             
+</code></pre><p>OfferDetails
+ ------------</p><pre><code> ID   offerID   MandatoryProduct     1stProduct    2ndProduct
+----  -------    ---------------     ----------    ----------
+1       1         A                     P              X
+2       1         A                     P              Y
+3       1         A                     P              Z
+4       1         A                     Q              X
+5       1         A                     Q              Y
+6       1         A                     Q              Z
+7       1         B                     P              X
+8       1         B                     P              Y
+9       1         B                     P              Z
+10      1         B                     Q              X
+11      1         B                     Q              Y
+12      1         B                     Q              Z
+</code></pre><p>To construct an offerDetails , you must provide a mandatory , a mixgropu1 and amixGropu2. So caseB , has only 2 offers as follows :</p><pre><code>1 A and 2 B, 2 Q, 1 S, 2 X and 1 Z
+2B 2Q and 2X =2 offers
+1A 1Q and 1X=1st offer
+1B 1Q and 1X=2nd Offer ... etc other combinations are vivid.
+</code></pre><p>Other offers are based on business logic:
+For quantity offer discount:
+ create query to  find the count of B in an offer for a customer . lets call it QTYB. find QTYB %2  and multiply it with quantityOffer value ( which is $20)</p><p>For statistics offer, Just add another bit called earnedPoint for a customer&#39;s purchase. and set the earnedPoint an expiry date. earned point can be the same as purchased amount. Check if the purchased amount &gt;=$X , them issue discount as per policy.</p><p>Similar is the comparison of order time if its before 5PM and after 10AM then issue 5% else issue 10% discount.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../php-db-schema-for-packaging-products-services-together-under-a-single-price-offer/'>Php &#8211; DB schema for packaging products/services together under a single price/offer</a></li><li class="list-group-item"><a href='../practical-thesql-schema-advice-for-ecommerce-store-products-attributes/'>Practical thesql schema advice for eCommerce store &#8211; Products &#038; Attributes</a></li><li class="list-group-item"><a href='../optimal-database-design-for-3-way-relationship/'>Optimal Database design for 3-way relationship</a></li><li class="list-group-item"><a href='../database-schema-for-a-todo-list/'>Database schema for a ToDo list</a></li><li class="list-group-item"><a href='../database-design-for-inventory/'>Database Design for Inventory</a></li><li class="list-group-item"><a href='../how-to-structure-and-connect-the-price-table-to-existing-relational-database-table-structure/'>How to structure and connect the &#8220;price&#8221; table to existing relational database table structure</a></li><li class="list-group-item"><a href='../database-role-based-database-schema/'>Database &#8211; Role based Database Schema</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

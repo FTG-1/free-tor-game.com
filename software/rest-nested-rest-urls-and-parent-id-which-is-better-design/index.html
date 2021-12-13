@@ -1,0 +1,84 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Rest &#8211; Nested REST urls and parent id, which is better design &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1065079 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1065079" class="post-1065079 software type-software status-publish hentry category-software tag-ajax tag-design tag-design-patterns tag-rest"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Rest &#8211; Nested REST urls and parent id, which is better design</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">ajax</span><span class="mr-2 badge badge-info">design</span><span class="mr-2 badge badge-warning">design-patterns</span><span class="mr-2 badge badge-primary">rest</span></p><div class="entry-content"><p>Okay, we have two resources: <code>Album</code> and <code>Song</code>. Here is API:</p><pre><code>GET,POST /albums
+GET,POST /albums/:albumId
+GET,POST /albums/:albumId/songs
+GET,POST /albums/:albumId/songs/:songId
+</code></pre><p>We know that we hate some song, it is called <code>Susy</code>, for example. Where we should put <code>search</code> action?</p><p>Another question. Okay, now it is a it more real. We open album 1 and load all songs. We create JS objects, each holds song data and has few methods like so: <code>remove</code>, <code>update</code>.</p><p>Song object has ID, name and stuff, but has no clue about which parent it belongs to, because we retrieve list of songs by query and it will be not that good to return parent ids with each so. Am I wrong?</p><p>So, I see few solutions, but I&#39;m not sure really.</p><ol><li><p>Make parent id optional &#8211; as get-parameter. This approach I use currently, but I feel it is ugly one.</p><pre><code>List,Create /songs?album=albumId
+Update,Delete /songs/:songId
+Get /songs/?name=susy # also, solution for first question
+</code></pre></li><li><p>Hybrid. It is now that handy since we need album id to perform <code>OPTIONS</code> query to get meta-data.</p><pre><code>List,Create /album/:albumId/songs
+Update,Delete /songs/:songId
+POST /songs/search # also, solution for first question
+</code></pre></li><li><p>Return full url with each resource instance. API is same, but we will get songs like this:</p><pre><code>id: 5
+name: &#39;Elegy&#39;
+url: /albums/2/songs/5
+</code></pre><p>I heard this approach is called HATEOAS.</p></li><li><p>So&#8230; To provide parent ID</p><pre><code>id: 5
+name: &#39;Elegy&#39;
+albumId: 2
+</code></pre></li></ol><p>Which is better? Or maybe I&#39;m dumb? Throw some advices, guys!</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><blockquote><p>Where we should put search action?</p></blockquote><p>In <code>GET /search/:text</code>. This will return a JSON array containing the matches, every match containing the album it belongs to. This makes sense, because the client may be interested not in the track itself, but the entire album (imagine that you are searching for a song which, you believe, was in the same album as the one you remember the name).</p><blockquote><p>it will be not that good to return parent ids with each so. Am I wrong?</p></blockquote><p>Individual tracks can contain the album. This will ensure that the track representation is uniform if you can get a track either through an album or through search (no album here).</p><blockquote><p>Which is better?</p></blockquote><p>As previously stated, including the album makes sense. While the third point (with the relative URI) can be interesting in some cases (you don&#39;t have to think about the way the URI should be formed), it has a drawback of not providing explicitly the album. The fourth point corrects this. If you see the benefit of having the relative URI in the response, you can combine the point 3 and 4.</p><blockquote><p>Or maybe I&#39;m dumb?</p></blockquote><p>Choosing good URIs is not an easy task, especially since there is no single right answer. If you develop the client at the same time as the API, it may help you to visualize better how the API could be used. This being said, other people may then prefer other usages you weren&#39;t thinking about when developing the API.</p><p>An aspect which may be problematic is how you organize data internally, i.e. the usage of a hierarchy. From your comment, you are wondering what should contain a response to <code>GET /artist/1/album/10/song/3/comment/23</code>, which shows a very tree-oriented vision. This can lead to a few issues when extending the system later. For instance:</p><ul><li>What if a song doesn&#39;t have an album?</li><li>What if an album has several artists?</li><li>What if you want to add a feature which makes it possible to comment albums?</li><li>What if there should be comments of comments?</li><li>etc.</li></ul><p>This is essentially <a href="http://blog.pelicandd.com/article/13/">the problem I explained in my blog</a>: a tree representation has too many limitations to be effectively used in many cases.</p><p>What happens if you destroy the hierarchy? Let&#39;s see.</p><ol><li><p><code>GET /albums/:albumId</code> returns a JSON containing the meta information about the album (such as the year when it was published or the URI of the JPEG showing the album cover) and an array of tracks. For example:</p><pre class="lang-none prettyprint-override"><code>GET /albums/151
+</code></pre><pre class="lang-js prettyprint-override"><code>{
+    &#34;id&#34;: 151,
+    &#34;gid&#34;: &#34;dbd3cec7-b927-423f-894b-742c4c7b54ce&#34;,
+    &#34;name&#34;: &#34;Yellow Submarine&#34;,
+    &#34;year&#34;: 1969,
+    &#34;genre&#34;: &#34;Psychedelic rock&#34;,
+    &#34;artists&#34;: [&#34;John Lennon&#34;, &#34;Paul McCartney&#34;, ...],
+    &#34;tracks&#34;: [
+        {
+            &#34;id&#34;: 90224,
+            &#34;title&#34;: &#34;Yellow Submarine&#34;,
+            &#34;length&#34;: &#34;2:40&#34;
+        },
+        {
+            &#34;id&#34;: 83192,
+            &#34;title&#34;: &#34;Only a Northern Song&#34;,
+            &#34;length&#34;: &#34;3:24&#34;
+        }
+        ...
+    ]
+}
+</code></pre><p>Why do I include, for instance, the length of each track? Because I imagine that the client showing an album may be interested by listing the tracks by title, but also show the length of each track—most clients do. On the other hand, I may not show the composer(s) or the artist(s) for every track, because I decide that this information is not necessary at this level. Obviously, your choices may be different.</p></li><li><p><code>GET /tracks/:trackId</code> returns the information about a specific track. Since there is no hierarchy any longer, you don&#39;t need to guess the album or the artist: the only thing you really have to know is the identifier of the track itself.</p><p>Or maybe even not? What if you can specify it by name with <code>GET /tracks/:trackName</code>?</p><pre class="lang-none prettyprint-override"><code>GET /tracks/Only%20a%20Northern%20Song
+</code></pre><pre class="lang-js prettyprint-override"><code>{
+    &#34;id&#34;: 83192,
+    &#34;gid&#34;: &#34;8d9c4311-9d7b-40a4-8aeb-4fe96247fe2b&#34;,
+    &#34;title&#34;: &#34;Only a Northern Song&#34;,
+    &#34;writers&#34;: [&#34;George Harrison&#34;],
+    &#34;artists&#34;: [&#34;John Lennon&#34;, &#34;Paul McCartney&#34;, &#34;Ringo Starr&#34;],
+    &#34;length&#34;: &#34;3:24&#34;,
+    &#34;record-date&#34;: 1967,
+    &#34;albums&#34;: [151, 164],
+    &#34;soundtrack&#34;: {
+        &#34;uri&#34;: &#34;http://audio.example.com/tracks/static/83192.mp3&#34;,
+        &#34;alias&#34;: &#34;Beatles - Only a Northern Song.mp3&#34;,
+        &#34;length-bytes&#34;: 3524667,
+        &#34;allow-streaming&#34;: true,
+        &#34;allow-download&#34;: false
+    }
+}
+</code></pre><p>Now look closer at <code>albums</code>; what do you see? Right, not one, but two albums. If you have an hierarchy, you can&#39;t do that (unless you duplicate the record).</p></li><li><p><code>GET /comments/:objectGid</code>. You may have spotted the ugly GUIDs in the responses. Those GUIDs make it possible to identify the entity across the database in order to perform tasks which can be applied to albums, or artists, or tracks. Such as commenting.</p><pre class="lang-none prettyprint-override"><code>GET /comments/8d9c4311-9d7b-40a4-8aeb-4fe96247fe2b
+</code></pre><pre class="lang-js prettyprint-override"><code>[
+    {
+        &#34;author&#34;: {
+            &#34;id&#34;: 509931,
+            &#34;display-name&#34;: &#34;Arseni Mourzenko&#34;
+        },
+        &#34;text&#34;: &#34;What a great song! (And I&#39;m proud of the usefulness of my comment)&#34;,
+        &#34;concerned-object&#34;: &#34;/tracks/83192&#34;
+    }
+]
+</code></pre><p>The comment references the concerned object, making it possible to go to it when accessing the comment outside its context (for instance when moderating the latest comments through <code>GET /comments/latest</code>).</p></li></ol><p>Note that this doesn&#39;t mean that you should avoid any form of hierarchy in your API. There are cases where it makes sense. As a rule of thumb:</p><ul><li><p><strong>If the resource makes no sense outside the context of its parent resource, use hierarchy.</strong></p></li><li><p><strong>If the resource can live (1) alone or (2) in a context of parent resources of different types or (3) have multiple parents, the hierarchy should not be used.</strong></p></li></ul><p>For instance, lines of a file make no sense outside the context of a file, so:</p><pre><code>GET /file/:fileId
+</code></pre><p>and:</p><pre><code>GET /file/:fileId/line/:lineIndex
+</code></pre><p>are fine.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../rest-how-do-searches-fit-into-a-restful-interface/'>Rest &#8211; How do searches fit into a RESTful interface</a></li><li class="list-group-item"><a href='../rest-api-design-for-associations-aggregation/'>REST API design for associations/aggregation</a></li><li class="list-group-item"><a href='../rest-design-multiple-calls-vs-returning-all-data-in-one-call/'>Rest design &#8211; Multiple calls vs returning all data in one call</a></li><li class="list-group-item"><a href='../javascript-rest-api-design-patterns/'>Javascript &#8211; REST Api Design Patterns</a></li><li class="list-group-item"><a href='../rest-api-design-multiple-resources-and-authorization/'>REST API Design: Multiple resources and authorization</a></li><li class="list-group-item"><a href='../rest-api-post-with-illegal-data-in-parameters-bad-request-or-404/'>Rest API POST with illegal data in parameters: Bad Request or 404</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

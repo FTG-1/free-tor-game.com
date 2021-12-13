@@ -1,0 +1,74 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; Set data in multi-level objects (may be using Java Reflection) &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1081687 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1081687" class="post-1081687 software type-software status-publish hentry category-software tag-java tag-reflection"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; Set data in multi-level objects (may be using Java Reflection)</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">java</span><span class="mr-2 badge badge-info">reflection</span></p><div class="entry-content"><p>I want to possibly use Java Reflection to set some data at RunTime. My problem is I can&#39;t figure out how do I get sub-classes information and use as a part of reflection.</p><p>I want to use Reflection to keep it generic functionality for future flexibility.</p><p><strong>Java Structure &#8211; Class &amp; Fields</strong> (field data type in brackets) following in bullets. Setter / Getter methods for each field is present. This is sample representation.</p><pre><code>Restaurant
+  - RestaurantId (long)
+  - RestaurantName (String)
+  - RestaurantCity (String)
+  - Employee (Employee object)
+  - Menu (Menu object)
+
+   Employee
+     - EmployeeId (long)
+     - EmployeeName (String)
+
+   Menu
+     - MenuId (long)
+     - MenuItem (String)
+     - MenuCategory (String)
+     - MenuIngredients (Ingredients object)
+
+       Ingredients
+         - IngredientId (long)
+         - IngredientName (String)
+</code></pre><p>As we can see I have multiple level of object structure. So <code>Restaurant</code> as the top most object, then within <code>Restaurant</code> there is object of <code>Employee</code> and <code>Menu</code> and within <code>Menu</code> object there is a <code>Ingredients</code> object.</p><p><strong>Requirements</strong></p><p>I will get class name and field (method name) to set the value. E.g. I will get something like <code>Class = Restaurant &amp; Field Method = setRestaurantCity</code> and value to set in the City. I may also get <code>Class = Menu &amp; Field Method = setMenuItem</code> or let&#39;s say <code>Class = Ingredients &amp; Field Method = setIngredientName</code> and respective values for them.</p><p>I have provided sample java code with which I am trying to test. As we could see in java code that it works fine for setting value in <code>Restaurant</code> object. However I would like to set the data in another object which is actually two levels down to <code>Restaurant</code>, that is, R<code>estaurant --&gt; Menu --&gt; Ingredients</code>. for <code>valueObject2</code>.</p><p>I don&#39;t want to use <code>instanceOf</code> as that would need me to verify each and every object. As current structure is not just 2 levels but much more deeper something like going upto 5 levels down with total class objects counting upto 25 of them.</p><p>I am looking for some solution where I can match the names of the class and set respective values. So, if I get <code>valueObject3</code> and respetive Class &amp; Field is sent in future, then the solution should work.</p><p>Open for any other solution as well other than Reflection</p><p><strong>Java Code</strong></p><pre><code>public static void main(String[] args) {
+
+        try {
+            Object valueObject1 = &#34;Mumbai&#34;;
+            String fromClass1 = &#34;com.test.Restaurant&#34;;
+            String fromMethod1 = &#34;setRestaurantCity&#34;;
+
+            Object valueObject2 = &#34;Bread&#34;;
+            String fromClass2 = &#34;com.test.Ingredients&#34;;
+            String fromMethod2 = &#34;setIngredientName&#34;;
+
+            Object restnt = new Restaurant();
+            Class&lt;? extends Object&gt; clsRestnt = restnt.getClass();
+            System.out.println(clsRestnt.getCanonicalName());
+
+            Method[] toRestMethods = clsRestnt.getMethods();
+
+            for (int i = 0; i&lt;toRestMethods.length; i++)
+            {
+                System.out.println(toRestMethods[i].getName());
+                if(toRestMethods[i].getName().equalsIgnoreCase(fromMethod1))
+                {
+                    System.out.println(&#34;Found Method &#34; + toRestMethods[i]);
+                    valueObject1 = toRestMethods[i].invoke(restnt, valueObject1);
+
+                }
+            }
+
+        } catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Reflection seems a very fragile and non-intuitive way to implement this. Instead I think you should be <em>telling the objects what to do</em>, and they will collaborate between themselves to determine this. e.g.</p><pre><code>restaurant.switchToSpringMenu();
+</code></pre><p>and the <code>Restaurant</code> object could swap between menu instances that it has.</p><blockquote><p>Exact requirement is that I will be getting some task to be done and
+ corresponding value.. Now every task can be at different level in the
+ hierarchy of the class... So I am not how else should I implement this</p></blockquote><p>Perhaps this could be achieved via a <a href="https://en.wikipedia.org/wiki/Visitor_pattern" rel="nofollow">visitor pattern</a>. e.g. you do something like:</p><pre><code>restaurant.reorganise(forSummer);
+</code></pre><p>where <code>forSummer</code> is some implementation of a task. The <code>Restaurant</code> object collaborates with this task object, then calls on the underlying <code>Employee</code>/<code>Menu</code> classes, which will do the same.</p><p>If you really want a more generic means of navigating these hierarchies, you could look at <a href="https://commons.apache.org/proper/commons-jxpath/" rel="nofollow">JXPath</a>, which allows you to use XPath-like expressions to find objects e.g.</p><pre><code> (Ingredient)JXPathContext.newContext(restaurants).
+         getValue(&#34;restaurant[address/zipCode=&#39;90210&#39;]/menu/ingredients[1]&#34;);
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-is-java-instanceof-operator-considered-reflection-and-what-defines-reflection/'>Java &#8211; Is Java instanceof operator considered reflection, and what defines reflection</a></li><li class="list-group-item"><a href='../reflection-is-using-reflection-still-bad-or-slow-what-has-changed-with-reflection-since-2002/'>Reflection: Is using reflection still &#8220;bad&#8221; or &#8220;slow&#8221;? What has changed with reflection since 2002</a></li><li class="list-group-item"><a href='../java-using-java-reflection-to-decouple-code-modules/'>Java &#8211; Using Java Reflection to decouple code modules</a></li><li class="list-group-item"><a href='../java-treeitem-containing-non-string-object-displaying-strange-text/'>Java &#8211; TreeItem containing non-String object displaying strange text</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

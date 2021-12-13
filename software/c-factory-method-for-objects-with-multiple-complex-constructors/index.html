@@ -1,0 +1,142 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Factory method for objects with multiple complex constructors &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1067451 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1067451" class="post-1067451 software type-software status-publish hentry category-software tag-c tag-design-patterns tag-factory-method tag-legacy-code"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Factory method for objects with multiple complex constructors</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">design-patterns</span><span class="mr-2 badge badge-warning">factory-method</span><span class="mr-2 badge badge-primary">legacy code</span></p><div class="entry-content"><p>I&#39;m refactoring a legacy codebase.<br /> I have 4 very similar objects that I decided would be a good target for becoming polymorphic, so I moved all the common code to a base class and added an interface.</p><p>The real problem arises when trying to create those objects. Every class has 3 different constructors with 5-10 parameters each, used in different cases based on the context.<br /> I already know those classes have too much going on, and would actually be better split in different, smaller classes, each one dealing with one case, however this is a legacy codebase and I can&#39;t do so many changes to the existing code.</p><p>At the moment my code is something like this:</p><pre class="lang-cs prettyprint-override"><code>public class HandlerFactory
+{
+    public static IHandler CreateInstance(HandlerType param1, string param2, ..., string param8)
+    {
+        switch(param1)
+        {
+            case HandlerType.Type1
+                return new Handler1(param2, ..., param8)
+            case HandlerType.Type2
+                return new Handler2(param2, ..., param8)
+            case HandlerType.Type3
+                return new Handler3(param2, ..., param8)
+            case HandlerType.Type4
+                return new Handler4(param2, ..., param8)
+        }
+    }
+
+    public static IHandler CreateInstance(HandlerType param1, int param2, ..., DateTime param10)
+    {
+        switch(param1)
+        {
+            case HandlerType.Type1
+                return new Handler1(param2, ..., param10)
+            case HandlerType.Type2
+                return new Handler2(param2, ..., param10)
+            case HandlerType.Type3
+                return new Handler3(param2, ..., param10)
+            case HandlerType.Type4
+                return new Handler4(param2, ..., param10)
+        }
+    }
+
+    public static IHandler CreateInstance(HandlerType param1, string param2, ..., CustomClass param5)
+    {
+        switch(param1)
+        {
+            case HandlerType.Type1
+                return new Handler1(param2, ..., param5)
+            case HandlerType.Type2
+                return new Handler2(param2, ..., param5)
+            case HandlerType.Type3
+                return new Handler3(param2, ..., param5)
+            case HandlerType.Type4
+                return new Handler4(param2, ..., param5)
+        }
+    }
+}
+</code></pre><p>However, I hate having 3 factory methods, as I now have to edit three of them if I were to add another Handler (the main reason I&#39;m doing this refactoring).</p><p>Is there a way I can keep just one factory method with a single switch?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>The answer provided by @JohnWu is very elegant and I like it a lot. Allow me to provide an alternative.</p><p>You could use <a href="https://en.wikipedia.org/wiki/Abstract_factory_pattern" rel="nofollow noreferrer">Abstract Factory Pattern</a>. You would basically have one big factory of factories, which would then produce the concrete factories for concrete handlers. Then, should you need another handler, all you would need to do is write one factory for that particular handler. It would be something along these lines:</p><pre><code>public interface IHandler
+{
+}
+
+public class Handler1 : IHandler
+{
+    public Handler1(string param1, string param2)
+    {
+    }
+
+    public Handler1(int param1, int param2)
+    {
+    }
+}
+
+public class Handler2 : IHandler
+{
+    public Handler2(string param1, string param2)
+    {
+    }
+
+    public Handler2(int param1, int param2)
+    {
+    }
+}
+</code></pre><p>For simplicity, I have only two Handler classes with two different constructors. I believe the solution still can be applied to your case. Next, we have factories:</p><pre><code>   public interface IHandlerFactory
+    {
+        IHandler Create(string param1, string param2);
+        IHandler Create(int param1, int param2);
+    }
+
+    public class Handler1Factory : IHandlerFactory
+    {
+        public IHandler Create(int param1, int param2)
+        {
+            return new Handler1(param1, param2);
+        }
+
+        public IHandler Create(string param1, string param2)
+        {
+            return new Handler1(param1, param2);
+        }
+    }
+
+    public class Handler2Factory : IHandlerFactory
+    {
+        public IHandler Create(int param1, int param2)
+        {
+            return new Handler2(param1, param2);
+        }
+
+        public IHandler Create(string param1, string param2)
+        {
+            return new Handler2(param1, param2);
+        }
+    }
+
+    public class HandlerFactory
+    {
+        public static IHandler Create(IHandlerFactory factory, string param1, string param2)
+        {
+            return factory.Create(param1, param2);
+        }
+
+        public static IHandler Create(IHandlerFactory factory, int param1, int param2)
+        {
+            return factory.Create(param1, param2);
+        }
+    }
+</code></pre><p>The alternative here would be to have a <code>HandlerFactory</code> class that would have a property of <code>IHandlerFactory</code> type, and the methods would not be static and would not have <code>IHandlerFactory</code> parameter in them. Obviously, an object of <code>HandlerFactory</code> class would need to be instantiated at some point.</p><p>The usage would go somehow like this:</p><pre><code>public class Example
+{
+    public void ExampleMethod()
+    {
+        Handler1Factory factory1 = new Handler1Factory();
+        var handler1 = HandlerFactory.Create(factory1, &#34;parameter1&#34;, &#34;parameter2&#34;);
+
+        Handler2Factory factory2 = new Handler2Factory();
+        var handler2 = HandlerFactory.Create(factory2, 1, 2);
+    }
+}
+</code></pre><p>The solution clearly divides the code by purpose, and most importantly, should you have the need for another handler, you would not need to change the existing code. All you would have to do is write a factory for that particular handler.</p><p>Remember, this is only possible because all handlers have the constructors with same parameter lists. The design would be somewhat different if that was not the case.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../use-a-factory-class-instead-of-direct-object-construction/'>Use a factory class instead of direct object construction</a></li><li class="list-group-item"><a href='../object-oriented-avoiding-constructors-with-many-arguments/'>Object-oriented &#8211; Avoiding constructors with many arguments</a></li><li class="list-group-item"><a href='../design-pattern-to-handle-construction-of-complex-objects-with-a-1-%e2%86%92-1-multiplicity-relationship/'>Design pattern to handle construction of complex objects with a [1 → 1..*] multiplicity relationship</a></li><li class="list-group-item"><a href='../php-handle-named-constructors-with-factory-pattern/'>Php &#8211; Handle Named constructors with factory pattern</a></li><li class="list-group-item"><a href='../java-should-constructors-ever-be-used-only-for-side-effects/'>Java &#8211; Should constructors ever be used only for side-effects</a></li><li class="list-group-item"><a href='../how-to-refactor-an-application-with-multiple-switch-cases/'>How to refactor an application with multiple switch cases</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

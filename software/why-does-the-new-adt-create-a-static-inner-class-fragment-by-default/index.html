@@ -1,0 +1,187 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Why does the new ADT create a static inner class Fragment by default &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1082545 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1082545" class="post-1082545 software type-software status-publish hentry category-software tag-android tag-android-development tag-eclipse"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Why does the new ADT create a static inner class Fragment by default</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">android</span><span class="mr-2 badge badge-info">android-development</span><span class="mr-2 badge badge-warning">eclipse</span></p><div class="entry-content"><p>Honestly, I can&#39;t help but feel that this is done merely to confuse newcomers. Most of the errors on Stack Overflow by complete Android newbies mostly stem from that they have a static inner class Fragment that they don&#39;t understand how it works, why it&#39;s there, and try to use Activities even though they don&#39;t fully understand the concept behind what is happening.</p><p>I must admit, I had trouble understanding the &#34;PlaceholderFragment&#34; approach too, and using static inner classes isn&#39;t really extensible at all. The first thing you&#39;d have to do is create an actual class outside &#8211; but why do newbies have to do that?</p><p>I think this could be much more efficient if they used a project structure similar to the following simple fragment-based android project structure:</p><ul><li>src<ul><li>wholepackagename<ul><li>activity<ul><li>MainActivity</li></ul></li><li>fragment<ul><li>FirstFragment</li><li>SecondFragment</li></ul></li></ul></li></ul></li><li>res<ul><li>layout</li><li>values</li><li>&#8230;</li></ul></li></ul><p>With the code of</p><p>src/wholepackagename/activity/MainActivity:</p><pre><code>public class MainActivity extends FragmentActivity implements FirstFragment.Callback
+{
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        getSupportFragmentManager().addOnBackStackChangedListener(new OnBackStackChangedListener()
+        {
+            public void onBackStackChanged()
+            {
+                int backCount = getSupportFragmentManager().getBackStackEntryCount();
+                if (backCount == 0)
+                {
+                    finish();
+                }
+            }
+        });
+
+        if (savedInstanceState == null)
+        {
+            getSupportFragmentManager().beginTransaction().add(R.id.main_container, new FirstFragment()).addToBackStack(null).commit();
+        }
+    }
+
+    @Override
+    public void firstFragmentCallback()
+    {
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_container, new SecondFragment()).addToBackStack(null).commit();
+    }
+} 
+</code></pre><p>src/wholepackagename/fragment/FirstFragment.java:</p><pre><code>public class FirstFragment extends Fragment implements View.OnClickListener
+{
+    private Callback callback;
+
+    private Button firstFragmentButton;
+
+    public static interface Callback
+    {
+        void firstFragmentCallback();
+    }
+
+    public FirstFragment()
+    {
+        super();
+    }
+
+    @Override
+    public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        try
+        {
+            callback = (Callback) activity;
+        }
+        catch (ClassCastException e)
+        {
+            Log.e(getClass().getSimpleName(), activity.getClass().getSimpleName() + &#34; must implement Callback interface!&#34;, e);
+            throw e;
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View rootView = inflater.inflate(R.layout.fragment_first, container, false);
+        firstFragmentButton = (Button) rootView.findViewById(R.id.fragment_first_button);
+        firstFragmentButton.setOnClickListener(this);
+        return rootView;
+    }
+
+    @Override
+    public void onClick(View v)
+    {
+        if(v == firstFragmentButton)
+        {
+            callback.firstFragmentCallback();
+        }
+    };
+}
+</code></pre><p>src/wholepackagename/fragment/SecondFragment.java:</p><pre><code>public class SecondFragment extends Fragment implements View.OnClickListener
+{
+    private Button secondFragmentButton;
+
+    public SecondFragment()
+    {
+        super();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View rootView = inflater.inflate(R.layout.fragment_second, container, false);
+        secondFragmentButton = (Button) rootView.findViewById(R.id.fragment_second_button);
+        secondFragmentButton.setOnClickListener(this);
+        return rootView;
+    }
+
+    @Override
+    public void onClick(View v)
+    {
+        if(v == secondFragmentButton)
+        {
+            Toast.makeText(getActivity(), &#34;This is an example!&#34;, Toast.LENGTH_LONG).show();
+        }
+    };
+}
+</code></pre><p>Android-Manifest.xml:</p><pre><code>&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&gt;
+&lt;manifest xmlns:android=&#34;http://schemas.android.com/apk/res/android&#34;
+    package=&#34;wholepackagename&#34;
+    android:versionCode=&#34;1&#34;
+    android:versionName=&#34;1.0&#34; &gt;
+
+    &lt;uses-sdk
+        android:minSdkVersion=&#34;8&#34;
+        android:targetSdkVersion=&#34;19&#34; /&gt;
+    &lt;application
+        android:allowBackup=&#34;true&#34;
+        android:icon=&#34;@drawable/ic_launcher&#34;
+        android:label=&#34;@string/app_name&#34;
+        android:theme=&#34;@style/AppTheme&#34; &gt;
+        &lt;activity
+            android:name=&#34;wholepackagename.activity.MainActivity&#34;
+            android:label=&#34;@string/app_name&#34;&gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name=&#34;android.intent.action.MAIN&#34; /&gt;
+                &lt;category android:name=&#34;android.intent.category.LAUNCHER&#34; /&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+    &lt;/application&gt;
+
+&lt;/manifest&gt;
+</code></pre><p>res/layout/activity_main.xml:</p><pre><code>&lt;FrameLayout xmlns:android=&#34;http://schemas.android.com/apk/res/android&#34;
+    xmlns:tools=&#34;http://schemas.android.com/tools&#34;
+    android:id=&#34;@+id/main_container&#34;
+    android:layout_width=&#34;match_parent&#34;
+    android:layout_height=&#34;match_parent&#34; /&gt;
+</code></pre><p>res/layout/fragment_first.xml:</p><pre><code>&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&gt;
+&lt;RelativeLayout xmlns:android=&#34;http://schemas.android.com/apk/res/android&#34;
+    android:layout_width=&#34;match_parent&#34;
+    android:layout_height=&#34;match_parent&#34; &gt;
+
+    &lt;Button
+        android:id=&#34;@+id/fragment_first_button&#34;
+        android:layout_width=&#34;wrap_content&#34;
+        android:layout_height=&#34;wrap_content&#34;
+        android:layout_centerInParent=&#34;true&#34; 
+        android:text=&#34;@string/first_button&#34; /&gt;
+
+&lt;/RelativeLayout&gt;
+</code></pre><p>res/layout/fragment_second.xml:</p><pre><code>&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&gt;
+&lt;RelativeLayout xmlns:android=&#34;http://schemas.android.com/apk/res/android&#34;
+    android:layout_width=&#34;match_parent&#34;
+    android:layout_height=&#34;match_parent&#34; &gt;
+
+    &lt;Button
+        android:id=&#34;@+id/fragment_second_button&#34;
+        android:layout_width=&#34;wrap_content&#34;
+        android:layout_height=&#34;wrap_content&#34;
+        android:layout_centerInParent=&#34;true&#34;
+        android:text=&#34;@string/second_button&#34; /&gt;
+
+&lt;/RelativeLayout&gt;
+</code></pre><p>res/values/strings.xml:</p><pre><code>&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&gt;
+&lt;resources&gt;
+    &lt;string name=&#34;app_name&#34;&gt;Application name&lt;/string&gt;
+    &lt;string name=&#34;hello_world&#34;&gt;Hello world!&lt;/string&gt;
+    &lt;string name=&#34;action_settings&#34;&gt;Settings&lt;/string&gt;
+    &lt;string name=&#34;first_button&#34;&gt;First Button&lt;/string&gt;
+    &lt;string name=&#34;second_button&#34;&gt;Second Button&lt;/string&gt;
+&lt;/resources&gt;
+</code></pre><p>To me, it seems that the static inner class Fragment doesn&#39;t really support any kind of maintainability, it&#39;s hard to see what is going on, and the overall functionality is not obvious as the Activity and Fragment (display of fragment and logic) are mixed together, which makes it hard to see and oversee for a newbie.</p><p>I believe it would provide an easier entry into developing for the Android platform to have an example like above. Are there any benefits to the current approach, providing a static inner class as a Fragment?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I, and others, share your sentiment that <a href="http://corner.squareup.com/2014/10/advocating-against-android-fragments.html" rel="nofollow">Fragments are pretty weird</a> and should not be blindly accepted as Good Things™.</p><p>I always thought the intention behind their existence in the bootstrap code was to throw Fragments in front of developers&#39; faces as early as possible. Since Fragments have not been around since version 1, I imagine Google felt they needed to put some weight behind their introduction in order to get more people on board. But, I can only speculate.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

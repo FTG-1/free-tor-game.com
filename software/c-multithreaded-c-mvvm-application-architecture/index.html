@@ -1,0 +1,78 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Multithreaded C# MVVM Application Architecture &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1070824 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1070824" class="post-1070824 software type-software status-publish hentry category-software tag-architecture tag-c tag-multithreading tag-mvvm"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Multithreaded C# MVVM Application Architecture</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">Architecture</span><span class="mr-2 badge badge-info">c</span><span class="mr-2 badge badge-warning">multithreading</span><span class="mr-2 badge badge-primary">mvvm</span></p><div class="entry-content"><p>I have an application built in C# using the MVVM pattern that will have 40-50 different tests that need to be run.  I want to show each test as a list item with a progress bar of how far each test has progressed.  I want to run multiple tests at one time and at some point in the future there may be dependencies where certain tests have to run before other tests run.  I&#39;m trying to figure out how to set up the threads to manage these requirements.  I&#39;m aware of the <a href="https://msdn.microsoft.com/en-us/library/aa720722(v=vs.71).aspx" rel="nofollow noreferrer">ThreadPool</a>, but I&#39;m not sure it will work for my requirements.  What are the limitations of Thread Pool and is there a better way to go about building these requirements?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Firstly - I&#39;m assuming that the thread running your test has some mechanism which can notify on its own progress somehow (maybe with an <code>event</code> or <code>delegate</code>?)</p><p>In the spirit of MVVM, consider a <code>Model</code> which represents the state and progress of your test which you can be updated by the test thread.</p><p>The main purpose of the <code>Model</code> would be to remember the <strong>state</strong> of the UI progress bar (e.g. an <code>int</code> for a percentage).   For example:</p><pre><code>public class TestModel : INotifyPropertyChanged
+{
+    private int _progressPercentage;
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    public int ProgressPercentage
+    {
+        get { return _progressPercentage; }
+        set
+        {
+            OnPropertyChanged();
+            _progressPercentage = value;
+        }
+    }
+}
+</code></pre><p>With the MVVM-based UI frameworks (such as Silverlight, WPF, etc.) you need a way to ensure that any updates affecting the UI state (and therefore the properties on the <code>Model</code>) are invoked using the <code>Dispatcher</code> thread (the main/UI thread).</p><p>(Related: <a href="https://stackoverflow.com/questions/4621623/wpf-multithreading-ui-dispatcher-in-mvvm">https://stackoverflow.com/questions/4621623/wpf-multithreading-ui-dispatcher-in-mvvm</a>)</p><p>You may have as many <code>ThreadPool</code> threads as you like, but those threads will need to invoke UI state changes on the <code>Dispatcher</code> thread when you&#39;re changing any properties on the <code>Model</code>, since <code>INotifyPropertyChanged</code> causes the state of the UI to change.</p><p>Also, When dealing with multiple components of the same time, an <code>ObservableCollection&lt;&gt;</code> is a typical choice; where each model could bind to a UI Progress Bar component (e.g. a <code>&lt;ListBox&gt;</code>).   Again, any kind of modifications such as <code>Add</code> or <code>Remove</code> needs to happen on the <code>Dispatcher</code> thread.</p><p>Here&#39;s a possible example for a ViewModel where the action of starting a test thread originates from an <code>ICommand</code> (button click perhaps?)</p><pre><code>public class MyTestViewModel
+{
+    public ObservableCollection&lt;TestModel&gt; AllRunningTests { get; set; } =
+        new ObservableCollection&lt;TestModel&gt;();
+    public ICommand RunTestCommand { get; set; }
+
+    public MyTestViewModel()
+    {
+        RunTestCommand = new DelegateCommand&lt;object&gt;(RunTest, _ =&gt; true);
+    }
+
+    private void RunTest(object parameter)
+    {
+        var testModel = new TestModel();
+        AllRunningTests.Add(testModel);
+        Task.Run(() =&gt;
+        {
+            while (testModel.ProgressPercentage &lt; 100)
+            {
+                Thread.Sleep(200); // Simulate an expensive process with a sleep
+                Dispatcher.Invoke(() =&gt; { testModel.ProgressPercentage += 5; });
+            }
+        });
+    }
+}
+</code></pre><p>Note that <code>Task.Run</code> executes its action on a threadpool thread - More info on Stephen Cleary&#39;s blog - <a href="https://blog.stephencleary.com/2012/02/creating-tasks.html" rel="nofollow noreferrer">Creating Tasks</a></p><hr/><p>None of the above code really takes advantage of the full capabilities <code>async</code>/<code>await</code> or <code>Task</code>.</p><p>Among the reasons to use <code>Task</code> instead of starting a threadpool thread directly include:</p><ul><li>User cancellation of a running thread (<code>CancellationTokenSource</code>)</li><li>Timeout  (<code>Task.WhenAny</code> and <code>Task.Delay</code>) )</li><li>Simplified exception handling</li><li>Returning values back from a thread (<code>Task.TrySetResult</code>).</li><li>Checking thread completion or failure status</li></ul><p>For these things you might find Stephen&#39;s <code>AsyncCommand</code> to be useful - <a href="https://msdn.microsoft.com/en-us/magazine/dn630647.aspx" rel="nofollow noreferrer">Async Programming : Patterns for Asynchronous MVVM Applications: Commands</a></p><p>The <code>AsyncCommand</code> may help simplify the task of &#39;chaining&#39; multiple dependent tests.  For example, a list of <code>TestModel</code> objects.</p><p>This snippet assumes that <code>RunTestsAsync</code> happens inside an <code>AsyncCommand</code>, each <code>Task</code> is executed as the previous task completes, but the <code>async</code>/<code>await</code> specifiers prevent the Dispatcher thread from being blocked while each <code>Task</code> awaits completion:</p><pre><code>private async Task RunTestsAsync(object parameter)
+{
+    var testQueue = GetSomeListOfTests(); 
+
+    foreach (var testModel in testQueue)
+    {
+        AllRunningTests.Add(testModel); 
+
+        await Task.Run(() =&gt; 
+        {
+            while (testModel.ProgressPercentage &lt; 100)
+            {
+                Thread.Sleep(200); 
+                Dispatcher.Invoke(() =&gt; testModel.ProgressPercentage += 5);
+            }
+        });
+    }
+}
+</code></pre><p><strong>Note:</strong> Code snippets above aren&#39;t tested or checked in a compiler, but the concepts are more important than the actual code.</p><p>The <code>Task</code>, <code>async</code> and <code>await</code> features of C# can be a little mindblowing the first time you see them.   Some extra reading is highly recommended, as well as trying examples in a test app to get comfortable with how they work in practice.</p><p>The most important thing to realise is that while a traditional <code>Thread.Wait</code> will <strong>block</strong> the UI thread, the <code>await</code> keyword will not block the UI thread, and is a very elegant way of handling long-running tasks inside a Button click command or other GUI event handler.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../who-should-control-navigation-in-an-mvvm-application/'>Who should control navigation in an MVVM application</a></li><li class="list-group-item"><a href='../c-plagued-by-multithreaded-bugs/'>C++ &#8211; Plagued by multithreaded bugs</a></li><li class="list-group-item"><a href='../architecture-mvvm-and-service-pattern/'>Architecture &#8211; MVVM and service pattern</a></li><li class="list-group-item"><a href='../using-a-progress-dialog-and-multi-threading/'>Using a progress dialog and multi threading</a></li><li class="list-group-item"><a href='../c-net-multithreaded-application-design/'>C#/.NET multithreaded application design</a></li><li class="list-group-item"><a href='../c-switch-complex-winforms-app-to-wpf-mvvm/'>C# &#8211; Switch complex WinForms app to WPF MVVM</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

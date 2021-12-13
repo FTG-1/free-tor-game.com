@@ -1,0 +1,132 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; How to diagnose async/await deadlocks &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1069230 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1069230" class="post-1069230 software type-software status-publish hentry category-software tag-async tag-c tag-debugging"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; How to diagnose async/await deadlocks</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">async</span><span class="mr-2 badge badge-info">c</span><span class="mr-2 badge badge-warning">debugging</span></p><div class="entry-content"><p>I am working with a new codebase that makes heavy use of async/await. Most of the people on my team are also fairly new to async/await. We generally tend to hold to <a href="https://msdn.microsoft.com/en-us/magazine/jj991977.aspx">Best Practices as Specified by Microsoft</a>, but generally need our context to flow through the async call and are working with libraries that don&#39;t <code>ConfigureAwait(false)</code>.</p><p>Combine all of those things and we run into async deadlocks described in the article&#8230; weekly. They don&#39;t show up during unit testing, because our mocked data sources (usually via <code>Task.FromResult</code>) aren&#39;t enough to trigger the deadlock. So during runtime or integration tests, some service call just goes out to lunch and never returns. That kills the servers, and generally makes a mess of things.</p><p>The problem is that tracking down where the mistake was made (usually just not being async all the way up) generally involves manual code inspection, which is time consuming and not automate-able.</p><p>What&#39;s a better way of diagnosing what caused the deadlock?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Ok - I am not sure whether the following will be of any help to you, because I made some assumptions in developing a solution which may or may not be true in your case. Maybe my &#34;solution&#34; is too theoretical and only works for artifical examples - I have not done any testing beyond the stuff below.<br/> In addition, I would see the following more a workaround than a real solution but considering the lack of responses I think it might still be better than nothing (I kept watching your question waiting for a solution, but not seeing one getting posted I started playing around with the issue).</p><p>But enough said: Let&#39;s say we have a simple data service which can be used to retrieve an integer:</p><pre><code>public interface IDataService
+{
+    Task&lt;int&gt; LoadMagicInteger();
+}
+</code></pre><p>A simple implementation uses asynchronous code:</p><pre><code>public sealed class CustomDataService
+    : IDataService
+{
+    public async Task&lt;int&gt; LoadMagicInteger()
+    {
+        Console.WriteLine(&#34;LoadMagicInteger - 1&#34;);
+        await Task.Delay(100);
+        Console.WriteLine(&#34;LoadMagicInteger - 2&#34;);
+        var result = 42;
+        Console.WriteLine(&#34;LoadMagicInteger - 3&#34;);
+        await Task.Delay(100);
+        Console.WriteLine(&#34;LoadMagicInteger - 4&#34;);
+        return result;
+    }
+}
+</code></pre><p>Now, a problem arises, if we are using the code &#34;incorrectly&#34; as illustrated by this class. <code>Foo</code> incorrectly accesses <code>Task.Result</code> instead of <code>await</code>ing the result like <code>Bar</code> does:</p><pre><code>public sealed class ClassToTest
+{
+    private readonly IDataService _dataService;
+
+    public ClassToTest(IDataService dataService)
+    {
+        this._dataService = dataService;
+    }
+
+    public async Task&lt;int&gt; Foo()
+    {
+        var result = this._dataService.LoadMagicInteger().Result;
+        return result;
+    }
+    public async Task&lt;int&gt; Bar()
+    {
+        var result = await this._dataService.LoadMagicInteger();
+        return result;
+    }
+}
+</code></pre><p>What we (you) now need is a way to write a test which succeeds when calling <code>Bar</code> but fails when calling <code>Foo</code> (at least if I understood the question correctly ;-) ).</p><p>I&#39;ll let the code speak; here&#39;s what I came up with (using Visual Studio tests, but it should work using NUnit, too):</p><p><code>DataServiceMock</code> utilizes <code>TaskCompletionSource&lt;T&gt;</code>. This allows us to set the result at a defined point in the test run which leads to the following test. Note that we are using a delegate to pass back the TaskCompletionSource back into the test. You might also put this into the Initialize method of the test and use properties.</p><pre><code>TaskCompletionSource&lt;int&gt; tcs = null;
+this._dataService.LoadMagicIntegerMock = t =&gt; tcs = t;
+
+Task&lt;int&gt; task = null;
+TaskTestHelper.AssertDoesNotBlock(() =&gt; task = this._instance.Foo());
+
+tcs.TrySetResult(42);
+
+var result = task.Result;
+Assert.AreEqual(42, result);
+
+this._end = true;
+</code></pre><p>What&#39;s happening here is that we first verify that we can leave the method without blocking (this would not work if someone accessed <code>Task.Result</code> - in this case we would run into a timeout as the result of the task is not made available until after the method has returned).<br/> Then, we set the result (now the method can execute) and we verify the result (inside a unit test we can access Task.Result as we actually <em>want</em> the blocking to occur).</p><p>Complete test class - <code>BarTest</code> succeeds and <code>FooTest</code> fails as desired.</p><pre><code>[TestClass]
+public class UnitTest1
+{
+    private DataServiceMock _dataService;
+    private ClassToTest _instance;
+    private bool _end;
+
+    [TestInitialize]
+    public void Initialize()
+    {
+        this._dataService = new DataServiceMock();
+        this._instance = new ClassToTest(this._dataService);
+
+        this._end = false;
+    }
+    [TestCleanup]
+    public void Cleanup()
+    {
+        Assert.IsTrue(this._end);
+    }
+
+    [TestMethod]
+    public void FooTest()
+    {
+        TaskCompletionSource&lt;int&gt; tcs = null;
+        this._dataService.LoadMagicIntegerMock = t =&gt; tcs = t;
+
+        Task&lt;int&gt; task = null;
+        TaskTestHelper.AssertDoesNotBlock(() =&gt; task = this._instance.Foo());
+
+        tcs.TrySetResult(42);
+
+        var result = task.Result;
+        Assert.AreEqual(42, result);
+
+        this._end = true;
+    }
+    [TestMethod]
+    public void BarTest()
+    {
+        TaskCompletionSource&lt;int&gt; tcs = null;
+        this._dataService.LoadMagicIntegerMock = t =&gt; tcs = t;
+
+        Task&lt;int&gt; task = null;
+        TaskTestHelper.AssertDoesNotBlock(() =&gt; task = this._instance.Bar());
+
+        tcs.TrySetResult(42);
+
+        var result = task.Result;
+        Assert.AreEqual(42, result);
+
+        this._end = true;
+    }
+}
+</code></pre><p>And a little helper class to test for deadlocks / timeouts:</p><pre><code>public static class TaskTestHelper
+{
+    public static void AssertDoesNotBlock(Action action, int timeout = 1000)
+    {
+        var timeoutTask = Task.Delay(timeout);
+        var task = Task.Factory.StartNew(action);
+
+        Task.WaitAny(timeoutTask, task);
+
+        Assert.IsTrue(task.IsCompleted);
+    }
+}
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-backgroundworker-vs-async-await/'>C# &#8211; BackgroundWorker vs. Async/Await</a></li><li class="list-group-item"><a href='../c-blurring-the-lines-between-async-and-regular-functions-in-c-5-0/'>C# &#8211; Blurring the lines between async and regular functions in C# 5.0</a></li><li class="list-group-item"><a href='../c-await-state-async/'>C# &#8211; Await state async</a></li><li class="list-group-item"><a href='../c-http-async-await-task-avoid-flooding-server-with-requests/'>C# &#8211; HTTP Async/Await Task: avoid flooding server with requests</a></li><li class="list-group-item"><a href='../c-problem-with-async-await-pattern-in-c-and-javascript-how-to-return-sync-value/'>C# &#8211; Problem with async/await pattern &#8212; in C# and JavaScript &#8212; how to return sync value</a></li><li class="list-group-item"><a href='../c-who-did-async-await-first/'>C# &#8211; Who did async/await first</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

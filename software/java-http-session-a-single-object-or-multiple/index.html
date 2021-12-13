@@ -1,0 +1,58 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; HTTP Session: A single object or multiple &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1075651 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1075651" class="post-1075651 software type-software status-publish hentry category-software tag-http tag-http-request tag-java tag-session"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; HTTP Session: A single object or multiple</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">http</span><span class="mr-2 badge badge-info">http-request</span><span class="mr-2 badge badge-warning">java</span><span class="mr-2 badge badge-primary">session</span></p><div class="entry-content"><p>I tested two approaches to store session data:</p><ul><li>The classic: 1 key, 1 object (And every key as <code>static final String</code> in a class)</li></ul><blockquote><p>&#34;user&#34; &#8211;&gt; UserObject</p><p>&#34;preferences&#34; &#8211;&gt; List</p><p>&#8230;</p></blockquote><ul><li>An approach with only 1 object</li></ul><blockquote><p>&#34;sessionObject&#34; &#8211;&gt; SessionObject</p></blockquote><p>And my <code>SessionObject</code> contains <code>UserObject</code> and the list of preferences as attributes. This is a fairly simple example but imagine it with 20+ attributes.</p><p>The advantage I see in the second approach is that :</p><ul><li>You only have to delete one key to ensure session is empty</li><li>You don&#39;t have to create the bothersome set of <code>final static String</code> to create the keys</li><li>You&#39;ll know what type of object to retrieve (Using key you have to <code>cast</code>)</li></ul><p>Do you see any problem I might went over? Or does anything go against best practices?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>1 key, 1 object will be more predictable regarding interaction with app server and possible session replication techniques.  Not sure what you mean by &#34;set of final static String&#34; being necessary.  You may manage session keys any way you like.</p><p>Consider you have 20 preferences, and perhaps your preferences class has an enum of preference names.  Could get/set session a little bit indirectly:</p><pre><code>class Preferences {
+
+    private static final SESSION_KEY_PREFIX = Preferences.class.getName()+&#39;.&#39;;
+
+    enum Name {
+        LOCALE,
+        ...
+    }
+
+    static String get(HttpSession session, Name name) {
+        return (String)session.getAttribute(SESSION_KEY_PREFIX + name.name());
+    }
+
+    static void set(HttpSession session, Name name, String value) {
+        session.setAttribute(SESSION_KEY_PREFIX + name.name(), value);
+    }
+
+    static void clear(HttpSession session) {
+        for(Name name : Name.values()) {
+            session.removeAttribute(SESSION_KEY_PREFIX + name.name());
+        }
+    }
+}
+</code></pre><p>You may then add preferences by just adding to the enum, and all specific interaction with the session is encapsulated.</p><p>This example pretty trivial so the Preferences class itself could also become an enum instead, without a separate &#34;Name&#34; enum.  Which could be:</p><pre><code>enum Preference {
+    LOCALE,
+    ....;
+
+    private final String sessionKey = Preference.class.getName()+&#39;.&#39;+name();
+
+    String get(HttpSession session) {
+        return (String)session.getAttribute(sessionKey);
+    }
+
+    void set(HttpSession session, String value) {
+        session.setAttribute(sessionKey, value);
+    }
+
+    static void clear(HttpSession session) {
+        for(Preference pref : Preference.values()) {
+            session.removeAttribute(pref.sessionKey);
+        }
+    }
+}
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-requestcontextholder-currentrequestattributes-and-accessing-http-session/'>Java &#8211; RequestContextHolder.currentRequestAttributes() and accessing HTTP Session</a></li><li class="list-group-item"><a href='../rest-how-do-searches-fit-into-a-restful-interface/'>Rest &#8211; How do searches fit into a RESTful interface</a></li><li class="list-group-item"><a href='../java-wrapping-a-map-with-instance-or-static-method/'>Java &#8211; Wrapping a map with instance or static method</a></li><li class="list-group-item"><a href='../java-allowing-users-to-add-their-own-custom-fields-in-a-spring-mvc-hibernate-application-whats-an-ideal-approach/'>Java &#8211; Allowing users to add their own custom fields in a Spring MVC Hibernate application &#8211; What&#8217;s an ideal approach</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

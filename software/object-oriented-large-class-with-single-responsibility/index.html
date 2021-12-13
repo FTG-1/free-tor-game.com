@@ -1,0 +1,105 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Object-oriented &#8211; Large class with single responsibility &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1086071 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1086071" class="post-1086071 software type-software status-publish hentry category-software tag-class-design tag-object-oriented tag-single-responsibility"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Object-oriented &#8211; Large class with single responsibility</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">class-design</span><span class="mr-2 badge badge-info">object-oriented</span><span class="mr-2 badge badge-warning">single-responsibility</span></p><div class="entry-content"><p>I have a 2500 line <code>Character</code> class that:</p><ul><li>Tracks the internal state of the character in the game.</li><li>Loads and persists that state.</li><li>Handles ~30 incoming commands (usually = forwards them to the <code>Game</code>, but some read-only commands are responded to immediately).</li><li>Receives ~80 calls from <code>Game</code> regarding actions it is takes and relevant actions of others.</li></ul><p>It seems to me that <code>Character</code> has a single responsibility: to manage the state of the character, mediating between incoming commands and the Game.</p><p>There are a few other responsibilities that have already been broken out:</p><ul><li><code>Character</code> has an <code>Outgoing</code> which it calls into to generate outgoing updates for the client application.</li><li><code>Character</code> has a <code>Timer</code> which tracks when it is next allowed to do something. Incoming commands are validated against this.</li></ul><p>So my question is, is it acceptable to have such a large class under SRP and similar principles? Are there any best practices for making it less cumbersome (eg. maybe splitting methods into separate files)? Or am I missing something and is there really a good way to split it up? I realize this is quite subjective and would like feedback from others.</p><p>Here is a sample:</p><pre class="lang-python prettyprint-override"><code>class Character(object):
+    def __init__(self):
+        self.game = None
+        self.health = 1000
+        self.successful_attacks = 0
+        self.points = 0
+        self.timer = Timer()
+        self.outgoing = Outgoing(self)
+
+    def load(self, db, id):
+        self.health, self.successful_attacks, self.points = db.load_character_data(id)
+
+    def save(self, db, id):
+        db.save_character_data(self, health, self.successful_attacks, self.points)
+
+    def handle_connect_to_game(self, game):
+        self.game.connect(self)
+        self.game = game
+        self.outgoing.send_connect_to_game(game)
+
+    def handle_attack(self, victim, attack_type):
+        if time.time() &lt; self.timer.get_next_move_time():
+            raise Exception()
+        self.game.request_attack(self, victim, attack_type)
+
+    def on_attack(victim, attack_type, points):
+        self.points += points
+        self.successful_attacks += 1
+        self.outgoing.send_attack(self, victim, attack_type)
+        self.timer.add_attack(attacker=True)
+
+    def on_miss_attack(victim, attack_type):
+        self.missed_attacks += 1
+        self.outgoing.send_missed_attack()
+        self.timer.add_missed_attack()
+
+    def on_attacked(attacker, attack_type, damage):
+        self.start_defenses()
+        self.take_damage(damage)
+        self.outgoing.send_attack(attacker, self, attack_type)
+        self.timer.add_attack(victim=True)
+
+    def on_see_attack(attacker, victim, attack_type):
+        self.outgoing.send_attack(attacker, victim, attack_type)
+        self.timer.add_attack()
+
+
+class Outgoing(object):
+    def __init__(self, character):
+        self.character = character
+        self.queue = []
+
+    def send_connect_to_game(game):
+        self._queue.append(...)
+
+    def send_attack(self, attacker, victim, attack_type):
+        self._queue.append(...)
+
+class Timer(object):
+    def get_next_move_time(self):
+        return self._next_move_time
+
+    def add_attack(attacker=False, victim=False):
+        if attacker:
+            self.submit_move()
+        self.add_time(ATTACK_TIME)
+        if victim:
+            self.add_time(ATTACK_VICTIM_TIME)
+
+class Game(object):
+    def connect(self, character):
+        if not self._accept_character(character):
+           raise Exception()
+        self.character_manager.add(character)
+
+    def request_attack(character, victim, attack_type):
+        if victim.has_immunity(attack_type):
+            character.on_miss_attack(victim, attack_type)
+        else:
+            points = self._calculate_points(character, victim, attack_type)
+            damage = self._calculate_damage(character, victim, attack_type)
+            character.on_attack(victim, attack_type, points)
+            victim.on_attacked(character, attack_type, damage)
+            for other in self.character_manager.get_observers(victim):
+                other.on_see_attack(character, victim, attack_type)
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>In my attempts to apply SRP to a problem I generally find that a good way to stick to a Single-responsibility-per-class is to choose class names which allude to their responsibility, because it often helps to think more clearly about whether some function really &#39;belongs&#39; in that class.</p><p>Furthermore, I feel that simple nouns such as <code>Character</code> (or <code>Employee</code>, <code>Person</code>, <code>Car</code>, <code>Animal</code>, etc.) often make very poor class names because they really describe the <em>entities</em> (data) in your application, and when treated as classes it&#39;s often too easy to end up with something very bloated.</p><p>I find that &#39;good&#39; class names tend to be labels which meaningfully convey some aspect of your program&#39;s behaviour - i.e. when another programmer sees the name of your class they already gain a basic idea about that class&#39; behaviour/functionality.</p><p>As a rule of thumb, I tend to think of <em>Entities</em> as data models, and <em>Classes</em> as representatives of behaviour.   (Although of course most programming languages use a <code>class</code> keyword for both, but the idea of keeping &#39;plain&#39; entities separated from application behaviour is language-neutral)</p><p>Given the breakdown of the various responsibilities you&#39;ve mentioned for your character class, I would start to lean towards classes whose names are based on the requirement that they fulfil. For example:</p><ul><li>Consider a <code>CharacterModel</code> entity which has no behaviour and simply maintains the state of your Characters (holds data).</li><li>For persistence/IO, consider names such as <code>CharacterReader</code> and <code>CharacterWriter</code> (or maybe a <code>CharacterRepository</code>/<code>CharacterSerialiser</code>/etc).</li><li>Think about what kind of patterns exist between your commands; if you have 30 commands then you potentially have 30 separate responsibilities;  some of which may overlap, but they seem like a good candidate for separation.</li><li>Consider whether you can apply the same refactoring to your Actions as well - again, 80 actions might suggest as many as 80 separate responsibilities, also possibly with some overlap.</li><li>The separation of commands and actions might also lead to another class which is responsible for running/firing those commands/actions;  maybe some kind of <code>CommandBroker</code> or <code>ActionBroker</code> which behaves like your application&#39;s &#34;middleware&#34; sending/receiving/executing those commands and actions between different objects</li></ul><p>Also remember that not everything related to behaviour necessarily needs to exist as part of a class;  for example, you might consider using a map/dictionary of function pointers/delegates/closures to encapsulate your actions/commands rather than writing dozens of stateless single-method classes.</p><p>It&#39;s fairly common to see &#39;command pattern&#39; solutions without writing any classes which are built using static methods sharing a signature/interface:</p><pre><code> void AttackAction(CharacterModel) { ... }
+ void ReloadAction(CharacterModel) { ... }
+ void RunAction(CharacterModel) { ... }
+ void DuckAction(CharacterModel) { ... }
+ // etc.
+</code></pre><p>Lastly, there are no hard and fast rules as to how far you should go to achieve single responsibility.   Complexity for complexity&#39;s sake isn&#39;t a good thing, but megalithic classes tend to be fairly complex in themselves.     A key goal of SRP and indeed the other SOLID principles is to provide structure, consistency, and make code more maintainable - which often results in something simpler.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-does-this-class-design-violate-the-single-responsibility-principle/'>C# &#8211; Does this class design violate the single responsibility principle</a></li><li class="list-group-item"><a href='../architecture-when-using-the-single-responsibility-principle-what-constitutes-a-responsibility/'>Architecture &#8211; When using the Single Responsibility Principle, what constitutes a &#8220;responsibility?&#8221;</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

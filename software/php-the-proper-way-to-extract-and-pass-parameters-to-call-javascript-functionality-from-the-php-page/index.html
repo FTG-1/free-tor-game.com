@@ -1,0 +1,61 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Php &#8211;  the proper way to extract and pass parameters to call javascript functionality from the PHP page &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1080903 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1080903" class="post-1080903 software type-software status-publish hentry category-software tag-coding-standards tag-jquery tag-php tag-security"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Php &#8211;  the proper way to extract and pass parameters to call javascript functionality from the PHP page</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">coding-standards</span><span class="mr-2 badge badge-info">jquery</span><span class="mr-2 badge badge-warning">PHP</span><span class="mr-2 badge badge-primary">Security</span></p><div class="entry-content"><p>This is my situation: I have a search results page in PHP where most of the logic resides in a javascript file in order to avoid refreshing the page every time an action is performed. The first thing I do using PHP is filter out and save valid query string values to PHP variables and I make use of the htmlspecialchars function to prevent injection. Now, I&#39;d like to call my javascript function using those variables, so I created a script tag at the bottom of the page in order to pass the PHP variables to it (see my example).</p><p>When I put all of my javascript code inside of its own scope (as I read this was a good security practice), I realized that I could no longer call my function from outside of it. I also realize that the javascript method can still be called with anything a hacker wants, so does that mean I can&#39;t really make use of htmlspecialchars in my situation?</p><p>Here&#39;s a stripped-down version of my code:</p><pre><code>&lt;?php
+try {       
+  if (isset($_GET[&#34;id&#34;])) {
+    if (!is_numeric($_GET[&#34;id&#34;]))
+      throw new Exception(&#34;URL is not in a correct format&#34;);
+    $id= $_GET[&#34;id&#34;];
+  }
+  elseif (isset($_GET[&#34;keyword&#34;])) {
+    $keyword = htmlspecialchars($_GET[&#34;keyword&#34;]);
+  }
+}
+catch (Exception $e) {
+  // handle error
+}
+?&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&#34;searchResults&#34;&gt;&lt;!-- placeholder --&gt;&lt;/div&gt;
+  &lt;?php
+  if (isset($id)) { 
+    echo &#39;&lt;script type=&#34;text/javascript&#34;&gt;ShowSearchResults(&#34;id&#34;,&#39;.$id.&#39;);&lt;/script&gt;&#39;;        
+  }
+  elseif (isset($keyword)) { 
+    echo &#39;&lt;script type=&#34;text/javascript&#34;&gt;ShowSearchResults(&#34;keyword&#34;,&#34;&#39;.$keyword.&#39;&#34;);&lt;/script&gt;&#39;; 
+  }
+  ?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p>This is basically the js:</p><pre><code>function ShowSearchResults(key,value)
+{
+    $.getJSON(&#34;includes/search_results.php?&#34;+key+&#34;=&#34;+value, 
+    function(data) {
+      // populate search results
+      $(&#34;.searchResults&#34;).html( &#34;search results&#34; );
+    })
+    .error(function() { 
+       $(&#34;.searchResults&#34;).html( &#34;no results&#34; );
+    });
+}
+</code></pre><p>My questions are (while keeping security and best practices in mind):</p><p>Is it bad practice to pass the query string values to my javascript function from within the body? I initially did this because I had the impression that it was not a good idea to extract query string values using javascript. Maybe I&#39;m wrong there.</p><p>Should I be extracting the query string values from the $(document).ready function, and then calling the appropriate javascript functions from there? What is the appropriate way to do that (htmlspecialchars equivalent)?</p><p>Keep in mind that within my javascript code, I use $.getJSON to call another server side function (in PHP) that can reject anything insecure.</p><p>Any insight would be greatly appreciated.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Just copy one of the functions from <a href="https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript">this Stack Overflow post on retrieving values from a query string</a>, and reuse it in your JavaScript code, such as this function:</p><pre><code>function getParameterByName(name) {
+    name = name.replace(/[\[]/, &#34;\\[&#34;).replace(/[\]]/, &#34;\\]&#34;);
+    var regex = new RegExp(&#34;[\\?&amp;]&#34; + name + &#34;=([^&amp;#]*)&#34;),
+        results = regex.exec(location.search);
+    return results == null ? &#34;&#34; : decodeURIComponent(results[1].replace(/\+/g, &#34; &#34;));
+}
+</code></pre><p>There&#39;s nothing wrong with pulling parameters from the query string in your JavaScript code as long as you are not executing anything you get from the query string. The JavaScript equivalent of htmlspecialchars is <a href="https://stackoverflow.com/questions/1787322/htmlspecialchars-equivalent-in-javascript">here</a>.</p><p>However, if the <code>$id</code> was not coming from the query string, lets say it was coming directly from your server, it would be fine to echo it into your HTML and access it from JavaScript. (Try pressing ctrl-u now and see this page&#39;s HTML).</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../php-why-do-many-php-devs-hate-using-isset-and-or-any-of-phps-similarly-defensive-functions-like-empty/'>Php &#8211; Why do many PHP Devs hate using isset() and/or any of PHP&#8217;s similarly defensive functions like empty()</a></li><li class="list-group-item"><a href='../php-how-to-structure-template-system-using-plain-php/'>Php &#8211; How to structure template system using plain PHP</a></li><li class="list-group-item"><a href='../php-mvc-view-question/'>Php &#8211; MVC View Question</a></li><li class="list-group-item"><a href='../javascript-match-making-script-a-way-without-involving-the-database-and-php/'>Javascript &#8211; &#8220;Match Making&#8221; script, a way without involving the database and php</a></li><li class="list-group-item"><a href='../javascript-php-post-vs-javascript-ajax-request/'>Javascript &#8211; PHP Post vs JavaScript Ajax Request</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

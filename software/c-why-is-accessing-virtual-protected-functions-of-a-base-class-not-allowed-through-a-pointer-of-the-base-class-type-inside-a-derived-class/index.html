@@ -1,0 +1,54 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C++ &#8211; Why is accessing virtual protected functions of a base class not allowed through a pointer of the base class type inside a derived class &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1068378 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1068378" class="post-1068378 software type-software status-publish hentry category-software tag-access-modifiers tag-c tag-c11 tag-inheritance"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C++ &#8211; Why is accessing virtual protected functions of a base class not allowed through a pointer of the base class type inside a derived class</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">access-modifiers</span><span class="mr-2 badge badge-info">c</span><span class="mr-2 badge badge-warning">c++11</span><span class="mr-2 badge badge-primary">inheritance</span></p><div class="entry-content"><p>Consider the following:</p><pre><code>#include &lt;iostream&gt;
+
+class Base {
+    public:
+
+        void go(){this-&gt;doSomething();}
+
+    protected:
+        virtual void doSomething(){std::cout &lt;&lt; &#34;base&#34;;}
+};
+
+class DerivedA : public Base {
+    protected:
+        void doSomething() override {std::cout &lt;&lt; &#34;a&#34;;}
+};
+
+class DerivedB : public Base {
+    public:
+        Base * basePtr;
+
+        DerivedB()
+          :basePtr(new DerivedA())
+        {}
+
+    protected:
+        void doSomething() override {basePtr-&gt;doSomething();} // wont compile
+};
+
+int main(int , char *[])
+{
+   DerivedB b;
+   b.go();
+}
+</code></pre><p>doSomething() in the DerivedB subclass will not compile, but I do not understand why this behavior exists! I am trying to access a virtual protected member function of my base class, which I would have thought would be allowed.</p><p><a href="http://en.cppreference.com/w/cpp/language/access" rel="noreferrer">http://en.cppreference.com/w/cpp/language/access</a></p><p>In the section on protected member access, it says</p><p>&#34;A protected member of a class Base can only be accessed<br /> 1) by the members and friends of Base<br /> 2) by the members and friends (until C++17) of any class derived from Base, but only when operating on an object of a type that is derived from Base (including this)&#34;</p><p>According to point 2, if I cast down to the subclass (DerivedA), this would be allowed but I would then be in conflict with the condition that I am accessing a protected member function of a different class (which is not a base class, and would also not compile). Worse, if I knew the sub class type of the derived object, I could still not access it even if I cast to its common base.</p><p>Why is this behavior enforced? I assume it is probably going to be a side effect of allowing multiple inheritance etc but I can&#39;t think of exactly what it would be. It&#39;s annoying because now I have to make a public interface for something which is and should only be used by base or derived classes, which goes against the point of inheritance and access modifiers.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><blockquote><p>I am trying to access a virtual protected member function of my base
+ class</p></blockquote><p>Yes, but you are trying to do this via another object <em>basePtr</em>, not <em>this</em> object.
+And that other object is a <em>Base</em>.
+You somehow mix up classes (types) with objects (instances) of that class.
+You shouldn&#39;t be able to call a protected member function of a <em>Base</em> object when you&#39;re not &#39;in&#39; that same object.
+And you aren&#39;t. The fact that you are executing code inside your derived class doesn&#39;t matter here. The access level is not being checked against the instance <em>this</em> of your derived class, but against the instance <em>basePtr</em> you want to access.</p><p>And it&#39;s fine the way it is. Designers of class Base don&#39;t want people to call <em>doSomething</em> on objects of class Base. No matter from where! That&#39;s what the word protected says.
+They are however fine by having <em>doSomething</em> be called from the implementation of instances that are (in the the sense of the <em>is-a</em>-relationship of inheritance) Bases, that means from instances of derived classes.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../object-oriented-filesystem-like-permissions-for-c-type-members/'>Object-oriented &#8211; Filesystem like permissions for C++ type-members</a></li><li class="list-group-item"><a href='../public-versus-private-inheritance-when-some-of-the-parents-methods-need-to-be-exposed/'>Public versus private inheritance when some of the parent&#8217;s methods need to be exposed</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

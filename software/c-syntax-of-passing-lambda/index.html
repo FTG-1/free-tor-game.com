@@ -1,0 +1,83 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C++ &#8211; Syntax of passing lambda &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1073557 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1073557" class="post-1073557 software type-software status-publish hentry category-software tag-c tag-syntax"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C++ &#8211; Syntax of passing lambda</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">syntax</span></p><div class="entry-content"><p>Right now, I&#39;m working on refactoring a program that calls its parts<br /> by polling to a more event-driven structure.</p><p>I&#39;ve created sched and task classes with the sced to become a base<br /> class of the current main loop.   The tasks will be created for each<br /> meter so they can be called off of that instead of polling.</p><p>Each of the events main calls are a type of meter that gather info<br /> and display it.  When the program is coming up, all enabled meters<br /> get &#39;constructed&#39; by a main-sub.  In that sub, I want to<br /> store off the &#34;this&#34; pointer associated with the meter, as well<br /> as the common name for the &#34;action routine.</p><pre><code>void MeterMaker::Meter_n_Task (Meter * newmeter,) {
+  push(newmeter);      // handle non-timed draw events
+  Task t  = new Task(now() + 0.5L);
+  t.period={0,1U};
+  t.work_meter = newmeter;      
+  t.work  = [&amp;newmeter](){newmeter.checkevent();};&lt;&lt;--attempt at lambda
+  t.flags = T_Repeat;
+  t.enable_task();
+  _xos-&gt;sched_insert(t);
+}
+</code></pre><p>A sample call to it:</p><pre><code>Meter_n_Task(new CPUMeter(_xos, &#34;CPU &#34;));
+</code></pre><p>&#39;ve made the scheduler a base class of the main routine (that handles<br /> the loop), and I&#39;ve tried serveral variations to get the task class<br /> to be a base of the meter class, but keep running into roadblocks.<br /> It&#39;s alot like &#34;whack-a-mole&#34; &#8212; pound in something to fix something one<br /> place, and then a new probl pops out elsewhere.</p><p>Part of the problem, is that the sched.h file that is trying<br /> to hold the Task Q, includes the Task header file.  The task<br /> file Wants to refer to the most &#34;base&#34;, <em>Meter</em> class.</p><p>The meter class pulls in the main class of the parent as it passes<br /> a copy of the parent to the children so they can access the draw<br /> routines in the parent.</p><p>Two references in the task file are for the &#39;this&#39; pointer of<br /> the meter and the meter&#39;s update sub (to be called via this).</p><pre><code>void *this_data= NULL;
+void (*this_func)() = NULL;
+</code></pre><p>Note &#8212; I didn&#39;t really want to store these in the class, as<br /> I <em>wanted</em> to use a lamdba in that meter&amp;task routine above to<br /> store a routine+context to be used to call the meter&#39;s action routine.</p><p>Couldn&#39;t figure out the syntax.</p><p>But am running into other syntax problems trying to store the<br /> pointers&#8230;such as</p><pre><code>  g++: COMPILE lsched.cc
+In file included from meter.h:13:0,
+                 from ltask.h:17,
+                 from lsched.h:13,
+                 from lsched.cc:13:
+xosview.h:30:47: error: expected class-name before ‘{’ token
+ class XOSView : public XWin, public Scheduler {
+</code></pre><p>Like above where it asks for a class, where the classname &#34;Scheduler&#34; is.<br /> !?!?  Huh?  That IS a class name.</p><p>I keep going in circles with things that don&#39;t make sense&#8230;<br /> Ideally I&#39;d get the lamba to work right in the Meter_n_Task routine<br /> at the top.  I wanted to only store 1 pointer in the &#39;Task&#39;<br /> class that was a pointer to my lambda that would have already<br /> captured the &#34;this&#34; value &#8230; but couldn&#39;t get that syntax to work<br /> at all when I tried to start it into a var in the &#39;Task&#39; class.</p><p>This project, FWIW, is my teething project on the new C++&#8230; (of course<br /> it&#39;s simple!.. ;-))&#8230; I&#39;ve made quite a bit of progress in other<br /> areas in the code, but this lambda syntax has me stumped&#8230;its at<br /> times like thse that I appreciate the ease of this type of operation in<br /> perl.  Sigh.</p><p>Not sure the best way to ask for help here, as this isn&#39;t a simple<br /> question.  But thought I&#39;d try!&#8230; 😉</p><p>Too bad I can&#39;t attach files to this Q.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Your main problem appears to be that your design makes your classes know too much about each other, which will give you headaches with cyclic dependencies and inextricable ownership issues – especially since you&#39;re apparently using raw pointers a lot.</p><p>Your <code>Task</code> abstraction shouldn&#39;t know anything about <code>Meter</code>, or if it does, it should know about an abstract base class for your meters, and rely exclusively on that. And <code>Meter</code> should be completely oblivious of the <code>Task</code> system. This will enable you to have a task and scheduler abstraction that are either completely generic, or only depend on a well-defined interface.</p><p>You state in comments that going with an abstract base class and virtual methods would be too heavy, so a &#34;generic&#34; task abstraction should be the way to go. Tools to build that in C++ would either be templates, or in this case using a <a href="http://en.cppreference.com/w/cpp/utility/functional/function" rel="nofollow noreferrer"><code>std::function</code></a> to hide the actual type (and &#34;nature&#34;) of the task to be run.</p><p>Here&#39;s a minimal task setup, you&#39;ll need to add your task state (enabled/disabled, next start time, etc.) in there, and adapt your scheduler to use this: (see <a href="https://stackoverflow.com/questions/9186510/how-can-i-store-a-lambda-expression-as-a-field-of-a-class-in-c11">How can I store a lambda expression as a field of a class in C++11?</a>)</p><pre><code>#include &lt;functional&gt;
+
+struct Task
+{
+    Task(std::function&lt;bool()&gt; f): func(f) {}
+    bool execute()
+    {
+        return func();
+    }
+private:
+    std::function&lt;bool()&gt; func;
+};
+</code></pre><p>You can use this utility to schedule ordinary functions, or lambdas – <code>std::function</code> takes care of hiding the actual type of the callable it handles for you.</p><p>Example usage:</p><pre><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+#include &#34;task.h&#34;
+
+bool foo()
+{
+    std::cout &lt;&lt; &#34;Fooing&#34; &lt;&lt; std::endl;
+    return true;
+}
+
+struct Meter
+{
+    Meter(std::string n): name(n) {}
+    bool process_events()
+    {
+        std::cout &lt;&lt; &#34;Processing &#34; &lt;&lt; name &lt;&lt; std::endl;
+        return true;
+    }
+private:
+    std::string name;
+};
+
+int main()
+{
+    Meter m { &#34;CPU&#34; };
+    std::vector&lt;Task&gt; tasks;
+    tasks.emplace_back(foo);
+    tasks.emplace_back([&amp;m](){return m.process_events();});
+
+    for (auto&amp; task: tasks)
+        task.execute();
+}
+</code></pre><hr/><p>Now this looks wrong:</p><pre><code>class XOSView : public XWin, public Scheduler { ... };
+</code></pre><p>A window isn&#39;t a scheduler, a scheduler isn&#39;t a window, and a game isn&#39;t either of those either. That sort of construct is will give you more headaches going further than you already have. Use <em>composition</em>. Your game should <em>have a</em> UI, and <em>have a</em> scheduler, and a bunch of other stuff. It shouldn&#39;t <em>be</em> a UI and a scheduler at the same time.</p><pre><code>_xos-&gt;sched_insert(t);
+</code></pre><p>Transform that to use a member scheduler object:</p><pre><code>_xos-&gt;sched().insert(t);
+</code></pre><p>Then figure out whether your meters need to know about the game controller or the UI. If they need both (what I understand from your comment), pass a reference to both during construction until the time you can make a better interface between those.</p><p>Multiple inheritance is very easy to get wrong, even more so than plain inheritance (which is difficult enough already). Avoid it unless you know better.</p><hr/><p>Random advice:</p><ul><li>Make sure you understand the difference between a class declaration and definition, and what you can do with an incomplete type (on that has been declared but not defined). See for example <a href="https://stackoverflow.com/questions/2133250/does-not-name-a-type-error-in-c">Does not name a type error in C++</a>, and for more info <a href="https://stackoverflow.com/questions/553682/when-can-i-use-a-forward-declaration">When can I use a forward declaration?</a>.</li><li>Don&#39;t try and bypass a type error with a <code>void*</code>. Understand your problem and fix it. Types are central to C++, and <code>void*</code> is as close as to a &#34;non-type&#34; as possible. The compiler can&#39;t help you with it, can&#39;t warn you about type errors when you use that.</li><li>Be more careful with your syntax. If <code>t</code> is a pointer <code>t.foo()</code> is wrong. This isn&#39;t Java. Classes and struct definitions <em>must</em> end with a <code>;</code> (<code>struct foo {};</code>). Forgetting that semicolon will lead you to very bizarre compiler errors.</li><li>Don&#39;t use <code>new</code>, this isn&#39;t Java. Use <code>std::shared_ptr</code> and/or <code>std::unique_ptr</code> with their <code>std::make_shared</code>/<code>std::make_unique</code> helpers. This will same you a lot of memory management issues, and exception-safety gotchas.</li><li>More reading on lambdas: <a href="https://stackoverflow.com/questions/7627098/what-is-a-lambda-expression-in-c11">What is a lambda expression in C++11?</a>, <a href="http://en.cppreference.com/w/cpp/language/lambda" rel="nofollow noreferrer">Lambda Expressions</a></li></ul></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-design-calling-back-to-the-parent-class/'>C++ &#8211; Design: Calling back to the parent class</a></li><li class="list-group-item"><a href='../c-typical-instantiation-of-new-object-is-there-a-way-to-avoid-repetitious-syntax/'>C# &#8211; Typical instantiation of new object &#8211; is there a way to avoid repetitious syntax</a></li><li class="list-group-item"><a href='../c-in-c-how-to-call-an-init-routine-as-a-class-is-loaded/'>C++ &#8211; In C++, how to call an &#8216;init&#8217; routine as a class is loaded</a></li><li class="list-group-item"><a href='../java-performance-benefit-to-using-the-method-reference-syntax-instead-of-lambda-syntax-in-java-8/'>Java &#8211;  performance benefit to using the method reference syntax instead of lambda syntax in Java 8</a></li><li class="list-group-item"><a href='../object-oriented-avoiding-vtable-pointers-in-objects-in-c/'>Object-oriented &#8211; Avoiding vtable pointers in objects in C++</a></li><li class="list-group-item"><a href='../c-factory-pattern-or-builder-pattern-which-one-is-suited-for-reading-finite-element-model-data-from-a-text-file/'>C++ &#8211; Factory pattern or builder pattern ? which one is suited for reading Finite Element Model data from a text file</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

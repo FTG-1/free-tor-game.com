@@ -1,0 +1,84 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Algorithm to generate N random numbers between A and B which sum up to X &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1066506 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1066506" class="post-1066506 software type-software status-publish hentry category-software tag-algorithms tag-c"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Algorithm to generate N random numbers between A and B which sum up to X</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">algorithms</span><span class="mr-2 badge badge-info">c</span></p><div class="entry-content"><p>This problem seemed like something which should be solvable with but a few lines of code.</p><p>Unfortunately, once I actually started to write the thing, I&#39;ve realized it&#39;s not as simple as it sounds.</p><p>What I need is a set of X random numbers, each of which is between A and B and they all add up to X. The exact variables for the problem I&#39;m facing seem to be even simpler: I need 5 numbers, between -1 and 1 (note: these are rational (floating point) numbers), which add up to 1.</p><p>My initial &#34;few lines of code, should be easy&#34; approach was to randomize 4 numbers between -1 and 1 (which is simple enough), and then make the last one <code>1-(sum of previous numbers)</code>. This quickly proved wrong, as the last number could just as well be larger than 1 or smaller than -1.</p><p>What would be the best way to approach this problem?</p><p>PS. Just for reference: I&#39;m using C#, but I don&#39;t think it matters. I&#39;m actually having trouble creating a good enough solution for the problem in my head.</p><hr/><p>I also wanted to provide my current solution to the problem, <em>but do remember that it&#39;s quite imperfect and it was created as a quick fix to the initial problem</em>!</p><ul><li>Generate 4 random numbers between -1 and 1</li><li>Create a &#34;final&#34; number <code>X=SUM(previousNumbers)</code></li><li>If the final number is &gt;1 or &lt;-1, then:<ul><li>Get the &#34;amount&#34; over 1 / under -1 and make the last number a 1 / -1</li><li>Find another number which can accept this amount and still inside the brackets</li><li>If no number can take the amount (it&#39;s too large / too small) then divide the amount in half and try again for each half</li></ul></li><li>Randomize the order of the generated numbers and return them</li></ul><p>This works in the sense that this algorithm generates 5 numbers which are between -1 and 1 and their sum is 1. However the downside is that quite often one of the generated numbers is a 1 (or -1), which doesn&#39;t feel very random.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>As said before, this question actually doesn&#39;t have an answer: The restrictions imposed on the numbers make the randomness questionable at best.</p><p>However, you could come up with a procedure that returns a list of numbers like that:</p><p>Let&#39;s say we have picked the first two numbers randomly as -0.8 and -0.7. Now the requirement is to come up with 3 &#39;random&#39; numbers that sum up to 2.5 and are all in the range [-1,1]. This problem is very similar to the starting problem, only the dimensions have changed. Now, however, if we take a random number in the range [-1,1] we might end up with no solution. We can restrict our range to make sure that solutions still exist: The sum of the last 2 numbers will be within the range [-2,2]. This means we need to pick a number in the range [0.5,1] to make sure we can reach a total of 2.5.</p><p>The section above describes one step in the process.</p><p>In general: Determine the range for the next number by applying the range of the rest of the numbers to the required sum.
+Pseudo-code:</p><pre><code>function randomNumbers (number, range, sum) {
+  restRange = range * (number - 1)
+  myRange = intersection ([sum - restRange.upper, sum - restRange.lower], range)
+
+  myNumber = random(myRange)
+
+  rest = randomNumbers (number-1, range, sum - myNumber)
+
+  return [myNumber, rest]
+}
+</code></pre><p>So for the case described above</p><pre><code>randomNumbers (3, [-1,1], 2.5)
+  restRange = [-1,1] * (3-1) = [-2,2]
+  myRange = intersection ([2.5-2,2.5-(-2)], [-1,1]) = intersection ([0.5,4.5],[-1,1]) = [0.5,1]
+</code></pre><p>A quick-and-dirty implementation in Java:</p><pre><code>public class TestRandomNumberList
+{
+
+    @Test
+    public void test()
+    {
+        double[] numbers = new double[5];
+        randomNumbers(numbers, 0, -1, 1, 1);
+        assertEquals(sum(numbers), 1.0, 0.00001);
+        for (double d : numbers)
+        {
+            assertTrue(d &gt;= -1 );
+            assertTrue(d &lt;= 1);
+        }
+    }
+
+    private void randomNumbers(double[] numbers, int index, double lowerBound, double upperBound, double sum)
+    {
+        int next = index + 1;
+        if (next == numbers.length)
+        {
+            numbers[index] = sum;
+        }
+        else
+        {
+            int rest = numbers.length - next;  
+
+            double restLowerBound = lowerBound * rest;
+            double restUpperBound = upperBound * rest;
+
+            double myLowerBound = Math.max(lowerBound, sum - restUpperBound);
+            double myUpperBound = Math.min(upperBound, sum - restLowerBound);
+
+            numbers[index] = random(myLowerBound, myUpperBound);
+            randomNumbers(numbers, next, myLowerBound, myUpperBound, sum - numbers[index]);
+        }
+    }
+
+    private double random(double myLowerBound, double myUpperBound)
+    {
+        double random = Math.random();
+        return myLowerBound + random * (myUpperBound - myLowerBound);
+    }
+
+    private double sum(double[] numbers)
+    {
+        double result = 0;
+        for (double num : numbers)
+        {
+            result += num;
+        }
+        return result;
+    }
+
+}
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../why-is-it-impossible-to-produce-truly-random-numbers/'>Why is it impossible to produce truly random numbers</a></li><li class="list-group-item"><a href='../c-how-to-generate-random-numbers-without-making-new-random-objects/'>C# &#8211; How to generate random numbers without making new Random objects</a></li><li class="list-group-item"><a href='../c-how-to-create-a-set-of-random-numbers-based-on-a-total-and-number-of-objects/'>C# &#8211; How to create a set of random numbers based on a total and number of objects</a></li><li class="list-group-item"><a href='../generate-unique-integer-from-two-integers-with-algorithm/'>Generate unique integer from two integers with algorithm</a></li><li class="list-group-item"><a href='../get-unique-random-numbers-within-predefined-limits/'>Get Unique random numbers within predefined limits</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

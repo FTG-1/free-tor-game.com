@@ -1,0 +1,112 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Ring of numbers where adjacent entries sum up to a prime &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1086991 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1086991" class="post-1086991 software type-software status-publish hentry category-software tag-algorithms tag-functional-programming tag-lisp"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Ring of numbers where adjacent entries sum up to a prime</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">algorithms</span><span class="mr-2 badge badge-info">functional programming</span><span class="mr-2 badge badge-warning">lisp</span></p><div class="entry-content"><p>Given a number n, find a permutation of the numbers 1&#8230;n such that all adjacent entries sum up to primes. If such a permutation does not exist, throw an error.</p><p>Is there a purely-functional way to do this problem? The solution, which apparently uses backtracking, given uses C++, a language which I am not very familiar with, and loops in loops in loops with very badly-named variable names and a whole lot of mutation. Even if the solution requires mutation, nested loops are really difficult to translate into Racket, the language I currently use.</p><p>A more general question would be, how to do backtracking algorithms purely functionally when the concept of backtracking seems to always involve maintaining a state of where you are currently and a big history breadcrumb global state variable that keeps getting mutated?</p><p>Of course the dumb way would be to generate all permutations and test them one by one, but are there more efficient ways, preferably implementing a backtracking method, to do so functionally?</p><p>Since I use Racket, the solution might not be <em>purely</em> functional but preferably mostly functional, i.e. no repeatedly mutating counter vars in loops or such.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I just wrote an implementation in Clojure, a functional Lisp-I, which you may find below. Because of the controversy in the commments to this answer, I will try to explain the code and the techniques used to achieve the result as good as possible, especially for those who are not Clojurists. Forgive me if I don&#39;t touch on everything in great detail and length.</p><p>This version does not mutate state. All of Clojures values are immutable, e. g. a vector [1 2] can not be altered once it has been constructed. When you want to concat that vector with another vector [3 4] you may invoke a function like 
+concat like this <code>(concat [1 2] [3 4])</code>. Concat will return a new vector [1 2 3 4] and the two input vectors will be forgotten. The great thing is that behind the scenes, structural sharing is happening: The new vector [1 2 3 4] consists of the same data [1 2] and [3 4] consisted of. Also, if we had bound the vector [1 2] to a symbol <code>a</code> instead, after <code>(concat a [3 4])</code> a would still be [1 2]. So while you are always generating new immutable values, in memory only the delta will be allocated.</p><p>One other feature of Clojure I am taking advantage of is laziness. E. g. you can build a sequence of all number 0 ... n with <code>(range)</code>. The call to range returns an infinite sequence like <code>(0 1 2 3 4 5...)</code>, but it is not realized until elements of it are consumed. Finally, many transformation functions return new lazy-sequences from lazy input sequences, so <code>(filter even? (range))</code> would give me a lazy sequence of all numbers &gt;= 0 for which the predicate even? (a boolean function) returns true - however, the filtering only happens when I actually consume elements from that sequence, e. g. <code>(take 3 (filter even? (range)))</code> will return <code>(0 2 4)</code>: Until here, filter has been invoked five times (as many times as necessary to produce three elements or have the input sequence consumed).</p><p>The prime ring generator below utilizes this laziness. If you invoke <code>(rings-of-primes 100)</code> it immediately returns a lazy sequence of all possible prime rings with 100 elements from 1 to 100. Nothing is calculated, so if I wanted to have only three rings, I could do <code>(take 3 (rings-of-primes 100))</code> and calculation would only happen for the production of three rings.</p><p>The core to the solution below is the function <code>helper-fn</code> which is defined within <code>rings-of-primes</code>. It takes two immutable values as arguments and refers to two other immutable values, <code>length</code> (the argument to <code>rings-of-primes</code>) and <code>n-range</code> (defined in <code>rings-of-primes</code> as seq [1 .. length]) in its body.</p><p>The two arguments to helper-fn are <code>used</code>, an immutable set of numbers that have been used in the possible ring passed as the second arg, <code>acc</code> (short for accumulator).</p><p>One of the great advantages of Clojure is that when you are dealing with immutable values, it&#39;s quite easy to write pure functions. <code>helper-fn</code> is one of those pure functions. It is defined as follows: It takes the input of a set of used numbers, and a vector of numbers which is supposed to be a partial ring of primes, and <em>always</em> returns a sequence of possible rings of primes that begin with the numbers in <code>acc</code> and have a size of <code>length</code>. If no rings are possible, <code>helper-fn</code> returns <code>()</code>, an empty list (not the same as <code>nil</code> in Clojure).</p><pre><code>          (let [last-elem (peek acc)]
+            (if (and (= length (count acc))
+                     (is-prime?
+                      (+ last-elem
+                         (first acc))))
+              [acc]
+</code></pre><p>In the above code-snippet (the first lines of <code>helper-fn</code>), the symbol <code>last-elem</code> is bound to the last value of <code>acc</code>. Then within the conditional statement <code>if</code> two conditions are tested: 1. Has accumulator the user-desired length (<code>(= length (count acc))</code>)?, 2. Do the last and the first element add up to a prime number. If both conditions are matched, helper-fn returns <code>[acc]</code>, a vector with exactly one element: The accumulator, a valid prime-ring. The nesting in an additional vector is needed because our function is supposed to return a sequence of valid prime-rings, not just a sequence of numbers.</p><p>Now what happens if the passed value is not a prime-ring, like when the function is invoked the first time within <code>rings-of-primes</code>: <code>(helper-fn #{1} [1])</code>. As you might have noticed, #{1} is the notation for a set, and within helper-fn, <code>used</code> will now be bound to #{1} and <code>acc</code> will be bound to [1].</p><p>Given that we have asked for a <code>length</code> of 4, the test-clause in the code snippet above will fail. What happens then?</p><pre><code>              (let [parity-filter (if (even? last-elem)
+                                    odd?
+                                    even?)]
+                (-&gt;&gt; n-range
+                     (filter #(and (parity-filter %)
+                                   (not (used %))
+                                   (is-prime? (+ %
+                                                 last-elem))))
+                     (lazy-mapcat #(helper-fn 
+                                    (conj used %)
+                                    (conj acc %))))))))]
+</code></pre><p>The <code>parity-filter</code> symbol will be bound to either the predicate function odd? or to the predicate function even?, depending on whether the last-element of <code>acc</code> is even or odd. The reason is that you can divide even numbers by two, and adding two even numbers or two odd numbers always results in an even number which can&#39;t be a prime number then. So we only want the numbers with the opposite parity of the last element of <code>acc</code>, <code>last-elem</code>.</p><p><code>-&gt;&gt;</code> is an awesome macro. It does not do anything except for reordering the code you put into it. That is one of the advantages of Clojure being a lisp, that all your code is data that can be manipulated before evaluation. <code>-&gt;&gt;</code> reorders your code so <code>(-&gt;&gt; x (doY) (doZ baz))</code> =&gt; <code>(doZ baz (doY x))</code>. In other words, the first argument is appended to the end of the second form, which is appended to the end of the third form and so on.</p><p>So in this case, n-range, which was generated at the beginning of <code>rings-of-primes</code>, another immutable value, will be threaded with <code>-&gt;&gt;</code>. <code>n-range</code> will always be a sequence [1 .. <code>length</code>]. Now this sequence must be filtered. We define a small function, a lambda, on the fly as the first argument to filter:</p><pre><code>                             #(and (parity-filter %)
+                                   (not (used %))
+                                   (is-prime? (+ %
+                                                 last-elem)))
+</code></pre><p>In this case #(...) creates a function with one argument to which we refer as %. E. g. <code>#(+ % %)</code> would create a function that takes one argument and doubles it.
+Our lambda is a predicate function that tests the argument for three conditions: 1. It must pass the parity-filter, 2. It may not be in the set used (you can invoke sets like functions and they return whether they contain the argument), 3. Added to the last-elem of acc, it must be a prime-number. If this three conditions match, it is a possible candidate for the next iteration of the prime ring we are building, and it will be part of the lazy sequence returned by the <code>filter</code> expression.</p><p>After that, a function <code>lazy-mapcat</code> that comes with this source, is invoked. It takes a transformation function and a sequence of elements (our filtered candidates), transforms each input element with the transform function and concats the returned value (a sequence) to the other returned values. The transformation function may return any kind of sequence, also the empty sequence. Let&#39;s have a closer look at the transformation function:</p><pre><code>                                 #(helper-fn 
+                                    (conj used %)
+                                    (conj acc %))
+</code></pre><p>Yes! It&#39;s a call to helper-fn itself. <code>conj</code> takes a collection and an argument and returns a new collection with that argument in it. Here we put the value taken from our filtered sequence into a new version of <code>used</code>, also create a new version of <code>acc</code> with that number in it, and pass them to helper-fn. Now go back to line 1. <code>helper-fn</code> will then (after many more recursive steps) return a sequence of possible prime-rings and because of <code>mapcat</code> we do that for each candidate that may be the next valid number in the current prime-ring. All the resulting sequences of rings will be concatenated to one sequence of rings. Of course, in some cases <code>helper-fn</code> will return an empty list, and on a higher level, that empty list will be concataned with other lists - also within a mapcat expression.</p><p>As you can see, no state is mutated. The resulting function is pure and can also be invoked with odd lengths or negative input values, in which case it will (mathematically correctly) return an empty list as a result.</p><p>You could say that the backtracking happens with <code>acc</code> passed to helper-fn, but much more I&#39;d like to think of this implementation of a pure function call that results in the self assembly of possible prime-rings through a series of recursive function calls.</p><pre><code>;; Clojure implementation of http://coj.uci.cu/24h/problem.xhtml?abb=1196
+;; This version generates all possible rings of primes for any given n
+;; Leon Grapenthin, Nov. 14 2013
+
+(def is-prime?
+  &#34;Returns true if n is a prime number. Memoized.&#34;
+  (memoize              ;; remember all results returned by this function
+                        ;; so that a second call with the same n does not
+                        ;; require calculation
+   (fn is-prime?
+     [n]
+     (cond
+      (even? n) (= 2 n) ;; if n is even, return whether
+                        ;; its 2, the only even prime number
+      (= 1 n) false     ;; if n is one, return false
+      :otherwise
+      (-&gt;&gt; (range 2 n)  ;; build a sequence from 2 to n
+           (filter (comp zero?
+                         (partial mod n))) ;; filter those were dividing
+                                           ;; n by them has a rest of 0
+           empty?))))) ;; none could be found? =&gt; It&#39;s a prime number.
+
+(defn lazy-mapcat
+  ;; stolen from http://clojurian.blogspot.de/2012/11/beware-of-mapcat.html
+  [f coll]
+  (lazy-seq
+   (if (not-empty coll)
+     (concat
+      (f (first coll))
+      (lazy-mapcat f (rest coll))))))
+
+(defn rings-of-primes
+  &#34;Returns a lazy sequence of possible prime rings for length.&#34;
+  [length]
+  (let [n-range (range 1 (inc length))
+        helper-fn
+        (fn helper-fn
+          ;; tries to build the seq until acc has length and the ring
+          ;; condition is fulfilled, otherwise returns nil
+          [used acc]
+          (let [last-elem (peek acc)]
+            (if (and (= length (count acc))
+                     (is-prime?
+                      (+ last-elem
+                         (first acc))))
+              [acc]
+              (let [;; slight optimization: a prime number (+ x y) with
+                    ;; (not= x y) can only be built when the parities of
+                    ;; x and y differ:
+                    parity-filter (if (even? last-elem)
+                                    odd?
+                                    even?)]
+                (-&gt;&gt; n-range
+                     (filter #(and (parity-filter %)
+                                   (not (used %))
+                                   (is-prime? (+ %
+                                                 last-elem))))
+                     (lazy-mapcat #(helper-fn 
+                                    (conj used %)
+                                    (conj acc %))))))))]
+    (helper-fn #{1} [1])))
+
+;; (time
+;;  (first (rings-of-primes 100)))
+;; &#34;Elapsed time: 57.316798 msecs&#34;
+;; [1 2 3 4 7 6 5 8 9 10 13 16 15 14 17 12 11 18 19 22
+;;  21 20 23 24 29 30 31 28 25 34 27 26 33 38 35 32 39
+;;  40 43 36 37 42 41 48 49 52 45 44 53 50 47 54 55 46
+;;  51 56 57 70 61 66 65 62 69 58 73 64 63 68 59 72 67
+;;  60 71 78 79 84 83 74 75 76 81 82 85 88 91 90 89 92
+;;  87 80 77 86 93 98 95 96 97 94 99 100]
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-algorithm-to-generate-n-random-numbers-between-a-and-b-which-sum-up-to-x/'>C# &#8211; Algorithm to generate N random numbers between A and B which sum up to X</a></li><li class="list-group-item"><a href='../splitting-integer-so-that-both-sides-are-prime-numbers/'>Splitting integer so that both sides are prime numbers</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

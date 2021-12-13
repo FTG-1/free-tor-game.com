@@ -1,0 +1,191 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Mvc &#8211; Is it possible to add Service layer in MVC pattern &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1085566 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1085566" class="post-1085566 software type-software status-publish hentry category-software tag-controller tag-design-patterns tag-javafx tag-mvc"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Mvc &#8211; Is it possible to add Service layer in MVC pattern</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">controller</span><span class="mr-2 badge badge-info">design-patterns</span><span class="mr-2 badge badge-warning">javafx</span><span class="mr-2 badge badge-primary">mvc</span></p><div class="entry-content"><p>I&#39;m working on javaFX project using <strong>Hibernate</strong> and <strong>H2 database</strong>,I&#39;m trying follow the concept of MVC design pattern ,so I have created 3 packages :</p><ol><li><p><strong>models</strong> :contains POJO classes</p><p>2.1 <strong>views.fxml</strong>:contains fxml files</p><p>2.2. <strong>views.controllers</strong> :contains the controllers classes of fxml files</p></li></ol><p>3<br /> . <strong>dao</strong>:contains classes which they interact with database.</p><p>At now every thing is well ,but when i followed a tutoriel ,i found that he added <strong>Service layer</strong> ,this one has a role to create objects and send them to <strong>DAO layer</strong> ,i created this example ,but i&#39;m confused if it is true or i&#39;m out the concepts ,this is my example :</p><p><strong>Model :</strong></p><pre><code>@Entity
+@javax.persistence.Table(name = &#34;ENTREPRENEUR&#34;)
+public class Entrepreneur implements Serializable {
+
+    private String Id;
+    private final StringProperty lastName = new SimpleStringProperty();
+    private final StringProperty firstName = new SimpleStringProperty();
+    private final StringProperty email = new SimpleStringProperty();
+    private final StringProperty password = new SimpleStringProperty();
+    private final StringProperty category = new SimpleStringProperty();
+    public Date signDate;
+    public byte[] picture;
+
+    public Set&lt;Corporation&gt; corporations;
+
+    public Entrepreneur() {
+        corporations = new HashSet&lt;&gt;();
+    }
+
+    @OneToMany(mappedBy = &#34;entrepreneur&#34;)
+    public Set&lt;Corporation&gt; getCorporations() {
+        return corporations;
+    }
+
+    public void setCorporations(Set&lt;Corporation&gt; corporations) {
+        this.corporations = corporations;
+    }
+
+    @Column(name = &#34;CATEGORY&#34;)
+    private String getCategory() {
+        return category.get();
+    }
+
+    public void setCategory(String value) {
+        category.set(value);
+    }
+
+    private StringProperty categoryProperty() {
+        return category;
+    }
+
+    @Column(name = &#34;PICTURE&#34;)
+    public byte[] getPicture() {
+        return picture;
+    }
+
+    public void setPicture(byte[] picture) {
+        this.picture = picture;
+    }
+
+    @Column(name = &#34;SIGN_UP_DATE&#34;)
+    public Date getSignDate() {
+        return signDate;
+    }
+
+    public final void setSignDate(Date signDate) {
+        this.signDate = signDate;
+    }
+
+    @Id
+    @GeneratedValue(generator = &#34;system-uuid&#34;)
+    @GenericGenerator(name = &#34;system-uuid&#34;, strategy = &#34;uuid&#34;)
+    @Column(name = &#34;ID&#34;, updatable = false, nullable = false)
+    public String getId() {
+        return Id;
+    }
+
+    public void setId(String Id) {
+        this.Id = Id;
+    }
+
+    @Column(name = &#34;EMAIL&#34;)
+    public String getEmail() {
+        return email.get();
+    }
+
+    public final void setEmail(String value) {
+        email.set(value);
+    }
+
+    public StringProperty emailProperty() {
+        return email;
+    }
+
+    @Column(name = &#34;PASSWORD&#34;)
+    public String getPassword() {
+        return password.get();
+    }
+
+    public final void setPassword(String value) {
+        password.set(value);
+    }
+
+    public StringProperty passwordProperty() {
+        return password;
+    }
+
+    @Column(name = &#34;FIRST_NAME&#34;)
+    public String getFirstName() {
+        return firstName.get();
+    }
+
+    public final void setFirstName(String value) {
+
+        firstName.set(value);
+    }
+
+    public StringProperty firstNameProperty() {
+        return firstName;
+    }
+
+    @Column(name = &#34;LAST_NAME&#34;)
+    public String getLastName() {
+        return lastName.get();
+    }
+
+    public final void setLastName(String value) {
+        lastName.set(value);
+    }
+
+    public StringProperty lastNameProperty() {
+        return lastName;
+    }
+
+    public void addCompany(Corporation company) {
+        if (!corporations.contains(company)) {
+            corporations.add(company);
+        }
+    }
+</code></pre><p><strong>Controller :</strong></p><pre><code>  @FXML
+    private void createAccount() throws IOException {
+        String lastNameValue = lastNameField.getText();
+        String firstNameValue = firstNameField.getText();
+        String categoryValue = this.category.getValue();
+        String emailValue = emailField.getText();
+        String passwordValue = Security.encrypt(passwordField.getText());
+        new EntrepreneurServiceImp().create(lastNameValue, firstNameValue, categoryValue, emailValue, passwordValue);
+    }
+</code></pre><p><strong>Service :</strong></p><pre><code>public class EntrepreneurServiceImp implements EntrepreneurService {
+
+    @Override
+    public void create(String lastName, String firstName, String category, String email, String password) {
+
+        //Create and fill an object
+        Entrepreneur entrepreneur = new Entrepreneur();
+        entrepreneur.setLastName(lastName);
+        entrepreneur.setFirstName(firstName);
+        entrepreneur.setCategory(category);
+        entrepreneur.setEmail(email);
+        entrepreneur.setPassword(password);
+        entrepreneur.setSignDate(Date.valueOf(LocalDate.now()));
+
+        //Send object to DAO layer
+        new EntrepreneurDao().save(entrepreneur);
+
+    }
+
+}
+</code></pre><p><strong>DAO:</strong></p><pre><code>public class EntrepreneurDao extends DAO&lt;Entrepreneur&gt; {
+
+    @Override
+    public boolean save(Entrepreneur entrepreneur) {
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        session.save(entrepreneur);
+        session.getTransaction().commit();
+        return true;
+    }
+}
+</code></pre><p>Priviously ,i create and fill the object in <strong>controller layer</strong> and call the <strong>DAO method</strong> from the <strong>controller</strong> ,but now i added <strong>Service layer</strong> which has a role only with objects ,Is my implementation true or no ?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Your implementation is right, but there is something you could improve.</p><p>If you want to introduce S (= service layer) in MVC, then this is one (usual) way you could do it:</p><p>Before:
+M &lt;--&gt; C &lt;--&gt; V</p><p>After:
+M &lt;--&gt; S &lt;--&gt; C &lt;--&gt; V</p><p>The controller uses the service class to do business logic.
+All the business logic is handled by the service class and is therefore at a centralized place.</p><p>The thing you are missing is a Service factory.
+I would introduce a Service factory that is responsible for intantiating specific Service realizations.
+In your C (controller) classes, you would want to instantiate the service objects using the service factory.
+The Service object would then itself instantiate all the DAOs.
+You then delegate all the CRUD operations to the service class and let it handle.</p><p>The advantage of this is that you can then swap the service factory which you pass to your controller classes at a centralized place to completely change the behaviour.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../mvc-implement-service-layer-in-mvc/'>Mvc &#8211; Implement service layer in MVC</a></li><li class="list-group-item"><a href='../php-service-layer-design/'>Php &#8211; Service layer design</a></li><li class="list-group-item"><a href='../mvc-use-a-service-layer-with-mvc/'>Mvc &#8211; Use a service layer with MVC</a></li><li class="list-group-item"><a href='../should-controller-layer-create-model-objects-or-they-should-be-created-by-service-layer/'>Should controller layer create model objects or they should be created by service layer</a></li><li class="list-group-item"><a href='../java-how-to-implement-the-mvc-design-pattern-with-javafx-written-in-pure-java/'>Java &#8211; How to implement the MVC design pattern with JavaFX written in pure Java</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,66 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; Should I check for nulls in setters and similar methods &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1066511 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1066511" class="post-1066511 software type-software status-publish hentry category-software tag-design tag-java tag-null"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; Should I check for nulls in setters and similar methods</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">design</span><span class="mr-2 badge badge-info">java</span><span class="mr-2 badge badge-warning">null</span></p><div class="entry-content"><p>I have plenty of setters in my classes, as well as many methods to add an item or a set of items to lists or maps.</p><p>Should I check for nulls for each one of them, or should I allow <code>NullPointerException</code> to happen? This is dangerous for maps though, since I could end up with null values and I wouldn&#39;t want that.</p><p>So basically, if I have this:</p><pre><code>public void setMyMap(Map&lt;Key, List&lt;Value&gt;&gt; map) {
+    myMap = map;
+}
+
+public void addItem(Key k, Value v) {
+    if (map.containsKey(k)) 
+        map.get(k).add(v);
+    else
+        map.put(k, new ArrayList&lt;Value&gt;(Arrays.asList(v)));
+}
+
+public void addItems(Key k, List&lt;Value&gt; values) {
+    for (Value v : values) addItem(k, v);
+}
+</code></pre><p>Etc. Should I do this?:</p><pre><code>public void setMyMap(Map&lt;Key, List&lt;Value&gt;&gt; map) {
+    if (map != null) myMap = map;
+}
+
+public void addItem(Key k, Value v) {
+    if (k == null || v == null)
+        return;
+
+    if (map.containsKey(k)) 
+        map.get(k).add(v);
+    else
+        map.put(k, new ArrayList&lt;Value&gt;(Arrays.asList(v)));
+}
+
+public void addItems(Key k, List&lt;Value&gt; values) {
+    if (k == null || values == null)
+        return;
+
+    for (Value v : values) addItem(k, v);
+}
+</code></pre><p>Side question: I am no fan of using <code>return;</code> just as I did. Normally I would wrap the whole block in an <code>if</code> statement checking if both are not null, rather that exiting the method earlier. Are both practices accepted? Which one should I rather do? Or it&#39;s just a matter of taste?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p><em>Q: <strong>I am no fan of using return; just as I did. Normally I would wrap the whole block in an if statement checking if both are not null, rather than exiting the method earlier. Are both practices accepted? Which one should I rather do?</strong></em></p><p>Exiting the method as soon as possible is ok and much more readable than forcing the developer to read an track the rest of the code and guess what is going to happen at the end of the block. However, in this specific case won&#39;t make the code simpler and readable.</p><p>Whether you should check nulls or not is up to you. You have to decide whether null is a valid state|value. You will see that it depends on the context. Some times they make sense, others don&#39;t. So, you have to think about this carefully every time you face the same dilemma.</p><p>If they are valid, it&#39;s good to think in a proper representation for them to avoid NullPointerExceptions. The <a href="https://martinfowler.com/eaaCatalog/specialCase.html" rel="nofollow noreferrer">Special Case Pattern</a> suggested by Martin Fowler might help you out here.</p><p>If they are not valid values, then keep it simple and throw an exception. A non-checked exception is possible, as for example <code>IllegalArgumentException</code>. Or a checked one if it&#39;s treatable and you want to enforce its treatment. The premise is the same for both: fail fast and don&#39;t let nulls spread up and down all over the code.</p><p>The alternative of waiting for something to cause the <em>NullPointerException</em> is dangerous, because that &#34;something&#34; might not happen. Even if it happens, <code>NullPointerException</code> aren&#39;t too dev-friendly. They provide us with very little information. Moreover, the exception might happen much later than those nulls were set. By the time this happens, what caused the error is not as obvious at first glance as it could be throwing an exception with a good message.</p><p><em>Q:<strong>Should I do this?</strong></em></p><pre><code>if (k == null || v == null)
+   return;
+</code></pre><p>Consider also making the code easier to read too. Do move the condition checking to a method for reuse and expressiveness.</p><pre><code>public void addItem(Key k, Value v) {
+   checkKeyValuePair(k,y);
+   ...
+}
+
+public void addItem(Key k, Value v) {
+   checkKeyValuePair(k,y);
+   ...
+}
+
+private void checkKeyValuePair(Object key, Object value){
+  if(Objects.isNull(key) || Objects.isNull(value)){
+     throw new IllegalArgumentException(&#34;Key and value are mandatory&#34;);
+  }
+}
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../should-one-check-for-null-if-he-does-not-expect-null/'>Should one check for null if he does not expect null</a></li><li class="list-group-item"><a href='../c-requiring-explicit-null-reference-handling/'>C# &#8211; Requiring Explicit Null Reference Handling</a></li><li class="list-group-item"><a href='../java-checking-for-the-presence-of-optional-properties-of-an-object/'>Java &#8211; Checking for the presence of optional properties of an object</a></li><li class="list-group-item"><a href='../java-nested-pojos-exposing-collections-detecting-changes/'>Java &#8211; Nested POJOs, exposing collections, detecting changes</a></li><li class="list-group-item"><a href='../if-nulls-are-evil-what-should-be-used-when-a-value-can-be-meaningfully-absent/'>If nulls are evil, what should be used when a value can be meaningfully absent</a></li><li class="list-group-item"><a href='../is-a-new-boolean-field-better-than-a-null-reference-when-a-value-can-be-meaningfully-absent/'>Is a new Boolean field better than a null reference when a value can be meaningfully absent</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,284 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Design pattern: How to inject dependencies into a Command pattern &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1079490 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1079490" class="post-1079490 software type-software status-publish hentry category-software tag-builder-pattern tag-c tag-command-pattern tag-dependency-injection tag-design-patterns"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Design pattern: How to inject dependencies into a Command pattern</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">builder-pattern</span><span class="mr-2 badge badge-info">c</span><span class="mr-2 badge badge-warning">command-pattern</span><span class="mr-2 badge badge-primary">dependency-injection</span><span class="mr-2 badge badge-danger">design-patterns</span></p><div class="entry-content"><p>I am pretty new to programming languages and only have limited knowledge about design patterns, so I hope you can help me with the following problem:</p><p>I have an application that operates on a group of different services. One functionality of the application is, to provide an interface to the user to call every method of the available services. Therefore I want to use the Command pattern because it allows me to add new commands just by adding new classes and not by changing the existing code. The parameters for each service command are passed to the constructor.</p><h2>Commands:</h2><pre class="lang-cs prettyprint-override"><code>public interface ICommand {
+    void Execute();
+}
+
+public abstract class Command&lt;T&gt; : ICommand {
+    public T Service { get; set; }
+
+    public abstract void Execute() { /* use service */ }
+}
+
+public class Command1 : Command&lt;Service1&gt; {
+    T1 param1;
+    ...
+
+   public Command1(T1 param1, ...) { /* set parameters */ }
+
+   public override void Execute() { /* call first service1 method */ }
+}
+
+...
+
+public class Command2 : Command&lt;Service2&gt; {
+    T2 param1;
+
+    ...
+
+   public override void Execute() { /* call first service2 method */ }
+}
+
+...
+</code></pre><p>The advantage is, that the user can instantiate a group of commands without knowing the application&#39;s interface and execute them at a later time when the service was set. The problem is, that I don&#39;t know how I can elegantly inject the services.<br /> The application is mainly responsible for starting and stopping the services and keeping an instance of each service in a central place.</p><h2>Application:</h2><pre class="lang-cs prettyprint-override"><code>public class Application {
+    S1 Service1;
+    S2 Service2,
+    ...
+
+    public void StartService(/* params */) { /* ... */ }
+    public void StopService(/* params */) { /* ... */ }
+    ...
+}
+</code></pre><h2>Question:</h2><p>So my question is how do I get the correct service inside a command?<br /> I thought about using some kind of Dependency injection, Service locator or Builder pattern, but I never used these patterns and I am not sure what&#39;s the best solution in this case and how to implement it correctly.</p><h1>Update:</h1><p>Thanks to the comment of @Andy and @Anders it&#39;s probably the best solution to use a Command class for my parameters and a CommandHandler class for the logic. The advantage is, that I can instantiate a command handler inside the Application class and pass the correct service in the handler&#39;s constructor. Also, I can create a command outside the Application without knowing the service a pass this command to the Application for execution.<br /> To map commands to the correct command handler I a CommmandBus as suggested by @Andy, but I have some trouble implementing the java example in C# because there is no template map like <code>Map&lt;Class&lt;? extends CommandHandler&lt;?&gt;&gt;, CommandHandler&lt;? extends Command&gt;&gt;</code> in C#.</p><p>So what&#39;s a clean solution to map a command to its handler in C#? I don&#39;t really like my solution below because I have to upcast the command.</p><h2>My updated code:</h2><pre class="lang-cs prettyprint-override"><code>public interface ICommand { }
+
+public class ConcreteCommand : ICommand {
+    public Type1 Param1 { get; set; }
+    public Type2 Param2 { get; set; }
+    /* some more parameters */
+}
+
+public interface ICommandHandler&lt;in TCommand&gt; {
+    Task Handle(TCommand command);
+}
+
+public class ConcreteCommandHandler : ICommandHandler&lt;ConcreteCommand&gt; {
+    private readonly S1 service;
+
+    public ConcreteCommandHandler(S1 service) {
+        this.service = service;
+    }
+
+    public Task Handle(ConcreteCommand command) {
+        return service.DoSomething(command.Param1, ...);
+    }
+}
+
+
+public class CommandBus {
+    /* BAD: Return type of command handler hardcoded */
+    private readonly IDictionary&lt;Type, Func&lt;ICommand, Task&gt;&gt; handlerMap = new Dictionary&lt;Type, Func&lt;ICommand, Task&gt;&gt;();
+
+        public void RegisterCommandHandler&lt;TCommand&gt;(ICommandHandler&lt;TCommand&gt; handler) where TCommand: ICommand
+        {
+            Type commandType = typeof(TCommand);
+
+            if (handlerMap.ContainsKey(commandType))
+                throw new HandlerAlreadyRegisteredException(commandType);
+
+            /* BAD: Narrowing cast */
+            handlerMap.Add(commandType, command =&gt; handler.Handle((TCommand) command));
+        }
+
+        public Task Dispatch&lt;TCommand&gt;(TCommand command) where TCommand : ICommand
+        {
+            Type commandType = typeof(TCommand);
+
+            if (!handlerMap.TryGetValue(commandType, out Func&lt;ICommand, Task&gt; handler))
+                throw new HandlerNotRegisteredException(commandType);
+
+            return handler(command);
+        }
+}
+
+
+public class Application {
+    private CommandBus bus;
+    private S1 service1;
+    private S2 service2;
+    ...
+
+    private void InitializeBus() {
+        bus.RegisterCommandHandler(new ConcreteCommandHandler(service1))
+        ...
+    }
+
+    public void ExecuteCommand&lt;TCommand&gt;(TCommand command) where TCommand : ICommand {
+        bus.Dispatch(command);
+    }
+
+    ...
+}
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Before answering your question, one should firstly know the goal developers are trying to achieve with the command pattern in the first place. More often than not, the pattern&#39;s purpose is to decouple modules from each other and to provide a sensible abstraction for execution of intents (commands) to the system.</p><p>In order to understand how commands fit into an application, let&#39;s integrate the command pattern by refactoring a hypothetical application which allows users to be registered. I apologise for the Java language, I haven&#39;t programmed in C# for a long time. In this very simple application we have a service and a controller:</p><pre><code>class UserService {
+    private UserRepository userRepository;
+    private PasswordHashService passwordHashService;
+
+    public User registerUser(
+        String firstName,
+        String lastName,
+        String email,
+        String passwordInPlainText
+    ) {
+        User userToBeRegistered = new User();
+        userToBeRegistered.setId(userRepository.retrieveNewId());
+        userToBeRegistered.setFirstName(firstName);
+        userToBeRegistered.setLastName(lastName);
+        userToBeRegistered.setEmail(email);
+        userToBeRegistered.setPassword(passwordHashService.hash(passwordInPlainText));
+
+        userRepository.save(userToBeRegistered);
+
+        return userToBeRegistered;
+    }
+}
+
+class UserController {
+    private UserService userService;
+
+    public Response&lt;User&gt; registerUser(FormInput formInput) {
+        return new Response&lt;&gt;(userService.registerUser(
+            formInput.getString(&#34;first_name&#34;),
+            formInput.getString(&#34;last_name&#34;),
+            formInput.getString(&#34;email&#34;),
+            formInput.getString(&#34;password&#34;)
+        ));
+    }
+}
+</code></pre><p>On the service layer, there&#39;s a design issue. The method takes 4 string arguments in a very specific order. This couples the caller of the method to the service and refactoring the method by adding a new optional argument might could end up being difficult if you called the <code>registerUser</code> from multiple places.</p><p>In order to reduce the number of arguments of the service method, let&#39;s introduce a special DTO object, acting as a data messenger between the two layers, and for the same of convenience, name it <code>RegisterUserCommand</code>. The Object would have the following structure:</p><pre><code>class RegisterUserCommand {
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String passwordInPlainText
+
+    // getters and setter are omitted
+}
+</code></pre><p>which will lead to design change of the service method, now looking like this:</p><pre><code>public User registerUser(RegisterUserCommand command) {
+    User userToBeRegistered = new User();
+    userToBeRegistered.setId(userRepository.retrieveNewId());
+    userToBeRegistered.setFirstName(command.getFirstName());
+    userToBeRegistered.setLastName(command.getLastName());
+    userToBeRegistered.setEmail(command.getEmail());
+    userToBeRegistered.setPassword(passwordHashService.hash(
+        command.getPasswordInPlainText()
+    ));
+
+    userRepository.save(userToBeRegistered);
+
+    return userToBeRegistered;
+}
+</code></pre><p>and the controllers method would change to:</p><pre><code>public Response&lt;User&gt; registerUser(FormInput formInput) {
+    RegisterUserCommand command = new RegisterUserCommand();
+    command.setFirstName(formInput.getString(&#34;first_name&#34;));
+    command.setLastName(formInput.getString(&#34;last_name&#34;));
+    command.setEmail(formInput.getString(&#34;email&#34;));
+    command.setPasswordInPlainText(formInput.getString(&#34;password&#34;));
+
+    return new Response&lt;&gt;(userService.registerUser(command));
+}
+</code></pre><p>This fixes the unnecessary argument positional coupling, making it easier to introduce optional arguments to the user registration method by simply adding a new attribute to the command objects. In places where you don&#39;t work with the optional argument, no changes are necessary at all, in other places you may utilise the newly added property.</p><p>However the current design still contains coupling between the controller and the service. In this case, I wouldn&#39;t say it&#39;s a huge problem but since we&#39;re discussing a full command pattern integration, we&#39;ll refactor the code a bit further.</p><h2>Introduction of a command bus</h2><p>Using the command pattern without having some variant of a command bus is pretty meaningless. But what is this command bus? In short, it&#39;s mostly a glorified <a href="https://en.wikipedia.org/wiki/Service_locator_pattern" rel="nofollow noreferrer">service locator</a>. Some advanced implementations of command buses allow you to use plugins, middle-wares, effectively giving you the ability to extend the functionality of the command bus execution process without having to know it&#39;s internals.</p><p>Command busses generally consist of <strong>two main parts</strong>:</p><ol><li>service registry (some internal collection where instances of services live),</li><li>command to service mapping (configuration telling which command type should be processed by which service).</li></ol><p>Both of those two parts need to be configured by you. The 1. part requires you to somehow provide service instances to the command bus, and the 2. part requires you defining the mapping.</p><p>A very basic command bus implementation (really basic, no support for plugins etc.) could look like this:</p><pre><code>interface Command {
+}
+
+interface CommandHandler&lt;T extends Command&gt; {
+    Object execute(T command);
+}
+
+class CommandBus {
+    private Map&lt;Class&lt;? extends CommandHandler&lt;?&gt;&gt;, CommandHandler&lt;? extends Command&gt;&gt; commandHandlers;
+    private Map&lt;Class&lt;? extends Command&gt;, Class&lt;? extends CommandHandler&lt;?&gt;&gt;&gt; commandToHandlerConfig;
+
+    public CommandBus() {
+        commandHandlers = new HashMap&lt;&gt;();
+        commandToHandlerConfig = new HashMap&lt;&gt;();
+    }
+
+    public void registerCommandHandler(CommandHandler&lt;? extends Command&gt; handler) {
+        Class&lt;CommandHandler&lt;?&gt;&gt; clazz = (Class&lt;CommandHandler&lt;?&gt;&gt;) handler.getClass();
+
+        if (commandHandlers.containsKey(clazz)) {
+            throw new RuntimeException(&#34;The command handler &#34; + clazz + &#34; is already registered.&#34;);
+        }
+
+        commandHandlers.put(clazz, handler);
+    }
+
+    public void registerCommandToCommandHandler(
+            Class&lt;? extends Command&gt; command,
+            Class&lt;? extends CommandHandler&lt;?&gt;&gt; handler
+    ) {
+        if (!commandHandlers.containsKey(handler)) {
+            throw new RuntimeException(&#34;The command handler &#34; + handler + &#34; is not registered.&#34;);
+        }
+
+        commandToHandlerConfig.put(command, handler);
+    }
+
+    public &lt;T extends Command, U&gt; U dispatch(T command, Class&lt;U&gt; resultClass) {
+        Class&lt;?&gt; commandClass = command.getClass();
+
+        if (!commandToHandlerConfig.containsKey(commandClass)) {
+            throw new RuntimeException(
+                    &#34;The command &#34; + commandClass + &#34; could not be executed, no handler is configured.&#34;
+            );
+        }
+
+        Class&lt;? extends CommandHandler&lt;?&gt;&gt; handlerClass = commandToHandlerConfig.get(commandClass);
+        CommandHandler&lt;? super Command&gt; handler = (CommandHandler&lt;? super Command&gt;) commandHandlers.get(handlerClass);
+
+        return resultClass.cast(handler.execute(command));
+    }
+}
+</code></pre><p>This command bus allows you to register a command handler to a registry (fulfilling the 1. part) and to provide mapping for a given command to a certain handler (fulfilling the 2. part). Besides that it allows you to execute a command with an expected result class.</p><p>As a part of implementation, you may have noticed that that we&#39;ve also introduced two interfaces, <code>Command</code> and <code>CommandHandler</code>. Those are necessary in compiled languages, but could be theoretically omitted in dynamic languages such as PHP or Python (as long as you&#39;d follow certain guidelines defined by the command bus&#39; implementation - mainly the method of the execution method of a handler).</p><h3>Simple integration of our command bus</h3><p>First we have to make our <code>RegisterUserCommand</code> implement the <code>Command interface</code>:</p><pre><code>class RegisterUserCommand implements Command {
+    // [...] the rest remains the same
+}
+</code></pre><p>then we make the <code>UserService</code> implement the <code>CommandHandler</code> interface, i.e. we need to add an appropriate <code>execute</code> method implementation. For the sake of simplicity, let&#39;s change our current <code>registerUser</code> method to the <code>execute</code> method.</p><pre><code>class UserService implements CommandHandler&lt;RegisterUserCommand&gt; {
+    // [...] the rest remains the same
+
+    public Object execute(RegisterUserCommand command) {
+        // [...] the rest remains the same
+    }
+}
+</code></pre><p>These changes have been basically made so that the command and the service may be used in our command bus context. Right now you may have noticed a caveat. A class may only implement a generic interface only once, which forces you to basically have one command handler for each command. While you might find this troublesome at the beginning, in the long run this is actually very nice, since you&#39;ll end up with many tiny command handlers, each having only a single responsibility - handling a specific command instance.</p><p>A very basic integration of our command bus on the controller level could then look like the following (without actually making too much sense at the moment):</p><pre><code>public Response&lt;User&gt; registerUser(FormInput formInput) {
+    RegisterUserCommand command = new RegisterUserCommand();
+    command.setFirstName(formInput.getString(&#34;first_name&#34;));
+    command.setLastName(formInput.getString(&#34;last_name&#34;));
+    command.setEmail(formInput.getString(&#34;email&#34;));
+    command.setPasswordInPlainText(formInput.getString(&#34;password&#34;));
+
+    CommandBus commandBus = new CommandBus();
+    commandBus.registerCommandHandler(userService);
+    commandBus.registerCommandToCommandHandler(
+        RegisterUserCommand.class,
+        userService.getClass()
+    );
+
+    return new Response&lt;&gt;(commandBus.dispatch(command, User.class));
+}
+</code></pre><p>Here we have manually created an instance of the command bus, registered a command handler and a command to handler mapping, basically forcing the command bus acting as a proxy. In reality, in big application there would usually be at most a few instances of a few separate command busses (or perhaps even only a single instance), which would come pre-configured, already containing all registered handlers and mappings, and such configured command bus would be injected, turning your controller into the following:</p><pre><code>class UserController {
+    private CommandBus commandBus;
+
+    public Response&lt;User&gt; registerUser(FormInput formInput) {
+        RegisterUserCommand command = new RegisterUserCommand();
+        command.setFirstName(formInput.getString(&#34;first_name&#34;));
+        command.setLastName(formInput.getString(&#34;last_name&#34;));
+        command.setEmail(formInput.getString(&#34;email&#34;));
+        command.setPasswordInPlainText(formInput.getString(&#34;password&#34;));
+
+        return new Response&lt;&gt;(commandBus.dispatch(command, User.class));
+    }
+}
+</code></pre><p>Thanks to this, you are no longer coupled to the <code>UserService</code> and the mapping is done on an infrastructure level (through configuration). This can be beneficial as it reduces number of dependencies of services, should a single service/controller/command handler invoke multiple commands.</p><p>The configuration could be e.g. a YAML, looking e.g. like this:</p><pre><code>- CommandBus:
+  - Handlers:
+    - RegisterUser: UserService
+    - SomeOtherCommand: SomeOtherHandler
+</code></pre><p>The <code>CommandBus</code> would obviously need to provide a mechanism to correctly parse it.</p><h2>Some advantages of a command bus</h2><ul><li>Reduced coupling</li><li>Seamless addition of plugins (when using a decent command bus implementation)</li><li>Potential reduction of injected dependencies</li><li>Leads to more cohesive and composable code (many small cohesive command handlers)</li><li>Theoretically prepares project for different type of communication between layer, e.g. through an enterprise service bus</li></ul><h2>Some disadvantages of a command bus</h2><ul><li>Complexity overhead (mapping through layers is done in configuration and is less visible)</li><li>Each command has go through command bus proxy</li><li>When going for a ready solution of a command bus, you lock yourself to the vendor</li></ul><p>Other potential (dis)advantages may come up during discussion of command bus integration into your own project. Whether the approach to use a command bus is fitting for a given project or not depends on many variables and has to be talked through with the system&#39;s architect.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../distinguishing-between-ui-command-domain-commands/'>Distinguishing between UI command &#038; domain commands</a></li><li class="list-group-item"><a href='../design-map-of-functions-vs-switch-statement/'>Design &#8211; Map of functions vs switch statement</a></li><li class="list-group-item"><a href='../c-command-handler-executing-commands-with-different-dependencies/'>C# &#8211; Command handler executing commands with different dependencies</a></li><li class="list-group-item"><a href='../php-dependency-injection-in-chain-of-command-pattern/'>Php &#8211; Dependency Injection in Chain of Command pattern</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,92 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Validation and authorization in layered architecture &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1072072 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1072072" class="post-1072072 software type-software status-publish hentry category-software tag-domain-driven-design tag-layers tag-validation"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Validation and authorization in layered architecture</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">domain-driven-design</span><span class="mr-2 badge badge-info">layers</span><span class="mr-2 badge badge-warning">validation</span></p><div class="entry-content"><p>I know you are thinking (or maybe yelling), &#34;not another question asking where validation belongs in a layered architecture?!?&#34;  Well, yes, but hopefully this will be a little bit of a different take on the subject.</p><p>I am a firm believer that validation takes many forms, is context-based and varies at each level of the architecture.  That is the basis for the post &#8211; helping to identify what type of validation should be performed in each layer.  In addition, a question that often comes up is where authorization checks belong.</p><p>The example scenario comes from an application for a catering business. Periodically during the day, a driver may turn in to the office any excess cash they&#39;ve accumulated while taking the truck from site to site.  The application allows a user to record the &#39;cash drop&#39; by collecting the driver&#39;s ID, and the amount.  Here&#39;s some skeleton code to illustrate the layers involved:</p><pre><code>public class CashDropApi  // This is in the Service Facade Layer
+{
+    [WebInvoke(Method = &#34;POST&#34;)]
+    public void AddCashDrop(NewCashDropContract contract)
+    {
+        // 1
+        Service.AddCashDrop(contract.Amount, contract.DriverId);
+    }
+}
+
+public class CashDropService  // This is the Application Service in the Domain Layer
+{
+    public void AddCashDrop(Decimal amount, Int32 driverId)
+    {
+        // 2
+        CommandBus.Send(new AddCashDropCommand(amount, driverId));
+    }
+}
+
+internal class AddCashDropCommand  // This is a command object in Domain Layer
+{
+    public AddCashDropCommand(Decimal amount, Int32 driverId)
+    {
+        // 3
+        Amount = amount;
+        DriverId = driverId;
+    }
+
+    public Decimal Amount { get; private set; }
+    public Int32 DriverId { get; private set; }
+}
+
+internal class AddCashDropCommandHandler : IHandle&lt;AddCashDropCommand&gt;
+{
+    internal ICashDropFactory Factory { get; set; }       // Set by IoC container
+    internal ICashDropRepository CashDrops { get; set; }  // Set by IoC container
+    internal IEmployeeRepository Employees { get; set; }  // Set by IoC container
+
+    public void Handle(AddCashDropCommand command)
+    {
+        // 4
+        var driver = Employees.GetById(command.DriverId);
+        // 5
+        var authorizedBy = CurrentUser as Employee;
+        // 6
+        var cashDrop = Factory.CreateCashDrop(command.Amount, driver, authorizedBy);
+        // 7
+        CashDrops.Add(cashDrop);
+    }
+}
+
+public class CashDropFactory
+{
+    public CashDrop CreateCashDrop(Decimal amount, Employee driver, Employee authorizedBy)
+    {
+        // 8
+        return new CashDrop(amount, driver, authorizedBy, DateTime.Now);
+    }
+}
+
+public class CashDrop  // The domain object (entity)
+{
+    public CashDrop(Decimal amount, Employee driver, Employee authorizedBy, DateTime at)
+    {
+        // 9
+        ...
+    }
+}
+
+public class CashDropRepository // The implementation is in the Data Access Layer
+{
+    public void Add(CashDrop item)
+    {
+        // 10
+        ...
+    }
+}
+</code></pre><p>I&#39;ve indicated 10 locations where I&#39;ve seen validation checks placed in code.  My question is what checks you would, if any, be performing at each given the following business rules (along with standard checks for length, range, format, type, etc):</p><ol><li>The amount of the cash drop must be greater than zero.</li><li>The cash drop must have a valid Driver.</li><li>The current user must be authorized to add cash drops (current user is not the driver).</li></ol><p>Please share your thoughts, how you have or would approach this scenario and the reasons for your choices.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I agree that what you are validating will be different in each layer of the application.  I typically only validate what is required to execute the code in the current method.  I try to treat the underlying components as black boxes and don&#39;t validate based on how those components are implemented.</p><p>So, as an example, in your CashDropApi class, I would only verify that &#39;contract&#39; is not null.  This prevents NullReferenceExceptions and is all that is needed to ensure this method executes properly.</p><p>I don&#39;t know that I&#39;d validate anything in the service or command classes and the handler would only verify that &#39;command&#39; is not null for the same reasons as in the CashDropApi class.  I&#39;ve seen (and done) validation both ways wrt to the factory and entity classes. One or the other is where you&#39;d want to validate the value of &#39;amount&#39; and that the other parameters are not null (your business rules).</p><p>The repository should only validate that the data contained in the object is consistent with the schema defined in your database and the daa operation will succeed. For example, if you have a column that can&#39;t be null or has a max length, etc.</p><p>As for the security check, I think it is really a question of intent.  Since the rule is intended to prevent unauthorized access, I would want to make this check as early in the process as possible to reduce the number of unnecessary steps I&#39;ve taken if the user is not authorized.  I&#39;d probably put it in the CashDropApi.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-breaking-the-ubiquitous-language-by-having-an-ioc-container-in-domain-model/'>C# &#8211; Breaking the &#8220;ubiquitous language&#8221; by having an IoC Container in Domain Model</a></li><li class="list-group-item"><a href='../object-oriented-oop-behavior-data-but-what-about-validation-behaviors/'>Object-oriented &#8211; OOP: Behavior + Data, but what about &#8216;validation&#8217; behaviors</a></li><li class="list-group-item"><a href='../domain-model-validation-and-pushing-errors-to-the-model/'>Domain Model, validation, and pushing errors to the model</a></li><li class="list-group-item"><a href='../where-should-business-logic-go-in-a-layered-architecture/'>Where should business logic go in a layered architecture</a></li><li class="list-group-item"><a href='../whats-the-difference-between-an-implementation-detail-and-a-technical-concern/'>What&#8217;s the difference between an implementation detail and a technical concern</a></li><li class="list-group-item"><a href='../c-overall-view-validation-with-a-datagrid-and-keeping-to-mvvm/'>C# &#8211; Overall view validation with a datagrid and keeping to MVVM</a></li><li class="list-group-item"><a href='../is-domain-persistence-model-isolation-usually-this-awkward/'>Is domain/persistence model isolation usually this awkward</a></li><li class="list-group-item"><a href='../architecture-what-kind-of-logic-can-domain-objects-realistically-contain/'>Architecture &#8211; What kind of logic can Domain Objects realistically contain</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

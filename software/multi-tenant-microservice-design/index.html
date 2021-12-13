@@ -1,0 +1,46 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Multi-tenant microservice design &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1069508 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1069508" class="post-1069508 software type-software status-publish hentry category-software tag-microservices"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Multi-tenant microservice design</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">microservices</span></p><div class="entry-content"><p>We&#39;re in the process of migrating a monolithic application to microservice architecture. Due to some regulatory requirements, we have to keep client&#39;s data from different countries in separate (country specific) databases. I.e US db for US customers, UK db for UK customers&#8230;</p><p>The following designs that we are considering are as follows:</p><p>Option 1: A multi-tenant application with hibernate multi-tenant support that can be scaled to N number of times dependending on demand (think of kubernetes pods). A single instance of this application will be able to connect to all databases.</p><p>Option 2: Deploy 1 microservice instance per country database. With an API gateway in front of them routing traffic</p><p>If you were to design this type of system, what would your choices be?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I think option 2 is not a bad one, but may not be needed. Micro services are for letting you deal with the needs of multiple applications.</p><p>A big factor here, is if there is any difference between the two schemas, and if there ever will be in the future.</p><p>Usually, I think using interfaces for repositories is unnecessary; however, it might be worth the effort in this instance. Repository factories will be important for you.</p><p>My issue with option 1 is that it is too specific. You should be able to go from the setup which you described, to two separate instances each pointing to its own DB easily. The application should NOT CARE WHERE IT IS GETTING ITS DATA FROM.</p><p>While the schema does not differ for your two different database, you can have one repository easily deal with both, without the application knowing the difference:</p><pre><code>public class MyEntityRepository : ISavesMyEntity, IGetsMyEntity
+{
+    public MyEntityRepository(string connectionString)
+    {
+       _connectionString = connectionString;
+    }
+}
+
+public class MyEntitySaverFactory
+{
+    public ISavesMyEntity GetSaver(User user)
+    {
+        if (user.IsUK)
+            return new MyEntityRepository(Config.Get(&#34;UKConnString&#34;));
+        if (user.IsUS)
+            return new MyEntityRepository(Config.Get(&#34;USConnString&#34;));
+        throw new NotImplementedException();
+    }
+}
+
+//USE
+ISavesMyEntity saver = factory.GetSaver(currentUser);
+saver.Save(myEntityInstance);
+</code></pre><p>If the DB schemas ever become disparate between the US and UK, then you would then split the functionality into two completely different repositories. This would be easy, since all you would have to do is change your factory.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/architecture-file-storage-microservice-design/'>Architecture &#8211; File storage microservice design</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/multi-tenant-in-a-micro-service/'>Multi tenant in a micro-service</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

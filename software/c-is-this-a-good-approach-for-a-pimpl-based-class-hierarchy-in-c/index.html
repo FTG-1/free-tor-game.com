@@ -1,0 +1,228 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C++ &#8211; Is this a good approach for a &#8220;pImpl&#8221;-based class hierarchy in C++ &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1077504 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1077504" class="post-1077504 software type-software status-publish hentry category-software tag-c tag-c11 tag-design"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C++ &#8211; Is this a good approach for a &#8220;pImpl&#8221;-based class hierarchy in C++</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">c++11</span><span class="mr-2 badge badge-warning">design</span></p><div class="entry-content"><p>I have a class hierarchy for which I would like to separate the interface from the implementation. My solution is to have two hierarchies: a handle class hierarchy for the interface and a non-public class hierarchy for the implementation. The base handle class has a pointer-to-implementation which the derived handle classes cast to a pointer of the derived type (see function <code>getPimpl()</code>).</p><p>Here&#39;s a sketch of my solution for a base class with two derived classes. Is there a better solution?</p><p><strong>File &#34;Base.h&#34;:</strong></p><pre><code>#include &lt;memory&gt;
+
+class Base {
+protected:
+    class Impl;
+    std::shared_ptr&lt;Impl&gt; pImpl;
+    Base(Impl* pImpl) : pImpl{pImpl} {};
+    ...
+};
+
+class Derived_1 final : public Base {
+protected:
+    class Impl;
+    inline Derived_1* getPimpl() const noexcept {
+        return reinterpret_cast&lt;Impl*&gt;(pImpl.get());
+    }
+public:
+    Derived_1(...);
+    void func_1(...) const;
+    ...
+};
+
+class Derived_2 final : public Base {
+protected:
+    class Impl;
+    inline Derived_2* getPimpl() const noexcept {
+        return reinterpret_cast&lt;Impl*&gt;(pImpl.get());
+    }
+public:
+    Derived_2(...);
+    void func_2(...) const;
+    ...
+};
+</code></pre><p><strong>File &#34;Base.cpp&#34;:</strong></p><pre><code>class Base::Impl {
+public:
+    Impl(...) {...}
+    ...
+};
+
+class Derived_1::Impl final : public Base::Impl {
+public:
+    Impl(...) : Base::Impl(...) {...}
+    void func_1(...) {...}
+    ...
+};
+
+class Derived_2::Impl final : public Base::Impl {
+public:
+    Impl(...) : Base::Impl(...) {...}
+    void func_2(...) {...}
+    ...
+};
+
+Derived_1::Derived_1(...) : Base(new Derived_1::Impl(...)) {...}
+Derived_1::func_1(...) const { getPimpl()-&gt;func_1(...); }
+
+Derived_2::Derived_2(...) : Base(new Derived_2::Impl(...)) {...}
+Derived_2::func_2(...) const { getPimpl()-&gt;func_2(...); }
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I think it is a poor strategy to make <code>Derived_1::Impl</code> derive from <code>Base::Impl</code>.</p><p>The main purpose of using the Pimpl idiom is to hide the implementation details of a class. By letting <code>Derived_1::Impl</code> derive from <code>Base::Impl</code>, you&#39;ve defeated that purpose. Now, not only does the implementation of <code>Base</code> depend on <code>Base::Impl</code>, the implementation of <code>Derived_1</code> also depends on <code>Base::Impl</code>.</p><blockquote><p>Is there a better solution?</p></blockquote><p>That depends on what trade-offs are acceptable to you.</p><p><strong>Solution 1</strong></p><p>Make <code>Impl</code> classes totally independent. This will imply that there will be two pointers to <code>Impl</code> classes -- one in <code>Base</code> and another one in <code>Derived_N</code>.</p><pre><code>class Base {
+
+   protected:
+      Base() : pImpl{new Impl()} {}
+
+   private:
+      // It&#39;s own Impl class and pointer.
+      class Impl { };
+      std::shared_ptr&lt;Impl&gt; pImpl;
+
+};
+
+class Derived_1 final : public Base {
+   public:
+      Derived_1() : Base(), pImpl{new Impl()} {}
+      void func_1() const;
+   private:
+      // It&#39;s own Impl class and pointer.
+      class Impl { };
+      std::shared_ptr&lt;Impl&gt; pImpl;
+};
+</code></pre><p><strong>Solution 2</strong></p><p>Expose the classes only as handles. Don&#39;t expose the class definitions and implementations at all.</p><p>Public header file:</p><pre><code>struct Handle {unsigned long id;};
+struct Derived1_tag {};
+struct Derived2_tag {};
+
+Handle constructObject(Derived1_tag tag);
+Handle constructObject(Derived2_tag tag);
+
+void deleteObject(Handle h);
+
+void fun(Handle h, Derived1_tag tag);
+void bar(Handle h, Derived2_tag tag); 
+</code></pre><p>Here&#39;s quick implementation</p><pre><code>#include &lt;map&gt;
+
+class Base
+{
+   public:
+      virtual ~Base() {}
+};
+
+class Derived1 : public Base
+{
+};
+
+class Derived2 : public Base
+{
+};
+
+namespace Base_Impl
+{
+   struct CompareHandle
+   {
+      bool operator()(Handle h1, Handle h2) const
+      {
+         return (h1.id &lt; h2.id);
+      }
+   };
+
+   using ObjectMap = std::map&lt;Handle, Base*, CompareHandle&gt;;
+
+   ObjectMap&amp; getObjectMap()
+   {
+      static ObjectMap theMap;
+      return theMap;
+   }
+
+   unsigned long getNextID()
+   {
+      static unsigned id = 0;
+      return ++id;
+   }
+
+   Handle getHandle(Base* obj)
+   {
+      auto id = getNextID();
+      Handle h{id};
+      getObjectMap()[h] = obj;
+      return h;
+   }
+
+   Base* getObject(Handle h)
+   {
+      return getObjectMap()[h];
+   }
+
+   template &lt;typename Der&gt;
+      Der* getObject(Handle h)
+      {
+         return dynamic_cast&lt;Der*&gt;(getObject(h));
+      }
+};
+
+using namespace Base_Impl;
+
+Handle constructObject(Derived1_tag tag)
+{
+   // Construct an object of type Derived1
+   Derived1* obj = new Derived1;
+
+   // Get a handle to the object and return it.
+   return getHandle(obj);
+}
+
+Handle constructObject(Derived2_tag tag)
+{
+   // Construct an object of type Derived2
+   Derived2* obj = new Derived2;
+
+   // Get a handle to the object and return it.
+   return getHandle(obj);
+}
+
+void deleteObject(Handle h)
+{
+   // Get a pointer to Base given the Handle.
+   //
+   Base* obj = getObject(h);
+
+   // Remove it from the map.
+   // Delete the object.
+   if ( obj != nullptr )
+   {
+      getObjectMap().erase(h);
+      delete obj;
+   }
+}
+
+void fun(Handle h, Derived1_tag tag)
+{
+   // Get a pointer to Derived1 given the Handle.
+   Derived1* obj = getObject&lt;Derived1&gt;(h);
+   if ( obj == nullptr )
+   {
+      // Problem.
+      // Decide how to deal with it.
+
+      return;
+   }
+
+   // Use obj
+}
+
+void bar(Handle h, Derived2_tag tag)
+{
+   Derived2* obj = getObject&lt;Derived2&gt;(h);
+   if ( obj == nullptr )
+   {
+      // Problem.
+      // Decide how to deal with it.
+
+      return;
+   }
+
+   // Use obj
+}
+</code></pre><p><strong>Pros and Cons</strong></p><p>With the first approach, you can construct <code>Derived</code> classes in the stack. With the second approach, that is not an option.</p><p>With the first approach, you incur the cost of two dynamic allocations and deallocations for constructing and destructing a <code>Derived</code> in the stack. If you construct and destruct a <code>Derived</code> object from the heap you, incur the cost of one more allocation and deallocation. With the second approach, you only incur the cost of one dynamic allocation and one deallocation for every object.</p><p>With the first approach, you get have the ability to use <code>virtual</code> member function is <code>Base</code>. With the second approach, that is not an option.</p><p><strong>My suggestion</strong></p><p>I would go with the first solution so I can use the class hierarchy and <code>virtual</code> member functions in <code>Base</code> even though it is a little bit more expensive.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-is-using-protected-inheritance-to-hide-but-exploit-implemented-interface-from-the-public-ok/'>C++ &#8211; Is using protected inheritance to hide (but exploit) implemented interface from the public ok</a></li><li class="list-group-item"><a href='../c-the-pattern-for-a-safe-interface-in-c/'>C++ &#8211;  the pattern for a safe interface in C++</a></li><li class="list-group-item"><a href='../public-versus-private-inheritance-when-some-of-the-parents-methods-need-to-be-exposed/'>Public versus private inheritance when some of the parent&#8217;s methods need to be exposed</a></li><li class="list-group-item"><a href='../c-best-practice-for-unused-inherited-virtual-functions-implementing-superclass-methods/'>C++ &#8211; Best practice for unused inherited virtual functions (implementing superclass methods)</a></li><li class="list-group-item"><a href='../c-adding-behaviour-to-a-part-of-a-third-party-class/'>C# &#8211; Adding behaviour to a part of a third party class</a></li><li class="list-group-item"><a href='../c-why-is-accessing-virtual-protected-functions-of-a-base-class-not-allowed-through-a-pointer-of-the-base-class-type-inside-a-derived-class/'>C++ &#8211; Why is accessing virtual protected functions of a base class not allowed through a pointer of the base class type inside a derived class</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

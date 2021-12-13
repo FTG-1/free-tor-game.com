@@ -1,0 +1,136 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; How to best to organize class and interface files &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1063865 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1063865" class="post-1063865 software type-software status-publish hentry category-software tag-c tag-class tag-code-organization tag-interfaces"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; How to best to organize class and interface files</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">class</span><span class="mr-2 badge badge-warning">code-organization</span><span class="mr-2 badge badge-primary">interfaces</span></p><div class="entry-content"><p>OK .. after all the discussion I&#39;m changing my question slightly to better reflect a concrete example that I am dealing with.</p><hr/><p>I have two classes <code>ModelOne</code> and <code>ModelTwo</code>,  These classes perform similar type of functionality but are unrelated to each other.  However I have a third class <code>CommonFunc</code> that contains some public functionality that is implemented in both <code>ModelOne</code> and <code>ModelTwo</code> and has been factored out as per <code>DRY</code>.  The two models are instantiated within the <code>ModelMain</code> class (which itself is instantiated at a higher level etc &#8211; but I am stopping at this level).</p><p>The IoC container that I am using is <a href="https://msdn.microsoft.com/en-us/library/dn507457(v=pandp.30).aspx" rel="noreferrer">Microsoft Unity</a>.  I don&#39;t pretend to be an expert in it, but my understanding of it is that you register a tuple of interface and class with the container and when you want a concrete class you ask the IoC container for whatever object matches a specific interface.  This implies that for every object I want to instantiate from Unity, there has to be a matching interface.  Because each of my classes performs different (and-non-overlapping) functionality this means that there is a 1:1 ratio between interface and class<sup>1</sup>.  However it does not mean that I am slavishly writing an interface for each and every class I write.</p><p>Thus code wise I end up with<sup>2</sup>:</p><pre><code>public interface ICommonFunc 
+{ 
+}
+
+public interface IModelOne 
+{ 
+   ICommonFunc Common { get; } 
+   .. 
+}
+
+public interface IModelTwo
+{ 
+   ICommonFunc Common { get; } 
+   .. 
+}
+
+public interface IModelMain 
+{ 
+  IModelOne One { get; } 
+  IModelTwo Two { get; } 
+  ..
+}
+
+public class CommonFunc : ICommonFunc { .. }
+
+public class ModelOne : IModelOne { .. }
+
+public class ModelTwo : IModelTwo { .. }
+
+public class ModelMain : IModelMain { .. }
+</code></pre><p>The question is about how to organize my solution.  Should I keep the class and interface together?  Or should I keep classes and interfaces together?  EG:</p><p><strong>Option 1</strong> &#8211; Organized by class name</p><pre><code>MySolution
+  |
+  |-MyProject
+  |   |
+      |-Models
+      |   |
+          |-Common
+          |   |
+          |   |-CommonFunc.cs
+          |   |-ICommonFunc.cs
+          |
+          |-Main
+          |   |
+          |   |-IModelMain.cs
+          |   |-ModelMain.cs
+          |
+          |-One
+          |   |
+          |   |-IModelOne.cs
+          |   |-ModelOne.cs
+          |
+          |-Two
+              |
+              |-IModelTwo.cs
+              |-ModelTwo.cs
+              |
+</code></pre><p><strong>Option 2</strong> &#8211; Organized by functionality (mostly)</p><pre><code>MySolution
+  |
+  |-MyProject
+  |   |
+      |-Models
+      |   |
+          |-Common
+          |   |
+          |   |-CommonFunc.cs
+          |   |-ICommonFunc.cs
+          |
+          |-IModelMain.cs
+          |-IModelOne.cs
+          |-IModelTwo.cs
+          |-ModelMain.cs
+          |-ModelOne.cs
+          |-ModelTwo.cs
+          |
+</code></pre><p><strong>Option 3</strong> &#8211; Seperating Interface and Implementation</p><pre><code>MySolution
+  |
+  |-MyProject
+      |
+      |-Interfaces
+      |   |
+      |   |-Models
+      |   |   |
+      |       |-Common
+      |       |   |-ICommonFunc.cs
+      |       |
+      |       |-IModelMain.cs
+      |       |-IModelOne.cs
+      |       |-IModelTwo.cs
+      |
+      |-Classes
+          | 
+          |-Models
+          |   |
+              |-Common
+              |   |-CommonFunc.cs
+              |
+              |-ModelMain.cs
+              |-ModelOne.cs
+              |-ModelTwo.cs
+              |
+</code></pre><p><strong>Option 4</strong> &#8211; Taking the functionality example further</p><pre><code>MySolution
+  |
+  |-MyProject
+  |   |
+      |-Models
+      |   |
+          |-Components
+          |   |
+          |   |-Common
+          |   |   |
+          |   |   |-CommonFunc.cs
+          |   |   |-ICommonFunc.cs
+          |   |   
+          |   |-IModelOne.cs
+          |   |-IModelTwo.cs
+          |   |-ModelOne.cs
+          |   |-ModelTwo.cs
+          |
+          |-IModelMain.cs
+          |-ModelMain.cs
+          |
+</code></pre><p>I sort of dislike option 1 because of the class name in the path.  But as I am tending to 1:1 ratio because of my IoC choice/usage (and <em>that</em> may be debatable) this has advantages in seeing the relationship between the files.</p><p>Option 2 is appealing to me, but now I have muddied the waters between the <code>ModelMain</code> and the sub-models.</p><p>Option 3 works to separate the interface definition from the implementation, but now I have these artificial breaks in the path names.</p><p>Option 4.  I took Option 2 and tweaked it in order to separate the components from the parent model.</p><p>Is there good reason for preferring one over the other?  Or any other potential layouts that I have missed?</p><hr/><p><sup>1.  Frank made a comment that having 1:1 ratio harkens back to C++ days of .h and .cpp files.  I know where he is coming from.  My understanding of Unity seems to put me into this corner, but I am also not sure even how to get out of it if you are also following the adage of <code>Program to an interface</code> But thats a discussion for another day.</sup></p><p><sup>2.  I have left out the details of each objects constructor.  This is where the IoC container injects objects as required.</sup></p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Since an interface is abstractly similar to a base class, use the same logic you would use for a base class. Classes implementing an interface are closely related to the interface.</p><p>I doubt you would prefer a directory called &#34;Base Classes&#34;; most developers would not want that, nor a directory called &#34;Interfaces&#34;. In c#, directories are also namespaces by default, making it doubly confusing.</p><p>The best approach is to think about how you would break up the classes/interfaces if you had to put some into a separate library, and organize the namespaces/directories in a similar manner. The .net framework design guidelines has <a href="https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/names-of-namespaces" rel="noreferrer">namespace suggestions</a> that may be helpful.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../object-oriented-uml-class-diagrams-how-to-show-dependency/'>Object-oriented &#8211; UML class diagrams: How to show dependency</a></li><li class="list-group-item"><a href='../java-best-practice-interface-subclasses-and-constants/'>Java best practice Interface &#8211; subclasses and constants</a></li><li class="list-group-item"><a href='../c-service-locator-anti-pattern-alternative/'>C# &#8211; Service-locator anti-pattern alternative</a></li><li class="list-group-item"><a href='../c-dependency-injection-for-a-library-with-internal-dependencies/'>C# &#8211; Dependency injection for a library with internal dependencies</a></li><li class="list-group-item"><a href='../c-constants-class-that-should-implement-an-interface/'>C# &#8211; Constants class that should implement an interface</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

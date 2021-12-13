@@ -1,0 +1,84 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Storing n-gram data &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1073157 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1073157" class="post-1073157 software type-software status-publish hentry category-software tag-database-design tag-net tag-nosql tag-sql"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Storing n-gram data</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">database-design</span><span class="mr-2 badge badge-info">net</span><span class="mr-2 badge badge-warning">nosql</span><span class="mr-2 badge badge-primary">sql</span></p><div class="entry-content"><p>I was hoping to brainstorm a little bit on the subject of storing <em>n</em>-gram data.<br /> In my project, I am trying to solve linguistic problems where I know all (<em>n</em>-1) data items and want to statistically guess my <em>n</em> using linear interpolation over all applicable <em>n</em>-grams. (Yes, there is a tagger that assigns tags to known words according to its lexicon and a suffix tree that tries to guess the word kind for unknown words; the <em>n</em>-gram component discussed here will be tasked with resolving ambuguity.)</p><p>My initial approach would be to simply store all observed <em>n</em>-grams (for <em>n</em> = 1..3, i.e. monogram, bigram, trigram) data in respective SQL databases and call it a day. But the requirements of my project may change to include other vector lengths (<em>n</em>), and I would like my application to adapt to 4-gram without a lot of work (updating schema, updating application code, etc.); ideally, I would simply tell my application to work with 4-grams now without having to change code much (or at all) and train its data from a given data source.</p><p>To sum up all requirements:</p><ul><li>Ability to store <em>n</em>-gram data (initially for <em>n</em> = {1, 2, 3}</li><li>Ability to change what kinds of <em>n</em>-grams should be used (between application runs)</li><li>Ability to (re-)train <em>n</em>-gram data (between application runs)</li><li><p>Ability to query the data store (e.g. if I have observed A, B, C, I&#39;d like to know the most frequently observed item for what might follow using my trained 4-, 3-, 2-, 1-gram data sets)</p><p>The application will most likely be read-heavy, data sets most likely won&#39;t be retrained that often</p></li><li>The solution employs the .NET Framework (up to 4.0)</li></ul><p>Now what design would be better fit for such a task?</p><ul><li>A fixed table managed by a SQL server (MSSQL, MySQL, &#8230;) for each <em>n</em> (eg. dedicated tables for bi-grams, tri-grams, etc.)</li><li>Or a NoSQL document database solution that stores the first <em>n</em>-1 as the key of the document, and the document itself contains the <em>n</em>-th value and observed frequencies?</li><li>Or something different?</li></ul></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Given that you won&#39;t know the optimal range of N, you definitely want to be able to change it. For example, if your application predicts the likelihood that a certain text is English, you would probably want to use character N-grams for N 3..5. (That&#39;s what we found experimentally.)</p><p>You haven&#39;t shared details about your application, but the problem is clear enough. You want to represent N-gram data in a relational database (or NoSQL document-based solution). Before suggesting a solution of my own, you may want to take a look at the following approaches:</p><ol><li><a href="https://dba.stackexchange.com/questions/2402/how-to-best-store-google-ngrams-in-a-database">How to best store Google ngrams in a database?</a></li><li><a href="https://stackoverflow.com/questions/2846206/storing-n-grams-in-database-in-n-number-of-tables">Storing n-grams in database in &lt; n number of tables</a></li><li><a href="http://www.journaleic.com/article/download/8111/5772" rel="nofollow noreferrer">Managing the Google Web 1T 5-gram with Relational Database</a></li></ol><p>Now, having not read any of the above links, I suggest a simple, relational database approach using multiple tables, one for each size of N-gram. You could put all of the data in a single table with the maximum necessary columns (i.e. store bigrams and trigrams in ngram_4, leaving the final columns null), but I recommend partitioning the data. Depending on your database engine, a single table with a large number of rows can negatively impact performance.</p><pre><code>  create table ngram_1 (
+      word1 nvarchar(50),
+      frequency FLOAT,
+   primary key (word1));
+
+  create table ngram_2 (
+      word1 nvarchar(50),
+      word2 nvarchar(50),
+      frequency FLOAT,
+   primary key (word1, word2));
+
+  create table ngram_3 (
+      word1 nvarchar(50),
+      word2 nvarchar(50),
+      word3 nvarchar(50),
+      frequency FLOAT,
+   primary key (word1, word2, word3));
+
+  create table ngram_4 (
+      word1 nvarchar(50),
+      word2 nvarchar(50),
+      word3 nvarchar(50),
+      word4 nvarchar(50),
+      frequency FLOAT,
+   primary key (word1, word2, word3, word4));
+</code></pre><p>Next, I&#39;ll give you a query that will return the most probable next word given all your ngram tables. But first, here is some sample data that you should insert into the above tables:</p><pre><code>  INSERT [ngram_2] ([word1], [word2], [frequency]) VALUES (N&#39;building&#39;, N&#39;with&#39;, 0.5)
+  INSERT [ngram_2] ([word1], [word2], [frequency]) VALUES (N&#39;hit&#39;, N&#39;the&#39;, 0.1)
+  INSERT [ngram_2] ([word1], [word2], [frequency]) VALUES (N&#39;man&#39;, N&#39;hit&#39;, 0.2)
+  INSERT [ngram_2] ([word1], [word2], [frequency]) VALUES (N&#39;the&#39;, N&#39;bat&#39;, 0.7)
+  INSERT [ngram_2] ([word1], [word2], [frequency]) VALUES (N&#39;the&#39;, N&#39;building&#39;, 0.3)
+  INSERT [ngram_2] ([word1], [word2], [frequency]) VALUES (N&#39;the&#39;, N&#39;man&#39;, 0.4)
+  INSERT [ngram_2] ([word1], [word2], [frequency]) VALUES (N&#39;with&#39;, N&#39;the&#39;, 0.6)
+  INSERT [ngram_3] ([word1], [word2], [word3], [frequency]) VALUES (N&#39;building&#39;, N&#39;with&#39;, N&#39;the&#39;, 0.5)
+  INSERT [ngram_3] ([word1], [word2], [word3], [frequency]) VALUES (N&#39;hit&#39;, N&#39;the&#39;, N&#39;building&#39;, 0.3)
+  INSERT [ngram_3] ([word1], [word2], [word3], [frequency]) VALUES (N&#39;man&#39;, N&#39;hit&#39;, N&#39;the&#39;, 0.2)
+  INSERT [ngram_3] ([word1], [word2], [word3], [frequency]) VALUES (N&#39;the&#39;, N&#39;building&#39;, N&#39;with&#39;, 0.4)
+  INSERT [ngram_3] ([word1], [word2], [word3], [frequency]) VALUES (N&#39;the&#39;, N&#39;man&#39;, N&#39;hit&#39;, 0.1)
+  INSERT [ngram_3] ([word1], [word2], [word3], [frequency]) VALUES (N&#39;with&#39;, N&#39;the&#39;, N&#39;bat&#39;, 0.6)
+  INSERT [ngram_4] ([word1], [word2], [word3], [word4], [frequency]) VALUES (N&#39;building&#39;, N&#39;with&#39;, N&#39;the&#39;, N&#39;bat&#39;, 0.5)
+  INSERT [ngram_4] ([word1], [word2], [word3], [word4], [frequency]) VALUES (N&#39;hit&#39;, N&#39;the&#39;, N&#39;building&#39;, N&#39;with&#39;, 0.3)
+  INSERT [ngram_4] ([word1], [word2], [word3], [word4], [frequency]) VALUES (N&#39;man&#39;, N&#39;hit&#39;, N&#39;the&#39;, N&#39;building&#39;, 0.2)
+  INSERT [ngram_4] ([word1], [word2], [word3], [word4], [frequency]) VALUES (N&#39;the&#39;, N&#39;building&#39;, N&#39;with&#39;, N&#39;the&#39;, 0.4)
+  INSERT [ngram_4] ([word1], [word2], [word3], [word4], [frequency]) VALUES (N&#39;the&#39;, N&#39;man&#39;, N&#39;hit&#39;, N&#39;the&#39;, 0.1)
+</code></pre><p>To query the most probable next word, you would use a query like this.</p><pre><code>  DECLARE @word1 NVARCHAR(50) = &#39;the&#39;
+  DECLARE @word2 NVARCHAR(50) = &#39;man&#39;
+  DECLARE @word3 NVARCHAR(50) = &#39;hit&#39;
+  DECLARE @bigramWeight FLOAT = 0.2;
+  DECLARE @trigramWeight FLOAT = 0.3
+  DECLARE @fourgramWeight FLOAT = 0.5
+
+  SELECT next_word, SUM(frequency) AS frequency
+  FROM (
+    SELECT word2 AS next_word, frequency * @bigramWeight AS frequency
+    FROM ngram_2
+    WHERE word1 = @word3
+    UNION
+    SELECT word3 AS next_word, frequency * @trigramWeight AS frequency
+    FROM ngram_3
+    WHERE word1 = @word2
+      AND word2 = @word3
+    UNION
+    SELECT word4 AS next_word, frequency * @fourgramWeight AS frequency
+    FROM ngram_4
+    WHERE word1 = @word1
+      AND word2 = @word2
+      AND word3 = @word3
+    ) next_words
+  GROUP BY next_word
+  ORDER BY SUM(frequency) DESC
+</code></pre><p>If you add more ngram tables, you will need to add another UNION clause to the above query. You might notice that in the first query I used word1 = @word3. And in the second query, word1 = @word2 AND word2 = @word3. That&#39;s because we need to <em>align</em> the three words in the query for the ngram data. If we want the most likely next word for a sequence of three words, we&#39;ll need to check the first word in the bigram data against the <em>last</em> word of the words in the sequence.</p><p>You can tweak the weight parameters as you wish. In this example, I assumed that higher ordinal &#34;n&#34; grams will be more reliable.</p><p>P.S. I would structure the program code to handle any number of ngram_N tables via configuration. You could declaratively change the program to use N-gram range N(1..6) after creating the ngram_5 and ngram_6 tables.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../the-recommended-mongodb-schema-for-this-quiz-engine-scenario/'>The recommended MongoDB schema for this quiz-engine scenario</a></li><li class="list-group-item"><a href='../storing-attendance-data-in-database/'>Storing Attendance Data in database</a></li><li class="list-group-item"><a href='../better-way-to-update-nosql-records-in-bulk/'>Better way to update NoSQL records in bulk</a></li><li class="list-group-item"><a href='../how-to-store-data-that-is-recorded-with-different-frequency/'>How to store data that is recorded with different frequency</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

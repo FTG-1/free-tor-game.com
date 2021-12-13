@@ -1,0 +1,98 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Php &#8211; Is there&#8217;s a way to speed up the php code which parse XML files &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1076446 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1076446" class="post-1076446 software type-software status-publish hentry category-software tag-performance tag-php tag-xml"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Php &#8211; Is there&#8217;s a way to speed up the php code which parse XML files</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">performance</span><span class="mr-2 badge badge-info">PHP</span><span class="mr-2 badge badge-warning">xml</span></p><div class="entry-content"><p>I&#39;m developing a web application and we are using XML as a database and I&#39;m using Linux as a platform and centos 6.5 as a server. Changing some value would make a lot a lot of changes in about six XML files.</p><p>So here&#39;s the problem: Pressing button save after editing, adding, deleting takes about one or one and half minutes or more! This is because my code has to update about six XML files, log files and the crontab file. I wonder if there&#39;s any thing similar to threads in PHP?</p><p>I have my functions and all code I want, I just want to know how php can be used in a new way to make performance better. Can you guide me even by links to read?</p><p>I don&#39;t know what&#39;s exactly this problem is called to search about it. I&#39;m still a beginner.</p><p>here&#39;s the update function I&#39;m using :</p><pre><code> public static function update($tableName, $fieldsToUpdate, $newValues, $value = NULL) {
+        //Load XML file
+        $fileName = G_APP_SCRIPTS_PATH . &#34;/XMLS/xmls/&#34; . $tableName . &#34;.xml&#34;;
+        $xml = new DOMDocument;
+        $xml-&gt;load($fileName);
+        //Load XSD file
+        $xsdfileName = G_APP_SCRIPTS_PATH . &#34;/XMLS/xsds/&#34; . $tableName . &#34;.xsd&#34;;
+        $xsd = new DOMDocument;
+        $xsd-&gt;load($xsdfileName);
+        //Generate Xpath
+        $path = c_XML::generateXPath($xml, $xsd, $fieldsToUpdate, $value);
+        $xpath = new DOMXPath($xml);
+        //Query nodes to update
+        $nodes = $xpath-&gt;query($path);
+//        print_r($nodes-&gt;item(0));
+        //If number of new values &lt; number of elements to update,means we have to update
+        //all specified elements in the XML without any condition
+        if (count($newValues) &lt; $nodes-&gt;length) {
+            for ($i = 0; $i &lt; $nodes-&gt;length / count($newValues); $i++)
+                $newValues = array_merge($newValues, $newValues);
+        }
+        //Iterate over the nodes to update
+        for ($i = 0; $i &lt; $nodes-&gt;length; $i++) {
+            $oldNode = $nodes-&gt;item($i);
+            for ($index = 0; $index &lt; count($fieldsToUpdate); $index++) {
+                //Find the associated index in the $fieldsToUpdate array
+                if (strcmp($oldNode-&gt;nodeName, $fieldsToUpdate[$index]) === 0) {
+                    break;
+                }
+            }
+            //Create new node with the old node&#39;s name
+            $newNode = $xml-&gt;createElement($oldNode-&gt;nodeName);
+            //var_dump($newNode);
+            //if the new value is an array,means we have to update an inner node
+            if (is_array($newValues[$index])) {
+                //go to the desired node in XSD and get its children elements,
+                //to know their format
+                $xsdxpath = new DOMXPath($xsd);
+                $children = $xsdxpath-&gt;query(&#34;/xs:schema/xs:element/xs:complexType/xs:sequence/xs:element/xs:complexType/xs:sequence/xs:element[@name=&#39;&#34; . $oldNode-&gt;nodeName . &#34;&#39;]/xs:complexType/xs:sequence/xs:element&#34;);
+                //convert the $chlidren node list to an array to pass the createNode function.
+                for ($c = 0; $c &lt; $children-&gt;length; $c++) {
+                    $childrenArray[$c] = $children-&gt;item($c);
+                }
+                //create the desired node
+                c_XML::createNode($xml, $xsdxpath, $newNode, $childrenArray, $newValues[$index]);
+            }
+            //If the new value is not an array
+            else
+                $newNode-&gt;nodeValue = $newValues[$index];
+            //Replace old node with new node
+            $parent = $oldNode-&gt;parentNode;
+            $parent-&gt;replaceChild($newNode, $oldNode);
+        }
+        //Validate &amp; save XML
+        $isValid = c_XML::validateXMLtoXSD($xml, $xsdfileName);
+        if ($isValid == 1) {
+            $xml-&gt;save($fileName);
+            return true;
+        }
+        else
+            return false;
+    }
+</code></pre><p>and when user update a value I use this way in updating other xml files :</p><pre><code>  private static function change_value_in_xml_file($old_value, $new_value) {
+            $all_nodes = c_XML_h::select(tables::xmlfile, &#39;*&#39;);
+           $nodes = array();
+            for ($i = 0; $i &lt; count($all_nodes); $i++) {
+               $nodes[$i] = array();
+//just get the nodes i want
+               $nodes[$i][0] = $all_nodes[$i][0];
+               $nodes[$i][1] = $all_nodes[$i][3];
+            }
+            //find old value and replace it with new value
+            foreach ($nodes as $node) {
+                $newValues[0] = $new_value;
+
+                if ($node[1] == $old_value) {
+                    $id_to_update = $node[0];
+                    $fieldsToSelect[0] = xmlfile:: value;
+                    c_XML_h::update(tables::xmlfile, $fieldsToSelect, $newValues, $id_to_update);
+                }
+
+            }
+        }
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>XML is not a very good choice for a database that needs a lot of updating, because text files are not random access:  you must parse the whole file <em>every time</em> you want to read or write a single element.  You might be able to improve your code slightly, but XML isn&#39;t going to be fast.</p><p>Some other problems you may have:</p><ul><li>This will scale very poorly.  As the size of your database increases, your code will get much, much slower.</li><li>Concurrent updates will be a problem.  Could you have two people performing actions that will update the database at the same time?  If so, at best one action would fail to complete.  At worst, it could leave your data in a corrupt state.</li></ul><p>I would suggest you bite the bullet and replace it with a real database.  You appear to have nicely abstracted your data access into functions, so all you have to do is rewrite those functions to access a database rather than read and write XML files.</p><p>(Also keep around the old XML functions to aid in moving the data.  Once you have written the database interface, you can make a little program that will read all of your data in XML using the old functions, then write it to the database using the new functions.)</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../php-how-to-speed-up-xml-parsing-operation/'>Php &#8211; How to speed up XML parsing operation</a></li><li class="list-group-item"><a href='../php-is-it-advisable-to-force-your-web-server-to-parse-html-files-for-php-code/'>Php &#8211; Is it advisable to force your web server to parse HTML files for PHP code</a></li><li class="list-group-item"><a href='../php-how-to-read-large-xml-files-efficiently/'>Php &#8211; How to read large XML files efficiently</a></li><li class="list-group-item"><a href='../java-how-to-parse-xml-files-too-big-to-fit-in-memory/'>Java &#8211; How to parse XML files too big to fit in memory</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

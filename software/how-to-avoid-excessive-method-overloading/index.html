@@ -1,0 +1,80 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>How to avoid excessive method overloading &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1067118 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1067118" class="post-1067118 software type-software status-publish hentry category-software tag-clean-code tag-legacy-code tag-refactoring"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">How to avoid excessive method overloading</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">clean code</span><span class="mr-2 badge badge-info">legacy code</span><span class="mr-2 badge badge-warning">refactoring</span></p><div class="entry-content"><p>We have quite a lot of places in the source code of our application , where one class has many methods with same names and different parameters. Those methods always have all the parameters of a &#39;previous&#39; method plus one more.</p><p>It&#39;s a result of long evolution (legacy code) and this thinking (I believe):</p><p>&#34;<em>There is a method M that does thing A. I need to do A + B. OK, I know &#8230; I will add a new parameter to M, create a new method for that, move code from M to the new method with one more parameter, do the A + B over there and call the new method from M with a default value of the new parameter.</em>&#34;</p><p>Here is an example (in Java-like-language):</p><pre><code>class DocumentHome {
+
+  (...)
+
+  public Document createDocument(String name) {
+    // just calls another method with default value of its parameter
+    return createDocument(name, -1);
+  }
+
+  public Document createDocument(String name, int minPagesCount) {
+    // just calls another method with default value of its parameter
+    return createDocument(name, minPagesCount, false);
+  }
+
+  public Document createDocument(String name, int minPagesCount, boolean firstPageBlank) {
+    // just calls another method with default value of its parameter
+    return createDocument(name, minPagesCount, false, &#34;&#34;);
+  }
+
+  public Document createDocument(String name, int minPagesCount, boolean firstPageBlank, String title) {
+    // here the real work gets done
+    (...)
+  }
+
+  (...)
+}
+</code></pre><p>I feel like this is wrong. Not only that we can&#39;t keep adding new parameters like this forever, but the code hard to extend/change because of all the dependencies between methods.</p><p>Here are few ways how to do this better:</p><ol><li><p>Introduce a parameter object:</p><pre><code>class DocumentCreationParams {
+
+  String name;
+  int minPagesCount;
+  boolean firstPageBlank;
+  String title;
+
+  (...)
+}
+
+class DokumentHome {
+
+  public Document createDocument(DocumentCreationParams p) {
+    // here the real work gets done
+    (...)
+  }
+}
+</code></pre></li><li><p>Set the parameters to the <code>DocumentHome</code> object before we call <code>createDocument()</code></p><pre><code>  @In
+  DocumentHome dh = null;
+
+  (...)
+
+  dh.setName(...);
+  dh.setMinPagesCount(...);
+  dh.setFirstPageBlank(...);
+
+  Document newDocument = dh.createDocument();
+</code></pre></li><li><p>Separate the work into different methods and call them as needed:</p><pre><code>  @In
+  DocumentHome dh = null;
+
+  Document newDocument = dh.createDocument();
+  dh.changeName(newDocument, &#34;name&#34;);
+  dh.addFirstBlankPage(newDocument);
+  dh.changeMinPagesCount(new Document, 10);
+</code></pre></li></ol><p><strong>My questions:</strong></p><ol><li>Is the described problem really a problem?</li><li>What do you think about suggested solutions? Which one would you prefer (based on your experience)?</li><li>Can you think of any other solution?</li></ol></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Maybe try the <a href="http://web.archive.org/save/https://jlordiales.me/2012/12/13/the-builder-pattern-in-practice/" rel="noreferrer">builder pattern</a>? (note: fairly random Google result :)</p><pre><code>var document = new DocumentBuilder()
+                   .FirstPageBlank()
+                   .Name(&#34;doc1final(2).doc&#34;)
+                   .MinimumNumberOfPages(4)
+                   .Build();
+</code></pre><p>I cannot give a full rundown of why I prefer builder over the options you give, but you have identified a large problem with a lot of code. If you think you need more than two parameters to a method you probably have your code structured wrongly (and some would argue one!).</p><p>The problem with a params object is (unless the object you create is in some way real) you just push the problem up a level, and you end up with a cluster of unrelated parameters forming the &#39;object&#39;.</p><p>Your other attempts look to me like someone reaching for the builder pattern but not quite getting there :)</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../is-code-like-this-a-train-wreck-in-violation-of-law-of-demeter/'>Is code like this a &#8220;train wreck&#8221; (in violation of Law of Demeter)</a></li><li class="list-group-item"><a href='../java-recommended-value-to-pass-instead-of-string-parameter-for-a-method-in-java/'>Java &#8211; Recommended value to pass instead of String parameter for a method in java</a></li><li class="list-group-item"><a href='../unit-testing-how-to-not-test-implementation-when-method-returns-void/'>Unit-testing &#8211; How to not test implementation when method returns void</a></li><li class="list-group-item"><a href='../how-to-avoid-changing-the-signature-on-a-well-used-method/'>How to avoid changing the signature on a well-used method</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,66 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Fire domain events after transaction completes &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1077244 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1077244" class="post-1077244 software type-software status-publish hentry category-software tag-architecture tag-c tag-domain-driven-design tag-event-sourcing tag-net"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Fire domain events after transaction completes</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">Architecture</span><span class="mr-2 badge badge-info">c</span><span class="mr-2 badge badge-warning">domain-driven-design</span><span class="mr-2 badge badge-primary">event-sourcing</span><span class="mr-2 badge badge-danger">net</span></p><div class="entry-content"><p>I am trying to implement a domain event system that only fires its events when the associated unit-of-work commits successfully.</p><p>The main reason why I want to do this is because I have other sub-systems that read the database that expect those changes to be in place when handling the event.</p><p>I also don&#39;t want event handlers to do their work (send out emails, etc.) if the commit fails.</p><p>The system is multiple ASP.NET applications (WebForms, MVC, and WebAPI).</p><pre><code>public class Order
+{
+    private Payment _payment;
+
+    public int ID { get; private set; }
+
+    public decimal Amount { get; private set; }
+
+    public void PayUsing(IPaymentProcessor processor)
+    {
+        if (_payment != null)
+        {
+            throw new InvalidOperationException(
+                &#34;You can&#39;t pay for an order twice&#34;);
+        }
+
+        // the Process method may also raise domain events
+        _payment = processor.Process(Amount);
+
+        // Raise saves the event into a static Queue&lt;T&gt;
+        DomainEvents.Raise(new OrderPaidEvent(this));
+    }
+}
+
+public class OrderFulfillmentService
+{
+    private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+    private readonly IPaymentProcessor _paymentProcessor;
+
+    public OrderFulfillmentService(
+        IUnitOfWorkFactory unitOfWorkFactory, 
+        IPaymentProcessor paymentProcessor)
+    {
+        _unitOfWorkFactory = unitOfWorkFactory;
+        _paymentProcessor = paymentProcessor;
+    }
+
+    public void Fulfill(int orderId)
+    {
+        using (var unitOfWork = _unitOfWorkFactory.Create())
+        {
+            var order = unitOfWork.OrdersRepository.GetById(orderId);
+
+            order.PayUsing(_paymentProcessor);
+
+            unitOfWork.Commit();
+
+            // I only want the events to be raised if the Commit succeeds               
+        }
+    }
+}
+</code></pre><p>With the current implementation, it&#39;s problematic because right now the domain raising must put it into a queue as it must not fire immediately.  The queue is static which causes problems for multi-user systems.  I do not want to accidentally fire events for another users, which is a definite problem as all users access the same queue.</p><p>This is the list of solutions I have investigated, and why they won&#39;t work in my scenario</p><ol><li><p>Have a non-static <code>DomainRaiser</code> class that gets passed into the <code>PayUsing</code> method.</p><ul><li>Passing a <code>DomainRaiser</code> is very difficult to do from the domain objects, sometimes events can be raised by changing properties and passing this object around is cumbersome.</li></ul></li><li><p>Have all entities contain an <code>Events</code> enumeration that is read by the <code>UnitOfWork.Commit</code> call as discussed on <a href="http://lostechies.com/jimmybogard/2014/05/13/a-better-domain-events-pattern/" rel="noreferrer">http://lostechies.com/jimmybogard/2014/05/13/a-better-domain-events-pattern/</a></p><ul><li>Tracking every single entity that has possibly changed is very difficult, I am off-loading this change tracking to the ORM.  This also clutters up the domain objects.</li></ul></li><li><p>Using <code>HttpContext.Current.Items</code> to store user-specific events</p><ul><li>This is currently the best suggestion, however, it&#39;s not possible to unit-test, and it locks my domain to using asp.net, which I have plans in the future to release a desktop app.</li></ul></li></ol><p>My question is, how do I queue and dispatch these events up in a multi-user environment reliably while taking into consideration that I only want to fire events if the overall unit-of-work succeeds?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>First, I would ensure each entity has reference to <code>DomainRaiser</code>. It would be best if this was set when the entity is created or materialized in repository. Each user/request context would have it&#39;s own instance which would then be injected into all entities, that are worked by the context. I don&#39;t know what Repository/UnitOfWork implementation are you using, so it might be impossible to do. But I think it might be automated if you can give your entities an interface which can be called during construction.</p><p>This would also solve your second problem of only executing the events if <code>UnitOfWork</code> succeeds. If <code>DomainRaiser</code> and <code>UnitOfWork</code> have single instance in one context, they can interact with each other, which would make this simple method call.</p><p>Last thing that comes to my mind is that you could separate some events into two parts: <code>prepare</code> and <code>execute</code>. Prepare would be called in same <code>UnitOfWork</code> as the event was raised from. This would allow you to read relevant data for the event, without waiting for commit. Execution would then be called outside with a flag if <code>UnitOfWork</code> committed successfully and would use the prepared data.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../unit-testing-unit-testing-in-a-no-setter-world/'>Unit-testing &#8211; Unit Testing in a &#8220;no setter&#8221; world</a></li><li class="list-group-item"><a href='../should-internal-entities-in-an-aggregate-respond-to-domain-events-directly/'>Should internal entities in an aggregate respond to domain events directly</a></li><li class="list-group-item"><a href='../design-command-handling-fail-feedback-with-cqrs/'>Design &#8211; Command handling fail feedback with CQRS</a></li><li class="list-group-item"><a href='../domain-events-cqrs-and-dependency-resolution-in-handlers/'>Domain Events, CQRS, and dependency resolution in handlers</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

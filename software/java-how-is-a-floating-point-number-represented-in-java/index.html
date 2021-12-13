@@ -1,0 +1,94 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; How is a floating point number represented in Java &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1071227 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1071227" class="post-1071227 software type-software status-publish hentry category-software tag-algorithms tag-floating-point tag-java"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; How is a floating point number represented in Java</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">algorithms</span><span class="mr-2 badge badge-info">floating point</span><span class="mr-2 badge badge-warning">java</span></p><div class="entry-content"><p>Which algorithm does java uses to convert floating point number (Ex:0.15625) into binary(0.00101)?</p><p>Whether java uses normalized form or denormalized format?</p><p>If I type <code>float ab=0.15625</code> in Java source file, which part of compiling and running the code will convert that floating point number into a format that could be stored in memory and used by the JVM?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>The first thing to realize is that the binary representation of <code>0.15625</code> is not <code>0.00101</code>.  Yes, that is what you would write if you were writing out the number by hand.  The actual representation of the number within the computer using IEE 754 for single precision 32 bit.  This is specified as part of the Java Language Specification <a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-4.html">4.2</a>:</p><blockquote><p>The <em>floating-point types</em> are <code>float</code>, whose values include the 32-bit IEEE 754 floating-point numbers, and <code>double</code>, whose values include the 64-bit IEEE 754 floating-point numbers.</p></blockquote><p>The IEEE 754 binary representation of <code>0.15625</code> is: <code>0x3E200000</code> which can be broken down into:</p><ul><li>a sign bit: <code>0</code> meaning it is positive.</li><li>the exponent for bits: <code>01111100</code> which is 124.  This value is subtracted from 127 to get the actual exponent that will be used (<code>-3</code>)</li><li>the  significand: <code>.0100000 00000000 00000000</code>.  The <code>.</code> I put there is for reading so that it is bytes, not part of the value (the significant uses the lower 23 bits of the number... so the 24th bit I represent with a <code>.</code> so the alignment is easier to read)  This value is added to <code>1</code> giving us the binary value of <code>1.010....</code> or in base 10, <code>1.25000...</code></li></ul><p>Combining these all together, we get:</p><p>(-1)<sup><code>0</code></sup> * <code>1.01</code><sub>2</sub> * 2<sup>-3</sup> which comes out to be, when written, <code>0.00101</code>.  But remember, that we&#39;re really dealing with <code>0x3E200000</code>.</p><hr/><p>Lets take a quick Java source file:</p><pre><code>package com.michaelt.so.floating;
+
+public class Demo {
+    float foo = 0.15625f;
+}
+</code></pre><p>The byte code for this, when decompiled is:</p><pre><code>// class version 50.0 (50)
+// access flags 0x21
+public class com/michaelt/so/floating/Demo {
+
+  // compiled from: Demo.java
+
+  // access flags 0x0
+  F foo
+
+  // access flags 0x1
+  public &lt;init&gt;()V
+   L0
+    LINENUMBER 3 L0
+    ALOAD 0
+    INVOKESPECIAL java/lang/Object.&lt;init&gt; ()V
+   L1
+    LINENUMBER 4 L1
+    ALOAD 0
+    LDC 0.15625
+    PUTFIELD com/michaelt/so/floating/Demo.foo : F
+    RETURN
+   L2
+    LOCALVARIABLE this Lcom/michaelt/so/floating/Demo; L0 L2 0
+    MAXSTACK = 2
+    MAXLOCALS = 1
+}
+</code></pre><p>Which really isn&#39;t <em>too</em> interesting.  You can see the <code>LDC 0.15625</code> in there which is a <a href="http://en.wikipedia.org/wiki/Java_bytecode_instruction_listings">load constant opcode</a>.  It takes one argument from a constant pool and pushes it on the stack.</p><p>So, lets look at Demo.class with a hex dump viewer.</p><pre><code>$ hexdump -C Demo.class 
+00000000  ca fe ba be 00 00 00 32  00 15 0a 00 05 00 11 04  |.......2........|
+00000010  3e 20 00 00 09 00 04 00  12 07 00 13 07 00 14 01  |&gt; ..............|
+00000020  00 03 66 6f 6f 01 00 01  46 01 00 06 3c 69 6e 69  |..foo...F...&lt;ini|
+00000030  74 3e 01 00 03 28 29 56  01 00 04 43 6f 64 65 01  |t&gt;...()V...Code.|
+00000040  00 0f 4c 69 6e 65 4e 75  6d 62 65 72 54 61 62 6c  |..LineNumberTabl|
+00000050  65 01 00 12 4c 6f 63 61  6c 56 61 72 69 61 62 6c  |e...LocalVariabl|
+00000060  65 54 61 62 6c 65 01 00  04 74 68 69 73 01 00 1f  |eTable...this...|
+00000070  4c 63 6f 6d 2f 6d 69 63  68 61 65 6c 74 2f 73 6f  |Lcom/michaelt/so|
+00000080  2f 66 6c 6f 61 74 69 6e  67 2f 44 65 6d 6f 3b 01  |/floating/Demo;.|
+00000090  00 0a 53 6f 75 72 63 65  46 69 6c 65 01 00 09 44  |..SourceFile...D|
+000000a0  65 6d 6f 2e 6a 61 76 61  0c 00 08 00 09 0c 00 06  |emo.java........|
+000000b0  00 07 01 00 1d 63 6f 6d  2f 6d 69 63 68 61 65 6c  |.....com/michael|
+000000c0  74 2f 73 6f 2f 66 6c 6f  61 74 69 6e 67 2f 44 65  |t/so/floating/De|
+000000d0  6d 6f 01 00 10 6a 61 76  61 2f 6c 61 6e 67 2f 4f  |mo...java/lang/O|
+000000e0  62 6a 65 63 74 00 21 00  04 00 05 00 00 00 01 00  |bject.!.........|
+000000f0  00 00 06 00 07 00 00 00  01 00 01 00 08 00 09 00  |................|
+00000100  01 00 0a 00 00 00 39 00  02 00 01 00 00 00 0b 2a  |......9........*|
+00000110  b7 00 01 2a 12 02 b5 00  03 b1 00 00 00 02 00 0b  |...*............|
+00000120  00 00 00 0a 00 02 00 00  00 03 00 04 00 04 00 0c  |................|
+00000130  00 00 00 0c 00 01 00 00  00 0b 00 0d 00 0e 00 00  |................|
+00000140  00 01 00 0f 00 00 00 02  00 10                    |..........|
+0000014a
+</code></pre><p>Look, right there at the start of the second line...</p><pre><code>00000010  3e 20 00 00
+</code></pre><p>There&#39;s the number.</p><hr/><p>Someone is going to ask &#39;but why is the number way up there? There&#39;s not even a <code>12</code> near it (the hex value for <code>LDC</code>).&#39; And they are right to ask this.  Remember that the LDC tool a value from the <em>constant pool</em>.  The byte code that I had earlier was converted back into something a person could read.</p><p>The structure of a class file can be found in the Java Virtual Machine Specification <a href="http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html">section 4.1</a>:</p><pre><code>ClassFile {
+    u4             magic;
+    u2             minor_version;
+    u2             major_version;
+    u2             constant_pool_count;
+    cp_info        constant_pool[constant_pool_count-1];
+    u2             access_flags;
+    u2             this_class;
+    u2             super_class;
+    u2             interfaces_count;
+    u2             interfaces[interfaces_count];
+    u2             fields_count;
+    field_info     fields[fields_count];
+    u2             methods_count;
+    method_info    methods[methods_count];
+    u2             attributes_count;
+    attribute_info attributes[attributes_count];
+}
+</code></pre><p>We&#39;ve got the magic number at the top (<code>ca fe ba be</code>), and the minor version (<code>00 00</code>), and major version (<code>00 32</code> = 50<sub>10</sub>) and then the constant pool count (<code>00 15</code>) which then has the constant pool itself.</p><p>The constant pool is specified in section 4.4 which has the format:</p><pre><code>cp_info {
+    u1 tag;
+    u1 info[];
+}
+</code></pre><p>The tag value of <code>04</code> says that &#39;what is next is a float`. You can see it at the end of the preceding line.</p><pre><code>00000000  ca fe ba be 00 00 00 32  00 15 0a 00 05 00 11 04  |.......2........|
+00000010  3e 20 00 00 09 00 04 00  12 07 00 13 07 00 14 01  |&gt; ..............|
+</code></pre><p>The other stuff that is around the number is information about locations for methods (it still has a default constructor), the name of the field, the name of the class, etc... there are a bunch of constants in there.</p><p>The key thing there though, you can see the floating point number stored in the class file as an IEEE 754 value that indicates this is something that the compiler does.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../this-algorithm-for-converting-strings-into-numbers-called/'>This algorithm for converting strings into numbers called</a></li><li class="list-group-item"><a href='../unit-testing-unit-regression-testing-scientific-algorithms-given-floating-point-behavior/'>Unit-testing &#8211; Unit (regression) testing scientific algorithms given floating point behavior</a></li><li class="list-group-item"><a href='../java-cross-compiling-java-app-to-run-directly-on-arm/'>Java &#8211; Cross-compiling Java app to run directly on ARM</a></li><li class="list-group-item"><a href='../avoiding-division-by-zero-using-float-comparison/'>Avoiding Division by Zero Using Float Comparison</a></li><li class="list-group-item"><a href='../javascript-does-comparing-equality-of-float-numbers-mislead-junior-developers-even-if-no-rounding-error-occurs-in-the-case/'>Javascript &#8211; Does comparing equality of float numbers mislead junior developers even if no rounding error occurs in the case</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

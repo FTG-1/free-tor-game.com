@@ -1,0 +1,85 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Python &#8211; How should you cleanly restrict object property types and values in Python &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1066563 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1066563" class="post-1066563 software type-software status-publish hentry category-software tag-functional-programming tag-python tag-variables"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Python &#8211; How should you cleanly restrict object property types and values in Python</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">functional programming</span><span class="mr-2 badge badge-info">python</span><span class="mr-2 badge badge-warning">variables</span></p><div class="entry-content"><p>I have been learning python from no long time ago. But nearly at the beginning I stumbled on simple question:<br /> how to set a restriction (limitation) on object value or object&#39;s properties without making a difficult class description. There is no problem with python&#39;s unstrict typification. I search for the methods to control not only the variable types, but the variable value diapasons also. For example let creating the classical educational class &#8211; &#34;Circle&#34;. A Circle &#8211; object should have three properties: two origin coordinates (some x, y) and a radius, in that (in our human visible world) x and  y should be real numerical, a radius should be real positive numerical.<br /> I somehow solved this task, correspnding method of &#34;Circle&#34; class below:</p><pre><code>def __setattr__(self,name,value):
+    def setting_atr(name,value):
+        if isinstance(value,(float,int)):
+            if name==&#39;radius&#39; and value&lt;0:
+                raise ValueError(&#34;Attribute &#39;radius&#39; should be no negative&#34;)
+            self.__dict__[name]=value
+        else:
+            raise TypeError(&#34;Attribute should be numerical&#34;)
+    if len(self.__dict__)&lt;3: #number of object attribute
+        return setting_atr(name,value)
+    elif name not in self.__dict__:
+        raise AttributeError(&#34;&#39;Circle&#39; object has no such attribute&#34;)
+    else:
+        return setting_atr(name,value)
+</code></pre><p>Nevertheless I utterly displeased with way I have done that. The code is huge for so small conception, and it&#39;s almost no reusable (I know about the descriptors &#8211; it will give the near same result). I would prefer some declarative stile. When I had been starting search for an alternative my first thought was to add my own operator. But after hard googling I realized that it impossible to make that in python itself (if I&#39;m still wrong &#8211; please correst me). Such as I only newbie, and entering in python developers team or forked python ( :)) is no way for me, I gave up for this thoughts.<br /> The another possibly path in declarative stile is writing something like:</p><pre><code>radius=radius if isinstance(radius,(float,int)) else raise TypeError(&#34;Attribute should be numerical&#34;)
+radius=radius if radius&gt;=0 else raise ValueError(&#34;Attribute &#39;radius&#39; should be no negative&#34;)
+</code></pre><p>of course it not work, because we haven&#39;t ability to use &#39;raise&#39; by that. I should be able calling errors object as function to brought it for reality. The simplest way to do that it wrote the error-raised function like this:</p><pre><code>def SomeError(exception=Exception, message=&#34;Something don&#39;t well&#34;):
+if isinstance(exception.args,tuple):
+    raise exception
+else:
+    raise exception(message)
+</code></pre><p>So it allow to write:</p><pre><code>radius=radius if radius&gt;=0 else SomeError(ValueError(&#34;Attribute &#39;radius&#39; should be no negative&#34;))
+</code></pre><p>I also thought about followed form:</p><pre><code>@dfValueError([&#39;isinstance(radius,(float,int))&#39;],&#34;Attribute should be numerical&#34;)
+@dfTypeError([&#39;radius&gt;=0&#39;],&#34;Attribute &#39;radius&#39; should be no negative&#34;)
+def fun_radius(x)
+    return x
+</code></pre><p>The small problem with this approach is in the more complex and less informatively evident error outing print. At the first the error message lead to the fake error raised function, the place where &#34;oops&#34; actually occurred only in second lines.</p><p>My goal is to make possibility raise exception from lambda functions and code lines like has showed above, to make code more evident. To do this I should create my own exceptions class with call method implemented.<br /> Problem: inherited class didn&#39;t see itself in own name spase, so method</p><pre><code>__call__(self):
+    raise self #yes ha-ha
+</code></pre><p>give in result:</p><pre><code>TypeError: __call__() missing 1 required positional argument: &#39;self&#39;
+</code></pre><p>So my question is simple:<br /> is it possible to make error object be callable? If yes, what I should read, to do it. And also, if someone solve this small problem, I would be happy.<br /> P.S. I know samples (about radius variable declaration) showed above can&#39;t be implemented in this &#34;circle&#34; class as is. I give it only as example to show my thoughts track. Please, don&#39;t pick on it.</p><p><strong>Afterword (by Marat)</strong><br /> Thank very much who wrote and voted in this topic.<br /> After readed answers, I thought very long, and finaly raised myself to add some augment<br /> to this topic (even if it entail some risk to infringe rules).<br /> For the first. Some people have wrote that we dont&#39;t need care about errors at the object creation state, and even no need to control variable types at all (inasmuch as it no has implemented in python by default). Although I have been no long time in object oriented programming, before that I had (and still have) been work on calculation a technical processes and devices. So I&#39;m very confident about this words: &#34;Possible error should be localized as soon as possible (I didn&#39;t say improved)&#34;. Many algorithms for calculation a real  physical processes use iterations and recursions so if you slip out (for later handle) some occurred mistake it could brought a hard detectable error in final result.<br /> So, there is python, from this point of view. Python&#39;s &#34;Duck Typing&#34; is great for quick prototyping and simplifying applied programming. But &#34;Duck Typing&#34; is not a religion demand. Nevertheless Python&#39;s unstrict typification it isn&#39;t a bizarre thing to add a type control, if you think you need that. But the style which Python impose to perform it differ from the style in the static typification languages as C++, Java and etc. In Python we can control the object only in some &#34;control points&#34;. This guide us to the &#34;System Oriented Programming&#34; principles (Therm is mine, but I didn&#39;t check if it exist in press, so it may has differ meaning from the same of another authors, and what I mean may also has another name).  We should (if will) set the &#34;control points&#34; at the inlet and outlet of the elements of (<strong>main</strong>) system. What is for the system elements? It should be any object who has own name space and can interact with outside as function (by methods also).<br /> The simplest version of inlet controlling for function element is:</p><pre><code>def func(a,b,c):
+    #just like this
+    a=int(a)
+    b=str(b)
+    c=list(c)
+</code></pre><p>More comlexity and interesting approach shown here:<br /> <a href="http://code.activestate.com/recipes/454322-type-checking-decorator/" rel="nofollow">Type-checking decorator for Python 2</a></p><p>Separately, about method that was suggested by my co-author. &#34;Property&#34; decorator use the same methods as descriptor, so it emulate <strong>object</strong> attributes by <strong>class</strong> methods. This mode should be used carefully because in python the objects of same class are shared the<br /> class name space. I let myself rewrote the same programm that have wrote by @Izkata with <code>__setattr__</code> (again):</p><pre><code>filter_function_for_radius=lambda value: value if value&gt;0 else SomeError(ValueError, &#39;Radius cannot be negative&#39;)
+class Circle(object):
+    def __init__(self, x=0, y=0, radius=1):
+        self.x = x
+        self.y = y
+        self.radius =radius
+    def __setattr__(self,name,value):
+        if name==&#39;radius&#39;:
+            value=filter_function_for_radius(value)
+        self.__dict__[name]=value
+</code></pre><p>&#8230;and if you need some another (perhaps complex or negative) radius for some hipothetical circle you don&#39;t need to inherit or redefine the class, just &#34;change filter&#34;. But that advantage of function style may be obtain only by using <code>__setattr__</code> or by creating own metaclass.<br /> And once more thank you, for answering.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Here is some code of mine without the <code>TypeError: __call__() missing 1 required positional argument: &#39;self&#39;</code>. How do you create this error?</p><pre><code>&gt;&gt;&gt; class X(Exception):
+    def __call__(self):
+        raise self
+
+
+&gt;&gt;&gt; x = X()
+&gt;&gt;&gt; x()
+
+Traceback (most recent call last):
+  File &#34;&lt;pyshell#5&gt;&#34;, line 1, in &lt;module&gt;
+    x()
+  File &#34;&lt;pyshell#3&gt;&#34;, line 3, in __call__
+    raise self
+X
+&gt;&gt;&gt; class Other(X):
+    pass
+
+&gt;&gt;&gt; o = Other()
+&gt;&gt;&gt; o()
+
+Traceback (most recent call last):
+  File &#34;&lt;pyshell#12&gt;&#34;, line 1, in &lt;module&gt;
+    o()
+  File &#34;&lt;pyshell#3&gt;&#34;, line 3, in __call__
+    raise self
+Other
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../values-types-kinds-and/'>Values, types, kinds, and…</a></li><li class="list-group-item"><a href='../is-prefix-and-on-suffix-as-reasonable-exceptions-to-a-non-hungarian-naming-standard/'>&#8220;Is&#8221; prefix and &#8220;On&#8221; suffix as reasonable exceptions to a &#8220;non-hungarian&#8221; naming standard</a></li><li class="list-group-item"><a href='../python-exception-handling-in-python-am-i-doing-this-wrong-and-why/'>Python &#8211; Exception handling in Python &#8211; Am I doing this wrong (and why?)</a></li><li class="list-group-item"><a href='../python-are-exceptions-for-flow-control-best-practice-in-python/'>Python &#8211; Are exceptions for flow control best practice in Python</a></li><li class="list-group-item"><a href='../python-how-should-i-handle-error-codes-from-an-external-xml-api/'>Python &#8211; How should I handle error codes from an external XML API</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

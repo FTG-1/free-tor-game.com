@@ -1,0 +1,223 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Python &#8211; Efficiency considerations: nested loop vs recursion &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1077791 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1077791" class="post-1077791 software type-software status-publish hentry category-software tag-algorithms tag-loops tag-performance tag-python tag-recursion"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Python &#8211; Efficiency considerations: nested loop vs recursion</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">algorithms</span><span class="mr-2 badge badge-info">loops</span><span class="mr-2 badge badge-warning">performance</span><span class="mr-2 badge badge-primary">python</span><span class="mr-2 badge badge-danger">recursion</span></p><div class="entry-content"><p>I would consider myself an intermediate Python programmer. One of my recent challenges was creating a list of all possible solutions to a given<br /> <a href="http://datagenetics.com/blog/august32014/" rel="nofollow noreferrer">Countdown</a> problem.<br /> Without getting into too much detail, I have approached the problem through:</p><ul><li><p>first generating a list of all possible Number-Operator arrangements using RPN</p></li><li><p>and then bruteforcing all possible permutations numbers/operators for all possible arrangements, recording the patterns that give me the answer.</p></li></ul><p>The full code listing is further below.</p><p>I am aware that this is utterly inefficient and my program takes on the scale of 5-10 minutes to complete.</p><p>I have come across an alternative approach <a href="http://thesamovar.net/countdownnumbers" rel="nofollow noreferrer">here</a>, which uses recursion and generators and finishes considerably faster &#8211; on the scale of 30 seconds. My level of understanding of Python does not allow me to just read through the code I found and fully understand the nuances.</p><p>I understand that it recursively creates branched expressions with all possible permutations and evaluates them until the correct result is reached, which is essentially another take of what I am doing. I <strong>do not</strong> understand why that code is orders of magnitude faster than mine.</p><p>Operations-wise, the faster code makes on the scale of 5 million attempts, mine makes 15 million attempts, but that still does not match up to the difference in time of execution.</p><p><strong>My question:</strong> I would be very grateful for a pointer as to what exactly about the class/recursion approach makes it this much more efficient than my rather naive approach to basically the same method.</p><hr/><p>After tinkering with switching off various modules in the nested loop, I think I narrowed it down. I think, quite disappointingly, that the slowest part is the way I evaluate RPN expressions.</p><p>What I did:</p><ul><li><p>Replaced the line <code>result = RPN_eval(...)</code> with <code>result = [0]</code>. This completes the program in under 9 seconds.</p></li><li><p>I then restored the line back to call the RPN_eval(&#8230;) function. Instead, I got rid of the <code>attempt</code> string generation and replaced it with a fixed <code>2 2 +</code> &#8211; this version terminated in under 69 seconds&#8230;</p></li><li><p>Finally, fixing <code>attempt</code> to be <code>2 2 + 2 +</code> increased the running time to 120 seconds.</p></li></ul><p>Extrapolating (roughly) this finding that each additional number and operator in the expression increases the program time by a factor of around 1.7 &#8211; I get total run time of 10-11 minutes, which is what my program shows under normal conditions.</p><p><strong>My new question:</strong> Therefore, what is the part of the RPN_eval function that seems to be so awkward and slow? <strong>Will do more research and formalise this into an actual separate question, not relevant here as such</strong></p><hr/><p>I think I am onto something &#8211; I am trying to dynamically convert RPN pattern expressions into a (horrendous) lambda function, that I can then feed individual number permutations to and yield outcomes, without having to remake the lambda function until the next pattern kicks in. Will add code here once it cooperates&#8230;</p><p>My code listing:</p><pre><code>import itertools as it
+import random
+import time
+operators = [&#34;+&#34;, &#34;-&#34;, &#34;/&#34;, &#34;*&#34;]
+count = 0
+
+def RPN_eval(expression, answer): #a standard stack approach to evaluating RPN expressions
+    explist = expression.split(&#34; &#34;)
+    explist.pop(-1)
+    stack = []
+
+    for char in explist:
+
+        if not char in operators:
+            stack.append(int(char))
+        else:
+            if char == &#34;+&#34;:
+                num1 = stack.pop()
+                num2 = stack.pop()
+
+                if num1 &gt; num2:
+                    return[-1]
+
+                result = num1 + num2
+                stack.append(result)
+
+            if char == &#34;-&#34;:
+                num1 = stack.pop()
+                num2 = stack.pop()
+                result = -num1 + num2
+                stack.append(result)
+
+            if char == &#34;*&#34;:
+                num1 = stack.pop()
+                num2 = stack.pop()
+
+                if num1 &gt; num2:
+                    return [-1]
+
+                result = num1 * num2
+                stack.append(result)
+
+            if char == &#34;/&#34;:
+                divisor = stack.pop()
+                divident = stack.pop()
+
+                try:
+                    result = divident / divisor
+                except:
+                    return [-1]
+
+                stack.append(result)
+
+            if result&lt;=0 or result != int(result):
+                return [-1]
+
+    return stack
+
+################### This part runs once and generates 37 possible RPN patterns for 6 numbers and 5 operators
+def generate_patterns(number_of_numbers): 
+#generates RPN patterns in the form NNoNNoo where N is number and o is operator
+
+    patterns = [&#34;N &#34;]
+
+    for pattern1 in patterns:
+        for pattern2 in patterns:
+            new_pattern = pattern1 + pattern2 + &#34;o &#34;
+            if new_pattern.count(&#34;N&#34;)&lt;=number_of_numbers and new_pattern not in patterns:
+                patterns.append(new_pattern)
+
+    return patterns
+#######################################
+
+
+######### Slowest part of program ################
+def calculate_solutions(numbers, answer):
+    global count
+    patterns = generate_patterns(len(numbers)) #RPN symbolic patterns for a given number pool, runs once, takes less than 1 second
+    random.shuffle(patterns) #not necessary, but yields answers to look at faster on average
+    print(patterns)
+    solutions = [] #this list will store answer strings of good solutions. This particular input produces 56 answers.
+
+    for pattern in patterns:
+        nn = pattern.count(&#34;N&#34;) #counts the number of numbers in a symbolic pattern to produce corresponding number group permutations
+        no = pattern.count(&#34;o&#34;) #same for operators
+        numpermut = it.permutations(numbers,nn) #all possible permutations of input numbers, is an itertools.permutations object, not a list. Takes 0 seconds to define.
+
+        print(pattern)
+
+        for np in numpermut:
+            oppermut = it.product([&#34;+&#34;,&#34;-&#34;,&#34;*&#34;,&#34;/&#34;],repeat=no) #all possible permutations of operator order for a given pattern, itertools object, not a list. Takes 0 seconds to define
+            for op in oppermut:
+                attempt = &#34;&#34;
+                ni = 0
+                oi = 0
+                for sym in pattern:
+                    if &#34;N&#34; in sym:
+                        attempt+=str(np[ni])+&#34; &#34; #replace Ns in pattern with corresponding numbers from permutations
+                        ni+=1
+                    if &#34;o&#34; in sym:
+                        attempt+=str(op[oi])+&#34; &#34; #replace os in pattern with corresponding operators from permutations
+                        oi+=1
+
+                count+=1
+                result = RPN_eval(attempt, answer) #evaluate attempt
+
+                if result[0] == answer:
+                    solutions.append(attempt) #if correct, append to list
+
+                    print(solutions)
+    return solutions
+#####################################    
+
+
+
+
+solns = calculate_solutions([50 , 8 , 3 , 7 , 2 , 10],556)
+print(len(solns), count)
+</code></pre><p>And faster code listing:</p><pre><code>class InvalidExpressionError(ValueError):
+    pass
+
+subtract = lambda x,y: x-y
+def add(x,y):
+    if x&lt;=y: return x+y
+    raise InvalidExpressionError
+def multiply(x,y):
+    if x&lt;=y or x==1 or y==1: return x*y
+    raise InvalidExpressionError
+def divide(x,y):
+    if not y or x%y or y==1:
+        raise InvalidExpressionError
+    return x/y
+
+count = 0
+add.display_string = &#39;+&#39;
+multiply.display_string = &#39;*&#39;
+subtract.display_string = &#39;-&#39;
+divide.display_string = &#39;/&#39;
+
+standard_operators = [ add, subtract, multiply, divide ]
+
+class Expression(object): pass
+
+class TerminalExpression(Expression):
+    def __init__(self,value,remaining_sources):
+        self.value = value
+        self.remaining_sources = remaining_sources
+    def __str__(self):
+        return str(self.value)
+    def __repr__(self):
+        return str(self.value)
+
+class BranchedExpression(Expression):
+    def __init__(self,operator,lhs,rhs,remaining_sources):
+        self.operator = operator
+        self.lhs = lhs
+        self.rhs = rhs
+        self.value = operator(lhs.value,rhs.value)
+        self.remaining_sources = remaining_sources
+    def __str__(self):
+        return &#39;(&#39;+str(self.lhs)+self.operator.display_string+str(self.rhs)+&#39;)&#39;
+    def __repr__(self):
+        return self.__str__()
+
+def ValidExpressions(sources,operators=standard_operators,minimal_remaining_sources=0):
+    global count
+    for value, i in zip(sources,range(len(sources))):
+        yield TerminalExpression(value=value, remaining_sources=sources[:i]+sources[i+1:])
+    if len(sources)&gt;=2+minimal_remaining_sources:
+        for lhs in ValidExpressions(sources,operators,minimal_remaining_sources+1):
+            for rhs in ValidExpressions(lhs.remaining_sources, operators, minimal_remaining_sources):
+                for f in operators:
+                    try:
+                        count+=1
+                        yield BranchedExpression(operator=f, lhs=lhs, rhs=rhs, remaining_sources=rhs.remaining_sources)
+                    except InvalidExpressionError: pass
+
+def TargetExpressions(target,sources,operators=standard_operators):
+    for expression in ValidExpressions(sources,operators):
+        if expression.value==target:
+            yield expression
+
+def FindFirstTarget(target,sources,operators=standard_operators):
+    for expression in ValidExpressions(sources,operators):
+        if expression.value==target:
+            return expression
+    raise (IndexError, &#34;No matching expressions found&#34;)
+
+if __name__==&#39;__main__&#39;:
+    import time
+    start_time = time.time()
+    target_expressions = list(TargetExpressions(556,[50,8,3,7,2,10]))
+    #target_expressions.sort(lambda x,y:len(str(x))-len(str(y)))
+    print (&#34;Found&#34;,len(target_expressions),&#34;solutions, minimal string length was:&#34;)
+    print (target_expressions[0],&#39;=&#39;,target_expressions[0].value)
+    print()
+    print (&#34;Took&#34;,time.time()-start_time,&#34;seconds.&#34;)
+    print(target_expressions)
+    print(count)
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Let&#39;s walk though a few steps of the &#39;fast&#39; solution:</p><p><code>TargetExpression</code> is called with the problem.  It calls <code>ValidExpression</code> which yields two iterators.  The first iterator provides each <code>TerminalExpression</code> one at a time.  The loop in <code>TargetExpression</code> checks each one to see if it is the answer if so, it is yielded (one at a time, via iterator) to the main program.  Once done with that, it yields a second iterator which is returns candidate expressions one at a time by permuting through the possible using nested iterators.  These values are again looped over by the loop in <code>TargetExpression</code> one at a time.  Each of the nested iterators, will also only return one value at a time.</p><p>One difference here is that I think the &#39;fast&#39; version  pruning the calculations.  That is, if the operands are out of order (i.e. first is not less than the second) it stops looking at any other results that start with those operands.  For example, when it starts with <code>50 + 8</code>, the fast version immediately bails and checks a different starting pair.  If I&#39;m not mistaken, your version will check all permutations that start with <code>50 + 8</code>.  It will ignore them but one at a time whereas the &#39;fast&#39; version will disregard that entire part of the tree.</p><p>After your edit where you have a narrowed things down a bit, here are some thoughts on the <code>RPN_eval</code> method:</p><p>First, the easy stuff.  You have a set of if statements which are mutually exclusive.  You are going to check for all four operators on each loop even though only one of those checks will be true.  You should change it to a chained if like so:</p><pre><code>if not char in operators:
+  #...
+elif char == &#34;+&#34;:
+  #...
+elif char == &#34;-&#34;:
+  #...
+elif char == &#34;*&#34;:
+  #...
+elif char == &#34;/&#34;:
+</code></pre><p>I&#39;m not sure you need that last if statement but maybe I&#39;m missing something. I doubt this will make a huge difference but it&#39;s more correctly conveying the intention and will be less prone to coding error.</p><p>The only thing this code does that looks at all expensive is the continual pushing and popping and that&#39;s not that costly.  The best I can guess is that because you are checking the same operands more than the other versions that it adds up.  This is for the same reason as described above for pruning.  When the &#39;fast&#39; version checks all the trees that start with <code>8 + 50</code>, it does that operation one time.  Your approach will do 2 pushes and 2 pops for every candidate tree that starts with <code>8 + 50</code>.  I don&#39;t have time to do that math but it&#39;s not a small number.  You should try counting how many different expressions you calculate and how many start with the same root.  It will likely be eye-opening.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../big-o-for-nested-loop/'>Big-O for nested loop</a></li><li class="list-group-item"><a href='../run-time-of-nested-while-loop-inside-for-loop/'>Run time of nested while loop inside for loop</a></li><li class="list-group-item"><a href='../general-way-to-convert-a-loop-while-for-to-recursion-or-from-a-recursion-to-a-loop/'>General way to convert a loop (while/for) to recursion or from a recursion to a loop</a></li><li class="list-group-item"><a href='../nything-that-can-be-done-with-recursion-that-cant-be-done-with-loops/'>Nything that can be done with recursion that can&#8217;t be done with loops</a></li><li class="list-group-item"><a href='../recursion-in-merge-sort-algorithm-how-is-it-obvious-to-use-this-type-of-recursion/'>Recursion in Merge Sort algorithm. How is it obvious to use this type of recursion</a></li><li class="list-group-item"><a href='../is-a-while-loop-intrinsically-a-recursion/'>Is a while loop intrinsically a recursion</a></li><li class="list-group-item"><a href='../what-are-the-considerations-to-determine-whether-you-can-use-recursion-to-solve-a-problem/'>What are the considerations to determine whether you can use recursion to solve a problem</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

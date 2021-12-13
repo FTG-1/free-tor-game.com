@@ -1,0 +1,125 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211;  the best way to initialize a child&#8217;s reference to its parent &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1063372 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1063372" class="post-1063372 software type-software status-publish hentry category-software tag-c tag-patterns-and-practices"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211;  the best way to initialize a child&#8217;s reference to its parent</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">patterns-and-practices</span></p><div class="entry-content"><p>I&#39;m developing an object model that has lots of different parent/child classes.  Each child object has a reference to its parent object.  I can think of (and have tried) several ways to initialize the parent reference, but I find significant drawbacks to each approach.  Given the approaches described below which is best &#8230; or what is even better.</p><p>I&#39;m not going to make sure the code below compiles so please try to see my intention if the code is not syntactically correct.</p><p>Note that some of my child class constructors do take parameters (other than parent) even though I don&#39;t always show any.</p><ol><li><p>Caller is responsible for setting parent and adding to the same parent.</p><pre><code>class Child {
+  public Child(Parent parent) {Parent=parent;}
+  public Parent Parent {get; private set;}
+}
+class Parent {
+  // singleton child
+  public Child Child {get; set;}
+  //children
+  private List&lt;Child&gt; _children = new List&lt;Child&gt;();
+  public List&lt;Child&gt; Children { get {return _children;} }
+}
+</code></pre><p><strong>Downside:</strong> setting parent is a two-step process for the consumer.</p><pre><code>var child = new Child(parent);
+parent.Children.Add(child);
+</code></pre><p><strong>Downside:</strong> error prone.  Caller can add child to a different parent than was used to initialize the child.</p><pre><code>var child = new Child(parent1);
+parent2.Children.Add(child);
+</code></pre></li><li><p>Parent verifies that caller adds child to parent for which was initialized.</p><pre><code>class Child {
+  public Child(Parent parent) {Parent = parent;}
+  public Parent Parent {get; private set;}
+}
+class Parent {
+  // singleton child
+  private Child _child;
+  public Child Child {
+    get {return _child;}
+    set {
+      if (value.Parent != this) throw new Exception();
+      _child=value;
+    }
+  }
+  //children
+  private List&lt;Child&gt; _children = new List&lt;Child&gt;();
+  public ReadOnlyCollection&lt;Child&gt; Children { get {return _children;} }
+  public void AddChild(Child child) {
+    if (child.Parent != this) throw new Exception();
+    _children.Add(child);
+  }
+}
+</code></pre><p><strong>Downside:</strong> Caller still has a two-step process for setting parent.</p><p><strong>Downside:</strong> runtime checking – reduces performance and adds code to every add/setter.</p></li><li><p>The parent sets the child&#39;s parent reference (to itself) when the child is added/assigned to a parent.  Parent setter is internal.</p><pre><code>class Child {
+  public Parent Parent {get; internal set;}
+}
+class Parent {
+  // singleton child
+  private Child _child;
+  public Child Child {
+    get {return _child;}
+    set {
+      value.Parent = this;
+      _child = value;
+    }
+  }
+  //children
+  private List&lt;Child&gt; _children = new List&lt;Child&gt;();
+  public ReadOnlyCollection&lt;Child&gt; Children { get {return _children;} }
+  public void AddChild(Child child) {
+    child.Parent = this;
+    _children.Add(child);
+  }
+}
+</code></pre><p><strong>Downside:</strong> The child is created without a parent reference.  Sometimes initialization/validation requires the parent which means some initialization/validation must be performed in the child’s parent setter.  The code can get complicated.  It would be so much easier to implement the child if it always had its parent reference.</p></li><li><p>Parent exposes factory add methods so that a child always has a parent reference.  Child ctor is internal.  Parent setter is private.</p><pre><code>class Child {
+  internal Child(Parent parent, init-params) {Parent = parent;}
+  public Parent Parent {get; private set;}
+}
+class Parent {
+  // singleton child
+  public Child Child {get; private set;}
+  public void CreateChild(init-params) {
+      var child = new Child(this, init-params);
+      Child = value;
+  }
+  //children
+  private List&lt;Child&gt; _children = new List&lt;Child&gt;();
+  public ReadOnlyCollection&lt;Child&gt; Children { get {return _children;} }
+  public Child AddChild(init-params) {
+    var child = new Child(this, init-params);
+    _children.Add(child);
+    return child;
+  }
+}
+</code></pre><p><strong>Downside:</strong> Can’t use initialization syntax such as <code>new Child(){prop = value}</code>.<br /> Instead have to do:</p><pre><code>var c = parent.AddChild(); 
+c.prop = value;
+</code></pre><p><strong>Downside:</strong> Have to duplicate the parameters of the child constructor in the add-factory methods.</p><p><strong>Downside:</strong> Can’t use a property setter for a singleton child.  It seems lame that I need a method to set the value but provide read access via a property getter.  It’s lopsided.</p></li><li><p>Child adds itself to the parent referenced in its constructor.  Child ctor is public.  No public add access from parent.</p><pre><code>//singleton
+class Child{
+  public Child(ParentWithChild parent) {
+    Parent = parent;
+    Parent.Child = this;
+  }
+  public ParentWithChild Parent {get; private set;}
+}
+class ParentWithChild {
+  public Child Child {get; internal set;}
+}
+
+//children
+class Child {
+  public Child(ParentWithChildren parent) {
+    Parent = parent;
+    Parent._children.Add(this);
+  }
+  public ParentWithChildren Parent {get; private set;}
+}
+class ParentWithChildren {
+  internal List&lt;Child&gt; _children = new List&lt;Child&gt;();
+  public ReadOnlyCollection&lt;Child&gt; Children { get {return _children;} }
+}
+</code></pre><p><strong>Downside:</strong> calling syntax is not great.  Normally one calls an <code>add</code> method on the parent instead of just creating an object like this:</p><pre><code>var parent = new ParentWithChildren();
+new Child(parent); //adds child to parent
+new Child(parent);
+new Child(parent);
+</code></pre><p>And sets a property rather than just creating an object like this:</p><pre><code>var parent = new ParentWithChild();
+new Child(parent); // sets parent.Child
+</code></pre></li></ol><p>&#8230;</p><p>I just learned that SE does not allow some subjective questions and clearly this is a subjective question.  But, maybe it is a good subjective question.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I would stay away from any scenario which necessarily requires the child to know about the parent.</p><p>There are ways of passing messages from child to parent through events.  This way the parent, upon add, simply has to register to an event that the child triggers, without the child having to know about the parent directly.  Afterall, this is likely the intended usage of a child knowing about its parent, in order to be able to use the parent to some effect.  Except you wouldn&#39;t want the child performing the job of the parent, so <em>really</em> what you want to do is simply tell the parent that something has happened.  Therefore, what you need to handle is an event on the child, of which the parent can take advantage.</p><p>This pattern also scales very well should this event become useful to other classes.  Perhaps it is a bit of an overkill, but it also prevents you from shooting yourself in the foot later, since it becomes tempting to want to use parent in your child class which only couples the two classes even more.  Refactoring of such classes afterwards is time-consuming and can easily create bugs in your program.</p><p>Hope that helps!</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-design-pattern-for-logging-changes-in-parent-child-objects-saved-to-database/'>C# &#8211; Design pattern for logging changes in parent/child objects saved to database</a></li><li class="list-group-item"><a href='../c-how-to-argue-against-this-completely-public-mindset-of-business-object-class-design/'>C# &#8211; How to argue against this &#8220;completely public&#8221; mindset of business object class design</a></li><li class="list-group-item"><a href='../c-recreating-complex-aggregates-from-a-persistance-source/'>C# &#8211; Recreating complex aggregates from a persistance source</a></li><li class="list-group-item"><a href='../c-mvvm-with-di-view-model-location-and-shared-service-data/'>C# &#8211; MVVM with DI, view model location and shared service data</a></li><li class="list-group-item"><a href='../c-wpf-dialog-service-as-injectable-service-or-a-static-class/'>C# &#8211; WPF, Dialog Service as injectable Service or a Static class</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

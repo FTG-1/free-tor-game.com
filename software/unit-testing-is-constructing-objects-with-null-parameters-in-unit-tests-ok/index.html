@@ -1,0 +1,55 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Unit-testing &#8211; Is constructing objects with null parameters in unit tests OK &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1067673 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1067673" class="post-1067673 software type-software status-publish hentry category-software tag-unit-testing"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Unit-testing &#8211; Is constructing objects with null parameters in unit tests OK</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">unit testing</span></p><div class="entry-content"><p>I started writing some unit tests for my current project. I don&#39;t really have experience with it though. I first want to completely &#34;get it&#34;, so I am currently using neither my IoC framework nor a mocking library.</p><p>I was wondering if there is anything wrong with providing null arguments to objects&#39; constructors in unit tests. Let me provide some example code:</p><pre class="lang-csh prettyprint-override"><code>public class CarRadio
+{...}
+
+
+public class Motor
+{
+    public void SetSpeed(float speed){...}
+}
+
+
+public class Car
+{
+    public Car(CarRadio carRadio, Motor motor){...}
+}
+
+
+public class SpeedLimit
+{
+    public bool IsViolatedBy(Car car){...}
+}
+</code></pre><p>Yet Another Car Code Example(TM), reduced to only the parts important to the question. I now wrote a test something like this:</p><pre class="lang-csh prettyprint-override"><code>public class SpeedLimitTest
+{
+    public void TestSpeedLimit()
+    {
+        Motor motor = new Motor();
+        motor.SetSpeed(10f);
+        Car car = new Car(null, motor);
+
+        SpeedLimit speedLimit = new SpeedLimit();
+        Assert.IsTrue(speedLimit.IsViolatedBy(car));
+    }
+}
+</code></pre><p>The test runs fine. <code>SpeedLimit</code> needs a <code>Car</code> with a <code>Motor</code> in order to do its thing. It is not interested in a <code>CarRadio</code> at all, so I provided null for that.</p><p>I am wondering if an object providing correct functionality <em>without being fully constructed</em> is a violation of SRP or a code smell. I have this nagging feeling that it does, but <code>speedLimit.IsViolatedBy(motor)</code> doesn&#39;t feel right either &#8211; a speed limit is violated by a car, not a motor. Maybe I just need a different perspective for unit tests vs. working code, because <em>the whole intention</em> is to test only a part of the whole.</p><p><strong>Is constructing objects with null in unit tests a code smell?</strong></p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>In the case of the example above, it is reasonable that a <code>Car</code> can exist without a <code>CarRadio</code>. In which case, I&#39;d say that not only is it acceptable to pass in a null <code>CarRadio</code> sometimes, I&#39;d say that it&#39;s obligatory. Your tests need to ensure that the implementation of the <code>Car</code> class is robust, and does not throw null pointer exceptions when no <code>CarRadio</code> is present.</p><p>However, let&#39;s take a different example - let&#39;s consider a <code>SteeringWheel</code>. Let&#39;s assume that a <code>Car</code> has to have a <code>SteeringWheel</code>, but the speed test doesn&#39;t really care about it. In this case, I wouldn&#39;t pass a null <code>SteeringWheel</code> as this is then pushing the <code>Car</code> class into places where it isn&#39;t designed to go. In this case, you&#39;d be better off creating some sort of <code>DefaultSteeringWheel</code> which (to continue the metaphor) is locked in a straight line.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/python-how-to-populate-a-private-container-for-unit-test/'>Python &#8211; How to populate a private container for unit test</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/php-ive-unit-tested-the-class-now-how-to-get-started-with-an-integration-test/'>Php &#8211; I&#8217;ve unit tested the class, now how to get started with an integration test</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-interfacing-application-code-with-unit-tests/'>C++ &#8211; Interfacing application code with unit tests</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-is-this-method-of-writing-unit-tests-correct/'>C# &#8211; Is this method of writing Unit Tests correct</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/unit-testing-how-exactly-should-unit-tests-be-written-without-mocking-extensively/'>Unit-testing &#8211; How exactly should unit tests be written without mocking extensively</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

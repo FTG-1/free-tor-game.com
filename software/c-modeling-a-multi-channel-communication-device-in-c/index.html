@@ -1,0 +1,103 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Modeling a multi-channel communication device in C# &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1087901 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1087901" class="post-1087901 software type-software status-publish hentry category-software tag-api tag-architecture tag-c tag-communication tag-design"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Modeling a multi-channel communication device in C#</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">api</span><span class="mr-2 badge badge-info">Architecture</span><span class="mr-2 badge badge-warning">c</span><span class="mr-2 badge badge-primary">communication</span><span class="mr-2 badge badge-danger">design</span></p><div class="entry-content"><p><strong>Background</strong></p><p>We (my coworkers and I) are architecting a high level C# API to interact with a hardware device&#39;s native Windows DLL.</p><p>First I will discuss the hardware-architecture, then get to the software-architecture part.</p><p><em>Main Device</em></p><p>The device has the following components:</p><ul><li><p>Exactly 10 receive channels</p></li><li><p>Exactly 4 transmission channels</p></li></ul><p><em>Receive Channels</em></p><p>There can only the exact specified number of receive channels on the device per the hardware specification (no more no less). The receive channels keep their own buffers as well as various getters/setters for their internal hardware configurations.</p><p>I have decided to declare the channels as a public 10 element array inside the &#34;main device&#34; class, for the following reasons:</p><ul><li>Whenever new data is received we check the addresses on all channels in the &#34;main device&#34; to know which channel the received data is intended for. This is currently done in a foreach loop which is nice and clean.</li><li>When assigning the properties of the channels I can do so easily by using a foreach loop (again, provides cleanness).</li><li>Need to access the actual object, not just return an instance of the object.</li></ul><p><em>Transmit Channels</em></p><p>I have decided to declare the channels as a public 4 element array inside the &#34;main device&#34; class, for the same reasons as the <em>receive</em> channels.</p><p><strong>Problem</strong></p><ol><li>The channels are publicly exposed.</li><li>As one of my colleagues has asked, &#34;what if someone enters an invalid index into the array?&#34;</li></ol><p><strong>Question</strong></p><p>Is the array the proper way of going about this? Is there another way? I am looking for some suggestions on the general architecture.</p><p><em>Reminder:</em> I need to access the channel objects directly, however we go about it.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I believe you should keep the amount of channels abstracted:</p><ul><li><p>The amount of channels may vary in the future, e.g. hardware up/downgrade (new devices)</p></li><li><p>You may want to reserve some channels in the future, e.g. for out-of-band communications and notifications</p></li></ul><p>The exactness should be kept and ensured in initialization.</p><p>You should expose the channels with the least specific type possible, such as <code>IEnumerable&lt;ReceivingChannel&gt;</code> and <code>IEnumerable&lt;TransmittingChannel&gt;</code>.</p><p>The <code>MainDevice</code> should expose a way to initialize or manage these collections, you have several non-exclusive options:</p><ul><li>Constructor parameters</li></ul><pre class="lang-cs prettyprint-override"><code>private List&lt;IReceivingChannel&gt; receivingChannels = new List&lt;IReceivingChannel&gt;();
+
+private List&lt;IReceivingChannel&gt; transmittingChannels = new List&lt;ITransmittingChannel&gt;();
+
+public MainDevice(IEnumerable&lt;IReceivingChannel&gt; receivingChannels,
+                  IEnumerable&lt;ITransmittingChannel&gt; transmittingChannels)
+{
+    this.receivingChannels.AddRange(receivingChannels);
+    this.transmittingChannels.AddRange(transmittingChannels);
+}
+</code></pre><ul><li>Fluid initialization methods</li></ul><pre class="lang-cs prettyprint-override"><code>public MainDevice WithReceivingChannels(IEnumerable&lt;IReceivingChannel&gt; receivingChannels)
+{
+    this.receivingChannels.AddRange(receivingChannels);
+    return this;
+}
+
+public MainDevice WithReceivingChannels(params IReceivingChannel[] receivingChannels)
+{
+    return WithReceivingChannel((IEnumerable&lt;IReceivingChannel&gt;)receivingChannels);
+}
+
+public MainDevice WithTransmittingChannels(IEnumerable&lt;ITransmittingChannel&gt; transmittingChannels)
+{
+    this.transmittingChannels.AddRange(transmittingChannels);
+    return this;
+}
+
+public MainDevice WithTransmittingChannels(params ITransmittingChannel[] transmittingChannels)
+{
+    return WithTransmittingChannels((IEnumerable&lt;ITransmittingChannel&gt;)transmittingChannels);
+}
+</code></pre><p>Perhaps throw an exception (e.g. <code>InvalidOperationException</code>) in case you use these methods after the object has been first used by actual worker methods.  Or better yet, have these methods in a builder class, where you finally call <code>GetDevice</code> which will create and initialize the device, possibly with dependency injection (I will not discuss DI here.)</p><ul><li><p>Methods</p><p><code>AddReceivingChannel</code>, <code>RemoveReceivingChannel</code>, <code>AddTransmittingChannel</code>, <code>RemoveTransmittingChannel</code></p><p><code>GetReceivingChannels</code> returning <code>IEnumerable&lt;IReceivingChannel&gt;</code>, or a similar <code>ReceivingChannels</code> property</p><p><code>GetTransmittingChannels</code> returning <code>IEnumerable&lt;ITransmittingChannel&gt;</code>, or a similar <code>TransmittingChannels</code> property</p><p><code>GetReceivingChannelById</code>, <code>GetReceivingChannelByAddress</code>, <code>GetTransmittingChannelById</code>, <code>GetTransmittingChannelByAddress</code></p></li></ul><p>Don&#39;t use settable properties, as that is asking for trouble.  The <code>MainDevice</code> should be the only entity responsible for managing its actual composition.</p><p>This way, you may start by using arrays or lists to store the channels, but switch to dictionaries or trees (e.g. <code>SortedDictionary&lt;TKey, TValue&gt;</code>) if accessing them by some key becomes a bottleneck.  And the users of <code>MainDevice</code> are just as happy.</p><p>You can define a base interface <code>IChannel</code> for the common things that all channels do, such as opening and/or closing with an optional timeout, and have <code>IReceivingChannel</code> and <code>ITransmittingChannel</code> hold the specific operations, such as receiving and transmitting with an optional timeout:</p><pre><code>public interface IChannel
+{
+    void Open(TimeSpan timeout);
+    void Close(TimeSpan timeout);
+}
+
+// I&#39;m using generics, but you don&#39;t have to if you&#39;ll always
+// deal with the same data type, e.g. IEnumerable&lt;byte&gt;
+//
+// I&#39;m also over-simplifying by not stating end-of-transmission
+// and other usual channel state.
+
+public interface IReceivingChannel&lt;out T&gt; : IChannel
+{
+    T Receive(TimeSpan timeout);
+}
+
+public interface ITransmittingChannel&lt;in T&gt; : IChannel
+{
+    void Transmit(T obj, TimeSpan timeout);
+}
+</code></pre><p>In case you need to access some inner object from a channel, define specific interfaces on which you may use the <code>as</code> operator instead of the actual class.  For instance, a <code>IFrobberContainer</code> interface with a <code>GetNativeFrobber</code> method (or similar <code>NativeFrobber</code> property), which does <strong>not</strong> extend <code>IReceivingChannel</code>.</p><p>This way, any object can contain a frobber:</p><pre><code>public interface IFrobberContainer
+{
+    IFrobber NativeFrobber { get; }
+}
+
+internal class FrobberReceivingChannel : IReceivingChannel&lt;Thing&gt;, IFrobberContainer
+{
+    public void Open(TimeSpan timeout) { /* ... */ }
+
+    public void Close(TimeSpan timeout) { /* ... */ }
+
+    public Thing Receive(TimeSpan timeout) { /* ... */ }
+
+    public IFrobber NativeFrobber { get; private set; }
+}
+
+internal class FrobberTransmittingChannel : ITransmittingChannel&lt;Thing&gt;, IFrobberContainer
+{
+    public void Open(TimeSpan timeout) { /* ... */ }
+
+    public void Close(TimeSpan timeout) { /* ... */ }
+
+    public void Transmit(Thing obj, TimeSpan timeout) { /* ... */ }
+
+    public IFrobber NativeFrobber { get; private set; }
+}
+</code></pre><p>In case you have something extra to do with frobber channels, you can ask if the channel has a frobber using the <code>as</code> operator.</p><p>With the new C# 6 null-conditional operator, you can do this:</p><pre><code>(channel as IFrobberContainer)?.NativeFrobber?.Frobulate();
+</code></pre><p>instead of this:</p><pre><code>var frobberContainer = channel as IFrobberContainer;
+if (frobberContainer != null)
+{
+    var frobber = frobberContainer.NativeFrobber;
+    if (frobber != null)
+    {
+        frobber.Frobulate();
+    }
+}
+</code></pre><p>By segregating these distinct aspects into interfaces, you make your actual objects more flexible, more easily replaceable and mockable (good for unit testing).</p><hr/><p>If you insist on having 10 receiving channels and 4 transmitting channels, then you probably shouldn&#39;t use collections, but conversely use very good names for 14 properties.  For generic iteration, you can keep internal collections initialized once, to avoid obvious code repetition.</p><p>You should still use interfaces and document which ones each channel implements, instead of using actual classes as the types for these properties, to retain the replaceability benefits for refactoring, maintenance and testing purposes.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../tester-developer-communication/'>Tester-Developer communication</a></li><li class="list-group-item"><a href='../python-multiple-users-using-the-same-script-for-their-websites/'>Python &#8211; Multiple users using the same script for their websites</a></li><li class="list-group-item"><a href='../architecture-chosing-between-microservice-communication-methods/'>Architecture &#8211; Chosing between microservice communication methods</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

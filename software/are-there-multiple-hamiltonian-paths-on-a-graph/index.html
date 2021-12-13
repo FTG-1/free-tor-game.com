@@ -1,0 +1,102 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Are there multiple Hamiltonian Paths on a Graph &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1087206 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1087206" class="post-1087206 software type-software status-publish hentry category-software tag-algorithms tag-graph"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Are there multiple Hamiltonian Paths on a Graph</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">algorithms</span><span class="mr-2 badge badge-info">graph</span></p><div class="entry-content"><p>Can anyone suggest an algorithm for this problem.</p><p>Given an undirected unweighted cyclic graph, and a given start and end node in that graph, I&#39;d like to determine if there is <em>exactly one</em> valid path from start to end visiting all nodes (i.e. a Hamiltonian path, not a cycle).</p><p>It&#39;s NP-hard, but my N is relatively small (up to 30 nodes or so) and each node&#39;s connectivity is typically very small (no more than 4-5, often 2 or 3, typically local links [i.e. they correspond to locations in 2d connected to near neighbours]), so I&#39;m confident it is feasible.</p><p>Published algorithms are typically for cycles, for finding a single solution, and for unknown start and end points. I&#39;m curious if anyone can suggest something more fitting, or if you have any intuition on an approach.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>If the problem is small enough, a totally naive approach works well. We want to generate all <em>pinned</em> hamiltonian paths connecting two nodes <em>a</em> and <em>b</em> in a given <em>graph</em>. For this, we just generate all valid paths originating from <em>a</em> and filter out those that are not hamiltonian or that do not end in <em>b</em>.</p><p>The following code snippet is an implementation of this idea in OCaml. On my machine it can find all pinned hamiltonian path in a complete graph of size 9 (there is (9-2)! = 5040 such paths, they are all the permutations of 7 non-pinned nodes), but the program cannot handle the case of size 10. This should give you an idea of the complexity of the operation, but as you see, I could not be less naive when implementing this.</p><pre><code>module Graph =
+struct
+  type t = {
+    node: int list;
+    edge: (int * int list) list;
+  }
+
+  let nodes graph =
+    List.sort_uniq Pervasives.compare graph.node
+
+  let neighbours graph n =
+    try List.assoc n graph.edge
+    with Not_found -&gt; []
+
+  let pointed_hamiltonian_paths graph a =
+    let is_visiting_all_nodes path =
+      let sort = List.sort Pervasives.compare in
+      sort path = sort graph.node
+    in
+    let hamiltonian_extensions path =
+      match path with
+      | [] -&gt; []
+      | node :: _ -&gt;
+          match List.filter
+                  (fun x -&gt; not(List.mem x path))
+                  (neighbours graph node)
+          with
+          | [] -&gt; [ path ]
+          | newnodes -&gt; List.map (fun x -&gt; x :: path) newnodes
+    in
+    let rec loop paths =
+      match List.concat (List.map hamiltonian_extensions paths) with
+      | [] -&gt; []
+      | newpaths -&gt;
+          if newpaths = paths then paths else loop newpaths
+    in
+    List.filter is_visiting_all_nodes (loop [[a]])
+
+  let pinned_hamiltonian_paths graph a b =
+    List.filter (fun path -&gt; (match path with hd ::_ -&gt; hd = b | [] -&gt; false))
+      (pointed_hamiltonian_paths graph a)
+
+  let example_1 = {
+    node = [1; 2; 3; 4; 5];
+    edge = [
+      1, [ 4 ];
+      2, [ 4; 5];
+      3, [ 5 ];
+      4, [ 1; 2; 5 ];
+      5, [ 2; 3; 4 ];
+    ];
+  }
+
+  let example_2 = {
+    node = [ 6; 7; 8 ];
+    edge = [
+      6, [ 7; 8];
+      7, [ 6; 8];
+      8, [ 6; 7];
+    ];
+  }
+
+  let example_3 = {
+    node = example_1.node @ example_2.node;
+    edge = example_1.edge @ example_2.edge;
+  }
+
+  let complete n =
+    let rec loop ax i =
+      if i &lt; 1 then ax else loop (i :: ax) (pred i)
+    in
+    let seq = loop [] n in {
+      node = seq;
+      edge = List.map (fun x -&gt; x, seq) seq;
+    }
+end
+</code></pre><p>There are three examples of graphs defined, the first one is:</p><p><a href="../../../i.stack.imgur.com/gTt6b.png" rel="nofollow noreferrer"><img src="../../../i.stack.imgur.com/gTt6b.png" alt="A simple graph with 5 nodes"/></a></p><p>the second one is a complete graph without loops (edges having the same start and end points) and the third one is the disjoint union of the two. With these definitions we can experiment a bit in the toplevel:</p><pre><code># Graph.pinned_hamiltonian_paths Graph.example_1 1 3;;
+- : int list list = [[3; 5; 2; 4; 1]]
+
+# Graph.pinned_hamiltonian_paths Graph.example_2 6 8;;
+- : int list list = [[8; 7; 6]]
+
+# Graph.pinned_hamiltonian_paths Graph.example_3 1 3;;
+- : int list list = [] (* The graph is not connected! :) *)
+
+# Graph.pinned_hamiltonian_paths (Graph.complete 4) 1 4;;
+- : int list list = [[4; 3; 2; 1]; [4; 2; 3; 1]]
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../efficient-graph-clustering-algorithm/'>Efficient graph clustering algorithm</a></li><li class="list-group-item"><a href='../how-to-represent-a-graph-with-multiple-edges-allowed-between-nodes-and-edges-that-can-selectively-disappear/'>How to represent a graph with multiple edges allowed between nodes and edges that can selectively disappear</a></li><li class="list-group-item"><a href='../how-to-find-the-shortest-path-between-two-subgraphs-of-a-larger-graph/'>How to find the shortest path between two subgraphs of a larger graph</a></li><li class="list-group-item"><a href='../yens-k-shortest-paths-algorithm/'>Yen&#8217;s k shortest paths algorithm</a></li><li class="list-group-item"><a href='../find-the-min-max-length-of-directed-graph/'>Find the min/max length of directed graph</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

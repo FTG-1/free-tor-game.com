@@ -1,0 +1,78 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Should an application configuration interface be broken into multiple interfaces to reduce feature creep &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1081350 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1081350" class="post-1081350 software type-software status-publish hentry category-software tag-c tag-configuration tag-interfaces"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Should an application configuration interface be broken into multiple interfaces to reduce feature creep</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">configuration</span><span class="mr-2 badge badge-warning">interfaces</span></p><div class="entry-content"><p>My windows service is neatly separated into 5 components &#8211; each with their own interface and pulled together by a bootstrapper. One of my requirements is to provide configuration options in my app.config for the different pieces of the application.</p><p>I started with the following interface:</p><pre><code>public interface IConfiguration
+{
+    /// &lt;summary&gt;
+    /// The amount of time database records are allowed to be in the system before they&#39;re removed.
+    /// &lt;/summary&gt;
+    TimeSpan OldSignalValuePurgePeriod { get; }
+
+    /// &lt;summary&gt;
+    /// The lowest log level that will be written to the log file.
+    /// &lt;/summary&gt;
+    LogSeverity MinimumLogSeverity { get; }
+
+    /// &lt;summary&gt;
+    /// The period of time to wait for a signal metadata response before re-requesting it.
+    /// &lt;/summary&gt;
+    TimeSpan SignalMetadataRerequestPeriod { get; }
+}
+</code></pre><p>which I&#39;d planned to pass a constructed instance of to each of my components requiring configuration. The thing is, each of the above properties is a configuration option for a different component. There&#39;s a very good chance I will be adding some more properties at a later date to this interface. Obviously I&#39;m populating the properties of the interface in the implementing object&#39;s constructor by reading the app.config file.</p><p>What I&#39;m struggling with is this: since each component doesn&#39;t care about the configuration options of the other components, how can I separate this interface into pieces specific to each component that isn&#39;t a pain to construct, and one that <a href="http://blog.codinghorror.com/new-programming-jargon/" rel="nofollow">Jimmy</a> will understand immediately?</p><p>I&#39;ve thought of doing something like this:</p><pre><code>public interface IRepositoryConfiguration
+{
+    TimeSpan OldSignalValuePurgePeriod { get; }
+}
+
+public interface ILoggingConfiguration
+{
+    LogSeverity MinimumLogSeverity { get; }
+}
+
+public interface IDataManagerConfiguration
+{
+    TimeSpan SignalMetadataRerequestPeriod { get; }
+}
+
+public class ConfigurationImplementation
+    : IRepositoryConfiguration, 
+      ILoggingConfiguration, 
+      IDataManagerConfiguration
+{
+
+}
+</code></pre><p>where each component takes an instance of their own configuration interface, but I feel like that is overkill and starts to get unmanageable.</p><p>Input?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>As long as all your configuration options come from a file, using interfaces does not bring you any benefit, since your configuration file can only provide fixed values. Even if you have to deal with more than one option per service, I do not see any convincing reason for using interfaces. You can still utilize simple &#34;data objects&#34; for the configuration  and create a configuration class like this one:</p><pre><code>public class Configuration
+{
+     public Configuration()
+     { /* logic for getting the values from config file */}
+
+     public RepositoryConfiguration RepositoryConfiguration{get; private set;}
+     public LoggingConfiguration LoggingConfiguration{get; private set;}
+     public DataManagerConfiguration{get; private set;}
+}
+</code></pre><p>The data objects for the individual configurations of your services can simply look like this:</p><pre><code>public class DataManagerConfiguration
+{
+    public TimeSpan SignalMetadataRerequestPeriod { get; private set;}
+    // ... add more values here
+}
+</code></pre><p>The <code>DataManager</code> constructor will then look like this:</p><pre><code> public DataManager(IRepository repository, ILogger logger, DataManagerConfiguration dmc)
+ {...}
+</code></pre><p>As you see, still one additional parameter to the ctor, regardless of how many values are inside the class <code>DataManagerConfiguration</code>. And providing config values for testing purposes will typically result in less boilerplate code than creating a mock interface implementation.</p><p>Some remarks:</p><ul><li><p>not coupling the different services to one big configuration class is probably a good idea, regardless of your decision for data objects or interfaces</p></li><li><p>if the data objects encapsulate just one integral type, you can even omit the &#34;wrapping&#34; data class as long as you do not really need it.</p></li></ul></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/java-best-way-to-load-application-settings/'>Java &#8211; Best way to load application settings</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/php-interface-segregation-principle-type-hinting-multiple-interfaces/'>Php &#8211; Interface Segregation Principle &#8211; type hinting multiple interfaces</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/java-implement-multiple-separate-interfaces-or-interface-hierarchy/'>Java &#8211; Implement multiple separate interfaces or interface hierarchy</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/best-practices-for-handling-large-number-of-structured-configuration-property-files/'>Best practices for handling large number of structured configuration/property files</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

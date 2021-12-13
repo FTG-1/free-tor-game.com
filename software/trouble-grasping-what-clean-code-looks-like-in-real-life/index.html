@@ -1,0 +1,69 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Trouble grasping what clean code looks like in real life &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1087402 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1087402" class="post-1087402 software type-software status-publish hentry category-software tag-clean-code"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Trouble grasping what clean code looks like in real life</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">clean code</span></p><div class="entry-content"><p>I am currently reading and working through &#34;Clean Code: A Handbook of Agile Software Craftsmanship&#34; by Robert C. Martin. The author talks about how a function should do one thing only, and thus be relatively short. Specifically Martin writes:</p><blockquote><p>This implies that the blocks within if statements, else statements, while statements, and so on should be one line long. Probably that line should be a function call. Not only does this keep the enclosing function small, but it also adds documentary value because the function called within the block can have a nicely descriptive name.</p><p>This also implies that functions should not be large enough to hold nested structures. Therefore, the indent level of a function should not be greater than one or two. This, of course, makes the functions easier to read and understand</p></blockquote><p>This makes sense, but seems to conflict with examples of what I see as clean code. Take the following method for example:</p><pre class="lang-java prettyprint-override"><code>    public static boolean millerRabinPrimeTest(final int n) {
+        final int nMinus1 = n - 1;
+        final int s = Integer.numberOfTrailingZeros(nMinus1);
+        final int r = nMinus1 &gt;&gt; s;
+        //r must be odd, it is not checked here
+        int t = 1;
+        if (n &gt;= 2047) {
+            t = 2;
+        }
+        if (n &gt;= 1373653) {
+            t = 3;
+        }
+        if (n &gt;= 25326001) {
+            t = 4;
+        } // works up to 3.2 billion, int range stops at 2.7 so we are safe :-)
+        BigInteger br = BigInteger.valueOf(r);
+        BigInteger bn = BigInteger.valueOf(n);
+
+        for (int i = 0; i &lt; t; i++) {
+            BigInteger a = BigInteger.valueOf(SmallPrimes.PRIMES[i]);
+            BigInteger bPow = a.modPow(br, bn);
+            int y = bPow.intValue();
+            if ((1 != y) &amp;&amp; (y != nMinus1)) {
+                int j = 1;
+                while ((j &lt;= s - 1) &amp;&amp; (nMinus1 != y)) {
+                    long square = ((long) y) * y;
+                    y = (int) (square % n);
+                    if (1 == y) {
+                        return false;
+                    } // definitely composite
+                    j++;
+                }
+                if (nMinus1 != y) {
+                    return false;
+                } // definitely composite
+            }
+        }
+        return true; // definitely prime
+    }
+}
+</code></pre><p>This code is taken from the Apache Commons source code repo at: <a href="https://github.com/apache/commons-math/blob/master/src/main/java/org/apache/commons/math4/primes/SmallPrimes.java" rel="noreferrer">https://github.com/apache/commons-math/blob/master/src/main/java/org/apache/commons/math4/primes/SmallPrimes.java</a></p><p>The method looks very readable to me. For algorithm implementations like this one (implementation of Miller-Rabin Probabilistic Primality Test), is it suitable to keep the code as is and still consider it &#39;clean&#39;, as defined in the book?<br /> Or would even something already as readable as this benefit from extracting methods to make the algorithm essentially a series calls to functions that &#34;do one thing only&#34;?<br /> One quick example of a method extraction might be moving the first three if-statements to a function like:</p><pre class="lang-java prettyprint-override"><code>private static int getTValue(int n)
+    {
+        int t = 1;
+        if (n &gt;= 2047) {
+            t = 2;
+        }
+        if (n &gt;= 1373653) {
+            t = 3;
+        }
+        if (n &gt;= 25326001) {
+            t = 4;    
+        }
+        return t;
+    }
+</code></pre><p>Note: This question is different that the possible duplicate (though that question is helpful to me too), because I am trying to determine if I am understanding the intention of the author of <em>Clean Code</em> and I am providing a specific example to make things more concrete.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>&#34;Clean code&#34; is not an end in itself, it is a means to an end. The main purpose of refactoring bigger functions into smaller ones and cleaning up the code in other ways is to keep the code evolvable and maintainable.</p><p>When picking such a very specific mathematical algorithm like the &#34;Miller-Rabin&#34; prime test from a text book, most programmers do not want to evolve it. Their standard goal is to transfer it from the pseudo code of the text book correctly into the programming language of their environment. For this purpose, I would recommend to follow the text book as close as possible, which typically means not to refactor.</p><p>However, for someone working as mathematician in that field who is trying to work on that algorithm and change or improve it, IMHO splitting up this function into smaller, well named ones, or replacing the bunch of &#34;magic numbers&#34; by named constants, can help to make changes to the code easier like for any other kind of code as well.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../is-code-like-this-a-train-wreck-in-violation-of-law-of-demeter/'>Is code like this a &#8220;train wreck&#8221; (in violation of Law of Demeter)</a></li><li class="list-group-item"><a href='../clean-code-comments-vs-class-documentation/'>Clean Code comments vs class documentation</a></li><li class="list-group-item"><a href='../java-an-output-argument-as-refered-to-in-martins-clean-code/'>Java &#8211;  an output argument, as refered to in Martin&#8217;s Clean Code</a></li><li class="list-group-item"><a href='../how-to-wrapping-an-expression-as-a-function-be-clean-code/'>How to wrapping an expression as a function be Clean Code</a></li><li class="list-group-item"><a href='../additional-line-in-block-vs-additional-parameter-in-clean-code/'>Additional line in block vs additional parameter in Clean Code</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

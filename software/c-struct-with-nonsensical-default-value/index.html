@@ -1,0 +1,126 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; struct with nonsensical default value &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1082182 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1082182" class="post-1082182 software type-software status-publish hentry category-software tag-c tag-object-oriented tag-strings"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; struct with nonsensical default value</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">object-oriented</span><span class="mr-2 badge badge-warning">strings</span></p><div class="entry-content"><p>In my system I frequently operate with airport codes (<code>&#34;YYZ&#34;</code>, <code>&#34;LAX&#34;</code>, <code>&#34;SFO&#34;</code>, etc.), they are always in the exact same format (3 letter, represented as uppercase).  The system typically deals with 25-50 of these (different) codes per API request, with over a thousand allocations total, they are passed around through many layers of our application, and are compared for equality quite often.</p><p>We started with just passing strings around, which worked fine for a bit but we quickly noticed lots of programming mistakes by passing in a wrong code somewhere the 3 digit code was expected.  We also ran into issues where we were supposed to do a case-insensitive comparison and instead did not, resulting in bugs.</p><p>From this, I decided to stop passing strings around and create an <code>Airport</code> class, which has a single constructor that takes and validates the airport code.</p><pre><code>public sealed class Airport
+{
+    public Airport(string code)
+    {
+        if (code == null)
+        {
+            throw new ArgumentNullException(nameof(code));
+        }
+
+        if (code.Length != 3 || !char.IsLetter(code[0]) 
+        || !char.IsLetter(code[1]) || !char.IsLetter(code[2]))
+        {
+            throw new ArgumentException(
+                &#34;Must be a 3 letter airport code.&#34;, 
+                nameof(code));
+        }
+
+        Code = code.ToUpperInvariant();
+    }
+
+    public string Code { get; }
+
+    public override string ToString()
+    {
+        return Code;
+    }
+
+    private bool Equals(Airport other)
+    {
+        return string.Equals(Code, other.Code);
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is Airport airport &amp;&amp; Equals(airport);
+    }
+
+    public override int GetHashCode()
+    {
+        return Code?.GetHashCode() ?? 0;
+    }
+
+    public static bool operator ==(Airport left, Airport right)
+    {
+        return Equals(left, right);
+    }
+
+    public static bool operator !=(Airport left, Airport right)
+    {
+        return !Equals(left, right);
+    }
+}
+</code></pre><p>This made our code much easier to understand and we simplified our equality checks, dictionary / set usages.  We now know that if our methods accept an <code>Airport</code> instance that it will behave the way we expect, it has simplified our method checks to a null reference check.</p><p>The thing I did notice, however, was the garbage collection was running much more often, which I tracked down to a lot of instances of <code>Airport</code> getting collected.</p><p>My solution to this was to convert the <code>class</code> into a <code>struct</code>.  Mostly it was just a keyword change, with the exception of <code>GetHashCode</code> and <code>ToString</code>:</p><pre><code>public override string ToString()
+{
+    return Code ?? string.Empty;
+}
+
+public override int GetHashCode()
+{
+    return Code?.GetHashCode() ?? 0;
+}
+</code></pre><p>To handle the case where <code>default(Airport)</code> is used.</p><p>My questions:</p><ol><li><p>Was creating an <code>Airport</code> class or struct a good solution in general, or am I solving the wrong problem / solving it the wrong way by creating the type?  If it&#39;s not a good solution, what is a better solution?</p></li><li><p>How should my application handle instances where the <code>default(Airport)</code> is used?  A type of <code>default(Airport)</code> is nonsensical to my application, so I&#39;ve been doing <code>if (airport == default(Airport) { throw ... }</code> in places where getting an instance of <code>Airport</code> (and its <code>Code</code> property) is critical to the operation.</p></li></ol><p>Notes:<br /> I reviewed the questions <a href="https://softwareengineering.stackexchange.com/questions/318398/c-vb-struct-how-to-avoid-case-with-zero-default-values-which-is-considered-i">C#/VB struct – how to avoid case with zero default values, which is considered invalid for given structure?</a>, and <a href="https://softwareengineering.stackexchange.com/questions/342371/use-struct-or-not">Use struct or not</a> before asking my question, however I think my questions are different enough to warrant its own post.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p><strong>Update:</strong> I rewrote my answer to address some incorrect assumptions about C# structs, as well as the OP informing us in comments that interned strings are being used.</p><hr/><p>If you can control the data coming in to your system, use a class as you posted in your question. If someone runs <code>default(Airport)</code> they will get a <code>null</code> value back. Be sure to write your private <code>Equals</code> method to return false whenever comparing null Airport objects, and then let the <code>NullReferenceException</code>&#39;s fly elsewhere in the code.</p><p>However, if you are taking data into the system from sources you don&#39;t control, you don&#39;t necessary want to crash the whole thread. In this case a struct is ideal for the simple fact <code>default(Airport)</code> will give you something other than a <code>null</code> pointer. Make up an obvious value to represent &#34;no value&#34; or the &#34;default value&#34; so you have something to print on screen or in a log file (like &#34;---&#34; for instance). In fact, I would just keep the <code>code</code> private and not expose a <code>Code</code> property at all — just focus on behavior here.</p><pre><code>public struct Airport
+{
+    private string code;
+
+    public Airport(string code)
+    {
+        // Check `code` for validity, throw exceptions if not valid
+
+        this.code = code;
+    }
+
+    public override string ToString()
+    {
+        return code ?? (code = &#34;---&#34;);
+    }
+
+    // int GetHashcode()
+
+    // bool Equals(...)
+
+    // bool operator ==(...)
+
+    // bool operator !=(...)
+
+    private bool Equals(Airport other)
+    {
+        if (other == null)
+            // Even if this method is private, guard against null pointers
+            return false;
+
+        if (ToString() == &#34;---&#34; || other.ToString() == &#34;---&#34;)
+            // &#34;Default&#34; values should never match anything, even themselves
+            return false;
+
+        // Do a case insensitive comparison to enforce logic that airport
+        // codes are not case sensitive
+        return string.Equals(
+            ToString(),
+            other.ToString(),
+            StringComparison.InvariantCultureIgnoreCase);
+    }
+}
+</code></pre><p>Worse case scenario converting <code>default(Airport)</code> to a string prints out <code>&#34;---&#34;</code> and returns false when compared to other valid Airport codes. Any &#34;default&#34; airport code matches nothing, including other default airport codes.</p><p>Yes, structs are meant to be values allocated on the stack, and any pointers to heap memory basically negate the performance advantages of structs, but in this case the default value of a struct has meaning and provides some additional bullet resistance to the rest of the application.</p><p>I would bend the rules a little here, because of that.</p><hr/><p><strong>Original Answer</strong> (with some factual errors)</p><p>If you can control the data coming in to your system, I would do as Robert Harvey suggested in the comments: Create a parameterless constructor and throw an exception when it is called. This prevents invalid data from entering the system via <code>default(Airport)</code>.</p><pre><code>public Airport()
+{
+    throw new InvalidOperationException(&#34;...&#34;);
+}
+</code></pre><p>However, if you are taking data into the system from sources you don&#39;t control, you don&#39;t necessary want to crash the whole thread. In this case you can create an airport code that is invalid, but make it seem like an obvious error. This would involve creating a parameterless constructor and setting the <code>Code</code> to something like &#34;---&#34;:</p><pre><code>public Airport()
+{
+    Code = &#34;---&#34;;
+}
+</code></pre><p>Since you are using a <code>string</code> as the Code, there is no point in using a struct. The struct gets allocated on the stack, only to have the <code>Code</code> allocated as a pointer to a string in heap memory, so no difference here between class and struct.</p><p>If you changed the airport code to a 3 item array of char&#39;s then a struct would be fully allocated on the stack. Even then the volume of data isn&#39;t that big to make a difference.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-design-many-properties-complex-constructor-and-equality/'>C# Design, many properties, complex constructor and equality</a></li><li class="list-group-item"><a href='../c-exceptions-error-codes-and-discriminated-unions/'>C# &#8211; Exceptions, error codes and discriminated unions</a></li><li class="list-group-item"><a href='../c-repository-pattern-and-joined-queries/'>C# &#8211; Repository Pattern and Joined Queries</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

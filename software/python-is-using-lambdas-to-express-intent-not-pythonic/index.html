@@ -1,0 +1,59 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Python &#8211; Is using lambdas to express intent not pythonic &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1070137 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1070137" class="post-1070137 software type-software status-publish hentry category-software tag-coding-style tag-lambda tag-python tag-python-3-x"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Python &#8211; Is using lambdas to express intent not pythonic</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">coding-style</span><span class="mr-2 badge badge-info">lambda</span><span class="mr-2 badge badge-warning">python</span><span class="mr-2 badge badge-primary">python-3.x</span></p><div class="entry-content"><p><a href="https://www.python.org/dev/peps/pep-0008/#programming-recommendations" rel="noreferrer">PEP 8</a> states the following about using anonymous functions (lambdas)</p><blockquote><p>Always use a def statement instead of an assignment statement that<br /> binds a lambda expression directly to an identifier:</p><pre><code># Correct: def f(x): return 2*x
+
+# Wrong: f = lambda x: 2*x
+</code></pre><p>The first form means that the name of the resulting function object is<br /> specifically <code>f</code> instead of the generic <code>&lt;lambda&gt;</code>. This is more<br /> useful for tracebacks and string representations in general. The use<br /> of the assignment statement eliminates the sole benefit a lambda<br /> expression can offer over an explicit def statement (i.e. that it can<br /> be embedded inside a larger expression)</p></blockquote><p>However, I often find myself being able to produce clearer and more readable code using lambdas with names. Consider the following small code snippet (which is part of a larger function)</p><pre><code>divisors = proper(divisors)
+total, sign = 0, 1
+
+for i in range(len(divisors)):
+    for perm in itertools.combinations(divisors, i + 1):
+        total += sign * sum_multiplies_of(lcm_of(perm), start, stop - 1)
+    sign = -sign
+return total
+</code></pre><p>There is nothing wrong with the code above from a technical perspective. It does precisely what it intends to do. But what does it intend to do? Doing some digging one figures out that oh right, this is just using the <a href="https://en.wikipedia.org/wiki/Inclusion–exclusion_principle" rel="noreferrer">inclusion-exclusion principle</a> on the powerset of the divisors. While I could write a long comment explaining this, I prefer that my code tells me this. I might do it as follows</p><pre><code>powerset_of = lambda x: (
+    itertools.combinations(x, r) for r in range(start, len(x) + 1)
+)
+sign = lambda x: 1 if x % 2 == 0 else -1
+alternating_sum = lambda xs: sum(sign(i) * sum(e) for (i, e) in enumerate(xs))
+nums_divisible_by = lambda xs: sum_multiplies_of(lcm(xs), start, stop - 1)
+
+def inclusion_exclusion_principle(nums_divisible_by, divisors):
+    return alternating_sum(
+        map(nums_divisible_by, divisor_subsets_w_same_len)
+        for divisor_subsets_w_same_len in powerset_of(proper(divisors))
+    )
+
+return inclusion_exclusion_principle(nums_divisible_by, divisors)
+</code></pre><p>Where <code>lcm_of</code> was renamed to <code>lcm</code> (computes the lcm of a list, not included here). Two keypoints 1) <em>The lambdas above will never be used elsewhere in the code</em> 2) <em>I can read all the lambdas and where they are used on a single screen</em>.</p><p>Contrast this with a PEP 8 compliant version using <code>def</code>s</p><pre><code>def powerset_of(x):
+    return (itertools.combinations(x, r) for r in range(start, len(x) + 1))
+
+def sign(x):
+    return 1 if x % 2 == 0 else -1
+
+def alternating_sum(x):
+    return (sign(i) * sum(element) for (i, element) in enumerate(x))
+
+def nums_divisible_by(xs):
+    return sum_multiplies_of(lcm(xs), start, stop - 1)
+
+def inclusion_exclusion_principle(nums_divisible_by, divisors):
+    return alternating_sum(
+        map(nums_divisible_by, divisor_subsets_w_same_len)
+        for divisor_subsets_w_same_len in powerset_of(proper(divisors))
+    )
+
+return inclusion_exclusion_principle(nums_divisible_by, divisors)
+</code></pre><p>Now the last code is far from unreasonable,but it <em>feels wrong</em> using <code>def</code> for simple one-liners. In addition the code length quickly grows if one wants to stay PEP 8 compliant. Should I switch over to using <code>def</code>s and reserve lambdas for truly anonymous functions, or is it okay to throw in a few named lambdas to more clearly express the intent of the code?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>You&#39;re sort of approaching it like a mathematician, where the purpose of writing the supporting functions is to &#34;prove your work.&#34; Software isn&#39;t generally read that way. The goal is usually to choose good enough names that you don&#39;t have to read the helper functions.</p><p>You likely know what a powerset or alternating sum is without reading the code. If you&#39;re writing a lot of code like this, those sorts of helper functions are even likely to end up grouped in a common module in a completely separate file.</p><p>And yes, defining a named function feels a little verbose for a short function, but it&#39;s expected and reasonable for the language.You&#39;re not trying to minimize the overall code length. You&#39;re trying to minimize the length of code a future maintainer actually has to read.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../object-oriented-using-lambdas-to-improve-encapsulation/'>Object-oriented &#8211; Using lambdas to improve encapsulation</a></li><li class="list-group-item"><a href='../python-why-doesnt-python-allow-multi-line-lambdas/'>Python &#8211; Why doesn&#8217;t Python allow multi-line lambdas</a></li><li class="list-group-item"><a href='../java-performance-benefit-to-using-the-method-reference-syntax-instead-of-lambda-syntax-in-java-8/'>Java &#8211;  performance benefit to using the method reference syntax instead of lambda syntax in Java 8</a></li><li class="list-group-item"><a href='../lambda-return-type-inference/'>Lambda Return Type Inference</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

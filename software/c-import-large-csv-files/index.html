@@ -1,0 +1,262 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Import large csv files &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1068345 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1068345" class="post-1068345 software type-software status-publish hentry category-software tag-c tag-csv tag-import tag-linq"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Import large csv files</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">csv</span><span class="mr-2 badge badge-warning">import</span><span class="mr-2 badge badge-primary">linq</span></p><div class="entry-content"><p>I&#39;ve been tasked to query 2 large csv files which are roughly 1 GB in size each. The files contain related data, so file one may contain a list of order numbers, Order Dates, etc and the file may contain the order lines, stock codes, quantity, etc.</p><p>Other Restrictions:</p><ul><li>No Access to a database &#8211; so I can&#39;t just bulk insert and query</li><li>Must be able to add new queries at a later point</li></ul><p>The kind of query I need to write is Sum all the lines grouped by Stock Code or How many orders were there between two dates.</p><p>My initial idea is to create two models representing the spreadsheet and then import the lot and query via Linq. However this may cause an issue due to the size of the data (and i can&#39;t use a database for lazy loading, etc). Also the querying of the models maybe quite slow.</p><p>The other idea I had was to create an import routine that evaluates the data line by line i.e. if I need to count how many stock codes there are in a file I can simply just query the one column in the spreadsheet on a line by line basis and then count them. This would mean that i would have to write a csv import and some sort of query class.</p><p>Any thoughts or ideas on how to handle this or the best approach? Is there a pattern for this already?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I do not know which, from the other answers, will work best for you.</p><p>AFAICT, I&#39;d remark, mostly from an implementation standpoint, that they all make sense, but from a design perspective, which one will scale best, will be best maintainable, etc, it all depends on other factors you may have left out from your question as-is.</p><p>I can think of two.</p><p>1) the actual shape of the flat data you have already on hand (independently of the volume of it)</p><p>2) whether or not you have the comprehensive knowledge of a bounded, predictible set of the query criteria your application will need.</p><p>For instance, if one can make two more strong assumptions about that (and which you only know about) -- and beware, they are indeed very strong:</p><p>a) if we assume the answer to (2) is &#34;yes&#34;;</p><p>and</p><p>b) the flat CSV is already sorted on: order id &gt; order line, with order date strictly increasing after the first (order id).</p><p>Then radarbob&#39;s answer might be the best -- where all you&#39;d need would be a fast line-by-line CSV reader -- implementing, e.g., IEnumerable &lt; RawOrderLine &gt; -- with little code to write, easy to maintain, and with no other dependencies.</p><p>E.g.:</p><p>(much hypothetical &amp; untested code)</p><pre><code>OrderNo         OrderLine       OrderDate       StockCode       Quantity        Etc
+
+1001            1               1/4/2016        Product1        5               ...
+1001            2               1/4/2016        Product2        3               ...
+1002            1               5/7/2016        Product1        10              ...
+1003            1               2/8/2016        Product2        4               ...
+</code></pre><p>get all orders for given stock code and given date:</p><p>API:</p><pre><code>IEnumerable&lt;RawOrderLine&gt; GetOrders(IEnumerable&lt;RawOrderLine&gt; csv, string stockCode, DateTime orderDate)
+</code></pre><p>How to:</p><pre><code>csv.Where(line =&gt; line.StockCode == stockCode &amp;&amp; line.OrderDate == orderDate)
+</code></pre><p>get all orders for given stock code and falling in given date range:</p><p>API:</p><pre><code>IEnumerable&lt;RawOrderLine&gt; GetOrders(IEnumerable&lt;RawOrderLine&gt; csv, string stockCode, DateTime startDate, DateTime endDate)
+</code></pre><p>How to:</p><pre><code>csv.SkipWhile(line =&gt; line.OrderDate &lt; startDate).
+    TakeWhile(line =&gt; line.OrderDate &lt;= endDate).
+    Where(line =&gt; line.StockCode == stockCode)
+</code></pre><p>get sum of quantities for given stock code of all orders falling in given date range:</p><p>API:</p><pre><code>int GetQuantity(IEnumerable&lt;RawOrderLine&gt; csv, string stockCode, DateTime startDate, DateTime endDate)
+</code></pre><p>How to:</p><pre><code>csv.SkipWhile(line =&gt; line.OrderDate &lt; startDate).
+    TakeWhile(line =&gt; line.OrderDate &lt;= endDate).
+    Where(line =&gt; line.StockCode == stockCode).
+    Aggregate
+    (
+        0,
+        (sum, line) =&gt; sum += line.Quantity
+    );
+</code></pre><p>Etc, etc.</p><p>For a quick and dirty full sample, this  below will generate exactly 3 millions random orders into the future, spaced by 1 to 2 minutes from each other (cf. OrderDate), and with 1 to 10 order lines each (of distinct product / quantity pairs) -- resulting in a ~ 500MB file (if in ASCII/ANSI encoding anyway).</p><p>The two sample queries (over the last 3 days of 2016, for &#34;Product9&#34;) take only a couple seconds on my end (machine rather sluggish).</p><p>(the main thing which is annoyingly slow is to spit out that random sample data, in the first place)</p><pre><code>//#define GENERATE_SAMPLE
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+/*
+ * 
+OrderNo         OrderLine       OrderDate       StockCode       Quantity        Etc
+1001            1               1/4/2016        Product1        5               ...
+1001            2               1/4/2016        Product2        3               ...
+1002            1               5/7/2016        Product1        10              ...
+1003            1               2/8/2016        Product2        4               ...
+ * 
+ */
+namespace _332960
+{
+    public class RawOrderLine
+    {
+        public override string ToString()
+        {
+            return string.Format(&#34;{0},{1},{2},{3},{4}&#34;, OrderNo, OrderLine, OrderDate.ToString(&#34;yyyy-MM-dd HH:mm&#34;), StockCode, Quantity);
+        }
+
+        public RawOrderLine Parse(string data)
+        {
+            var columns = data.Split(&#39;,&#39;);
+            OrderNo = int.Parse(columns[0]);
+            OrderLine = int.Parse(columns[1]);
+            OrderDate = DateTime.Parse(columns[2]);
+            StockCode = columns[3];
+            Quantity = int.Parse(columns[4]);
+            return this;
+        }
+
+        public int OrderNo { get; set; }
+
+        public int OrderLine { get; set; }
+
+        public DateTime OrderDate { get; set; }
+
+        public string StockCode { get; set; }
+
+        public int Quantity { get; set; }
+    }
+
+    public class RawOrderReader
+    {
+        public RawOrderReader(string filePath)
+        {
+            FilePath = filePath;
+        }
+
+        protected string FilePath { get; private set; }
+
+        public IEnumerable&lt;RawOrderLine&gt; Data
+        {
+            get
+            {
+                using (var reader = new StreamReader(FilePath))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        yield return new RawOrderLine().Parse(line);
+                    }
+                }
+            }
+        }
+    }
+
+    class Program
+    {
+        public const int BaseOrderCount = 1000 * 1000;
+
+        public static string[] StockCodes =
+            new[]
+            {
+                &#34;Product0&#34;, &#34;Product1&#34;, &#34;Product2&#34;, &#34;Product3&#34;, &#34;Product4&#34;,
+                &#34;Product5&#34;, &#34;Product6&#34;, &#34;Product7&#34;, &#34;Product8&#34;, &#34;Product9&#34;
+            };
+        static Random random = new Random(DateTime.Now.Millisecond);
+        static DateTime lastOrderDate = DateTime.Now;
+        static int lastOrderNo = BaseOrderCount - 1;
+
+        static IEnumerable&lt;RawOrderLine&gt; NewRandomOrder()
+        {
+            var lines = new List&lt;RawOrderLine&gt;();
+
+            // for random selection of 1 to 10 order lines (incl.)
+            // one product per line
+            var codes = 1 + random.Next(1023);
+            var codeMask = 512; // idem
+            var product = 9; // idem
+
+            var orderLine = 0;
+            lastOrderDate = lastOrderDate.AddMinutes(1 + random.Next(2));
+            lastOrderNo++;
+
+            while (codeMask &gt; 0)
+            {
+                if ((codes &amp; codeMask) &gt; 0)
+                {
+                    lines.
+                    Add
+                    (
+                        new RawOrderLine
+                        {
+                            OrderNo = lastOrderNo,
+                            OrderLine = ++orderLine,
+                            OrderDate = lastOrderDate,
+                            StockCode = StockCodes[product],
+
+                            // random quantity from 1 to 20 units (incl.)
+                            Quantity = 1 + random.Next(20)
+                        }
+                    );
+                }
+                codeMask &gt;&gt;= 1;
+                product--;
+            }
+            return lines;
+        }
+
+        public class CsvQuery
+        {
+            public IEnumerable&lt;RawOrderLine&gt; GetOrders(IEnumerable&lt;RawOrderLine&gt; csv, string stockCode, DateTime orderDate)
+            {
+                return
+                    csv.Where(line =&gt; line.StockCode == stockCode &amp;&amp; line.OrderDate == orderDate);
+            }
+
+            public IEnumerable&lt;RawOrderLine&gt; GetOrders(IEnumerable&lt;RawOrderLine&gt; csv, string stockCode, DateTime startDate, DateTime endDate)
+            {
+                return
+                    csv.SkipWhile(line =&gt; line.OrderDate &lt; startDate).
+                        TakeWhile(line =&gt; line.OrderDate &lt;= endDate).
+                        Where(line =&gt; line.StockCode == stockCode);
+            }
+
+            public int GetQuantity(IEnumerable&lt;RawOrderLine&gt; csv, string stockCode, DateTime orderDate)
+            {
+                return
+                    csv.Where(line =&gt; line.StockCode == stockCode &amp;&amp; line.OrderDate == orderDate).
+                        Aggregate
+                        (
+                            0,
+                            (sum, line) =&gt; sum += line.Quantity
+                        );
+            }
+
+            public int GetQuantity(IEnumerable&lt;RawOrderLine&gt; csv, string stockCode, DateTime startDate, DateTime endDate)
+            {
+                return
+                    csv.SkipWhile(line =&gt; line.OrderDate &lt; startDate).
+                        TakeWhile(line =&gt; line.OrderDate &lt; endDate).
+                        Where(line =&gt; line.StockCode == stockCode).
+                        Aggregate
+                        (
+                            0,
+                            (sum, line) =&gt; sum += line.Quantity
+                        );
+            }
+        }
+
+        static void Main(string[] args)
+        {
+#if GENERATE_SAMPLE
+            // create 3 millions of orders (of 1 to 10 order lines each)
+            for (var i = 0; i &lt; 3 * BaseOrderCount; i++)
+            {
+                var lines = NewRandomOrder();
+                foreach (var line in lines)
+                {
+                    Console.WriteLine(line);
+                }
+            }
+#else
+            var csvReader = new RawOrderReader(&#34;data.csv&#34;);
+            var csvQuery = new CsvQuery();
+
+            Console.WriteLine();
+            Console.WriteLine(&#34;Get last 3 days of Product9 orders... &#34; + DateTime.Now);
+            var lastThreeDaysOf2016Product9Orders =
+                csvQuery.
+                GetOrders
+                (
+                    csvReader.Data,
+                    &#34;Product9&#34;,
+                    new DateTime(2016, 12, 29),
+                    new DateTime(2016, 12, 31).AddDays(1).Subtract(new TimeSpan(0, 0, 1))
+                ).
+                ToArray();
+            Console.WriteLine(&#34;... done @ &#34; + DateTime.Now);
+
+            Console.WriteLine();
+            Console.WriteLine(&#34;Get last 3 days of Product9 quantities...&#34; + DateTime.Now);
+            var lastThreeDaysOf2016Product9Quantity =
+                csvQuery.
+                GetQuantity
+                (
+                    csvReader.Data,
+                    &#34;Product9&#34;,
+                    new DateTime(2016, 12, 29),
+                    new DateTime(2016, 12, 31).AddDays(1).Subtract(new TimeSpan(0, 0, 1))
+                );
+            Console.WriteLine(&#34;... done @ &#34; + DateTime.Now);
+
+            Console.WriteLine();
+            Console.WriteLine(&#34;Details...&#34;);
+            Console.WriteLine();
+            foreach (var order in lastThreeDaysOf2016Product9Orders)
+            {
+                Console.WriteLine(order);
+            }
+            var quantityCheck = lastThreeDaysOf2016Product9Orders.Sum(order =&gt; order.Quantity);
+            Console.WriteLine();
+            Console.WriteLine(&#34;{0} = {1} ?&#34;, lastThreeDaysOf2016Product9Quantity, quantityCheck);
+            Console.WriteLine();
+#endif
+            Console.ReadKey();
+        }
+    }
+}
+</code></pre><p>&#39;Hope this helps.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-csv-file-generation-using-java/'>Java &#8211; CSV file generation using Java</a></li><li class="list-group-item"><a href='../c-application-to-read-xml-files-parsing-them-storing-locally-in-data-structure-and-writing-to-csv/'>C# application to read xml files, parsing them, storing locally in data structure and writing to csv</a></li><li class="list-group-item"><a href='../c-sql-query-or-c-net-code-for-csv-files-import/'>C# &#8211; SQL query or C# .net code for csv files import</a></li><li class="list-group-item"><a href='../should-utf-8-csv-files-contain-a-bom-byte-order-mark/'>Should UTF-8 CSV files contain a BOM (byte order mark)</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

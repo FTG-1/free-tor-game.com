@@ -1,0 +1,87 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C++ &#8211; raw, weak_ptr, unique_ptr, shared_ptr etc&#8230; How to choose them wisely &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1064354 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1064354" class="post-1064354 software type-software status-publish hentry category-software tag-c tag-pointers tag-programming-practices tag-qt tag-smart-pointer"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C++ &#8211; raw, weak_ptr, unique_ptr, shared_ptr etc&#8230; How to choose them wisely</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">pointers</span><span class="mr-2 badge badge-warning">programming practices</span><span class="mr-2 badge badge-primary">qt</span><span class="mr-2 badge badge-danger">smart-pointer</span></p><div class="entry-content"><p>There is a lot of pointers in C++ but to be honest in 5 years or so in C++ programming (specifically with the Qt Framework) I only use the old raw pointer:</p><pre><code>SomeKindOfObject *someKindOfObject = new SomeKindOfObject();
+</code></pre><p>I know there are a lot of other &#34;smart&#34; pointers:</p><pre><code>// shared pointer:
+shared_ptr&lt;SomeKindofObject&gt; Object;
+
+// unique pointer:
+unique_ptr&lt;SomeKindofObject&gt; Object;
+
+// weak pointer:
+weak_ptr&lt;SomeKindofObject&gt; Object;
+</code></pre><p>But I don&#39;t have the slightest idea of what to do with them and what they can offer me in comparison of raw pointers.</p><p>For example I have this class header:</p><pre><code>#ifndef LIBRARY
+#define LIBRARY
+
+class LIBRARY
+{
+public:
+    // Permanent list that will be updated from time to time where
+    // each items can be modified everywhere in the code:
+    QList&lt;ItemThatWillBeUsedEveryWhere*&gt; listOfUselessThings; 
+private:
+    // Temporary reader that will read something to put in the list
+    // and be quickly deleted:
+    QSettings *_reader;
+    // A dialog that will show something (just for the sake of example):
+    QDialog *_dialog;
+};
+
+#endif 
+</code></pre><p>This is clearly not exhaustive but for each of these 3 pointers is it OK to leave them &#34;raw&#34; or should I use something more appropriate?</p><p>And in the second time, if an employer will read the code, will he be strict on what kind of pointers I use or not?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>A &#34;raw&#34; pointer is <strong>unmanaged.</strong> That is, the following line:</p><pre><code>SomeKindOfObject *someKindOfObject = new SomeKindOfObject();
+</code></pre><p>... will leak memory if an accompanying <code>delete</code> is not executed at the proper time.</p><h3><code>auto_ptr</code></h3><p>In order to minimize these cases, <a href="http://en.cppreference.com/w/cpp/memory/auto_ptr"><code>std::auto_ptr&lt;&gt;</code></a> was introduced. Due to the limitations of C++ prior to the 2011 standard, however, it&#39;s still very easy for <code>auto_ptr</code> to leak memory. It is sufficient for limited cases, such as this, however:</p><pre><code>void func() {
+    std::auto_ptr&lt;SomeKindOfObject&gt; sKOO_ptr(new SomeKindOfObject());
+    // do some work
+    // will not leak if you do not copy sKOO_ptr.
+}
+</code></pre><p>One of its weakest use-cases is in containers. This is because if a copy of an <code>auto_ptr&lt;&gt;</code> is made and the old copy is not carefully reset, then the container may delete the pointer and lose data.</p><h3><code>unique_ptr</code></h3><p>As a replacement, C++11 introduced <a href="http://en.cppreference.com/w/cpp/memory/unique_ptr"><code>std::unique_ptr&lt;&gt;</code></a>:</p><pre><code>void func2() {
+    std::unique_ptr&lt;SomeKindofObject&gt; sKOO_unique(new SomeKindOfObject());
+
+    func3(sKOO_unique); // now func3() owns the pointer and sKOO_unique is no longer valid
+}
+</code></pre><p>Such a <code>unique_ptr&lt;&gt;</code> will be correctly cleaned up, even when it&#39;s passed between functions. It does this by semantically representing &#34;ownership&#34; of the pointer - the &#34;owner&#34; cleans it up. This makes it ideal for use in containers:</p><pre><code>std::vector&lt;std::unique_ptr&lt;SomeKindofObject&gt;&gt; sKOO_vector();
+</code></pre><p>Unlike <code>auto_ptr&lt;&gt;</code>, <code>unique_ptr&lt;&gt;</code> is well-behaved here, and when the <code>vector</code> resizes, none of the objects will be accidentally deleted while the <code>vector</code> copies its backing store.</p><h3><code>shared_ptr</code> and <code>weak_ptr</code></h3><p><code>unique_ptr&lt;&gt;</code> is useful, to be sure, but there are cases where you want two parts of your code base to be able to refer to the same object and copy the pointer around, while still being guaranteed proper cleanup. For example, a tree might look like this, when using <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr"><code>std::shared_ptr&lt;&gt;</code></a>:</p><pre><code>template&lt;class T&gt;
+struct Node {
+    T value;
+    std::shared_ptr&lt;Node&lt;T&gt;&gt; left;
+    std::shared_ptr&lt;Node&lt;T&gt;&gt; right;
+};
+</code></pre><p>In this case, we can even hold on to multiple copies of a root node, and the tree will be properly cleaned up when all copies of the root node are destroyed.</p><p>This works because each <code>shared_ptr&lt;&gt;</code> holds on to not only the pointer to the object, but also a reference count of all of the <code>shared_ptr&lt;&gt;</code> objects that refer to the same pointer. When a new one is created, the count goes up. When one is destroyed, the count goes down. When the count reaches zero, the pointer is <code>delete</code>d.</p><p>So this introduces a problem: Double-linked structures end up with circular references. Say we want to add a <code>parent</code> pointer to our tree <code>Node</code>:</p><pre><code>template&lt;class T&gt;
+struct Node {
+    T value;
+    std::shared_ptr&lt;Node&lt;T&gt;&gt; parent;
+    std::shared_ptr&lt;Node&lt;T&gt;&gt; left;
+    std::shared_ptr&lt;Node&lt;T&gt;&gt; right;
+};
+</code></pre><p>Now, if we remove a <code>Node</code>, there&#39;s a cyclic reference to it. It&#39;ll never be <code>delete</code>d because its reference count will never be zero.</p><p>To solve this problem, you use a <a href="http://en.cppreference.com/w/cpp/memory/weak_ptr"><code>std::weak_ptr&lt;&gt;</code></a>:</p><pre><code>template&lt;class T&gt;
+struct Node {
+    T value;
+    std::weak_ptr&lt;Node&lt;T&gt;&gt; parent;
+    std::shared_ptr&lt;Node&lt;T&gt;&gt; left;
+    std::shared_ptr&lt;Node&lt;T&gt;&gt; right;
+};
+</code></pre><p>Now, things will work correctly, and removing a node will not leave stuck references to the parent node. It makes walking the tree a little more complicated, however:</p><pre><code>std::shared_ptr&lt;Node&lt;T&gt;&gt; parent_of_this = node-&gt;parent.lock();
+</code></pre><p>This way, you can lock a reference to the node, and you have a reasonable guarantee it won&#39;t disappear while you&#39;re working on it, since you&#39;re holding on to a <code>shared_ptr&lt;&gt;</code> of it.</p><h3><code>make_shared</code> and <code>make_unique</code></h3><p>Now, there are some minor problems with <code>shared_ptr&lt;&gt;</code> and <code>unique_ptr&lt;&gt;</code> that should be addressed. The following two lines have a problem:</p><pre><code>foo_unique(std::unique_ptr&lt;SomeKindofObject&gt;(new SomeKindOfObject()), thrower());
+foo_shared(std::shared_ptr&lt;SomeKindofObject&gt;(new SomeKindOfObject()), thrower());
+</code></pre><p>If <code>thrower()</code> throws an exception, both lines will leak memory. And more than that, <code>shared_ptr&lt;&gt;</code> holds the reference count far away from the object it points to and this <em>can</em> mean a second allocation). That&#39;s not usually desirable.</p><p>C++11 provides <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr/make_shared"><code>std::make_shared&lt;&gt;()</code></a> and C++14 provides <a href="http://en.cppreference.com/w/cpp/memory/unique_ptr/make_unique"><code>std::make_unique&lt;&gt;()</code></a> to solve this problem:</p><pre><code>foo_unique(std::make_unique&lt;SomeKindofObject&gt;(), thrower());
+foo_shared(std::make_shared&lt;SomeKindofObject&gt;(), thrower());
+</code></pre><p>Now, in both cases, even if <code>thrower()</code> throws an exception, there will not be a leak of memory. As a bonus, <code>make_shared&lt;&gt;()</code> has the opportunity to create its reference count <em>in the same memory space</em> as its managed object, which can both be faster and can save a few bytes of memory, while giving you an exception safety guarantee!</p><h2>Notes about Qt</h2><p>It should be noted, however, that Qt, which must support pre-C++11 compilers, has its own garbage-collection model: Many <code>QObject</code>s have a mechanism where they will be destroyed properly without the need for the user to <code>delete</code> them.</p><p>I do not know how <code>QObject</code>s will behave when managed by C++11 managed pointers, so I can not say that <code>shared_ptr&lt;QDialog&gt;</code> is a good idea. I do not have enough experience with Qt to say for sure, but I <em>believe</em> that Qt5 has been adjusted for this use case.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/c-and-system-exceptions/'>C++ and system exceptions</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-a-good-strategy-for-binding-view-objects-to-model-objects-in-c/'>C++ &#8211;  a good strategy for binding view objects to model objects in C++</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-key-value-store-development-porting-to-modern-c/'>C++ &#8211; Key / Value store development porting to modern C++</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-should-class-own-or-observe-its-dependencies/'>C++: Should class own or observe its dependencies</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-returning-persistent-objects/'>C++ returning persistent objects</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/object-oriented-factories-vectors-and-smart-pointers-design-question/'>Object-oriented &#8211; Factories, vectors and smart pointers &#8211; Design Question</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-async-i-o-operations-proper-way-to-avoid-deleting-object/'>C++ &#8211; Async I/O operations &#8211; proper way to avoid deleting object</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

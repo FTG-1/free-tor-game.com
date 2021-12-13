@@ -1,0 +1,315 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C++ &#8211; How to maintain encapsulation with composition in C++ &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1082931 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1082931" class="post-1082931 software type-software status-publish hentry category-software tag-c tag-c11 tag-composition tag-encapsulation tag-inheritance"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C++ &#8211; How to maintain encapsulation with composition in C++</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">c++11</span><span class="mr-2 badge badge-warning">composition</span><span class="mr-2 badge badge-primary">encapsulation</span><span class="mr-2 badge badge-danger">inheritance</span></p><div class="entry-content"><p>I am designing a class <code>Master</code> that is composed from multiple other classes, <code>A</code>, <code>Base</code>, <code>C</code> and <code>D</code>. These four classes have absolutely no use outside of <code>Master</code> and are meant to split up its functionality into manageable and logically divided packages. They also provide extensible functionality as in the case of <code>Base</code>, which can be inherited from by clients.</p><p><em>But, how do I maintain encapsulation of <code>Master</code> with this design?</em></p><hr/><p>So far, I&#39;ve got two approaches, which are both far from perfect:</p><h2>1. Replicate all accessors:</h2><p>Just write accessor-methods for all accessor-methods of all classes that <code>Master</code> is composed of.<br /> This leads to perfect encapsulation, because no implementation detail of <code>Master</code> is visible, but is extremely tedious and makes the class definition monstrous, which is exactly what the composition should prevent. Also, adding functionality to one of the composees (is that even a word?) would require to re-write all those methods in <code>Master</code>. An additional problem is that inheritors of <code>Base</code> could only alter, but not add functionality.</p><h2>2. Use non-assignable, non-copyable member-accessors:</h2><p>Having a class <code>accessor&lt;T&gt;</code> that can not be copied, moved or assigned to, but overrides the <code>operator-&gt;</code> to access an underlying <code>shared_ptr</code>, so that calls like</p><pre><code>Master-&gt;A()-&gt;niceFunction();
+</code></pre><p>are made possible. My problem with this is that it kind of breaks encapsulation as I would now be unable to change my implementation of <code>Master</code> to use a different class for the functionality of <code>niceFunction()</code>. Still, it is the closest I&#39;ve gotten without using the ugly first approach. It also fixes the inheritance issue quite nicely. A small side question would be if such a class already existed in <code>std</code> or <code>boost</code>.</p><hr/><h1>EDIT: Wall of code</h1><p>I will now post the code of the header files of the classes discussed. It may be a bit hard to understand, but I&#39;ll give my best in explaining all of it.</p><h2>1. GameTree.h</h2><p>The foundation of it all. This basically is a doubly-linked tree, holding <code>GameObject</code>-instances, which we&#39;ll later get to. It also has it&#39;s own custom iterator <code>GTIterator</code>, but I left that out for brevity. <code>WResult</code> is an enum with the values <code>SUCCESS</code> and <code>FAILED</code>, but it&#39;s not really important.</p><pre><code>class GameTree
+{
+public:
+    //Static methods for the root. Only one root is allowed to exist at a time!
+    static void ConstructRoot(seed_type seed, unsigned int depth);
+    inline static bool rootExists(){ return static_cast&lt;bool&gt;(rootObject_); }
+    inline static weak_ptr&lt;GameTree&gt; root(){ return rootObject_; }
+
+    //delta is in ms, this is used for velocity, collision and such
+    void tick(unsigned int delta);
+
+
+    //Interaction with the tree
+    inline weak_ptr&lt;GameTree&gt; parent() const { return parent_; }
+
+    inline unsigned int numChildren() const{ return static_cast&lt;unsigned int&gt;(children_.size()); }
+    weak_ptr&lt;GameTree&gt; getChild(unsigned int index) const;
+    template&lt;typename GOType&gt;
+    weak_ptr&lt;GameTree&gt; addChild(seed_type seed, unsigned int depth = 9001){
+        GOType object{ new GOType(seed) };
+        return addChildObject(unique_ptr&lt;GameTree&gt;(new GameTree(std::move(object), depth)));
+    }                                           
+    WResult moveTo(weak_ptr&lt;GameTree&gt; newParent);
+    WResult erase();
+
+    //Iterators for for( : ) loop
+    GTIterator&amp; begin(){
+        return *(beginIter_ = std::move(make_unique&lt;GTIterator&gt;(children_.begin())));
+    }
+    GTIterator&amp; end(){
+        return *(endIter_ = std::move(make_unique&lt;GTIterator&gt;(children_.end())));
+    }
+
+    //unloading should be used when objects are far away
+    WResult unloadChildren(unsigned int newDepth = 0);
+    WResult loadChildren(unsigned int newDepth = 1);
+
+    inline const RenderObject&amp; renderObject() const{ return gameObject_-&gt;renderObject(); }
+
+    //Getter for the underlying GameObject (I have not tested the template version)
+    weak_ptr&lt;GameObject&gt; gameObject(){
+        return gameObject_;
+    }
+    template&lt;typename GOType&gt;
+    weak_ptr&lt;GOType&gt; gameObject(){
+        return dynamic_cast&lt;weak_ptr&lt;GOType&gt;&gt;(gameObject_);
+    }
+
+    weak_ptr&lt;PhysicsObject&gt; physicsObject() {
+        return gameObject_-&gt;physicsObject();
+    }
+
+private:
+    GameTree(const GameTree&amp;); //copying is only allowed internally
+    GameTree(shared_ptr&lt;GameObject&gt; object, unsigned int depth = 9001);
+
+    //pointer to root
+    static shared_ptr&lt;GameTree&gt; rootObject_;
+
+    //internal management of a child
+    weak_ptr&lt;GameTree&gt; addChildObject(shared_ptr&lt;GameTree&gt;);
+    WResult removeChild(unsigned int index);
+
+    //private members
+    shared_ptr&lt;GameObject&gt; gameObject_;
+    shared_ptr&lt;GTIterator&gt; beginIter_;
+    shared_ptr&lt;GTIterator&gt; endIter_;
+
+    //tree stuff
+    vector&lt;shared_ptr&lt;GameTree&gt;&gt; children_;
+    weak_ptr&lt;GameTree&gt; parent_;
+    unsigned int selfIndex_; //used for deletion, this isn&#39;t necessary
+    void initChildren(unsigned int depth); //constructs children
+};
+</code></pre><h2>2. GameObject.h</h2><p>This is a bit hard to grasp, but <code>GameObject</code> basically works like this:</p><p>When constructing a <code>GameObject</code>, you construct its basic attributes and a <code>CResult</code>-instance, which contains a <code>vector&lt;unique_ptr&lt;Construction&gt;&gt;</code>. The <code>Construction</code>-struct contains all information that is needed to construct a <code>GameObject</code>, which is a seed and a function-object that is applied at construction by a factory. This enables dynamic loading and unloading of <code>GameObject</code>s as done by <code>GameTree</code>. It also means that you have to define that factory if you inherit <code>GameObject</code>. This inheritance is also the reason why <code>GameTree</code> has a template-function <code>gameObject&lt;GOType&gt;</code>.</p><p><code>GameObject</code> can contain a <code>RenderObject</code> and a <code>PhysicsObject</code>, which we&#39;ll later get to.</p><p>Anyway, here&#39;s the code.</p><pre><code>class GameObject;
+typedef unsigned long seed_type;
+
+
+//this declaration magic means that all GameObjectFactorys inherit from GameObjectFactory&lt;GameObject&gt;
+template&lt;typename GOType&gt;
+struct GameObjectFactory;
+
+template&lt;&gt;
+struct GameObjectFactory&lt;GameObject&gt;{
+    virtual unique_ptr&lt;GameObject&gt; construct(seed_type seed) const = 0;
+};
+
+template&lt;typename GOType&gt;
+struct GameObjectFactory : GameObjectFactory&lt;GameObject&gt;{
+    GameObjectFactory() : GameObjectFactory&lt;GameObject&gt;(){}
+    unique_ptr&lt;GameObject&gt; construct(seed_type seed) const{
+        return unique_ptr&lt;GOType&gt;(new GOType(seed));
+    }
+};
+
+//same as with the factories. this is important for storing them in vectors
+template&lt;typename GOType&gt;
+struct Construction;
+
+template&lt;&gt;
+struct Construction&lt;GameObject&gt;{
+    virtual unique_ptr&lt;GameObject&gt; construct() const = 0;
+};
+
+template&lt;typename GOType&gt;
+struct Construction : Construction&lt;GameObject&gt;{
+    Construction(seed_type seed, function&lt;void(GOType*)&gt; func = [](GOType* null){}) :
+        Construction&lt;GameObject&gt;(),
+        seed_(seed),
+        func_(func)
+    {}
+
+    unique_ptr&lt;GameObject&gt; construct() const{
+        unique_ptr&lt;GameObject&gt; gameObject{ GOType::factory.construct(seed_) };
+        func_(dynamic_cast&lt;GOType*&gt;(gameObject.get()));
+        return std::move(gameObject);
+    }
+
+    seed_type seed_;
+    function&lt;void(GOType*)&gt; func_;
+};
+
+
+typedef struct CResult
+{
+    CResult() :
+        constructions{}
+    {}
+
+    CResult(CResult &amp;&amp; o) :
+        constructions(std::move(o.constructions))
+    {}
+
+    CResult&amp; operator= (CResult&amp; other){
+        if (this != &amp;other){
+            for (unique_ptr&lt;Construction&lt;GameObject&gt;&gt;&amp; child : other.constructions){
+                constructions.push_back(std::move(child));
+            }
+        }
+        return *this;
+}
+
+    template&lt;typename GOType&gt;
+    void push_back(seed_type seed, function&lt;void(GOType*)&gt; func = [](GOType* null){}){
+        constructions.push_back(make_unique&lt;Construction&lt;GOType&gt;&gt;(seed, func));
+    }
+
+    vector&lt;unique_ptr&lt;Construction&lt;GameObject&gt;&gt;&gt; constructions;
+} CResult;
+
+
+
+//finally, the GameObject
+class GameObject
+{
+public:
+    GameObject(seed_type seed);
+    GameObject(const GameObject&amp;);
+
+    virtual void tick(unsigned int delta);
+
+    inline Matrix4f trafoMatrix(){ return physicsObject_-&gt;transformationMatrix(); }
+
+
+    //getter
+    inline seed_type seed() const{ return seed_; }
+    inline CResult&amp; properties(){ return properties_; }
+    inline const RenderObject&amp; renderObject() const{ return *renderObject_; }
+    inline weak_ptr&lt;PhysicsObject&gt; physicsObject() { return physicsObject_; }
+
+protected:
+    virtual CResult construct_(seed_type seed) = 0;
+
+    CResult properties_;
+    shared_ptr&lt;RenderObject&gt; renderObject_;
+    shared_ptr&lt;PhysicsObject&gt; physicsObject_;
+    seed_type seed_;
+};
+</code></pre><h2>3. PhysicsObject</h2><p>That&#39;s a bit easier. It is responsible for position, velocity and acceleration. It will also handle collisions in the future. It contains three Transformation objects, two of which are optional. I&#39;m not going to include the accessors on the <code>PhysicsObject</code> class because I tried my first approach on it and it&#39;s just pure madness (way over 30 functions). Also missing: the named constructors that construct <code>PhysicsObject</code>s with different behaviour.</p><pre><code>class Transformation{
+    Vector3f translation_;
+    Vector3f rotation_;
+    Vector3f scaling_;
+public:
+    Transformation() :
+        translation_{ 0, 0, 0 },
+        rotation_{ 0, 0, 0 },
+        scaling_{ 1, 1, 1 }
+    {};
+    Transformation(Vector3f translation, Vector3f rotation, Vector3f scaling);
+
+    inline Vector3f translation(){ return translation_; }
+    inline void translation(float x, float y, float z){ translation(Vector3f(x, y, z)); }
+    inline void translation(Vector3f newTranslation){
+        translation_ = newTranslation;
+    }
+    inline void translate(float x, float y, float z){ translate(Vector3f(x, y, z)); }
+    inline void translate(Vector3f summand){
+        translation_ += summand;
+    }
+
+    inline Vector3f rotation(){ return rotation_; }
+    inline void rotation(float pitch, float yaw, float roll){ rotation(Vector3f(pitch, yaw, roll)); }
+    inline void rotation(Vector3f newRotation){
+        rotation_ = newRotation;
+    }
+    inline void rotate(float pitch, float yaw, float roll){ rotate(Vector3f(pitch, yaw, roll)); }
+    inline void rotate(Vector3f summand){
+        rotation_ += summand;
+    }
+
+    inline Vector3f scaling(){ return scaling_; }
+    inline void scaling(float x, float y, float z){ scaling(Vector3f(x, y, z)); }
+    inline void scaling(Vector3f newScaling){
+        scaling_ = newScaling;
+    }
+    inline void scale(float x, float y, float z){ scale(Vector3f(x, y, z)); }
+    void scale(Vector3f factor){
+        scaling_(0) *= factor(0);
+        scaling_(1) *= factor(1);
+        scaling_(2) *= factor(2);
+    }
+
+    Matrix4f matrix(){
+        return WMatrix::Translation(translation_) * WMatrix::Rotation(rotation_) * WMatrix::Scale(scaling_);
+    }
+};
+
+class PhysicsObject;
+
+typedef void tickFunction(PhysicsObject&amp; self, unsigned int delta);
+
+class PhysicsObject{
+    PhysicsObject(const Transformation&amp; trafo) :
+        transformation_(trafo),
+        transformationVelocity_(nullptr),
+        transformationAcceleration_(nullptr),
+        tick_(nullptr)
+    {}
+    PhysicsObject(PhysicsObject&amp;&amp; other) :
+        transformation_(other.transformation_),
+        transformationVelocity_(std::move(other.transformationVelocity_)),
+        transformationAcceleration_(std::move(other.transformationAcceleration_)),
+        tick_(other.tick_)
+    {}
+
+    Transformation transformation_;
+    unique_ptr&lt;Transformation&gt; transformationVelocity_;
+    unique_ptr&lt;Transformation&gt; transformationAcceleration_;
+
+    tickFunction* tick_;
+
+public:
+    void tick(unsigned int delta){ tick_ ? tick_(*this, delta) : 0; }
+
+    inline Matrix4f transformationMatrix(){ return transformation_.matrix(); }
+}
+</code></pre><h2>4. RenderObject</h2><p><code>RenderObject</code> is a base class for different types of things that could be rendered, i.e. Meshes, Light Sources or Sprites. <em>DISCLAIMER:</em> I did not write this code, I&#39;m working on this project with someone else.</p><pre><code>class RenderObject
+{
+public:
+    RenderObject(float renderDistance);
+    virtual ~RenderObject();
+
+    float renderDistance() const { return renderDistance_; }
+    void setRenderDistance(float rD) { renderDistance_ = rD; }
+
+
+protected:
+    float renderDistance_;
+};
+
+struct NullRenderObject : public RenderObject{
+    NullRenderObject() : RenderObject(0.f){};
+};
+
+class Light : public RenderObject{
+public:
+    Light() : RenderObject(30.f){};
+};
+
+class Mesh : public RenderObject{
+public:
+    Mesh(unsigned int seed) :
+        RenderObject(20.f)
+    {
+        meshID_ = 0;
+        textureID_ = 0;
+        if (seed == 1)
+            meshID_ = Model::getMeshID(&#34;EM-208_heavy&#34;);
+        else
+            meshID_ = Model::getMeshID(&#34;cube&#34;);
+    };
+
+    unsigned int getMeshID() const { return meshID_; }
+    unsigned int getTextureID() const { return textureID_; }
+
+private:
+    unsigned int meshID_;
+    unsigned int textureID_;
+};
+</code></pre><p>I guess this shows my issue quite nicely: You see a few accessors in <code>GameObject</code> which return <code>weak_ptr</code>s to access members of members, but that is not really what I want.</p><p>Also please keep in mind that this is <strong>NOT</strong>, by any means, finished or production code! It is merely a prototype and there may be inconsistencies, unnecessary <code>public</code> parts of classes and such.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>The whole game industry switched to <strong>Component-based</strong> Design engines (for re-usable engines only) for the reason of composability with performance constraints (and allow also fully data-driven engines). You should look into it, it&#39;s the best way we know to have very heterogeneous kind of entities, defined by a set of different components.</p><p>There is a lot of different ways to setup a component system. I should point to <a href="http://www.gameenginebook.com/" rel="noreferrer">the book Game Engine Architecture</a> which have a whole chapter on the different kind of setup you can have to solve the problem you have, including different kind of component-based systems. Also there are a lot of articles about the subject like:</p><ul><li><a href="http://www.randygaul.net/2013/05/20/component-based-engine-design/" rel="noreferrer">http://www.randygaul.net/2013/05/20/component-based-engine-design/</a></li><li><a href="http://gameprogrammingpatterns.com/component.html" rel="noreferrer">http://gameprogrammingpatterns.com/component.html</a></li></ul><p>(there are also a lot of experimentation on github about how to implement a component system in modern C++. I did one recently with no inheritance at all, using concept-based type-erasure)</p><p>The issues you have are related to the use of inheritance where it makes the architecture less flexible than it could. Remove inheritance and organize things in batches of components and you will have maximum flexibility.</p><p>Note that, of course, that flexibility is not always what you want in the end, but it should solve the problem you are presenting here.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../how-do-inheritance-and-composition-differ/'>How do inheritance and composition differ</a></li><li class="list-group-item"><a href='../object-oriented-how-to-replace-inheritance-with-composition-in-this-case/'>Object-oriented &#8211; How to replace inheritance with composition in this case</a></li><li class="list-group-item"><a href='../c-inheritance-vs-composition-for-chess-pieces/'>C++ &#8211; Inheritance vs Composition For Chess Pieces</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

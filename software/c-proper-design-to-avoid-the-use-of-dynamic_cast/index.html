@@ -1,0 +1,103 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C++ &#8211; Proper design to avoid the use of dynamic_cast &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1067277 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1067277" class="post-1067277 software type-software status-publish hentry category-software tag-c tag-inheritance tag-mvc tag-type-casting"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C++ &#8211; Proper design to avoid the use of dynamic_cast</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">inheritance</span><span class="mr-2 badge badge-warning">mvc</span><span class="mr-2 badge badge-primary">type casting</span></p><div class="entry-content"><p>After doing some researches I can not seem to find a simple example resolving a problem I encounter often.</p><p>Let&#39;s say I want to create a little application where I can create <code>Square</code>s, <code>Circle</code>s, and other shapes, display them on a screen, modify their properties after selecting them, and then compute all of their perimeters.</p><p>I would do the model class like this:</p><pre><code>class AbstractShape
+{
+public :
+    typedef enum{
+        SQUARE = 0,
+        CIRCLE,
+    } SHAPE_TYPE;
+
+    AbstractShape(SHAPE_TYPE type):m_type(type){}
+    virtual ~AbstractShape();
+
+    virtual float computePerimeter() const = 0;
+
+    SHAPE_TYPE getType() const{return m_type;}
+protected :
+    const SHAPE_TYPE  m_type;
+};
+
+class Square : public AbstractShape
+{
+public:
+    Square():AbstractShape(SQUARE){}
+    ~Square();
+
+    void setWidth(float w){m_width = w;}
+    float getWidth() const{return m_width;}
+
+    float computePerimeter() const{
+        return m_width*4;
+    }
+
+private :
+    float m_width;
+};
+
+class Circle : public AbstractShape
+{
+public:
+    Circle():AbstractShape(CIRCLE){}
+    ~Circle();
+
+    void setRadius(float w){m_radius = w;}
+    float getRadius() const{return m_radius;}
+
+    float computePerimeter() const{
+        return 2*M_PI*m_radius;
+    }
+
+private :
+    float m_radius;
+};
+</code></pre><p>(Imagine I have more classes of shapes: triangles, hexagones, with each time their proprers variables and associated getters and setters. The problems I faced had 8 subclasses but for the sake of the example I stopped at 2)</p><p>I now have a <code>ShapeManager</code>, instantiating and storing all the shapes in an array :</p><pre><code>class ShapeManager
+{
+public:
+    ShapeManager();
+    ~ShapeManager();
+
+    void addShape(AbstractShape* shape){
+        m_shapes.push_back(shape);
+    }
+
+    float computeShapePerimeter(int shapeIndex){
+        return m_shapes[shapeIndex]-&gt;computePerimeter();
+    }
+
+
+private :
+    std::vector&lt;AbstractShape*&gt; m_shapes;
+};
+</code></pre><p>Finally, I have a view with spinboxes to change each parameter for each type of shape. For example, when I select a square on the screen, the parameter widget only displays <code>Square</code>-related parameters (thanks to <code>AbstractShape::getType()</code>) and proposes to change the width of the square.<br /> To do that I need a function allowing me to modify the width in <code>ShapeManager</code>, and this is how I do it:</p><pre><code>void ShapeManager::changeSquareWidth(int shapeIndex, float width){
+   Square* square = dynamic_cast&lt;Square*&gt;(m_shapes[shapeIndex]);
+   assert(square);
+   square-&gt;setWidth(width);
+}
+</code></pre><p>Is there a better design avoiding me to use the <code>dynamic_cast</code> and to implement a getter/setter couple in <code>ShapeManager</code> for each subclass variables I may have? I already tried to use <a href="https://stackoverflow.com/questions/38636730/reimplement-a-virtual-function-from-base-class-in-a-derived-template-class">template but failed</a>.</p><hr/><p>The problem I&#39;m facing is not really with Shapes but with <strong>different <code>Job</code>s</strong> for a 3D printer (ex: <code>PrintPatternInZoneJob</code>, <code>TakePhotoOfZone</code>, etc.) with <code>AbstractJob</code> as their base class. The virtual method is <code>execute()</code> and not <code>getPerimeter()</code>. <strong>The only time I need to use concrete usage is to fill the specific information a job needs</strong> :</p><ul><li><p><code>PrintPatternInZone</code> needs the list of points to print, the position of the zone, some printing parameters like the temperature</p></li><li><p><code>TakePhotoOfZone</code> needs what zone to take into photo, the path where the photo will be saved, the dimensions, etc&#8230;</p></li></ul><p>When I will then call <code>execute()</code>, the Jobs will use the specific information they have to realise the action they are supposed to do.</p><p><strong>The only time I need to use the concrete type of a Job is when I fill or display theses informations</strong> (if a <code>TakePhotoOfZone</code> <code>Job</code> is selected, a widget displaying and modifying the zone, path, and dimensions parameters will be shown).</p><p>The <code>Job</code>s are then put into a list of <code>Job</code>s which take the first job, executes it (by calling <code>AbstractJob::execute()</code>), the goes to the next, on and on until the end of the list. (This is why I use inheritance).</p><p><strong>To store the different types of parameters</strong> I use a <code>JsonObject</code>:</p><ul><li><p>advantages : same structure for any job, no dynamic_cast when setting or reading parameters</p></li><li><p>problem : can&#39;t store pointers (to <code>Pattern</code> or <code>Zone</code>)</p></li></ul><p>Do you thing there is a better way of storing data?</p><p>Then <strong>how would you store the concrete type of the <code>Job</code></strong> to use it when I have to modify the specific parameters of that type? <code>JobManager</code> only has a list of <code>AbstractJob*</code>.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I would like to expand on Emerson Cardoso&#39;s &#34;other suggestion&#34; because I believe it to be the correct approach in the general case - though you may of course find other solutions better suited to any particular problem.</p><p><strong>The Problem</strong></p><p>In your example, the <code>AbstractShape</code> class has a <code>getType()</code> method that basically identifies the concrete type. This is generally a sign that you don&#39;t have a good abstraction. The whole point of abstracting, after all, is not having to care about the details of the concrete type.</p><p>Also, in case you&#39;re not familiar with it, you should read up on the Open/Closed Principle. It&#39;s often explained with a shapes example, so you&#39;ll feel right at home.</p><p><strong>Useful Abstractions</strong></p><p>I assume you have introduced the <code>AbstractShape</code> because you found it useful for something. Most likely, some part of your application needs to know the perimeter of shapes, regardless of what the shape is.</p><p>This is the place where abstraction makes sense. Because this module does not concern itself with concrete shapes, it can depend on <code>AbstractShape</code> only. For the same reason, it does not need the <code>getType()</code> method - so you should get rid of it.</p><p>Other parts of the application will only work with a particular kind of shape, e.g. <code>Rectangle</code>. Those areas will not benefit from an <code>AbstractShape</code> class, so you shouldn&#39;t use it there. In order to pass only the correct shape to these parts, you need to store concrete shapes separately. (You may store them as <code>AbstractShape</code> additionally, or combine them on the fly).</p><p><strong>Minimizing Concrete Usage</strong></p><p>There is no way around it: you need the concrete types in some places - at the very least during construction. However, it&#39;s sometimes best to keep the use of concrete types limited to a few well-defined areas. These separate areas have the sole purpose of dealing with the different types - while all application logic is kept out of them.</p><p>How do you achieve this? Usually, by introducing more abstractions - which may or may not mirror the existing abstractions. For example, your GUI doesn&#39;t <em>really</em> need to know what kind of shape it is dealing with. It just needs to know that there is an area on the screen where the user can edit a shape.</p><p>So you define an abstract <code>ShapeEditView</code> for which you have <code>RectangleEditView</code> and <code>CircleEditView</code> implementations that hold the actual text boxes for width/height or radius.</p><p>In a first step, you could create a <code>RectangleEditView</code> whenever you create a <code>Rectangle</code> and then put it into a <code>std::map&lt;AbstractShape*, AbstractShapeView*&gt;</code>. If you would rather create the views as you need them, you might do the following instead:</p><pre><code>std::map&lt;AbstractShape*, std::function&lt;AbstractShapeView*()&gt;&gt; viewFactories;
+// ...
+auto rect = new Rectangle();
+// ...
+auto viewFactory = [rect]() { return new RectangleEditView(rect); }
+viewFactories[rect] = viewFactory;
+</code></pre><p>Either way, the code outside of this creation logic will not have to deal with concrete shapes. As part of the destruction of a shape, you need to remove the factory, obviously. Of course, this example is over-simplified, but I hope the idea is clear.</p><p><strong>Choosing the right Option</strong></p><p>In very simple applications, you might find that a dirty (casting) solution just gives you the most bang for your buck.</p><p>Explicitly maintaining separate lists for each concrete type is probably the way to go if your application mainly deals with concrete shapes, but has some parts that are universal. Here, it makes sense to abstract only so far as the common functionality requires it.</p><p>Going all the way generally pays if you have a lot of logic that operates on shapes, and the exact kind of shape really is a detail to your application.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/java-type-parameterized-methods-to-avoid-casting/'>Java &#8211; Type parameterized methods to avoid casting</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/object-oriented-is-it-bad-practice-to-check-object-types-with-an-identifying-member-variable/'>Object-oriented &#8211; Is it bad practice to check object types with an identifying member variable</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-how-to-avoid-redundant-code-in-designing-inheritance-in-c/'>C++ &#8211; How to avoid redundant code in designing inheritance in C++</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/how-to-avoid-the-static_cast-dynamic_cast-in-abstract-factory-design-pattern/'>How to avoid the static_cast/dynamic_cast in `Abstract Factory` design pattern</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

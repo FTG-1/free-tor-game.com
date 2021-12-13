@@ -1,0 +1,88 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Properly designing an abstract class: How to retrieve data &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1072942 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1072942" class="post-1072942 software type-software status-publish hentry category-software tag-abstract-class tag-c tag-object-oriented"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Properly designing an abstract class: How to retrieve data</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">abstract class</span><span class="mr-2 badge badge-info">c</span><span class="mr-2 badge badge-warning">object-oriented</span></p><div class="entry-content"><p>I come from a self taught background and am trying to shore up my weaknesses in OOP, specifically C# and class design. I&#39;ve been reading Code Complete 2 and it became apparent that I&#39;m not following good class design principals. I currently have a ReportHandler class that generates a report based on a ReportType enum that is set when the handler is instantiated.</p><p>So now I&#39;m refactoring the code, and am starting by considering the reports and how they differ:</p><p>They all share the following properties which will all be the same type:</p><ul><li>Report ID (Guid)</li><li>Start Date (DateTime)</li><li>End Date (DateTime)</li><li>Total Results (int)</li></ul><p>They also all have to retrieve the data from a database (currently the same database, could change in the future) and parse the data into an object, and be able to convert that object into a JSON. The data object and parsing will be different for each report.</p><p>So I&#39;m wondering what the best design for this would be. If I created an abstract class I could do it like this:</p><pre><code>public abstract class Report
+{
+    public abstract void GetData();
+    public abstract void ParseData();
+    public abstract string ToJson();
+
+    public Guid ReportId { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public int TotalResults { get; set; }
+
+    //Not sure if this is correct, I want to make sure we can&#39;t instantiate a derived class without these values.
+    protected Report(Guid reportId, DateTime startDate, DateTime endDate)
+    {
+        if (startDate &gt; endDate)
+            throw new ArgumentException(&#34;Start date cannot be after end date.&#34;);
+        ReportId = reportId;
+        StartDate = startDate;
+        StartDate = endDate;
+    }
+}
+</code></pre><p>I believe this would help keep the classes organized. I could create a something like this:</p><pre><code>public class SpecificReport : Report
+{
+    //The raw data type can change between reports.
+    private List&lt;string&gt; _rawData;
+    public SpecificReportObject ParsedReport { get; private set; }
+
+    public SpecificReport(Guid reportId, DateTime startDate, DateTime endDate)
+        : base(reportId, startDate, endDate)
+    {
+
+    }
+
+    public override void GetData()
+    {
+        var rawData = new List&lt;string&gt;();
+        //Connect to a database and assign the results to rawData
+        _rawData = rawData;
+    }
+
+    public override void ParseData()
+    {
+        var parsedReport = new SpecificReportObject();
+        foreach (var result in _rawData)
+        {
+            //Parse RawData into a specific report object
+        }
+        ParsedReport = parsedReport;
+    }
+
+    public override string ToJson()
+    {
+        return JsonConvert.SerializeObject(ParsedReport);
+    }
+
+    public class SpecificReportObject
+    {
+        //Specific specific properties and logic
+    }
+}
+</code></pre><p>Now that seems more organized to me, and logically seems to make more sense. You can instantiate a report, call GetData(), ParseData(), and finally ToJson() to get the report in a portable format.</p><p>However I am wondering if the derived reports should contain this functionality at all. I don&#39;t like that I have to remember to call GetData() and ParseData(), but putting those functions in the constructor seems like a bad idea. I wouldn&#39;t want to put something in a constructor that can fail, especially a potentially lengthy operation like querying a database.</p><p>Would it be better to separate GetData from the class? Then I could retrieve the data first and load it into the ParseData function as an argument</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I&#39;m going to make a different suggestion more to broaden your perspective. While I do recommend the concepts behind what I&#39;ll say generally, I would need more context to see if it is most appropriate for your situation (and likely it would suggest changes to other code).</p><p>You absolutely hit the nail on the head when you mention your concerns about having to remember to call methods. The situation is potentially worse. Even if I remember to call the methods, what happens if I call <code>GetData</code> again later? As your code is currently written, you end up with an object with inconsistent data. (As an aside, you should probably look at Dependency Injection [the concept formerly known as &#34;parameterization&#34;] to move details like where to fetch the data out of your classes. I won&#39;t focus on this below.)</p><p>One solution to this problem is to <em>use the type system</em> to help enforce your invariants. That&#39;s what it is there for. To make the example a little more impactful, I&#39;m going to assume there is some pressing need to have explicit control over when a report is parsed. (In your actual code, it&#39;s not clear why you expose <code>GetData</code> at all. If you don&#39;t want it done in the constructor, then have it done on-demand by <code>ParseData</code>.) The key idea is:</p><blockquote><p>Make a different type for each stage of processing.</p></blockquote><p>Consider something like:</p><pre><code>public interface IReportDataProvider {
+    IUnparsedReport Fetch();
+}
+
+public interface IUnparsedReport {
+    // ...
+    IParsedReport Parse();
+}
+
+public interface IParsedReport {
+    // ...
+    string ToJsonString();
+}
+</code></pre><p>With this approach, you are now just unable to do things out of order, or forget to do a step, or produce inconsistent data by duplicating a step. Applying this technique doesn&#39;t actually require a type system. It&#39;s just data abstraction. One place where a type system can be valuable in this is one possible implementation of <code>Parse</code> in some contexts may be <code>return this;</code>. In this scenario, we are using the type system to enforce invariants because if you just ask for an <code>IUnparsedReport</code>, you don&#39;t know that the specific instance you get also implements <code>IParsedReport</code> (unless you do something grotty like a downcast or reflection). In fact, you can apply this approach to your code almost as-is. This can avoid needing wrappers or copying data around or duplicating code. I don&#39;t recommend doing this by default though as it implies mutation and can lead to hidden sharing that produces confusing results.</p><p>To cast this approach in OOD terms, you can view each stage as a Factory that produces the next stage. I used terminology similar to that in BobDalgleish&#39;s answer as the <code>DataProvider</code> discussed there can be viewed as a stage. (Though depending on how general it is, it may be better not to think of that way and just provide it as a parameter to a specific implementation of <code>IUnparsedReport</code>.) I don&#39;t agree with the description of the class though, as it just recapitulates the problem in the <code>DataProvider</code>. What if you forget to &#34;connect&#34;? You can use the same techniques in this answer to resolve the staging issues that the description of <code>DataProvider</code> brings up.</p><p>There&#39;s a broader mantra, of which this is an instance, popular in the typed functional programming community, though it&#39;s not at all limited to the FP or even the typed programming communities.  Namely:</p><blockquote><p>Make invalid states unrepresentable.</p></blockquote></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-empty-virtual-method-on-base-class-vs-abstract-methods/'>C# &#8211; Empty virtual method on base class VS abstract methods</a></li><li class="list-group-item"><a href='../c-testing-abstract-class-behavior/'>C++ &#8211; Testing abstract class&#8217; behavior</a></li><li class="list-group-item"><a href='../object-oriented-oop-behavior-data-but-what-about-validation-behaviors/'>Object-oriented &#8211; OOP: Behavior + Data, but what about &#8216;validation&#8217; behaviors</a></li><li class="list-group-item"><a href='../c-abstract-property-in-base-class-to-force-programmer-to-define-it/'>C# &#8211; Abstract Property In Base Class To Force Programmer To Define It</a></li><li class="list-group-item"><a href='../java-can-a-class-achieve-abstraction-without-implementing-an-interface-or-extending-an-abstract-class/'>Java &#8211; Can a class achieve abstraction without implementing an interface or extending an abstract class</a></li><li class="list-group-item"><a href='../c-workaround-for-casting-method-parameter-interface-to-desired-concrete-type-in-polymorphic-design/'>C# &#8211; Workaround for casting method parameter interface to desired concrete type in polymorphic design</a></li><li class="list-group-item"><a href='../java-should-an-abstract-class-implement-an-interface-as-opposed-to-defining-its-own-abstract-methods/'>Java &#8211; Should an abstract class implement an interface, as opposed to defining its own abstract methods</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

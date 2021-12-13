@@ -1,0 +1,71 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Design &#8211; Class design dilemma: Encapsulation vs Single Responsibility/Separation of Concerns &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1084574 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1084574" class="post-1084574 software type-software status-publish hentry category-software tag-class tag-design tag-encapsulation tag-separation-of-concerns tag-single-responsibility"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Design &#8211; Class design dilemma: Encapsulation vs Single Responsibility/Separation of Concerns</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">class</span><span class="mr-2 badge badge-info">design</span><span class="mr-2 badge badge-warning">encapsulation</span><span class="mr-2 badge badge-primary">separation-of-concerns</span><span class="mr-2 badge badge-danger">single-responsibility</span></p><div class="entry-content"><p>I&#39;m working on a class that represents an object with multiple representations &#8211; one is an XML type representation used by an automatic ordering system, the other is a POJO-based representation used by a monitoring tool.</p><p>The problem I&#39;m running into is that I seem to have to make trade-off between encapsulating the object&#39;s internal data and designing my application according to the principle of &#34;separation of concerns&#34; or &#34;single responsibily per class&#34;.</p><p>Let&#39;s look at the class in more detail:</p><pre><code>public class MyObject {
+    private Object field1;
+    private Object field2;
+    private Object field3;
+    ...
+    private Object field100;
+}
+</code></pre><p>(Yes it&#39;s quite a big ugly monster, something I have no control over).</p><p>If I follow the principle of separation of concerns (the way I understand it anyway), I will have to add getters for every field in this class and have a separate XMLBuilder class for the XML representation, and a PojoBuilder for the Monitoring tool representation:</p><pre><code>public class XMLBuilder {
+
+    public XML asXml(MyObject obj) {
+        return &#34;&lt;tag1&gt;&#34; + object.getField1() + &#34;&lt;/tag1&gt;&#34;
+               &#34;&lt;tag2&gt;&#34; + object.getField2() + &#34;&lt;/tag2&gt;&#34;
+               ...
+               ;
+        }
+}
+</code></pre><p>This seems to me to break the principle of encapsulation &#8211; I have to expose a lot of the internal data on my class just to provide a representation for it. If I pass my object to other systems, I have no control whether these sub-systems may become dependent on arbitrary fields (i.e. field45), which means that future changes to the structure of this object may become difficult as there are now other possible dependencies on it.</p><p>An alternative approach, advocated by Allen Holub (<a href="http://www.javaworld.com/article/2073723/core-java/why-getter-and-setter-methods-are-evil.html" rel="nofollow">http://www.javaworld.com/article/2073723/core-java/why-getter-and-setter-methods-are-evil.html</a>) for example, is to do the representation <em>inside</em> the class:</p><pre><code>public class MyObject {
+
+    ...
+
+    public XML asXml() {
+        return &#34;&lt;tag1&gt;&#34; + field1 + &#34;&lt;/tag1&gt;&#34;
+               &#34;&lt;tag2&gt;&#34; + field2 + &#34;&lt;/tag2&gt;&#34;
+               ...
+               ;
+    }
+
+    public Object asMonitor() {
+        ...
+    }
+
+ }
+</code></pre><p>To me, this solution seems great, as the class never exposes any private fields. The representation generators have access to all the information it needs, and the object itself can be safely passed to other sub-systems without the worry that another module would depend on internals.</p><p>Now, when I implement this, my colleagues all raise the issue of &#34;Separation of concerns&#34;. The problem, they say, is that the <em>MyObject</em> class now have knowledge of things like XML representations and POJO represantions, which means that if the XML representation changes, you now have to make modifications inside the actual class itself, instead of just updating an &#34;XML ruleset&#34; or some other external configuration.</p><p>Holub&#39;s solution is to use a Builder pattern:</p><pre><code>public class MyObject {
+
+...
+
+    public void buildContent(MyObjectBuilder builder) {
+        builder.setField1(field1);
+        builder.setField2(field2);
+    }
+ }
+
+ public class XMLBuilder implements MyObjectBuilder {
+
+     ...
+
+     public void setField1(Object field1) {
+         content += &#34;&lt;tag1&gt;&#34; + field1 + &#34;&lt;/tag1&gt;&#34;;
+     }
+
+     public XML asXML() {
+         return content;
+     }
+
+     ...
+ }
+</code></pre><p>but this seems hardly better than the first approach &#8211; instead of exposing data as getters, it is now implicitly exposed via a builder. OK, I understand that with the builder I may have additional control over how my object represents itself, but is that iota of control worth the increased complexity in the code base? Changes to the structure of MyObject will still likely result in downstream dependencies requiring updates, so I&#39;m not entirely sure if much have been gained here (except that there are <em>technically</em> no getters).</p><p>Is this a case where you simply have to choose your poison? Or is there a magical middle ground that reduces all these issues? What are the common strategies for dealing with this?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><blockquote><p>Is this a case where you simply have to choose your poison?</p></blockquote><p>Yes, basically.</p><p>One of software developer&#39;s job is risk management when it comes to change. And there is lots of theory about risk management. Generally, you should first identify risks. You already did that : change of object itself, change of XML, change of POJO, etc.. All of those are possible risks. Next step would be to identify what are probabilities of the occurring. You can get some idea from looking back at changes you had to do in the past, but only real experience can help you here. Then, you have to identify impact of each risk. You say that changes can propagate through the dependencies, so the more dependencies the risk affects, the more costly it is when it occurs. Taking all of this in, you should make a design that minimizes risks that have high probability and high cost.</p><p>I can&#39;t tell you right now, because the way you described your problem is way too generic. And different systems would encounter different risks at different probabilities and costs. For example, if XML is used as communication between your systems, then updating it&#39;s schema might not be a problem. But if it is used for persistence, then maintaining backwards compatibility is a must. Etc..</p><p>Only thing I can suggest is to get more experience. More experience will give you more ideas about possible risks and their properties and ways to design to avoid those risks.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../does-adding-a-return-type-to-an-update-method-violate-the-single-responsibility-principle/'>Does adding a return type to an update method violate the &#8220;Single Responsibility Principle&#8221;</a></li><li class="list-group-item"><a href='../separation-of-concerns-when-is-it-too-much-separation/'>Separation of concerns: When is it &#8220;too much&#8221; separation</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

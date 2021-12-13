@@ -1,0 +1,75 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; Using the same name for setter and gettter methods for a boolean member variable &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1082668 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1082668" class="post-1082668 software type-software status-publish hentry category-software tag-coding-style tag-java tag-readability"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; Using the same name for setter and gettter methods for a boolean member variable</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">coding-style</span><span class="mr-2 badge badge-info">java</span><span class="mr-2 badge badge-warning">readability</span></p><div class="entry-content"><p>Say I have class with a <code>boolean</code> member variable <code>fancy</code>:</p><pre><code>public class MyClass {
+    private boolean fancy;
+}
+</code></pre><p><strong>Case 1.</strong> I could the define the <code>setter</code> and <code>getter</code> as follows:</p><pre><code>// getter
+public boolean isFancy() {
+    return this.fancy;
+}
+
+// setter
+public void setFancy(boolean fancy) {
+    this.fancy = fancy;
+}
+</code></pre><p><strong>Case 2.</strong> Alternatively, I could also define my <code>setter</code> and <code>getter</code> as follows:</p><pre><code>// getter
+public boolean isFancy() {
+    return this.fancy;
+}
+
+// setter
+public MyClass isFancy(boolean fancy) {
+    this.fancy = fancy;
+    return this;
+}
+</code></pre><p>One advantage I like is, that I can use the <code>fluent interface</code> to set <code>fancy</code> when I <code>new</code> my class and, I get the visual feedback of <em>adding</em> that attribute to my object:</p><pre><code>MyClass mc = new MyClass().isFancy(true);
+</code></pre><p><strong>Question</strong><br /> My question is, is there something inherently wrong, in terms of readability, maintenance, it&#39;s just plain confusing, bad style, etc., with defining my <code>setter</code> and <code>getter</code> like in <strong>Case 2</strong>? Alternatives are welcomed.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Using <code>isFancy</code> for a setter is certainly not a standard convention and may therefore confuse the code&#39;s readers. However, the idea of using a fluent interface is a good one. If I had to choose a name for use in your second example, I would simply use <code>fancy()</code>. This is a name which you can use for both the setter and getter without confusing anyone, and it is shorter than the names with set/get prefixes. Note, however, that some IDEs and other tools may not work as well if your getter/setter do not have the prefixes in their names.</p><p>Yet another thing which I like to do is making my data objects immutable. Some languages (e.g. Kotlin and Scala) make using immutable data classes even easier, but this style of programming works with Java as well. It makes functional programming easier and allows you to avoid some kinds of errors, especially in parallel code. You can combine immutability with your second approach by using a separate builder class. This adds some lines of code, but (assuming there is more than just one field), the overhead is not that bad and later the resulting object is quite pleasant to use:</p><pre><code>public final class MyClass {
+    private final boolean fancy;
+
+    private MyClass(boolean fancy) {
+        this.fancy = fancy;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public boolean fancy() { return fancy; }
+
+    public static class Builder {
+        private boolean fancy = false;
+
+        public fancy(boolean fancy) { this.fancy = fancy; }
+
+        public MyClass build() { return new MyClass(fancy); }
+    }
+}
+</code></pre><p>An added advantage is that you can set reasonable defaults in your builder. You can also pass the builder around between methods as long as the object is being constructed, so for example fancy value can be set in several different places if that&#39;s needed, but once you create the final object via <code>build()</code>, it is immutable and thus threadsafe (and you know that at this point it can&#39;t be modified in any unintended way).</p><p>So the short way of building your object is:</p><pre><code>builder().fancy(true).build();
+</code></pre><p>but you can also split it into multiple calls:</p><pre><code>Builder builder = builder();
+builder.fancy(result_of_some_calculation)
+// do other stuff
+if (something) {
+    builder.fancy(result_of_another_calculation)
+}
+callSomeMethod(builder.build())
+</code></pre><p>Of course, the more fields you have, the more use you will gain from using the builder pattern with immutable data class.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/java-design-question-is-this-good-case-for-proxy-pattern-or-over-done/'>Java &#8211; Design question: Is this good case for proxy pattern, or &#8220;over done&#8221;</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/java-how-to-resolve-methods-with-the-same-name-and-parameter-types/'>Java &#8211; How to resolve methods with the same name and parameter types</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/php-how-to-avoid-mistakes-using-the-same-variable-name-again/'>Php &#8211; How to avoid mistakes using the same variable name again</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/python-space-between-negative-sign-and-variable-name/'>Python &#8211; Space between negative sign and variable name</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/java-why-can-we-use-the-same-name-for-local-variable-in-different-scopes/'>Java &#8211; Why can we use the same name for local variable in different scopes</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/java-is-throwing-an-exception-an-anti-pattern-here/'>Java &#8211; Is throwing an exception an anti-pattern here</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

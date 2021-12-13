@@ -1,0 +1,53 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Python &#8211; How to convert this recursive problem to iterative? Line Simplification algorithm fails to run due to Maximum Recursion Depth being hit &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1085715 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1085715" class="post-1085715 software type-software status-publish hentry category-software tag-algorithms tag-python tag-recursion"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Python &#8211; How to convert this recursive problem to iterative? Line Simplification algorithm fails to run due to Maximum Recursion Depth being hit</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">algorithms</span><span class="mr-2 badge badge-info">python</span><span class="mr-2 badge badge-warning">recursion</span></p><div class="entry-content"><p>I am implementing the <a href="http://en.wikipedia.org/wiki/Ramer–Douglas–Peucker_algorithm" rel="nofollow noreferrer">Douglas, Peucker&#39;s Line Simplification algorithm</a> in Python. I started with <a href="https://codereview.stackexchange.com/questions/49809/python-implementation-of-the-ramer-douglas-peucker-algorithm">this implementation</a>. However, it fails to run in Python due to Maximum Recursion Depth being hit. How can I convert this algorithm to a iterative one? I am not able to imagine this problem in an iterative view.</p><p>My expectation is to get approach/hint which can be used rather than actual code. Is it possible to use some internal stack to resolve the stack overflow (or avoid the maximum recursion depth)?</p><p><strong>Update:</strong><br /> Found the iterative implementation of the algorithm <a href="https://web.archive.org/web/20080122064143/http://www.3dsoftware.com/Cartography/Programming/PolyLineReduction/" rel="nofollow noreferrer" title="RDP Iterative algorithm">here</a>.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I would simulate in the most generic way as follows:
+This is what I believe the low-level machine would do.</p><pre><code>func(Param x) {
+
+  Stack stack = new Stack();
+  Frame frame = new Frame(x);
+  push(frame);
+
+  while (!stack.empty()) {
+    frame = stack.pop();
+
+    if (baseCase) {
+       createResult(frame);
+    } else {
+       newFrame = doWork(frame);
+       stack.push(frame);
+       stack.push(newFrame);
+    }
+  }
+
+  return frame.getResult();
+}
+</code></pre><p>You can define Frame as follows:</p><pre><code>class Frame {
+   FrameData state;
+   Data sharedData;
+   Param inputParam;
+
+   Result getResult() {
+     ..compute result from &#39;state&#39; and &#39;sharedData&#39;
+   }
+}
+</code></pre><p>Now you can wonder why there is only one push into the stack even though you have 2 recursive calls. It is because The first recursive call is pushed into the stack with a frame having different <code>state</code> and <code>sharedData</code> compared to the frame pushed into the stack by the second call.</p><p>Since you said, you only want approach and hint. I hope this is enough. The details is done in the method <code>doWork()</code>. There <code>Frame</code>&#39;s instances variables are changed.</p><p>I took me a while to come up with this. Hopefully, there is nothing wrong here.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/java-reading-graph-inputs-for-a-programming-puzzle-and-then-solving-it/'>Java &#8211; Reading graph inputs for a programming puzzle and then solving it</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/possible-damerau-levenshtein-improvement/'>Possible Damerau-Levenshtein improvement</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

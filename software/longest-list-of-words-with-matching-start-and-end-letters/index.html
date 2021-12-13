@@ -1,0 +1,56 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Longest list of words with matching start and end letters &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1070019 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1070019" class="post-1070019 software type-software status-publish hentry category-software tag-algorithms"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Longest list of words with matching start and end letters</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">algorithms</span></p><div class="entry-content"><p>My friend gave me a problem that he says is easy, but I can&#39;t figure out a good algorithm to use to do it.</p><p>You are given an input of 100 random English words.  You have to find the longest string of words where the last letter in one word matches the first letter in the next word.  You can only use each word once.</p><p>For example, if you were given the words &#34;cat&#34;, &#34;dog&#34;, &#34;that&#34;, the longest string you could make would be &#34;cat -&gt; that&#34;.  If you were given the words &#34;mouse&#34;, &#34;moose&#34;, &#34;unicorn&#34;, the longest string you could make would just be one word (since none of those words link).  If you were given the words &#34;bird&#34;, &#34;dish&#34;, &#34;harb&#34;, the longest string you could make would be &#34;harb -&gt; bird -&gt; dish&#34; (or &#34;dish -&gt; harb -&gt; bird&#34; or &#34;bird -&gt; dish -&gt; harb&#34;).</p><p>I came up with the idea of modeling this as a directed cyclic graph.  Each node would just be a word, with vertices going to each word/node that started with the letter this word ended with.</p><pre><code>+-------+         \ +------+
+|  cat  |-----------| that |
++-------+         / +------+
+    |                  |
+   \|/                 |
++-------+ /            |
+|  the  |--------------+
++-------+ \
+</code></pre><p>This problem appears to be a <a href="http://en.wikipedia.org/wiki/Longest_path_problem">longest path search</a>, which is NP-Hard.</p><p>Is there a better way to do it?  Or even some sort of approximation algorithm that could be used?  Or some way to exploit qualities of English to reduce the search space?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I think this is related to the longest path (LP) problem that you mentioned, but it&#39;s a little different.  The primary difference is that the LP problem has a higher degree of connectivity than what your suggested problem does.  By restricting your connections to the last and first letters, you remove a large number of potential combinations.</p><p>Here&#39;s how I would recommend tackling this one:</p><ol><li>For each word in the list, count the possible connections in and connections out.</li><li>Discard any words that have 0 ins and 0 outs.</li><li>Identify an initial set of &#34;starter words&#34; with the lowest numbers of ins and outs, and the outs must be greater than 0.</li><li>Each starter word receives its own working copy of the ins / outs connection count.  This forms the head of the chain.</li><li>For each chain, identify a list of &#34;next words&#34; based upon:<br/><ul><li>last letter of starter or previous word</li><li>lowest number of of ins and outs connections (again, the outs must be greater than 0)</li></ul></li><li>For each <code>next word</code>, repeat step 5 until the chain terminates.</li></ol><p>Keep in mind that:</p><ul><li><p>You&#39;ll need to keep track of the length of the chains and have some global mechanism to identify the longest chain.</p></li><li><p>You&#39;ll also need to remove each word from the working copy of the connection counts in order to avoid a recursive loop.</p></li><li><p>At some point, your chain will terminate and you have to select a word with a 0 connection out count.</p></li><li><p>You may have to recalculate ins / outs as words are removed from the working lists.  At first glance, I don&#39;t think this will be necessary as the overall sets will be relatively small.  If you scaled out to 1000 words, then having static counts may slow down the algorithm from converging.</p></li></ul><p>I kind of saw this as a packing problem.  To me, the connections in and out identify the shape to be packed.  The lower the connections, the more odd the shape.  The more odd the shape, the sooner I want to pack it as I perceived having decreasing odds of being able to pack an odd shape the later I got into the chain.</p><p>As an example:</p><pre><code>{dog, gopher, alpha, cube, elegant, this, that, bart}
+
+dog     0, 1
+gopher  1, 0
+alpha   0, 0
+cube    0, 1
+elegant 1, 2
+this    3, 0
+that    2, 1
+bart    0, 2
+
+//alpha is dropped with 0 in and 0 out.
+//two candidates found: dog, cube
+
+//chain 1
+dog =&gt; gopher
+//chain 2
+cube =&gt; elegant =&gt; that =&gt; this
+
+//Note 1: the following chain won&#39;t occur due to selection rules
+//that takes priority over this because of output count
+cube =&gt; elegant =&gt; this
+
+//Note 2: this chain won&#39;t occur either due to selection rules
+bart =&gt; that =&gt; this
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/merge-directed-acyclic-graphs-minimizing-number-of-nodes/'>Merge directed acyclic graphs minimizing number of nodes</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

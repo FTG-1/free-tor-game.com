@@ -1,0 +1,86 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; How to handle Data Fetching for Circular Object References in OOP Domain Models &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1082090 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1082090" class="post-1082090 software type-software status-publish hentry category-software tag-c tag-domain-model tag-object-oriented"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; How to handle Data Fetching for Circular Object References in OOP Domain Models</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">domain-model</span><span class="mr-2 badge badge-warning">object-oriented</span></p><div class="entry-content"><p>I&#39;m trying to put together some basic models in OOP (C#), and apparently I&#39;ve got the wrong idea.</p><p>If I have a Workman&#39;s Comp case, it is applied to a Patient.  It also has one or more PatientVisits applied to the case.  Each PatientVisit though, also has a Patient associated with it, and of course a Patient can have any number of Visits associated with it.</p><p>My original thought was to create basic, real-world reflections of the business models by doing something like:</p><pre><code>class Patient {
+        int ID;
+        string FirstName;
+        string LastName;
+
+        List&lt;Visit&gt; Visits;
+    }
+
+    class Visit {
+        int ID;
+        DateTime VisitDate;
+        Patient Patient;
+
+        List&lt;DxCode&gt; DxCodes;
+    }
+
+    class WCCase {
+        int ID;
+        Patient Patient;
+        DateTime DateEntered;
+
+        List&lt;Visit&gt; Visits;
+    }
+</code></pre><p>I naively thought <em>that&#39;ll be nice, I&#39;ll just load up my model and have everything at hand, very semantic and representative of the domain/real-world, right?</em></p><p>So, I can go the opposite route and fill the parent object and store lists of IDs for related models:</p><pre><code>class Patient {
+    int ID;
+    string FirstName;
+    string LastName;
+
+    List&lt;int&gt; VisitIDs;
+
+    public static Patient GetPatient(int id) {}
+}
+
+class Visit {
+    int ID;
+    DateTime VisitDate;
+    int PatientID;
+
+    List&lt;DxCode&gt; DxCodes;
+
+    public Static Visit GetVisit(int id) {}
+}
+
+class WCCase {
+    int ID;
+    int PatientID;
+    DateTime DateEntered;
+
+    List&lt;int&gt; VisitIDs;
+
+    public static case GetCase(int id) {}
+}
+</code></pre><p>This of course allows me to load everything on demand (get an ID and grab the object through it&#39;s Get*() method), but seems a bit of a step away from the idea of a nicely representative real-world model and more like a mirror of a database table representation.</p><p>I&#39;m guessing there must be some middle ground, but I&#39;d sure like some advice on finding it&#8230;  Can anyone give some basic examples of how we&#39;d model this without going nuts with references and circulars, etc?</p><p>Thanks in advance.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p><strong>Addressing the Basic Question</strong></p><blockquote><p>if I load a business entity into an object, and it has child objects as well, should I &#34;fill out&#34; all of the child models as well, or leave them null until needed, or...? <a href="https://softwareengineering.stackexchange.com/questions/303239/how-to-handle-circular-object-references-in-oop-domain-models#comment633181_303240">[reference]</a></p></blockquote><p>It depends. (thanks Bob?)</p><ul><li><a href="https://en.wikipedia.org/wiki/Lazy_loading" rel="nofollow noreferrer">Lazy Loading &amp; Eager Loading</a></li></ul><p>Whatever. <em>This is an implementation detail.</em> It should not drive domain design. I am not saying either of the (as of this writing) two answers is wrong. <a href="https://softwareengineering.stackexchange.com/questions/303239/how-to-handle-circular-object-references-in-oop-domain-models#comment633238_303240">I&#39;m saying this aspect should be better incapsulated</a> and then exposed in domain terms.</p><hr/><p><strong>Encapsulating Data Fetching</strong></p><blockquote><p>... but seems a bit of a step away from the idea of a nicely representative real-world model and more like a mirror of a database table representation.</p><p>I&#39;m guessing there must be some middle ground ...</p></blockquote><p><strong>Domain Analysis</strong></p><p>As with any good Gummit bureaucracy you are just a number to them. And so a workers comp <em>thing</em> is who you are, what you do, what they do (to you), etc. This <em>thing</em> sounds like a class and this <em>thing</em> is a number. But it is not an <code>int</code>, it is a &#34;Workers Comp Case File&#34; let&#39;s say.</p><p>Further, we have all these circular references. Nothing wrong with these per-se from an OO design perspective.</p><hr/><pre><code>public class WorkersCompCaseFile {
+    public int ID { get; protected set; }
+    public Patient { get; protected set; }
+    public Visits { get; protected set; }
+    public WCCase { get; protected set; }
+
+    // here we can load things as desired, and change that
+    // implementation isolated from the domain entities involved.
+
+    //Case-wide functionalities
+    public bool SuspectFraud() { 
+        // lots of object instantiation for complex analysis
+    }
+}
+
+// CLIENT
+WorkersCompCaseFile myHardCase = new WorkersCompCaseFile();
+if( myHardCase.HasVisits ) 
+    myHardCase.SuspectFraud();  // yeah, everyone is guilty of something.
+</code></pre><p><strong>Data Points</strong></p><ul><li>We created the proper context to ensure proper global state.<ul><li>Lazy/Eager load as needed</li><li>Components do not have to construct pieces of, nor continuously examine, the larger context state.</li></ul></li><li>With this simple encapsulation - framework - there are so many design possibilities.</li><li><code>IDataFetch</code> interface that all classes implement. There could be delegates or event handlers so <code>WorkersCompCaseFile</code> transparently does it for it&#39;s components.</li><li><code>protected</code> vice <code>public</code> properties<ul><li>the case file totally controls component construction</li><li><code>protected int ID</code> - do not expose the ID period. It&#39;s an internal unifying concept.</li></ul></li><li><code>Patient</code>, <code>Visit</code>, all have a reference to their containing <code>WorkersCompCaseFile</code><ul><li><code>Patient.Visits</code> is a pass-through reference to the case file object.</li><li>Components might not have an ID property at all.</li></ul></li><li>Least Knowledge Principle: The case file exposes components on their behalf. e.g.<ul><li><code>MyHardCase.Name</code> vice <code>MyHardCase.Patient.Name</code></li><li>The client is blissfully ignorant of internal object instantiation and nullness.</li><li>Internal components can be equally, mutually ignorant.</li></ul></li></ul></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-best-way-of-validating-class-properties/'>C# &#8211; Best way of validating Class properties</a></li><li class="list-group-item"><a href='../java-whats-the-proper-way-to-model-this-real-world-activity-that-seems-to-need-circular-references-in-oop/'>Java &#8211; What&#8217;s the proper way to model this real-world activity that seems to need circular references in OOP</a></li><li class="list-group-item"><a href='../c-separating-domain-object-and-data-models/'>C# &#8211; Separating Domain Object and Data Models</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

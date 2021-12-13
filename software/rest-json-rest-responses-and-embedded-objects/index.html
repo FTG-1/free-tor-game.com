@@ -1,0 +1,122 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Rest &#8211; JSON REST Responses and Embedded Objects &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1083146 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1083146" class="post-1083146 software type-software status-publish hentry category-software tag-architecture tag-json tag-rest"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Rest &#8211; JSON REST Responses and Embedded Objects</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">Architecture</span><span class="mr-2 badge badge-info">json</span><span class="mr-2 badge badge-warning">rest</span></p><div class="entry-content"><p>I&#39;ve been doing some research on RESTful architectures and JSON responses.  I&#39;m trying to understand which method of laying out JSON responses is &#34;correct&#34; or if they are both acceptable.</p><p>For instance, using the <a href="https://swapi.co/" rel="nofollow noreferrer">swapi</a>, I&#39;ve seen JSON responses that reference URIs for embedded objects:</p><pre><code>{
+  &#34;name&#34;: &#34;Luke Skywalker&#34;,
+  &#34;height&#34;: &#34;172&#34;,
+  &#34;mass&#34;: &#34;77&#34;,
+  &#34;hair_color&#34;: &#34;blond&#34;,
+  &#34;skin_color&#34;: &#34;fair&#34;,
+  &#34;eye_color&#34;: &#34;blue&#34;,
+  &#34;birth_year&#34;: &#34;19BBY&#34;,
+  &#34;gender&#34;: &#34;male&#34;,
+  &#34;homeworld&#34;: &#34;https://swapi.co/api/planets/1/&#34;,
+  &#34;films&#34;: [
+    &#34;https://swapi.co/api/films/2/&#34;,
+    &#34;https://swapi.co/api/films/6/&#34;,
+    &#34;https://swapi.co/api/films/3/&#34;,
+    &#34;https://swapi.co/api/films/1/&#34;,
+    &#34;https://swapi.co/api/films/7/&#34;
+  ],
+  &#34;species&#34;: [
+    &#34;https://swapi.co/api/species/1/&#34;
+  ],
+  &#34;vehicles&#34;: [
+    &#34;https://swapi.co/api/vehicles/14/&#34;,
+    &#34;https://swapi.co/api/vehicles/30/&#34;
+  ],
+  &#34;starships&#34;: [
+    &#34;https://swapi.co/api/starships/12/&#34;,
+    &#34;https://swapi.co/api/starships/22/&#34;
+  ],
+  &#34;created&#34;: &#34;2014-12-09T13:50:51.644000Z&#34;,
+  &#34;edited&#34;: &#34;2014-12-20T21:17:56.891000Z&#34;,
+  &#34;url&#34;: &#34;https://swapi.co/api/people/1/&#34;
+}
+</code></pre><p>I&#39;ve seen other JSON responses formatted as follows, where the object is &#34;embedded&#34; in the response &#8212; see &#34;homeworld&#34; below:</p><pre><code>{
+  &#34;name&#34;: &#34;Luke Skywalker&#34;,
+  &#34;height&#34;: &#34;172&#34;,
+  &#34;mass&#34;: &#34;77&#34;,
+  &#34;hair_color&#34;: &#34;blond&#34;,
+  &#34;skin_color&#34;: &#34;fair&#34;,
+  &#34;eye_color&#34;: &#34;blue&#34;,
+  &#34;birth_year&#34;: &#34;19BBY&#34;,
+  &#34;gender&#34;: &#34;male&#34;,
+  &#34;homeworld&#34;: {
+    &#34;name&#34;: &#34;Tatooine&#34;, 
+    &#34;rotation_period&#34;: &#34;23&#34;, 
+    &#34;orbital_period&#34;: &#34;304&#34;, 
+    &#34;diameter&#34;: &#34;10465&#34;, 
+    &#34;climate&#34;: &#34;arid&#34;, 
+    &#34;gravity&#34;: &#34;1 standard&#34;, 
+    &#34;terrain&#34;: &#34;desert&#34;, 
+    &#34;surface_water&#34;: &#34;1&#34;, 
+    &#34;population&#34;: &#34;200000&#34;
+  },
+  &#34;created&#34;: &#34;2014-12-09T13:50:51.644000Z&#34;,
+  &#34;edited&#34;: &#34;2014-12-20T21:17:56.891000Z&#34;,
+  &#34;url&#34;: &#34;https://swapi.co/api/people/1/&#34;
+}
+</code></pre><p>Is one of these considered more &#34;correct&#34; than the other, or is it really based on the requirements of the particular solution?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>As with many design issues the answer is &#34;it depends&#34;.</p><p>In most cases you have to find a balance between:</p><ol><li>Big response: embed everything, even if some clients don&#39;t use it</li><li>Many requests: don&#39;t embed anything and let the clients make one extra request for each additional resource that they need.</li></ol><p>I don&#39;t think that either of these is &#34;more correct&#34; than the other.</p><p>There are a few standards like <a href="http://jsonapi.org/" rel="nofollow noreferrer">JSON API</a> and <a href="http://stateless.co/hal_specification.html" rel="nofollow noreferrer">HAL</a> that attempt (among other things) to solve this problem. They both have the concept of &#34;included&#34; (or embeded) resources which are requested by the client, e.g. for JSON API</p><p>If you request <code>GET /articles</code> you would receive:</p><pre><code>{
+  &#34;data&#34;: [{
+    &#34;type&#34;: &#34;articles&#34;,
+    &#34;id&#34;: &#34;1&#34;,
+    &#34;attributes&#34;: {
+      &#34;title&#34;: &#34;JSON API paints my bikeshed!&#34;,
+      &#34;body&#34;: &#34;The shortest article. Ever.&#34;,
+      &#34;created&#34;: &#34;2015-05-22T14:56:29.000Z&#34;,
+      &#34;updated&#34;: &#34;2015-05-22T14:56:28.000Z&#34;
+    },
+    &#34;relationships&#34;: {
+      &#34;author&#34;: {
+        &#34;data&#34;: {&#34;id&#34;: &#34;42&#34;, &#34;type&#34;: &#34;people&#34;},
+        &#34;links&#34;: {
+          &#34;self&#34;: &#34;http://example.com/articles/1/author&#34;
+        }
+      }
+    }
+  }]
+}
+</code></pre><p>And you could also do <code>GET /articles?include=author</code></p><pre><code>{
+  &#34;data&#34;: [{
+    &#34;type&#34;: &#34;articles&#34;,
+    &#34;id&#34;: &#34;1&#34;,
+    &#34;attributes&#34;: {
+      &#34;title&#34;: &#34;JSON API paints my bikeshed!&#34;,
+      &#34;body&#34;: &#34;The shortest article. Ever.&#34;,
+      &#34;created&#34;: &#34;2015-05-22T14:56:29.000Z&#34;,
+      &#34;updated&#34;: &#34;2015-05-22T14:56:28.000Z&#34;
+    },
+    &#34;relationships&#34;: {
+      &#34;author&#34;: {
+        &#34;data&#34;: {&#34;id&#34;: &#34;42&#34;, &#34;type&#34;: &#34;people&#34;},
+        &#34;links&#34;: {
+          &#34;self&#34;: &#34;http://example.com/articles/1/author&#34;
+        }
+      }
+    }
+  }],
+  &#34;included&#34;: [
+    {
+      &#34;type&#34;: &#34;people&#34;,
+      &#34;id&#34;: &#34;42&#34;,
+      &#34;attributes&#34;: {
+        &#34;name&#34;: &#34;John&#34;,
+        &#34;age&#34;: 80,
+        &#34;gender&#34;: &#34;male&#34;
+      }
+    }
+  ]
+}
+</code></pre><p>Which adds an &#34;included&#34; key that contains more resources. This way the client can decide for each use case.</p><p>Of course, this puts an extra burden in the client to parse the response since it&#39;s more complex than simple data structures (there are libaries for that).</p><p>Here are some useful reads:</p><ul><li><a href="https://martinfowler.com/articles/richardsonMaturityModel.html" rel="nofollow noreferrer">Richardson Maturity Level</a></li><li><a href="https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm" rel="nofollow noreferrer">Roy Fielding&#39;s dissertation</a></li></ul></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../rest-always-return-single-objects-in-an-array-for-rest-api-json-payloads/'>Rest &#8211; Always return single objects in an array for REST API JSON payloads</a></li><li class="list-group-item"><a href='../java-producing-json-objects-from-jpa-entities-in-rest-api/'>Java &#8211; Producing JSON objects from JPA entities in REST API</a></li><li class="list-group-item"><a href='../rest-api-should-api-return-nested-json-objects/'>REST API &#8211; Should API Return Nested JSON Objects</a></li><li class="list-group-item"><a href='../rest-base64-in-json-is-it-a-good-idea-for-rest-api/'>Rest &#8211; Base64 in Json: Is it a Good Idea for Rest API</a></li><li class="list-group-item"><a href='../rest-different-responses-in-rest/'>Rest &#8211; Different responses in REST</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

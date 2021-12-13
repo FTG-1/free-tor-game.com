@@ -1,0 +1,123 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; How to separate the ViewModel from the Model, yet associate them with each other based on the Model &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1066779 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1066779" class="post-1066779 software type-software status-publish hentry category-software tag-c tag-mvvm tag-separation-of-concerns tag-service-locator tag-wpf"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; How to separate the ViewModel from the Model, yet associate them with each other based on the Model</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">mvvm</span><span class="mr-2 badge badge-warning">separation-of-concerns</span><span class="mr-2 badge badge-primary">service-locator</span><span class="mr-2 badge badge-danger">wpf</span></p><div class="entry-content"><p>In a wpf application, a <code>Model</code> object is created either from scratch or deserialized from some <code>.xml</code> file. To create a connection to the <code>ViewModel</code>, the following method (on the <strong><code>Model</code></strong>!) is used by the application:</p><pre><code>class Model
+{
+    public override UserControl View
+    {
+        get
+        {
+            if (_view == null)
+            {
+                ViewModel viewModel = new ViewModel(this);
+                _view = new View();
+                _view.DataContext = viewModel;
+            }
+            return _view;
+        }
+    }
+}
+</code></pre><p>So far, so <em>not</em> <a href="https://docs.microsoft.com/en-us/previous-versions/msp-n-p/hh848246(v=pandp.10)?redirectedfrom=MSDN" rel="nofollow noreferrer">mvvm</a>. The <code>Model</code> should not know (=have a direct reference to) the <code>ViewModel</code>, let alone the <code>View</code>.</p><p><a href="../../../i.stack.imgur.com/oWWOY.png" rel="nofollow noreferrer"><img src="../../../i.stack.imgur.com/oWWOY.png" alt="mvvm diagram"/></a><br /> <sub>(source: <a href="../../../i-msdn.sec.s-msft.com/dynimg/IC564167.html" rel="nofollow noreferrer">s-msft.com</a>)</sub></p><p>Breaking the pattern this way served as a convenient shortcut, but is starting to take a toll. I&#39;d like to get rid of this method to separate the concerns properly as intended by the pattern.</p><p>But how would I do that? The functionality of the method in itself looks alright mmvm-wise. If I&#39;d take it out of <code>Model</code> and place it in the application, it looks like proper mvvm-ish code that wires up the components:</p><pre><code>ViewModel viewModel = new ViewModel(new Model);
+_view = new View();
+_view.DataContext = viewModel;
+</code></pre><p>But I cannot do that, because I do not know what <code>Model</code> class I&#39;m dealing with, when looking at the problem from the application point of view, because any one of several <code>Model</code> classes might get instantiated or deserialized. In some sense, the <code>Model</code> knows best what <code>ViewModel</code> to use (hence the current implementation), but this is exactly the dependency that I&#39;m trying to avoid.</p><p><strong>How to build the parts of the mvvm pattern &#34;against the grain&#34; of the dependencies of the pattern?</strong> That is, going from <code>Model</code> to <code>View(Model)</code>and not the other way round.</p><ul><li>A simple solution might be to define a <strong>data structure</strong> in the application (e.g. a <code>Dictionary</code>) to <strong>associate a specific <code>ViewModel</code> that should be used with a specific <code>Model</code></strong>, but this means maintainance when adding more classes, making mistakes doing so, etc.</li><li>One could also <strong>build that association with reflection</strong> introducing a strict naming scheme like every <code>FooModel</code> will go together with a <code>FooModelView</code>, which would be an improvement, but is still prone to breaking.</li><li>Or use some <strong>dependency injector thingy</strong> (e.g. <a href="https://docs.microsoft.com/en-us/dotnet/framework/mef/" rel="nofollow noreferrer">mef</a>) to automate the process of finding the pieces that belong together. But again, the dependencies seem to go the wrong way: The <code>ViewModel</code> might <code>[Import]</code> an <code>IModel</code> that the <code>Model</code> could then <code>[export]</code>, but the <code>Model</code> (=the dependency) is created first, so I&#39;d be looking for imports that would be satisfied with a given export and not the other way round. While such tools would help to split the concerns across even different assemblies (which is good and a goal, too), they don&#39;t solve the underlying problem that I don&#39;t know how to start this separation in the first place, which isn&#39;t their intended purpose anyway. If I swap import and export, my guess is that I&#39;d end up with what I started with.</li></ul><p>Are there any better solutions than building an association between the two (either by hardcoding it or reflection) in the application?</p><hr/><blockquote><p>can you explain how and why each ViewModel doesn&#39;t already know the proper Model class to instantiate and the proper Model methods to call? Isn&#39;t that one of the primary reasons for having ViewModel classes in the first place?</p></blockquote><p>Every <code>ViewModel</code> knows the proper <code>Model</code> class. I&#39;m sorry if that wasn&#39;t clear from the text. In the code example, the <code>Model</code> is passed to the constructor of the <code>ViewModel</code>.<br /> The <code>ViewModel</code> does <strong>not</strong> instantiate the <code>Model</code> object as this object might be constructed elsewhere (e.g. it could come from a deserialisation process).<br /> That is indeed the primary reason for it to exist.</p><p>The problem is deciding what <code>ViewModel</code> to create, so that the <code>Model</code> (of a type that is decided at runtime) at hand can be passed to it.</p><blockquote><p>Assuming you intend to use some form of IoC to solve this problem, couldn&#39;t you simply use the configuration of the DI container to identify the required model, or use a Service Locator?</p><p>Can you also further clarify the phrase, &#34;Breaking the pattern this way served as a convenient shortcut, but is starting to take a toll&#34;?</p></blockquote><p>Given that the <code>Model</code> itself ensured that the right <code>ViewModel</code> (and <code>View</code>) would be instantiated, the returned value could be carelessly added to the screen. The correct wiring of the components happened in the method seen in the first code example. So much for the convenience of being able to &#34;display&#34; a <code>Model</code>. The toll to be paied is that <code>Model</code> would use and therefore reference <code>View</code> and <code>ViewModel</code>, which are classes that depend on GUI libraries, which the <code>Model</code> should not depend on.</p><p>or, to be blunt: Why does this console application need 5 dlls for graphical user interface components?</p><blockquote><p>couldn&#39;t you simply use the configuration of the DI container to identify the required model, or use a Service Locator?</p></blockquote><p>I guess the mentioned datastructure that associates <code>ViewModel</code> with <code>Model</code> is a (poor man&#39;s) Service Locator. I&#39;m new to that pattern, but from a first glance that seems to be the case. Using the expected type of the <code>ViewModel</code>s to build it is something I haven&#39;t thought about. (I&#39;m thinking <em>and</em> not <em>or</em> regarding your question) As far as that approach goes, I&#39;d take your suggestion as an answer. I was however hoping for a solution that&#39;s a little less DIY-ish. Seeing how binding does a lot of thing automatically, I&#39;m somewhat surprised to find that going the opposite direction (that is, having a <code>Model</code> to begin with) requires such manual dependency management. But then maybe this is what it takes.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Here are my suggestions:</p><p><strong>Suggestion 1</strong></p><p>You could try to use extension methods in order to separate concerns and in the end, perform exactly what you need (models that know their respective viewmodels):</p><pre class="lang-cs prettyprint-override"><code>using System;
+using System.Collections.Generic;
+
+namespace Yay
+{
+    public class BaseModel
+    {
+        public bool CommonStuff { get; set; }
+    }
+
+    public class FromScratchModel : BaseModel
+    {
+        public string A { get; set; }
+        public string B { get; set; }
+
+    }
+
+    public class DeserializedModel : BaseModel
+    {
+        public int C { get; set; }
+        public bool D { get; set; }
+
+    }
+
+    public class BaseViewModel
+    {
+        public override string ToString()
+        {
+            return &#34;Base View Model!!!!&#34;;
+        }
+    }
+
+    public class ViewModel1 : BaseViewModel
+    {
+        public override string ToString()
+        {
+            return &#34;View Model - From Scratch!!!!&#34;;
+        }
+    }
+
+    public class ViewModel2 : BaseViewModel
+    {
+        public override string ToString()
+        {
+            return &#34;View Model - Deserialized!!!!&#34;;
+        }
+    }
+
+    static class Extensions
+    {
+
+        public static BaseViewModel GetViewModel(this BaseModel model)
+        {
+            return new BaseViewModel();
+        }
+
+        public static BaseViewModel GetViewModel(this FromScratchModel model)
+        {
+            return new ViewModel1();
+        }
+
+        public static BaseViewModel GetViewModel(this DeserializedModel model)
+        {
+            return new ViewModel2();
+        }
+
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            IList&lt;BaseModel&gt; models = 
+                new List&lt;BaseModel&gt; { new BaseModel(), 
+                                    new FromScratchModel(), 
+                                    new DeserializedModel() };
+            foreach (var model in models)
+            {
+                //Calling model.GetViewModel() will not work here; already tried (it runs, but it will return the BaseViewModel always).
+                //But it&#39;s possible to call the right method resolved at runtime
+                //using dynamic keyword
+                BaseViewModel viewModel = Extensions.GetViewModel(model as dynamic);
+                Console.WriteLine(viewModel.ToString());
+            }
+
+            Console.ReadLine();
+        }
+    }
+}
+</code></pre><p><strong>Suggestion 2</strong></p><p>You have different models that can arrive, that are resolved at runtime. In this option I suggest:</p><ul><li>On your core project (not the UI project), for each type of your model, create a &#34;model loader&#34; class, that will Notify the clients about new models (eg: DeserializedModelLoader; FromScratchModelLoader)</li><li>On your UI, create one listener for each type of existing model (eg: DeserializedModelListener, FromScratchModelListener);</li><li>each listener can return a ViewModel ready to be rendered, which will be of the appropriate type, and already contain the Model received;</li><li>maintain a list of those listeners; for every new Model arrived, you can retrieve the appropriate ViewModel from the listener that received something.</li></ul></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-what-the-best-way-to-wire-up-entity-framework-database-context-model-to-viewmodel-in-mvvm-wpf/'>C# &#8211; What the best way to wire up Entity Framework database context (model) to ViewModel in MVVM WPF</a></li><li class="list-group-item"><a href='../again-mvvm-mvp-story-passing-interface-of-a-view-to-its-view-model-why-it-is-bad/'>Again MVVM / MVP story , passing interface of a view to its view model why it is bad</a></li><li class="list-group-item"><a href='../c-whats-the-best-way-to-expose-a-model-object-in-a-viewmodel/'>C# &#8211; What&#8217;s the best way to expose a Model object in a ViewModel</a></li><li class="list-group-item"><a href='../why-cant-viewmodels-communicate-with-each-other/'>Why can’t ViewModels communicate with each other</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

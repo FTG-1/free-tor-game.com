@@ -1,0 +1,143 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Does this code solve the square/rectangle Liskov Substution Principle example &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1072282 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1072282" class="post-1072282 software type-software status-publish hentry category-software tag-design-patterns tag-inheritance tag-liskov-substitution tag-object-oriented-design"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Does this code solve the square/rectangle Liskov Substution Principle example</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">design-patterns</span><span class="mr-2 badge badge-info">inheritance</span><span class="mr-2 badge badge-warning">liskov-substitution</span><span class="mr-2 badge badge-primary">object-oriented-design</span></p><div class="entry-content"><p>I just wanted to check that I understand the LSP correctly and can solve it. I am taking the classic rectangle/square problem and attempting a solution:</p><pre class="lang-php prettyprint-override"><code>class Rectangle{
+    public $width;
+    public $height;
+
+    function setWidth($width){
+        $this-&gt;width = $width;
+    }
+
+    function setHeight($height){
+        $this-&gt;height = $height;
+    }
+}
+
+class Square extends Rectangle{
+
+    function setWidth($width){
+        $this-&gt;width = $width;
+        $this-&gt;height = $width;
+    }
+
+    function setHeight($height){
+        $this-&gt;height = $height;
+        $this-&gt;width = $height;
+    }
+}
+</code></pre><p>If you had some code like:</p><pre class="lang-php prettyprint-override"><code>function changeSize(Rectangle $rect){
+  $rect-&gt;setWidth(10);
+  $rect-&gt;setHeight(30);
+  $this-&gt;assertEquals(10,$rect-&gt;width);
+  $this-&gt;assertEquals(30,$rect-&gt;height);
+}
+</code></pre><p>Then obviously rectangles and squares are not interchangeable, as square introduces a constraint to the parent class. Therefore, a square should not inherit from rectangles.</p><p>But surely we can agree that both square and rectangle are four sided shapes? This is my proposed solution, based on this premise:</p><pre class="lang-php prettyprint-override"><code>abstract class AFourSidedShape{
+    public $width;
+    public $height;
+
+    abstract public function __construct($width,$height);
+
+    public function scaleUp($percentage){
+        $this-&gt;height = $this-&gt;height + (($this-&gt;height / 100) * $percentage);
+        $this-&gt;width = $this-&gt;width + (($this-&gt;width / 100) * $percentage);
+    }
+
+    public function scaleDown($percentage){
+        $this-&gt;height = $this-&gt;height - (($this-&gt;height / 100) * $percentage);
+        $this-&gt;width = $this-&gt;width - (($this-&gt;width / 100) * $percentage);
+    }
+}
+
+class Rectangle extends AFourSidedShape{
+    function __construct($width, $height){
+        $this-&gt;width = $width;
+        $this-&gt;height = $height;
+    }
+}
+
+class Square extends AFourSidedShape{
+    function __construct($width, $height){
+        if($width != $height){
+            throw new InvalidArgumentException(&#39;Sides must be equal&#39;);
+        }else{
+            $this-&gt;width = $width;
+            $this-&gt;height = $height;
+        }
+    }
+}
+</code></pre><p>Our client code should be changed to something like:</p><pre class="lang-php prettyprint-override"><code>function changeSize(AFourSidedShape $shape){
+  $origWidth = $shape-&gt;width;
+  $origHeight = $shape-&gt;height;
+  $shape-&gt;scaleUp(10);
+  $this-&gt;assertEquals($origWidth + (($origWidth/100) * 10),$shape-&gt;width);
+  $this-&gt;assertEquals($origHeight + (($origHeight/100) * 10),$shape-&gt;height);
+}
+</code></pre><p>My theory is: rectangles and squares really are both foursidedshapes, so there shouldn&#39;t be a problem with inheriting from the foursidedshape abstract class. Whilst the square is still adding extra constraints in the constructor (i.e. throwing an error if the sides aren&#39;t equal), it shouldn&#39;t be a problem since we haven&#39;t implemented the constructor in the abstract parent class, and so client code shouldn&#39;t make assumptions about what you can/cannot pass into it anyway.</p><p>My question is: have I understood LSP, and does this new design solve the LSP problem for square/rectangle?</p><p>When using interfaces as suggested:</p><pre class="lang-php prettyprint-override"><code>interface AFourSidedShape{
+    public function setWidth($width);
+    public function setHeight($height);
+    public function getWidth();
+    public function getHeight();
+}
+
+class Rectangle implements AFourSidedShape{
+    private $width;
+    private $height;
+
+    public function __construct($width,$height){
+        $this-&gt;width = $width;
+        $this-&gt;height = $height;
+    }
+
+    public function setWidth($width){
+        $this-&gt;width = $width;
+    }
+
+    public function setHeight($height){
+        $this-&gt;height = $height;
+    }
+
+    //getwidth, getheight
+}
+
+class Square implements AFourSidedShape{
+    private $width;
+    private $height;
+
+    public function __construct($sideLength){
+        $this-&gt;width = $sideLength;
+        $this-&gt;height = $sideLength;
+    }
+
+    public function setWidth($width){
+        $this-&gt;width = $width;
+        $this-&gt;height = $width;
+    }
+
+    public function setHeight($height){
+        $this-&gt;height = $height;
+        $this-&gt;width = $height;
+    }
+
+    //getwidth, getheight
+}
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I&#39;m going to assume you are trying to solve the &#34;<a href="https://en.wikipedia.org/w/index.php?title=Liskov_substitution_principle&amp;oldid=794793800#A_typical_violation" rel="noreferrer">Typical Violation</a>&#34; section of the LSP Wikipedia article. If that&#39;s the case, you haven&#39;t solved it and the section states clearly why. Specifically, start with the setup: &#34;Square class that derives from a Rectangle class, assuming getter and setter methods exist for both width and height.&#34; LSP states that the subclass should be able to stand-in for the super class.</p><p>But, it&#39;s not just that! That&#39;s what you and your commenters are missing. If it was just a matter of torturing your design until you could make the swap (everything is a <code>AFourSidedShape</code>), you could simply design some generic object (no shape or behavior), have everything inherit from the object, and then swap in specific implementations. Think about what would happen if you did that. You&#39;d constantly be interrogating the objects to determine what they can do and/or violating their post conditions That&#39;s what the LSP hates.</p><p>So in your case, a <code>AFourSidedShape</code> doesn&#39;t really solve anything because you&#39;d constantly be checking if your specific implementations were Rectangles or Squares to ensure post conditions are correct -- a Square&#39;s width can magically change when you update its height but not a Rectangle&#39;s. That&#39;s what the sections means when it says, &#34;these methods will weaken (violate) the postconditions for the Rectangle setters.&#34; You can&#39;t get away from less-than-ideal behavior. It&#39;s a tradeoff. (Unless you make your objects immutable! Hooray for immutability!)</p><p>Don&#39;t feel bad. The Rectangle/Square with getters/setters for width/height problem is meant to be unsolvable in the trivial sense. It&#39;s a great, simple example of why LSP is difficult in practice.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/design-is-this-a-violation-of-the-liskov-substitution-principle/'>Design &#8211; Is this a violation of the Liskov Substitution Principle</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/java-does-the-state-pattern-violate-liskov-substitution-principle/'>Java &#8211; Does the state Pattern violate Liskov Substitution Principle</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/why-would-square-inheriting-from-rectangle-be-problematic-if-we-override-the-setwidth-and-setheight-methods/'>Why would Square inheriting from Rectangle be problematic if we override the SetWidth and SetHeight methods</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/object-oriented-does-this-decorator-implementation-violate-the-liskov-substitution-principle/'>Object-oriented &#8211; Does this Decorator implementation violate the Liskov Substitution Principle</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

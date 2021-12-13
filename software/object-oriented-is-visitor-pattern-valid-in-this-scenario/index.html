@@ -1,0 +1,131 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Object-oriented &#8211; Is Visitor Pattern valid in this scenario &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1083710 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1083710" class="post-1083710 software type-software status-publish hentry category-software tag-design tag-design-patterns tag-object-oriented tag-visitor-pattern"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Object-oriented &#8211; Is Visitor Pattern valid in this scenario</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">design</span><span class="mr-2 badge badge-info">design-patterns</span><span class="mr-2 badge badge-warning">object-oriented</span><span class="mr-2 badge badge-primary">visitor-pattern</span></p><div class="entry-content"><p>The goal of my task is to design a small system which can run scheduled recurring tasks. A recurring task is something like &#34;send an email to administrator every hour from 8:00 am to 5:00 pm, Monday through Friday&#34;.</p><p>I have a base class called <em>RecurringTask</em>.</p><pre><code>public abstract class RecurringTask{
+
+    // I&#39;ve already figured out this part
+    public bool isOccuring(DateTime dateTime){
+        // implementation
+    }
+
+    // run the task
+    public abstract void Run(){
+
+    }
+}
+</code></pre><p>And I have several classes which are inherited from <em>RecurringTask</em>. One of them is called <em>SendEmailTask</em>.</p><pre><code>public class SendEmailTask : RecurringTask{
+    private Email email;
+
+    public SendEmailTask(Email email){
+        this.email = email;
+    }
+
+    public override void Run(){
+        // need to send out email
+    }
+}
+</code></pre><p>And I have a <em>EmailService</em> which can helps me to send out an email.</p><p>The last class is <em>RecurringTaskScheduler</em>, it&#39;s responsible for loading tasks from cache or database and run the task.</p><pre><code>public class RecurringTaskScheduler{
+
+    public void RunTasks(){
+        // Every minute, load all tasks from cache or database
+        foreach(RecuringTask task : tasks){
+            if(task.isOccuring(Datetime.UtcNow)){
+                task.run();
+            }
+        }
+    }
+}
+</code></pre><p>Here is my problem: where should I put <em>EmailService</em>?</p><p><strong>Option1</strong>: Inject <em>EmailService</em> into <em>SendEmailTask</em></p><pre><code>public class SendEmailTask : RecurringTask{
+    private Email email;
+
+    public EmailService EmailService{ get; set;}
+
+    public SendEmailTask (Email email, EmailService emailService){
+        this.email = email;
+        this.EmailService = emailService;
+    }
+
+    public override void Run(){
+        this.EmailService.send(this.email);
+    }
+}
+</code></pre><p>There are already some discussions on whether we should inject a service into an entity, and most people agree it&#39;s not a good practice. See <a href="http://thinkbeforecoding.com/post/2009/03/04/How-not-to-inject-services-in-entities" rel="nofollow noreferrer">this article</a>.</p><p><strong>Option2:</strong> If&#8230;Else in <em>RecurringTaskScheduler</em></p><pre><code>public class RecurringTaskScheduler{
+    public EmailService EmailService{get;set;}
+
+    public class RecurringTaskScheduler(EmailService emailService){
+        this.EmailService = emailService;
+    }
+
+    public void RunTasks(){
+        // load all tasks from cache or database
+        foreach(RecuringTask task : tasks){
+            if(task.isOccuring(Datetime.UtcNow)){
+                if(task is SendEmailTask){
+                    EmailService.send(task.email); // also need to make email public in SendEmailTask
+                }
+            }
+        }
+    }
+}
+</code></pre><p>I&#39;ve been told If&#8230;Else and cast like above is not OO, and will bring more problems.</p><p><strong>Option3:</strong> Change the signature of <em>Run</em> and create <em>ServiceBundle</em>.</p><pre><code>public class ServiceBundle{
+    public EmailService EmailService{get;set}
+    public CleanDiskService CleanDiskService{get;set;}
+    // and other services for other recurring tasks
+
+}
+</code></pre><p>Inject this class into <em>RecurringTaskScheduler</em></p><pre><code>public class RecurringTaskScheduler{
+    public ServiceBundle ServiceBundle{get;set;}
+
+    public class RecurringTaskScheduler(ServiceBundle serviceBundle){
+        this.ServiceBundle = ServiceBundle;
+    }
+
+    public void RunTasks(){
+        // load all tasks from cache or database
+        foreach(RecuringTask task : tasks){
+            if(task.isOccuring(Datetime.UtcNow)){
+                task.run(serviceBundle);
+            }
+        }
+    }
+}
+</code></pre><p>The <em>Run</em> method of <em>SendEmailTask</em> would be</p><pre><code>public void Run(ServiceBundle serviceBundle){
+    serviceBundle.EmailService.send(this.email);
+}
+</code></pre><p>I don&#39;t see any big problems with this approach.</p><p><strong>Option4</strong>: Visitor pattern.<br /> The basic idea is create a visitor which will encapsulate services just like <em>ServiceBundle</em>.</p><pre><code>public class RunTaskVisitor : RecurringTaskVisitor{
+    public EmailService EmailService{get;set;}
+    public CleanDiskService CleanDiskService{get;set;}
+
+    public void Visit(SendEmailTask task){
+        EmailService.send(task.email);
+    }
+
+    public void Visit(ClearDiskTask task){
+        //
+    }
+}
+</code></pre><p>And we also need to change the signature of <em>Run</em> method. The <em>Run</em> method of <em>SendEmailTask</em> is</p><pre><code>public void Run(RecurringTaskVisitor visitor){
+    visitor.visit(this);
+}
+</code></pre><p>It is a typical implementation of Visitor Pattern, and the visitor will be injected into <em>RecurringTaskScheduler</em>.</p><p>In summary:<br /> Among these four approaches, which one is the best for my scenario? And are there any big difference between Option3 and Option4 for this problem?</p><p>Or do you have better idea on this problem? Thanks!</p><p><strong>Update 5/22/2015</strong>: I think Andy&#39;s answer summarizes my intention really well; if you are still confused about the problem itself, I suggest reading his post first.</p><p>I just found out my problem is very similar to <em>Message Dispatch</em> problem, which leads to Option5.</p><p><strong>Option5</strong>: Convert my problem to <em>Message Dispatch</em>.<br /> There is a one-to-one mapping between my problem and <em>Message Dispatch</em> problem:</p><p><em>Message Dispatcher</em> : Receive <em>IMessage</em> and dispatch sub classes of <em>IMessage</em> to their corresponding handlers. → RecurringTaskScheduler</p><p><em>IMessage</em> : An interface or an abstract class. → RecurringTask</p><p><em>MessageA</em> : Extends from <em>IMessage</em>, having some additional information. → SendEmailTask</p><p><em>MessageB</em> : Another subclass of <em>IMessage</em>. → CleanDiskTask</p><p><em>MessageAHandler</em> : When receive <em>MessageA</em>, handle it → SendEmailTaskHandler, which contains EmailService, and will send out an email when it receives SendEmailTask</p><p><em>MessageBHandler</em> : Same as <em>MessageAHandler</em>, but handle <em>MessageB</em> instead. → CleanDiskTaskHandler</p><p>The hardest part is how to dispatch different kind of <em>IMessage</em> to different handlers. Here is a useful <a href="https://stackoverflow.com/questions/1477471/design-pattern-for-handling-multiple-message-types">link</a>.</p><p>I really like this approach, it doesn&#39;t pollute my entity with service, and it doesn&#39;t have any <em>God</em> class.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I would say <strong>Option 1</strong> is the best route to take. The reason you should not dismiss it is that the <code>SendEmailTask</code> is <strong>not</strong> an entity. An entity is an object concerned with holding data and state. Your class has very little of that. In fact, it is not an entity, but it <em>holds</em> an entity: the <code>Email</code> object you are storing. That means that <code>Email</code> should not take a service, or have a <code>#Send</code> method. Instead, you should have services that take entities, such as your <code>EmailService</code>. So you are already following the idea of keeping services out of entities.</p><p>Since <code>SendEmailTask</code> is not an entity, it is therefore perfectly fine to inject the email and the service into it, and that should be done through the constructor. By doing constructor injection, we can be sure that <code>SendEmailTask</code> is always ready to perform it&#39;s job.</p><p>Now let&#39;s look at <strong>why not</strong> to do the other options (specifically with respect to <a href="http://en.wikipedia.org/wiki/SOLID_(object-oriented_design)" rel="nofollow">SOLID</a>).</p><h3>Option 2</h3><p>You&#39;ve been rightly told that branching on type like that will bring more headaches down the road. Let&#39;s look at why. First, <code>if</code>s tend to cluster and grow. Today, it&#39;s a task to send emails, tomorrow, every different type of class needs a different service or other behavior. Managing that <code>if</code> statement becomes a nightmare. Since we are branching on type (and in this case <em>explicit type</em>), we are subverting the type system built into our language.</p><p>Option 2 is not Single Responsibility (SRP) because the formerly reusable <code>RecurringTaskScheduler</code> now has to know about all these different types of tasks, and about all the different kinds of services and behaviors they might need. That class is much harder to reuse. It is also not Open/Closed (OCP). Because it needs to know about this kind of task or that one (or this kind of service or that one), disparate changes to tasks or services could force changes here. Add a new task? Add a new service? Change the way email is handled? Change <code>RecurringTaskScheduler</code>. Because the type of task matters, it does not adhere to Liskov Substitution (LSP). It can&#39;t just get a task and be done. It has to ask for the type and based on the type do this or do that. Rather than encapsulating the differences into the tasks, we are pulling all of that into the <code>RecurringTaskScheduler</code>.</p><h3>Option 3</h3><p>Option 3 has some big problems. Even in <a href="http://thinkbeforecoding.com/post/2009/03/04/How-not-to-inject-services-in-entities" rel="nofollow">the article you link to</a>, the author discourages doing this:</p><blockquote><ul><li>You can still use a static service locator…</li><li>I avoid service locator when I can, especially when the service locator must be static…</li></ul></blockquote><p>You are creating a <a href="http://en.wikipedia.org/wiki/Service_locator_pattern" rel="nofollow">service locator</a> with your <code>ServiceBundle</code> class. In this case, it doesn&#39;t appear to be static, but it still has many of the problems inherent in a service locator. Your dependencies are now hidden away under this <code>ServiceBundle</code>. If I give you the following API of my cool new task:</p><pre><code>class MyCoolNewTask implements RecurringTask
+{
+    public bool isOccuring(DateTime dateTime) {
+        return true; // It&#39;s always happenin&#39; here!
+    }
+
+    public void Run(ServiceBundle bundle) {
+        // yeah, some awesome stuff here
+    }
+}
+</code></pre><p>What are the services I am using? What services need to be mocked out in a test? What&#39;s to stop me from using <em>every</em> service in the system, just because?</p><p>If I want to use your task system to run some tasks, I now am dependent on every service in your system, even if I only use a few or even none at all.</p><p>The <code>ServiceBundle</code> is not really SRP because it needs to know about <em>every</em> service in your system. It is also not OCP. Adding new services means changes to the <code>ServiceBundle</code>, and changes to the <code>ServiceBundle</code> may mean disparate changes to tasks elsewhere. <code>ServiceBundle</code> does not Segregate its Interface (ISP). It has a sprawling interface of all these services, and because it&#39;s just a provider for those services, we could consider its interface to encompass the interfaces of all of the services it provides as well. Tasks no longer adhere to Dependency Inversion (DIP), because their dependencies are obfuscated behind the <code>ServiceBundle</code>. This also does not adhere to the <a href="http://en.wikipedia.org/wiki/Law_of_Demeter" rel="nofollow">Principle of Least Knowledge</a> (aka the Law of Demeter) because things know about many more things than they have to.</p><h3>Option 4</h3><p>Previously, you had lots of small objects that were able to operate independently. Option 4 takes all of these objects and smashes them together into a single <code>Visitor</code> object. This object acts as a <a href="http://en.wikipedia.org/wiki/God_object" rel="nofollow">god object</a> over all of your tasks. It reduces your <code>RecurringTask</code> objects to anemic shadows that simply call out to a visitor. All of the behavior moves to the <code>Visitor</code>. Need to change behavior? Need to add a new task? Change <code>Visitor</code>.</p><p>The more challenging part is that, because all of the different behaviors are all in a single class, changing some <em>polymorphicly</em> drags along all of the other behavior. For example, we want to have two different ways to send email (they should use different servers maybe?). How would we do it? We could create an <code>IVisitor</code> interface and implement that, potentially duplicating code, like <code>#Visit(ClearDiskTask)</code> from our original visitor. Then if we come up with a new way to clear a disk, we have to implement and duplicate again. Then we want both kinds of changes. Implement and duplicate again. These two different, disparate behaviors are inextricably linked.</p><p>Maybe instead we could just subclass <code>Visitor</code>? Subclass with new email behavior, subclass with new disk behavior. No duplication so far! Subclass with both? Now one or the other needs to be duplicated (or both if that&#39;s your preference).</p><p>Let&#39;s compare to option 1: We need a new email behavior. We can create a new <code>RecurringTask</code> that does the new behavior, inject in its dependencies, and add it to the collection of tasks in the <code>RecurringTaskScheduler</code>. We don&#39;t even need to talk about clearing disks, because that responsibility is somewhere else entirely. We also still have the full array of OO tools at our disposal. We could decorate that task with logging, for example.</p><p>Option 1 will give you the least pain, and is the most correct way to handle this situation.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../implementing-the-visitor-pattern-for-an-abstract-syntax-tree/'>Implementing the Visitor Pattern for an Abstract Syntax Tree</a></li><li class="list-group-item"><a href='../object-oriented-communicating-between-unrelated-components-objects/'>Object-oriented &#8211; Communicating between unrelated components/objects</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

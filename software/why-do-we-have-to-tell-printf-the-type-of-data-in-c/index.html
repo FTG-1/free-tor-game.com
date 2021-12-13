@@ -1,0 +1,207 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Why do we have to tell printf() the type of data in C &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1067571 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1067571" class="post-1067571 software type-software status-publish hentry category-software tag-c tag-io tag-type-safety"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Why do we have to tell printf() the type of data in C</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">io</span><span class="mr-2 badge badge-warning">type-safety</span></p><div class="entry-content"><p>Let&#39;s consider this C code:</p><pre><code>#include &lt;stdio.h&gt;
+
+main()
+{
+  int x=5;
+  printf(&#34;x is &#34;);
+  printf(&#34;%d&#34;,5);
+}
+</code></pre><p>In this, when we wrote <code>int x=5;</code> we told the computer that <code>x</code> is an integer. The computer must remember that <code>x</code> is an integer. But when we output the value of <code>x</code> in <code>printf()</code> we have to again tell the computer that <code>x</code> is an integer. Why is that?</p><p>Why does the computer forget that <code>x</code> was an integer?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>There are two issues at play here:</p><p>Issue #1: C is a <em>statically typed</em> language; all type information is determined at compile time.  No type information is stored with any object in memory such that its type and size can be determined at run time<sup>1</sup>.  If you examine the memory at any particular address while the program is running, all you&#39;ll see is a sludge of bytes; there&#39;s nothing to tell you whether that particular address actually contains an object, what the type or size of that object is, or how to interpret those bytes (as an integer, or floating point type, or sequence of characters in a string, etc.).  All that information is baked into the machine code when the code is compiled, based on type information specified in the source code; for example, the function definition</p><pre><code>void foo( int x, double y, char *z )
+{
+  ...
+}
+</code></pre><p>tells the compiler to generate the appropriate machine code to handle <code>x</code> as an integer, <code>y</code> as a floating-point value, and <code>z</code> as a pointer to <code>char</code>.  Note that any mismatches in the number or type of arguments between a function call and a function definition are only detected when the code is being compiled<sup>2</sup>; it&#39;s only during the compilation phase that any type information is associated with an object.</p><p>Issue #2: <code>printf</code> is a <em>variadic</em> function; it takes one fixed parameter of type <code>const char * restrict</code> (the format string), along with zero or more additional parameters, the number and type of which are <em>not</em> known at compile time:</p><pre><code>int printf( const char * restrict fmt, ... );
+</code></pre><p>The <code>printf</code> function has no way of knowing what the number and types of additional arguments are from the passed arguments themselves; it has to rely on the format string to tell it how to interpret the sludge of bytes on the stack (or in the registers).  Even better, because it&#39;s a variadic function, arguments with certain types are <em>promoted</em> to a limited set of default types (e.g., <code>short</code> is promoted to <code>int</code>, <code>float</code> is promoted to <code>double</code>, etc.).</p><p>Again, there&#39;s no information associated with the additional arguments themselves to give <code>printf</code> any clues on how to interpret or format them.  Hence the need for the conversion specifiers in the format string.</p><p>Note that in addition to telling <code>printf</code> the number and type of additional arguments, conversion specifiers also tell <code>printf</code> how to <em>format</em> the output (field widths, precision, padding, justification, base (decimal, octal, or hex for integer types), etc.).</p><p><strong>Edit</strong></p><p>To avoid extensive discussion in the comments (and because the chat page is blocked from my work system - yes I&#39;m being a bad boy), I&#39;m going to address the last two questions here.</p><blockquote> IF I do this:<pre><code>float b;          
+float c;           
+b=3.1;    
+c=(5.0/9.0)*(b);</code></pre>In the last statement how does the compiler know that b is of type float?</blockquote><p>During translation, the compiler maintains a table (often called a <em>symbol table</em>) that stores information about an object&#39;s name, type, storage duration, scope, etc.  You <em>declared</em> <code>b</code> and <code>c</code> as <code>float</code>, so any time the compiler sees an expression with <code>b</code> or <code>c</code> in it, it will generate the machine code to handle a floating-point value.</p><p>I took your code above and wrapped a full program around it:</p><pre><code>/**
+ * c1.c
+ */
+#include &lt;stdio.h&gt;
+int main( void )
+{
+  float b;
+  float c;
+  b = 3.1;
+  c = (5.0 / 9.0) * b;
+
+  printf( &#34;c = %f\n&#34;, c );
+  return 0;
+}
+</code></pre><p>I used the <code>-g</code> and <code>-Wa,-aldh</code> options with gcc to create a listing of the generated machine code interleaved with the C source code<sup>3</sup>:</p><pre><code>GAS LISTING /tmp/ccmGgGG2.s                     page 1
+
+   1                            .file   &#34;c1.c&#34;
+   9                    .Ltext0:
+  10                            .section        .rodata
+  11                    .LC2:
+  12 0000 63203D20              .string &#34;c = %f\n&#34;
+  12      25660A00
+  13                            .align 8
+  14                    .LC1:
+  15 0008 721CC771              .long   1908874354
+  16 000c 1CC7E13F              .long   1071761180
+  17                            .text
+  18                    .globl main
+  20                    main:
+  21                    .LFB2:
+  22                            .file 1 &#34;c1.c&#34;
+   1:c1.c          **** #include &lt;stdio.h&gt;
+   2:c1.c          **** int main( void )
+   3:c1.c          **** {
+  23                            .loc 1 3 0
+  24 0000 55                    pushq   %rbp
+  25                    .LCFI0:
+  26 0001 4889E5                movq    %rsp, %rbp
+  27                    .LCFI1:
+  28 0004 4883EC10              subq    $16, %rsp
+  29                    .LCFI2:
+   4:c1.c          ****   float b;
+   5:c1.c          ****   float c;
+   6:c1.c          ****   b = 3.1;
+  30                            .loc 1 6 0
+  31 0008 B8666646              movl    $0x40466666, %eax
+  31      40
+  32 000d 8945F8                movl    %eax, -8(%rbp)
+   7:c1.c          ****   c = (5.0 / 9.0) * b;
+  33                            .loc 1 7 0
+  34 0010 F30F5A4D              cvtss2sd        -8(%rbp), %xmm1
+  34      F8
+  35 0015 F20F1005              movsd   .LC1(%rip), %xmm0
+  35      00000000
+  36 001d F20F59C1              mulsd   %xmm1, %xmm0
+  37 0021 F20F5AC0              cvtsd2ss        %xmm0, %xmm0
+  38 0025 F30F1145              movss   %xmm0, -4(%rbp)
+  38      FC
+   8:c1.c          ****
+   9:c1.c          ****   printf( &#34;c = %f\n&#34;, c );
+  39                            .loc 1 9 0
+  40 002a F30F5A45              cvtss2sd        -4(%rbp), %xmm0
+  40      FC
+  41 002f BF000000              movl    $.LC2, %edi
+  41      00
+  42 0034 B8010000              movl    $1, %eax
+  42      00
+  43 0039 E8000000              call    printf
+  43      00
+  10:c1.c          ****   return 0;
+  44                            .loc 1 10 0
+  45 003e B8000000              movl    $0, %eax
+
+GAS LISTING /tmp/ccmGgGG2.s                     page 2
+
+  11:c1.c          **** }
+  46                            .loc 1 11 0
+  47 0043 C9                    leave
+  48 0044 C3                    ret
+</code></pre><p>Here&#39;s how to read the assembly listing:</p><pre><code>  40 002a F30F5A45              cvtss2sd        -4(%rbp), %xmm0
+  40      FC
+  ^  ^    ^                     ^               ^
+  |  |    |                     |               |
+  |  |    |                     |               +-- Instruction operands
+  |  |    |                     +------------------ Instruction mnemonic
+  |  |    +---------------------------------------- Actual machine code (instruction and operands)
+  |  +--------------------------------------------- Byte offset of instruction from subroutine entry point
+  +------------------------------------------------ Line number of assembly listing
+</code></pre><p>One thing to note here.  In the generated assembly code, there are no symbols for <code>b</code> or <code>c</code>; they only exist in the source code listing.  When <code>main</code> executes at runtime, space for <code>b</code> and <code>c</code> (along with some other stuff) is allocated from the stack by adjusting the stack pointer:</p><pre><code>subq    $16, %rsp
+</code></pre><p>The code refers to those objects by their offset from the frame pointer<sup>4</sup>, with <code>b</code> being -8 bytes from the address stored in the frame pointer and <code>c</code> being -4 bytes from it, as follows:</p><pre><code>   7:c1.c          ****   c = (5.0 / 9.0) * b;
+  .loc 1 7 0
+  cvtss2sd        -8(%rbp), %xmm1  ;; converts contents of b from single- to double-
+                                   ;; precision float, stores result to floating-
+                                   ;; point register xmm1
+  movsd   .LC1(%rip), %xmm0        ;; writes the pre-computed value of 5.0/9.0  
+                                   ;; to floating point register xmm0
+  mulsd   %xmm1, %xmm0             ;; multiply contents of xmm1 by xmm0, store result
+                                   ;; in xmm0
+  cvtsd2ss        %xmm0, %xmm0     ;; convert result in xmm0 from double- to single-
+                                   ;; precision float
+  movss   %xmm0, -4(%rbp)          ;; save result to c
+</code></pre><p>Since you declared <code>b</code> and <code>c</code> as floats, the compiler generated machine code to specifically handle floating-point values; the <code>movsd</code>, <code>mulsd</code>, <code>cvtss2sd</code> instructions are all specific to floating-point operations, and the registers <code>%xmm0</code> and <code>%xmm1</code> are used to store double-precision floating point values.</p><p>If I change the source code so that <code>b</code> and <code>c</code> are integers instead of floats, the compiler generates different machine code:</p><pre><code>/**
+ * c2.c
+ */
+#include &lt;stdio.h&gt;
+int main( void )
+{
+  int b;
+  int c;
+  b = 3;
+  c = (9 / 4) * b; // changed these values since integer 5/9 == 0, making for
+                   // some really boring machine code.
+
+  printf( &#34;c = %d\n&#34;, c );
+  return 0;
+}
+</code></pre><p>Compiling with <code>gcc -o c2 -g -std=c99 -pedantic -Wall -Werror -Wa,-aldh=c2.lst c2.c</code> gives:</p><pre><code>GAS LISTING /tmp/ccyxHwid.s                     page 1
+
+   1                            .file   &#34;c2.c&#34;
+   9                    .Ltext0:
+  10                            .section        .rodata
+  11                    .LC0:
+  12 0000 63203D20              .string &#34;c = %d\n&#34;
+  12      25640A00
+  13                            .text
+  14                    .globl main
+  16                    main:
+  17                    .LFB2:
+  18                            .file 1 &#34;c2.c&#34;
+   1:c2.c          **** #include &lt;stdio.h&gt;
+   2:c2.c          **** int main( void )
+   3:c2.c          **** {
+  19                            .loc 1 3 0
+  20 0000 55                    pushq   %rbp
+  21                    .LCFI0:
+  22 0001 4889E5                movq    %rsp, %rbp
+  23                    .LCFI1:
+  24 0004 4883EC10              subq    $16, %rsp
+  25                    .LCFI2:
+   4:c2.c          ****   int b;
+   5:c2.c          ****   int c;
+   6:c2.c          ****   b = 3;
+  26                            .loc 1 6 0
+  27 0008 C745F803              movl    $3, -8(%rbp)
+  27      000000
+   7:c2.c          ****   c = (9 / 4) * b;
+  28                            .loc 1 7 0
+  29 000f 8B45F8                movl    -8(%rbp), %eax
+  30 0012 01C0                  addl    %eax, %eax
+  31 0014 8945FC                movl    %eax, -4(%rbp)
+   8:c2.c          ****
+   9:c2.c          ****   printf( &#34;c = %d\n&#34;, c );
+  32                            .loc 1 9 0
+  33 0017 8B75FC                movl    -4(%rbp), %esi
+  34 001a BF000000              movl    $.LC0, %edi
+  34      00
+  35 001f B8000000              movl    $0, %eax
+  35      00
+  36 0024 E8000000              call    printf
+  36      00
+  10:c2.c          ****   return 0;
+  37                            .loc 1 10 0
+  38 0029 B8000000              movl    $0, %eax
+  38      00
+  11:c2.c          **** }
+  39                            .loc 1 11 0
+  40 002e C9                    leave
+  41 002f C3                    ret
+</code></pre><p>Here&#39;s the same operation, but with <code>b</code> and <code>c</code> declared as integers:</p><pre><code>   7:c2.c          ****   c = (9 / 4) * b;
+  .loc 1 7 0
+  movl    -8(%rbp), %eax  ;; copy value of b to register eax
+  addl    %eax, %eax      ;; since 9/4 == 2 (integer arithmetic), double the
+                          ;; value in eax
+  movl    %eax, -4(%rbp)  ;; write result to c
+</code></pre><p>This is what I meant earlier when I said that type information was &#34;baked in&#34; to the machine code.  When the program runs, it doesn&#39;t examine <code>b</code> or <code>c</code> to determine their type; it already knows what their type <em>should be</em> based on the generated machine code.</p><blockquote> If the compiler determines the type and size at run time then why doesn&#39;t the following program works:<pre><code>float b=&#39;H&#39;;         
+printf(&#34; value of b is %c \n&#34;,b);
+</code></pre></blockquote><p>It doesn&#39;t work because you&#39;re lying to the compiler. You tell it that <code>b</code> is a <code>float</code>, so it will generate machine code to handle floating-point values. When you initialize it, the bit pattern corresponding to the constant <code>&#39;H&#39;</code> will be interpreted as a floating-point value, not a character value.</p><p>You lie to the compiler again when you use the <code>%c</code> conversion specifier, which expects a value of type <code>char</code>, for the argument <code>b</code>. Because of this, <code>printf</code> won&#39;t interpret the contents of <code>b</code> correctly, and you&#39;ll wind up with garbage output<sup>5</sup>.  Again, <code>printf</code> can&#39;t know the number or types of any additional arguments based on the arguments themselves; all it sees is an address on the stack (or a bunch of registers).  It needs the format string to tell it what additional arguments have been passed, and what their types are.</p><p></p><hr/> <sup>1.  The one exception being variable-length arrays; since their size isn&#39;t established until runtime, there&#39;s no way to evaluate <code>sizeof</code> on a VLA at compile time.<br/><br/> 2.  As of C89, anyway. Prior to that, the compiler could only catch mismatches in the function return type; it couldn&#39;t detect mismatches in the function parameter lists. <br/><br/> 3.  This code is generated on a 64-bit SuSE Linux Enterprise 10 system using gcc 4.1.2. If you&#39;re on a different implementation (compiler/OS/chip architecture), then the exact machine instructions will be different, but the general point will still hold; the compiler will generate different instructions to handle floats vs. ints vs. strings, etc. <br/><br/> 4.  When you call a function in a running program, a <em>stack frame</em> is created to store the function arguments, local variables, and the address of the instruction following the function call.  A special register called the <em>frame pointer</em> is used to keep track of the current frame. <br/><br/> 5.  For example, assume a big-endian system where the high-order byte is the addressed byte.  The bit pattern for <code>H</code> will be stored to <code>b</code> as <code>0x00000048</code>.  However, because the <code>%c</code> conversion specifier indicates that the argument should be a <code>char</code>, only the first byte will be read, so <code>printf</code> will try to write the character corresponding to the encoding <code>0x00</code>.<br/> </sup><p></p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../why-do-people-put-n-at-the-beginning-of-strings/'>Why do people put &#8216;\n&#8217; at the beginning of strings</a></li><li class="list-group-item"><a href='../critique-of-the-io-monad-being-viewed-as-a-state-monad-operating-on-the-world/'>Critique of the IO monad being viewed as a state monad operating on the world</a></li><li class="list-group-item"><a href='../storing-the-eof-end-of-file-character-in-a-char-type/'>Storing the EOF (End of File) character in a char type</a></li><li class="list-group-item"><a href='../understanding-how-variable-assignment-works/'>Understanding how variable assignment works</a></li><li class="list-group-item"><a href='../why-do-we-have-to-mention-the-data-type-of-the-variable-in-c/'>Why do we have to mention the data type of the variable in C</a></li><li class="list-group-item"><a href='../why-is-declaration-of-data-and-functions-necessary-in-c-language-when-the-definition-is-written-at-the-end-of-the-source-code/'>Why is *declaration* of data and functions necessary in C language, when the definition is written at the end of the source code</a></li><li class="list-group-item"><a href='../are-data-type-declarators-like-int-and-char-stored-in-ram-when-a-c-program-executes/'>Are data type declarators like &#8220;int&#8221; and &#8220;char&#8221; stored in RAM when a C program executes</a></li><li class="list-group-item"><a href='../architecture-if-a-number-is-too-big-does-it-spill-over-to-the-next-memory-location/'>Architecture &#8211; If a number is too big does it spill over to the next memory location</a></li><li class="list-group-item"><a href='../why-use-trailing-newlines-instead-of-leading-with-printf/'>Why use trailing newlines instead of leading with printf</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

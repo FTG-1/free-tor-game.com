@@ -1,0 +1,74 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; HTTP Async/Await Task: avoid flooding server with requests &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1086134 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1086134" class="post-1086134 software type-software status-publish hentry category-software tag-async tag-asynchronous-programming tag-c"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; HTTP Async/Await Task: avoid flooding server with requests</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">async</span><span class="mr-2 badge badge-info">asynchronous-programming</span><span class="mr-2 badge badge-warning">c</span></p><div class="entry-content"><p>I have a scenario where I have a Windows Store Application, there is a page with a search functionality, the user types names in a textbox and the app searches for names similar to the typed text.</p><p>Searching is done through calling a RESTful GET Api method. the call takes about 4 seconds to retrieve the results. This uses the c# async/await technique.</p><p>What I want to do is to do is to call the HTTP method as the user types, but I want to do this by cancelling any executing tasks and making sure that only one task executes at a time to avoid flooding the server with requests.</p><p>I implemented the following approach, it works fine, but I believe there can be better solution:</p><ul><li>I hold a reference to the async task and a cancellation token source.</li><li><p>As the user types, I check if there is a running task, I cancel it and start a new one with the most recent search text.</p><blockquote><pre><code>private CancellationTokenSource cts = null;
+private Task&lt;List&lt;string&gt;&gt; searchTask;
+
+private async void textbox_TextChanged(object sender, TextChangedEventArgs e)
+{
+  //there is already running task
+  if (searchTask != null &amp;&amp; !searchTask.IsCompleted)
+    {
+      //cancel the running and start a new one
+         cts.Cancel();
+         cts = new CancellationTokenSource();
+       searchTask=SearchWeb(txtbox.Text, cts.Token);
+       searchTask.ContinueWith(t =&gt;{
+           //show results
+       });
+  }
+  else
+  {
+      //start a new one
+        searchTask = dataRepository.SearchUsers(txtbox.Text, cts.Token);
+        searchTask.ContinueWith(t =&gt;{
+          //show results
+      });
+  }
+}
+</code></pre></blockquote></li></ul><p>My primary concern is that I don&#39;t like the overhead generated with tracking the running tasks.  It seems like there should be a more efficient way of doing this that doesn&#39;t require cancelling so many requests.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>If you wish to reduce the number of starts and cancels - I would put a delay into your execution. Another approach would be to use polling but that&#39;s more overhead and more complex; and violates the good policy of &#34;Tell, don&#39;t ask&#34;.</p><p>I think something like this may do the job of only grabbing the search string after a delay, so they can type a few characters before it grabs it and begins the execution. If execution is already occurring you still want to cancel and kick off another delay though. This way if they start and finish typing before the delay is over, it won&#39;t be cancelled and it&#39;ll execute the query right then.</p><pre><code>private CancellationTokenSource cts = null;
+private Task&lt;List&lt;string&gt;&gt; searchTask;
+private Task delayTask;
+private string searchString;
+
+private async void textbox_TextChanged(object sender, TextChangedEventArgs e)
+{
+  searchString = txtbox.Text;
+
+  if (delayTask != null &amp;&amp; !delayTask.IsCompleted)
+    return;
+
+  //there is already running task
+  if (searchTask != null &amp;&amp; !searchTask.IsCompleted)
+  {
+    //cancel the running and start a new one
+    cts.Cancel();
+    cts = new CancellationTokenSource();
+  }
+
+  ExecuteQueryAfterDelay();
+}
+
+private void ExecuteQueryAfterDelay()
+{
+  delayTask = Task.Delay(2000).ContinueWith(t =&gt;
+  {
+    searchTask=SearchWeb(searchString, cts.Token);
+    searchTask.ContinueWith(t =&gt;
+    {
+      //show results
+    });
+  });
+}
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-solutions-to-c-5-async-re-entrancy/'>C# &#8211; Solutions to C# 5 async re-entrancy</a></li><li class="list-group-item"><a href='../c-asyncawait-sync/'>C# &#8211; async+await == sync</a></li><li class="list-group-item"><a href='../async-controllers-in-asp-net-mvc-real-advantages-how-achieved/'>Async Controllers in ASP.NET MVC: Real Advantages / How Achieved</a></li><li class="list-group-item"><a href='../c-async-await-pedantry-vs-the-debugger/'>C# async/await: Pedantry vs. the Debugger</a></li><li class="list-group-item"><a href='../c-await-state-async/'>C# &#8211; Await state async</a></li><li class="list-group-item"><a href='../c-use-case-for-async-await/'>C# &#8211; Use case for async/await</a></li><li class="list-group-item"><a href='../c-who-did-async-await-first/'>C# &#8211; Who did async/await first</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

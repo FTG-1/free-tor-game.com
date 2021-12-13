@@ -1,0 +1,79 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Best practice for transaction handling using Entity Framework &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1078915 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1078915" class="post-1078915 software type-software status-publish hentry category-software tag-c tag-entity-framework"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Best practice for transaction handling using Entity Framework</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">entity-framework</span></p><div class="entry-content"><p>I am developing an app which uses Entity Framework for data access. The architecture of the app somewhat like below:</p><p><a href="../../../i.stack.imgur.com/E9z55.jpg" rel="nofollow noreferrer"><img src="../../../i.stack.imgur.com/E9z55.jpg" alt="enter image description here"/></a></p><p>As depicted in the drawing, the business service can be consumed from either web app, cli app or windows service. What I&#39;m trying to design is, each <strong>service request</strong> should be performed in a single transaction. I&#39;m using dependency injection to inject services to web api controllers. If I use request scoped dbcontext using DI container, it&#39;ll do the job for web api, but won&#39;t work for service requests coming directly from CLI app or windows services.</p><p>What are best practices used to handle service level transactions with Entity Framework?</p><p>e.g.</p><pre><code>// Services
+public class UserService
+{
+    private TaskService _taskService;
+    private UserRepository _userRepository;
+
+    public UserService(TaskService taskService, UserRepository userRepository)
+    {
+        this._taskService = taskService;
+        this._userRepository = userRepository;
+    }
+
+    public void MarkInactive(int userId)
+    {
+        this._taskService.CloseAllPendingTasks(userId);
+        this._userRepository.MarkInactive(userId);
+    }
+}
+
+public class TaskService
+{
+    public void CloseAllPendingTasks(int userId)
+    {
+        ...
+    }
+}
+
+// Consumer
+// Scenario 1:
+this._taskService.CloseAllPendingTasks(1);
+
+// Scenario 2:
+this._userService.MarkInactive(2);
+</code></pre><p>In above example, In case of <code>Scenario 1</code>, task service should create new transaction for the operation. While in <code>Scenario 2</code>, user service should create a transaction and task service should join the already open transaction.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><h2>Short answer</h2><p>This is a problem I&#39;ve encountered and solved. In short, the issue was indeed that a context was being injected (via an injected repository) which was kept alive in a Windows service consumer, which was not the intention.</p><p>The short and simple answer on how I fixed this is to <strong>inject a context factory instead of a context</strong>.</p><p>For my use case, I relied on NInject to handle my dependency injection. I chose NInject because it has an extention which automatically generates factory methods when you inject <code>Func&lt;IFoo&gt;</code> instead of <code>IFoo</code>.</p><hr/><h2>Practical example</h2><p>To show some code, this is the old way which works for a web context but not a Windows service context:</p><pre><code>public class PersonService
+{
+    private readonly IUnitOfWork _uow;
+
+    public PersonService(IUnitOfWork uow)
+    {
+        _uow = uow;
+    }
+
+    public Person GetById(Guid id)
+    {
+        return _uow.PersonRepository.Get(p =&gt; p.Id == id);
+    }
+}
+</code></pre><p>The issue here is that the unit of work (and its db context) stays alive for as long as the <code>PersonService</code> object stays alive. As you&#39;ve found out, this creates issues for threads that are kept alive (like a Windows service).</p><p>I changed the code so that <strong>a call to the service is able to instantiate its own unit of work</strong>. In other words, even if the same <code>PersonService</code> object is kept alive, each subsequent call to a (public) method of the service will create its own unit of work (and db context)</p><pre><code>public class PersonService
+{
+    private readonly Func&lt;IUnitOfWork&gt; _createUnitOfWork;
+
+    public PersonService(Func&lt;IUnitOfWork&gt; uowFactory)
+    {
+        _createUnitOfWork = uowFactory;
+    }
+
+    public Person GetById(Guid id)
+    {
+        using(var uow = _createUnitOfWork())
+        {
+            return uow.PersonRepository.Get(p =&gt; p.Id == id);
+        }
+    }
+}
+</code></pre><p>The NInject extension I used (<a href="https://www.nuget.org/packages/Ninject.Extensions.Factory/" rel="nofollow noreferrer">NInject.Extensions.Factory</a>) automatically generates a simple factory method.</p><p>Assuming my dependency is set up to inject a <code>UnitOfWork</code> when asking for an <code>IUnitOfWork</code>, then the automatically generated factory method will be <code>() =&gt; new UnitOfWork();</code></p><p>This solves the issue at hand. Even if a Windows service keeps the same <code>PersonService</code> object alive, every time it asks something of the service (= when it calls a public method), you are guaranteed to work in a separate (and fresh) context.</p><p><strong>Some remarks</strong></p><ul><li>My example uses NInject, but this can be done with any DI-framework that is able to handle deferred execution methods such as <code>Func&lt;T&gt;</code>.</li><li>When your service has private methods which require database access, you should pass your <code>uow</code> object from the public method to the private method. This ensures that you can maintain the &#34;one execution, one context&#34; approach even if you have many methods which are expected to work with the same context.</li></ul></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-dependency-injection-with-n-tier-entity-framework-solution/'>C# &#8211; Dependency injection with n-tier Entity Framework solution</a></li><li class="list-group-item"><a href='../entity-framework-entities-some-data-from-web-service-best-architecture/'>Entity Framework Entities &#8211; Some Data From Web Service &#8211; Best Architecture</a></li><li class="list-group-item"><a href='../what-are-the-disconnected-scenarios-in-entity-framework/'>What are the disconnected scenarios in Entity Framework</a></li><li class="list-group-item"><a href='../web-api-vs-entity-framework-with-repository-pattern-using-xamarin/'>Web API vs Entity Framework with Repository Pattern using Xamarin</a></li><li class="list-group-item"><a href='../c-entity-framework-extending-or-injecting-services-into-db-context/'>C# &#8211; Entity Framework &#8211; extending OR injecting services into DB Context</a></li><li class="list-group-item"><a href='../c-should-an-asp-net-web-api-application-use-entity-framework-in-the-api-controllers/'>C# &#8211; Should an ASP.NET Web API application use Entity Framework in the API controllers</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

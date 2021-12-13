@@ -1,0 +1,130 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Mvc &#8211; Where to put User Interface/Domain Model manipulation logic (transferring data from the view to Domain Model) &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1078839 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1078839" class="post-1078839 software type-software status-publish hentry category-software tag-architecture tag-asp-net-mvc tag-mvc"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Mvc &#8211; Where to put User Interface/Domain Model manipulation logic (transferring data from the view to Domain Model)</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">Architecture</span><span class="mr-2 badge badge-info">asp.net-mvc</span><span class="mr-2 badge badge-warning">mvc</span></p><div class="entry-content"><p>We are starting on a greenfield project in ASP.NET MVC. I&#39;ve used the MVC pattern in other stacks (PHP and Ruby) and I keep running into the same problems of where to place business logic, UI logic, and where should this system interact with other remote systems (i.e. web services and e-mail).</p><p>I was reading <a href="http://www.codeproject.com/Articles/826417/Advantages-of-ViewModel-in-MVC-Model-View-Controll" rel="nofollow noreferrer">Advantages of ViewModel in MVC</a> and the author states that there are 5 kinds of &#34;logic&#34; in an application:</p><blockquote><ul><li><p><strong>Business Logic</strong> – Is a part of Model</p></li><li><p><strong>Database Logic</strong> – This is the one of the non-spoken layer in MVC. Many people create a separate layer for this and invoke them from Business layer (model) or some keep them inside Model.</p></li><li><p><strong>User Interaction logic</strong> – written inside controller</p></li><li><p><strong>Presentation Logic</strong> – Presentation logic is the logic which will handle the presentation of a UI. Example – If some value is greater than 100 it should be displayed in green color. Basically it is a part of View.</p></li><li><p><strong>Data transformation logic</strong> – In some situations we have some data with us and we want to display it in a different format. Example we have Date-of-birth and we want to display Age. Again this transformation becomes the part of View.</p></li></ul></blockquote><p>I would add one additional &#34;kind of logic&#34; which is:</p><ul><li><strong>User Interface/Domain Model Manipulation Logic</strong> &#8211; How to transfer data from the view to data and method calls in the Domain Model</li></ul><p>I believe the first 5 kinds of logic have defined areas already. Business Logic goes in the Domain Models. Database Logic goes in the Repositories or O/RM layer. User interaction logic goes in the controller. Presentation logic goes in the View Model. Data transformation logic goes in, essentially, classes that format data, such as dates and numbers.</p><p>The last kind of logic, where you must take data from the view and manipulate the Domain Model accordingly, doesn&#39;t seem to have its own place.</p><p>I&#39;ve read about two possibilities:</p><ol><li><p>A &#34;service layer&#34; in the application, although no mention is made of Web Services, but using &#34;service objects&#34; to encapsulate this</p></li><li><p>A &#34;unit of work&#34; object &#8211; This has been especially frustrating because a database transaction <em>is</em> an implementation of the Unit of Work Pattern. Recent variations of this pattern augment the database transaction with the actual manipulations of the Domain Model.</p></li><li><p>An Action/Executor object (<a href="https://msdn.microsoft.com/en-us/library/cc984279.aspx" rel="nofollow noreferrer">Action/Executor Pattern</a>)</p></li><li><p>Command objects (Command Pattern)</p></li></ol><p>Creating a new blog post is easy &#8211; insert the post into the database. Creating a new user is not so straight forward, because you might want to send a welcome e-mail after inserting the user into the database, so additional operations are performed after the &#34;unit of work&#34; is complete.</p><hr/><h2>A small code example.</h2><p>Let&#39;s say we have a blog application.</p><ol><li>A blog has many posts</li><li>A blog post cannot exist without a blog</li><li>A blog post must have a title, body and publish date</li></ol><p>This leads to two Domain Classes: Blog and BlogPost. To prevent you from accidentally creating a BlogPost object and adding it to the incorrect Blog, the constructor for the BlogPost class is marked <code>internal</code> so you are forced to add a blog post through the Blog object to which it belongs:</p><pre class="lang-csharp prettyprint-override"><code>public class Blog
+{
+    public Blog(string name)
+    {
+        Name = name;
+        posts = new List&lt;BlogPost&gt;();
+    }
+
+    public int Id { get; internal set; }
+    public string Name { get; private set; }
+    public string Description { get; set; }
+
+    private IList&lt;BlogPost&gt; posts;
+
+    // Return a read-only collection of posts to the public
+    public IEnumerable&lt;BlogPost&gt; Posts
+    {
+        get { return posts; }
+    }
+
+    // Create a new BlogPost object to ensure it is attached to the proper Blog
+    public BlogPost AddBlogPost(string title, string body, DateTime publishDate)
+    {
+        BlogPost post = new BlogPost(this, title, body, publishDate);
+
+        posts.Add(post);
+
+        return post;
+    }
+}
+</code></pre><p>And the BlogPost class:</p><pre class="lang-csharp prettyprint-override"><code>public class BlogPost
+{
+    // This constructor is &#34;internal&#34; so code outside this Assembly must call
+    // Blog.AddBlogPost(...) to create new posts
+    internal BlogPost(Blog blog, string title, string body, DateTime publishDate)
+    {
+        Blog = blog;
+        SetTitleAndBody(title, body);
+        PublishDate = publishDate;
+    }
+
+    public int Id { get; internal set; }
+    public string Title { get; private set; }
+    public string Body { get; private set; }
+    public Blog Blog { get; private set; }
+    public DateTime PublishDate { get; private set; }
+
+    public int BlogId
+    {
+        get { return Blog.Id; }
+    }
+
+    public bool IsPublished
+    {
+        get { return PublishDate &lt; DateTime.Now; }
+    }
+
+    public bool IsUnpublished
+    {
+        get { return !IsPublished; }
+    }
+
+    public void PublishAt(DateTime newPublishDate)
+    {
+        PublishDate = publishDate;
+    }
+
+    public void SetTitleAndBody(string title, string body)
+    {
+        if (string.IsNullOrEmpty(title))
+            throw new ArgumentNullException(&#34;title&#34;);
+
+        if (string.IsNullOrEmpty(body))
+            throw new ArgumentNullException(&#34;body&#34;);
+
+        Title = title;
+        Body = body;
+    }
+}
+</code></pre><p>The View Model for a Blog Post might look like:</p><pre class="lang-csharp prettyprint-override"><code>public class BlogPostForm
+{
+    public BlogPostForm()
+    {
+    }
+
+    public BlogPostForm(BlogPost post)
+    {
+        Id = post.Id;
+        Title = post.Title;
+        Body = post.Body;
+        PublishDate = post.PublishDate;
+        BlogId = post.BlogId;
+    }
+
+    [Required]
+    public int Id { get; set; }
+
+    [Required]
+    public string Title { get; set; }
+
+    [Required]
+    public string Body { get; set; }
+
+    [Required]
+    public DateTime? PublishDate { get; set; }
+
+    [Required]
+    public int BlogId { get; set; }
+}
+</code></pre><p>Note that the PublishDate is a nullable DateTime because the user might submit the form without filling out the publish date. Furthermore all properties are public get/set, unlike the Domain Model, again because the user might submit the form without filling in those fields.</p><p>Now something needs to take the data in the <code>BlogPostForm</code> object and find the <code>Blog</code> in the database, and call <code>AddBlogPost</code>:</p><pre class="lang-csharp prettyprint-override"><code>IBlogRepository blogs = ...
+
+Blog blog = blogs.Find(model.BlogId);
+BlogPost post = blog.AddBlogPost(model.Title, model.Body, model.PublishDate.Value);
+
+blogs.Save(blog);
+</code></pre><hr/><p><strong>Where should we put the logic of how to manipulate the Blog and BlogPost objects based on values in the BlogPostForm object, especially if this work includes more than a <code>COMMIT</code> to a database?</strong></p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Bear in mind that the Model View Controller (MVC) principal has been hijacked and bastardized by the web development world. In a real MVC application the model view and controller are largely orthogonal. If you insert a record into the model, the view will receive a change event, possibly with a hint as to what part of the model has changed and then update only the part of the view that is affected. This is not applicable to the web because the web is stateless so the &#34;view&#34; is completely reconstructed with each action. Sometimes AJAX can help with this but generally, the view cannot react to changes in the model. So don&#39;t break your neck trying to reconcile the semantics of MVC with respect to web applications. The web stack is actually pretty horrible. You are not going to find elegant design patterns in this stuff. You just have to try different things and be creative. Don&#39;t commit yourself to some design because a lot of people are preaching a particular method. I&#39;ve done a lot of different kinds of programming from DSP chips to network security software and web development is probably the most difficult of all not just because the web stack sucks but also because anyting that interfaces with a human being is going to be highly subjective.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../architecture-where-to-validate-domain-model-rules-that-depend-on-database-content/'>Architecture &#8211; Where to validate domain model rules that depend on database content</a></li><li class="list-group-item"><a href='../mvc-database-search-logic-in-view-or-model/'>MVC &#8211; Database search logic in View or Model</a></li><li class="list-group-item"><a href='../database-getting-data-from-a-database-with-the-mvc-model/'>Database &#8211; Getting data from a database with the MVC model</a></li><li class="list-group-item"><a href='../architecture-clean-architecture-what-is-the-view-model/'>Architecture &#8211; Clean Architecture: What is the View Model</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

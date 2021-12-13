@@ -1,0 +1,89 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; Rationale to prefer local variables over instance variables &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1065719 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1065719" class="post-1065719 software type-software status-publish hentry category-software tag-java tag-refactoring"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; Rationale to prefer local variables over instance variables</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">java</span><span class="mr-2 badge badge-info">refactoring</span></p><div class="entry-content"><p>The codebase I&#39;m working on frequently uses instance variables to share data between various trivial methods. The original developer is adamant that this adheres to the best practices stated in the <em>Clean Code</em> book by Uncle Bob/Robert Martin: &#34;The first rule of functions is that they should be small.&#34; and &#34;The ideal number of arguments for a function is<br /> zero (niladic). (&#8230;) Arguments are hard. They take a lot of conceptual power.&#34;</p><p>An example:</p><pre><code>public class SomeBusinessProcess {
+  @Inject private Router router;
+  @Inject private ServiceClient serviceClient;
+  @Inject private CryptoService cryptoService;
+
+  private byte[] encodedData;
+  private EncryptionInfo encryptionInfo;
+  private EncryptedObject payloadOfResponse;
+  private URI destinationURI;
+
+  public EncryptedResponse process(EncryptedRequest encryptedRequest) {
+    checkNotNull(encryptedRequest);
+
+    getEncodedData(encryptedRequest);
+    getEncryptionInfo();
+    getDestinationURI();
+    passRequestToServiceClient();
+
+    return cryptoService.encryptResponse(payloadOfResponse);
+  }
+
+  private void getEncodedData(EncryptedRequest encryptedRequest) {
+    encodedData = cryptoService.decryptRequest(encryptedRequest, byte[].class);
+  }
+
+  private void getEncryptionInfo() {
+    encryptionInfo = cryptoService.getEncryptionInfoForDefaultClient();
+  }
+
+  private void getDestinationURI() {
+    destinationURI = router.getDestination().getUri();
+  }
+
+  private void passRequestToServiceClient() {
+    payloadOfResponse = serviceClient.handle(destinationURI, encodedData, encryptionInfo);
+  }
+}
+</code></pre><p>I would refactor that into the following using local variables:</p><pre><code>public class SomeBusinessProcess {
+  @Inject private Router router;
+  @Inject private ServiceClient serviceClient;
+  @Inject private CryptoService cryptoService;
+
+  public EncryptedResponse process(EncryptedRequest encryptedRequest) {
+    checkNotNull(encryptedRequest);
+
+    byte[] encodedData = cryptoService.decryptRequest(encryptedRequest, byte[].class);
+    EncryptionInfo encryptionInfo = cryptoService.getEncryptionInfoForDefaultClient();
+    URI destinationURI = router.getDestination().getUri();
+    EncryptedObject payloadOfResponse = serviceClient.handle(destinationURI, encodedData,
+      encryptionInfo);
+
+    return cryptoService.encryptResponse(payloadOfResponse);
+  }
+}
+</code></pre><p>This is shorter, it eliminates the implicit data coupling between the various trivial methods and it limits the variable scopes to the minimum required. Yet despite these benefits I still cannot seem to convince the original developer that this refactoring is warranted, as it appears to contradict the practices of Uncle Bob mentioned above.</p><p>Hence my questions:<br /> What is the objective, scientific rationale to favor local variables over instance variables? I can&#39;t quite seem to put my finger on it. My <em>intuition</em> tells me that hidden couplings are bad and that a narrow scope is better than a broad one. But what is the science to back this up?</p><p>And conversely, are there any downsides to this refactoring that I have possibly overlooked?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><blockquote><p>What is the objective, scientific rationale to favor local variables over instance variables?</p></blockquote><p>Scope isn&#39;t a binary state, it&#39;s a gradient. You can rank these from largest to smallest:</p><pre><code>Global &gt; Class &gt; Local (method) &gt; Local (code block, e.g. if, for, ...)
+</code></pre><p><em>Edit: what I call a &#34;class scope&#34; is what you mean by &#34;instance variable&#34;. To my knowledge, those are synonymous, but I&#39;m a C# dev, not a Java dev. For the sake of brevity, I&#39;ve lumped all statics into the global category since statics are not the topic of the question.</em></p><p>The smaller the scope, the better. The rationale is that <strong>variables should live in the smallest scope possible</strong>. There are many benefits to this:</p><ul><li>It forces you to think about the current class&#39; responsibility and helps you stick to SRP.</li><li>It enables you to not have to avoid global naming conflicts, e.g. if two or more classes have a <code>Name</code> property, you&#39;re not forced to prefix them like <code>FooName</code>, <code>BarName</code>, ... Thus keeping your variable names as clean and terse as possible.</li><li>It declutters the code by limiting the available variables (e.g. for Intellisense) to those that are contextually relevant.</li><li>It enables some form of access control so your data can&#39;t be manipulated by some actor you don&#39;t know about (e.g. a different class developed by a colleague).</li><li>It makes the code more readable as you ensure that the declaration of these variables tries to stay as close to the actual usage of these variables as is possible.</li><li>Wantonly declaring variables in an overly wide scope is often indicative of a developer who doesn&#39;t quite grasp OOP or how to implement it. Seeing overly widely scoped variables acts as a red flag that there&#39;s probably something going wrong with the OOP approach (either with the developer in general or the codebase in specific).</li><li>(Comment by Kevin) Using locals forces you to do things in the right order. In the original (class variable) code, you could wrongly move <code>passRequestToServiceClient()</code> to the top of the method, and it would still compile. With locals, you could only make that mistake if you passed an uninitialized variable, which is hopefully obvious enough that you don&#39;t actually do it.</li></ul><blockquote><p>Yet despite these benefits I still cannot seem to convince the original developer that this refactoring is warranted, as it appears to contradict the practices of Uncle Bob mentioned above.</p><p>And conversely, are there any downsides to this refactoring that I have possibly overlooked?</p></blockquote><p>The issue here is that your argument for local variables is valid, but you&#39;ve also made additional changes which are not correct and cause your suggested fix to fail the smell test.</p><p>While I understand your &#34;no class variable&#34; suggestion and there&#39;s merit to it, you&#39;ve actually also removed the methods themselves, and that&#39;s a whole different ballgame. The methods should have stayed, and instead you should&#39;ve altered them to return their value rather than store it in a class variable:</p><pre><code>private byte[] getEncodedData() {
+    return cryptoService.decryptRequest(encryptedRequest, byte[].class);
+}
+
+private EncryptionInfo getEncryptionInfo() {
+    return cryptoService.getEncryptionInfoForDefaultClient();
+}
+
+// and so on...
+</code></pre><p>I do agree with what you&#39;ve done in the <code>process</code> method, but you should&#39;ve been calling the private submethods rather than executing their bodies directly.</p><pre><code>public EncryptedResponse process(EncryptedRequest encryptedRequest) {
+    checkNotNull(encryptedRequest);
+
+    byte[] encodedData = getEncodedData();
+    EncryptionInfo encryptionInfo = getEncryptionInfo();
+
+    //and so on...
+
+    return cryptoService.encryptResponse(payloadOfResponse);
+}
+</code></pre><p>You&#39;d want that extra layer of abstraction, especially when you run into methods that need to be reused several times. <em>Even if you don&#39;t currently reuse your methods</em>, it&#39;s still a matter of good practice to already create submethods where relevant, even if only to aid code readability.</p><p>Regardless of the local variable argument, I immediately noticed that your suggested fix is considerably less readable than the original. I do concede that wanton use of class variables also detracts from code readability, but not at first sight compared to you having stacked all the logic in a single (now long-winded) method.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../object-oriented-did-the-gradual-shift-in-methodology-of-writing-code-affect-system-performance-and-should-i-care/'>Object-oriented &#8211; Did the gradual shift in methodology of writing code affect system performance? And Should I care</a></li><li class="list-group-item"><a href='../object-oriented-how-does-having-too-many-instance-variables-lead-to-duplicate-code/'>Object-oriented &#8211; How does having too many instance variables lead to duplicate code</a></li><li class="list-group-item"><a href='../java-class-instance-while-retaining-variables-between-activities/'>Java &#8211; Class instance while retaining variables between activities</a></li><li class="list-group-item"><a href='../java-using-local-variables-vs-making-multiple-function-method-calls/'>Java &#8211; Using local variables vs Making multiple function/method calls</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

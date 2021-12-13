@@ -1,0 +1,59 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Using visitor pattern with large object hierarchy &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1072043 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1072043" class="post-1072043 software type-software status-publish hentry category-software tag-c tag-design-patterns tag-object-oriented tag-visitor-pattern"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Using visitor pattern with large object hierarchy</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">design-patterns</span><span class="mr-2 badge badge-warning">object-oriented</span><span class="mr-2 badge badge-primary">visitor-pattern</span></p><div class="entry-content"><p><strong>Context</strong></p><p>I&#39;ve been using with a hierarchy of objects (an expression tree) a &#34;pseudo&#34; visitor pattern (pseudo, as in it does not use double dispatch) :</p><pre><code> public interface MyInterface
+ {
+      void Accept(SomeClass operationClass);
+ }
+
+ public class MyImpl : MyInterface 
+ {
+      public void Accept(SomeClass operationClass)
+      {   
+           operationClass.DoSomething();
+           operationClass.DoSomethingElse();
+           // ... and so on ...
+      }
+ }
+</code></pre><p>This design was, however questionnable, pretty comfortable since the number of implementations of MyInterface is significant (~50 or more) and I didn&#39;t need to add extra operations.</p><p>Each implementation is unique (it&#39;s a different expression or operator), and some are composites (ie, operator nodes that will contain other operator/leaf nodes).</p><p>Traversal is currently performed by calling the Accept operation on the root node of the tree, which in turns calls Accept on each of its child nodes, which in turn&#8230; and so on&#8230;</p><p>But the time has come where I need to <strong>add a new operation</strong>, such as pretty printing :</p><pre><code> public class MyImpl : MyInterface 
+ {
+      // Property does not come from MyInterface
+      public string SomeProperty { get; set; }
+
+      public void Accept(SomeClass operationClass)
+      {   
+           operationClass.DoSomething();
+           operationClass.DoSomethingElse();
+           // ... and so on ...
+      }
+
+      public void Accept(SomePrettyPrinter printer)
+      {
+           printer.PrettyPrint(this.SomeProperty);
+      }
+ }    
+</code></pre><p>I basically see two options :</p><ul><li>Keep the same design, adding a new method for my operation to each derived class, at the expense of maintainibility (not an option, IMHO)</li><li>Use the &#34;true&#34; Visitor pattern, at the expense of extensibility (not an option, as I expect to have more implementations coming along the way&#8230;), with about 50+ overloads of the Visit method, each one matching a specific implementation ?</li></ul><p><strong>Question</strong></p><p>Would you recommand using the Visitor pattern ? Is there any other pattern that could help solve this issue ?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I have been using the visitor pattern to represent expression trees over the course of 10+ years on six large-scale projects in three programming languages, and I am very pleased with the outcome. I found a couple of things that made applying the pattern a lot easier:</p><h3>Do not use overloads in the interface of the visitor</h3><p>Put the type into the method name, i.e use</p><pre><code>IExpressionVisitor {
+    void VisitPrimitive(IPrimitiveExpression expr);
+    void VisitComposite(ICompositeExpression expr);
+}
+</code></pre><p>rather than</p><pre><code>IExpressionVisitor {
+    void Visit(IPrimitiveExpression expr);
+    void Visit(ICompositeExpression expr);
+}
+</code></pre><h3>Add an &#34;catch unknown&#34; method to your visitor interface.</h3><p>It would make it possible for users who cannot modify your code:</p><pre><code>IExpressionVisitor {
+    void VisitPrimitive(IPrimitiveExpression expr);
+    void VisitComposite(ICompositeExpression expr);
+    void VisitExpression(IExpression expr);
+};
+</code></pre><p>This would let them build their own implementations of <code>IExpression</code> and <code>IVisitor</code> that &#34;understands&#34; their expressions by using run-time type information in the implementation of their catch-all <code>VisitExpression</code> method.</p><h3>Provide a default do-nothing implementation of <code>IVisitor</code> interface</h3><p>This would let users who need to deal with a subset of expression types build their visitors faster, and make their code immune to you adding more methods to <code>IVisitor</code>. For example, writing a visitor that harvests all variable names from your expressions becomes an easy task, and the code will not break even if you add a bunch of new expression types to your <code>IVisitor</code> later on.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-visitor-stability-vs-instanceof-flexibility/'>Java &#8211; Visitor stability vs instanceof flexibility</a></li><li class="list-group-item"><a href='../implementing-the-visitor-pattern-for-an-abstract-syntax-tree/'>Implementing the Visitor Pattern for an Abstract Syntax Tree</a></li><li class="list-group-item"><a href='../c-expandable-alternative-to-visitor-pattern-for-tree-traversal/'>C++ &#8211; Expandable alternative to Visitor pattern for tree traversal</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

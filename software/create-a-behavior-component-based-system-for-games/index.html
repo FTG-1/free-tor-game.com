@@ -1,0 +1,56 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Create a behavior/Component based system for games &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1074983 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1074983" class="post-1074983 software type-software status-publish hentry category-software tag-design-patterns tag-game-development"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Create a behavior/Component based system for games</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">design-patterns</span><span class="mr-2 badge badge-info">game development</span></p><div class="entry-content"><h2>Background</h2><p>I do game development as a hobby, and am looking for a better way to design them. Currently, I am using a standard OOP approach (I have been doing enterprise development for 8 years so it comes nartually). Take for example a &#34;baddie&#34;</p><pre><code>public class Baddie:AnimatedSprite //(or StaticSprite if needed, which inherit Sprite)
+{
+    //sprite base will have things like what texture to use, 
+    //what the current position is, the base Update/Draw/GetInput methods, etc..
+    //an AnimatedSprite contains helpers to animated the player while 
+    //a StaticSprite is just one that will draw whatever texture is there
+}
+</code></pre><h2>The problem</h2><p>Lets say I am making a 2d platformer, and need the baddie to be able to Jump. Usually what I do is add the appropriate code in the Update/GetInput methods. Then if I need to make the player crawl, duck, climb, etc&#8230; the code will go there.</p><p>If I&#39;m not careful, those methods get cluttered, so I end up creating methods pairs like this</p><p><code>CheckForJumpAction(Input input)</code> and <code>DoJump()</code></p><p><code>CheckforDuckAction(Input input)</code> and <code>DoDuck()</code></p><p>so GetInput looks like</p><pre><code>public void DoInput(Input input)
+{
+    CheckForJumpAction(input);
+    CheckForDuckAction(input);
+}
+</code></pre><p>and Update looks like</p><pre><code>public void Update()
+{
+    DoJump();
+    DoDuck();
+}
+</code></pre><p>If I go and create <em>another</em> game where the player needs to jump and duck, I usually go into a game that has the functionality and copy it over. Messy, I know. Thats I why I&#39;m looking for something better.</p><h2>Solution?</h2><p>I really like how Blend has behaviors I can attach to an element. I have been thinking about using the same concept in my games. So lets look at the same examples.</p><p>I would create a base Behavior object</p><pre><code>public class Behavior
+{
+    public void Update()
+    Public void GetInput()
+}
+</code></pre><p>And I can create behaviors using that. <code>JumpBehavior:Behavior</code> and <code>DuckBehavior:Behavior</code></p><p>I can then add a collection of behaviors to the Sprite base and add what I need to each entity.</p><pre><code>public class Baddie:AnimatedSprite
+{
+    public Baddie()
+    {
+        this.behaviors = new Behavior[2];
+        this.behaviors[0] = new JumpBehavior();
+        //etc...
+    }
+
+    public void Update()
+    {
+        //behaviors.update
+    }
+
+    public GetInput()
+    {
+        //behaviors.getinput
+    }
+}
+</code></pre><p>So now If I wanted to use Jump and Duck in many games, I can just bring the behaviors over. I could even make a library for the common ones.</p><h2>Does it work?</h2><p>What I can&#39;t figure out is how to share state between them. Looking at Jump and Duck, both affect not only the current portion of the texture being drawn, but also the state of the player. (Jump is going to apply a decrementing amount of upward force over time, while duck is just going to stop movement, change the texture and the collision size of the baddie.</p><p>How can I tie this together so it works? Should I create dependency properties between the behaviors? Should I have each behavior <em>know</em> about the parent and directly modify it? One thing I thought was being able to pass a delegate into each behavior to get executed when it is triggered.</p><p>I&#39;m sure there are more issues I am looking over, but the entire purpose is for me to be able to easily reuse these behaviors between games, and entities in the same game.</p><p>So I turn it over to you. Care to explain how/if this can be done? Do you have a better idea? I&#39;m all ears.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Take a look at <a href="http://www.gdcvault.com/play/1911/Theory-and-Practice-of-the" rel="nofollow">this</a> presentation. Sounds pretty close to the kind of pattern you&#39;re looking for. This pattern supports behaviours and attachable properties. I don&#39;t think the presentation mentions it, but you can also create attachable events. This idea is similar the dependency properties used in WPF.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../mvc-can-the-model-know-anything-about-the-view/'>MVC Can the model know ANYTHING about the view</a></li><li class="list-group-item"><a href='../python-better-pattern-than-multiple-inheritance-here/'>Python &#8211;  better pattern than multiple inheritance here</a></li><li class="list-group-item"><a href='../object-oriented-oop-ecs-vs-pure-ecs/'>Object-oriented &#8211; OOP ECS vs Pure ECS</a></li><li class="list-group-item"><a href='../c-how-to-improve-a-pattern-enum-class-with-methods/'>C++ &#8211; How to improve a pattern &#8216;enum class with methods&#8217;</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

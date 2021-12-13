@@ -1,0 +1,265 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; How to represent a long if-else tree in a concise manner &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1073383 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1073383" class="post-1073383 software type-software status-publish hentry category-software tag-design tag-java tag-trees"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; How to represent a long if-else tree in a concise manner</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">design</span><span class="mr-2 badge badge-info">java</span><span class="mr-2 badge badge-warning">trees</span></p><div class="entry-content"><p>Long story short, I&#39;ve inherited a Java piece of code made of methods like this one:</p><pre><code>@Override
+public Action decide() {
+
+    if (equalz(in.a, &#34;LOC&#34;)) {//10
+        if(( //20
+                equalz(tmp.b, &#34;BA&#34;)
+                &amp;&amp; notEquals(in.c,&#34;U&#34;)
+                &amp;&amp; equalz(in.d,&#34;Y&#34;)
+            )||(
+                equalz(tmp.b, &#34;HV&#34;)
+                &amp;&amp; notEquals(in.c,&#34;U&#34;)
+                &amp;&amp; equalz(in.d,&#34;Y&#34;)
+                &amp;&amp; varEqualsOneOf(in.e,&#34;FLG&#34;,&#34;FLR&#34;,&#34;RRG&#34;))
+        ) {
+            if(equalz(tmp.b, &#34;BA&#34;)) {//30
+                if(varEqualsOneOf(in.e,&#34;RRG&#34;,&#34;NL&#34;)//40
+                    &amp;&amp; lessThan(in.f,in.g)) {
+                    return Action.AC015;
+                } else {
+                    if(varEqualsOneOf(in.e,&#34;FLG&#34;,&#34;FLR&#34;)) {//50
+                        return Action.AC015;
+                    } else {
+                        return Action.AC000;
+                    }
+                }
+            } else {
+                if (equalz(in.e,&#34;RRG&#34;)) {//60
+                    return Action.AC014;
+                } else {
+                    return Action.AC010;
+                }
+            }
+        } else {
+            if(equalsOrMissing(in.c,&#34;U&#34;)    
+                &amp;&amp; varEqualsOneOf(in.e,&#34;FLG&#34;,&#34;FLR&#34;)) {//70
+                return Action.AC011;
+            } else {
+                return Action.AC000;
+            }
+        }
+    } else {
+        if(varEqualsOneOf(in.a,&#34;MNC&#34;,&#34;BAN&#34;,&#34;LCI&#34;,&#34;CTV&#34;,&#34;LEA&#34;,&#34;INS&#34;)) {//80
+            if (//90
+                equalz(in.h,&#34;A&#34;)
+                || equalz(in.i,&#34;Y&#34;)
+            ) {
+                return Action.AC000;
+            } else {
+                if(notEquals(in.h,&#34;U&#34;)) {//100
+                    if(greaterThan(in.j,in.k)) {//110
+                        return Action.AC000;
+                    } else {
+                        if(varEqualsOneOf(in.e,&#34;FLG&#34;,&#34;FLR&#34;)) {//120
+                            if(notEquals(in.l,&#34;U&#34;)) {//130
+                                return Action.AC004;
+                            } else {
+                                if(oneOfVarsEqual(in.m,in.n,&#34;Y&#34;)) {//140
+                                    return Action.AC012;
+                                } else {
+                                    return Action.AC002;
+                                }
+                            }
+                        } else {
+                            if(//150
+                                (
+                                    equalz(in.e,&#34;RRG&#34;)
+                                    &amp;&amp; varEqualsOneOf(in.a,&#34;MNC&#34;,&#34;BAN&#34;,&#34;LCI&#34;,&#34;CTV&#34;,&#34;LEA&#34;)   
+                                )
+                                ||
+                                (
+                                    varEqualsOneOf(in.e,&#34;RRG&#34;,&#34;NL&#34;)
+                                    &amp;&amp; equalz(in.a,&#34;INS&#34;)
+                                )
+                            ) {
+                                if (notEquals(in.l,&#34;U&#34;)) {//160
+                                    if (notEquals(in.o,&#34;U&#34;)) {//170
+                                        return Action.AC005;
+                                    } else {
+                                        return Action.AC018;
+                                    }
+                                } else {
+                                    bp(false);
+                                    if (equalz(in.n,&#34;Y&#34;)) {//180
+                                        return Action.AC012;
+                                    } else {
+                                        return Action.AC002;
+                                    }
+                                }
+                            } else {
+                                if (equalz(in.p,in.q)) {//190
+                                    if (notEquals(in.o,&#34;U&#34;)) {//200
+                                        return Action.AC006;
+                                    } else {
+                                        return Action.AC008;
+                                    }
+                                } else {
+                                    return Action.AC000;
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    bp(false);
+                    if (notEquals(in.l,&#34;U&#34;)//210
+                        &amp;&amp; varEqualsOneOf(in.e,&#34;FLG&#34;,&#34;FLR&#34;)) {
+                        return Action.AC004;
+                    } else {
+                        return Action.AC000;
+                    }
+                }
+            }
+        } else {
+            return Action.AC000;
+        }
+    }
+}
+</code></pre><p>where a series of conditions are checked to return the correct action to be performed. I don&#39;t find this solution very elegant, and furthermore I need a way to quickly tell the path that led to a certain output (logging it to the DB).</p><p>I&#39;m thinking about a way to refactor the code and represent the condition tree in a compact fashion, so that it could be a bit easier to read, maintain and log.</p><p>I&#39;ve thought about a bidimensional matrix having a row for every condition made up of 4 elements</p><ul><li>the condition id</li><li>condition id (or return value) if current condition is true</li><li>condition id (or return value) if current condition is false</li><li>the condition itself</li></ul><p>so, at the end i&#39;d have this matrix</p><pre><code>Object[][]matrix=
+    {
+            {10,20,70,  
+                equalz(in.a, &#34;LOC&#34;)},
+
+            {20,30,80,  
+                (equalz(tmp.b, &#34;BA&#34;)
+                &amp;&amp; notEquals(in.c,&#34;U&#34;)
+                &amp;&amp; equalz(in.d,&#34;Y&#34;)
+                )||(
+                equalz(tmp.b, &#34;HV&#34;)
+                &amp;&amp; notEquals(in.c,&#34;U&#34;)
+                &amp;&amp; equalz(in.d,&#34;Y&#34;)
+                &amp;&amp; varEqualsOneOf(in.e,&#34;FLG&#34;,&#34;FLR&#34;,&#34;RRG&#34;))},
+
+            {30,40,70,  
+                equalz(tmp.b, &#34;BA&#34;)},
+
+            {40,Action.AC015,50,    
+                varEqualsOneOf(in.e,&#34;RRG&#34;,&#34;NL&#34;)
+                &amp;&amp; lessThan(in.f,in.g)},
+
+            {50,Action.AC015,Action.AC000,  
+                varEqualsOneOf(in.e,&#34;FLG&#34;,&#34;FLR&#34;)},
+
+            {60,Action.AC014,Action.AC010,  
+                equalz(in.e,&#34;RRG&#34;)},
+
+            {70,Action.AC011,Action.AC000,  
+                equalsOrMissing(in.c,&#34;U&#34;)   
+                &amp;&amp; varEqualsOneOf(in.e,&#34;FLG&#34;,&#34;FLR&#34;)},
+
+            {80,90,Action.AC000,    
+                varEqualsOneOf(in.a,&#34;MNC&#34;,&#34;BAN&#34;,&#34;LCI&#34;,&#34;CTV&#34;,&#34;LEA&#34;,&#34;INS&#34;)},
+
+            {90,Action.AC000,100,   
+                equalz(in.h,&#34;A&#34;)|| equalz(in.i,&#34;Y&#34;)},
+
+            {100,110,210,   
+                notEquals(in.h,&#34;U&#34;)},
+
+            {110,Action.AC000,120,  
+                greaterThan(in.j,in.k)},
+
+            {120,130,150,   
+                varEqualsOneOf(in.e,&#34;FLG&#34;,&#34;FLR&#34;)},
+
+            {130,Action.AC004,140,  
+                notEquals(in.l,&#34;U&#34;)},
+
+            {140,Action.AC012,Action.AC002, 
+                oneOfVarsEqual(in.m,in.n,&#34;Y&#34;)},
+
+            {150,160,190,   
+                    (equalz(in.e,&#34;RRG&#34;)
+                    &amp;&amp; varEqualsOneOf(in.a,&#34;MNC&#34;,&#34;BAN&#34;,&#34;LCI&#34;,&#34;CTV&#34;,&#34;LEA&#34;)   
+                    )||(
+                    varEqualsOneOf(in.e,&#34;RRG&#34;,&#34;NL&#34;)
+                    &amp;&amp; equalz(in.a,&#34;INS&#34;))},
+
+            {160,170,180,   
+                    notEquals(in.l,&#34;U&#34;)},
+
+            {170,Action.AC005,Action.AC018, 
+                    notEquals(in.o,&#34;U&#34;)},
+
+            {180,Action.AC012,Action.AC002, 
+                    equalz(in.n,&#34;Y&#34;)},
+
+            {190,200,Action.AC000,  
+                    equalz(in.p,in.q)},
+
+            {200,Action.AC006,Action.AC008, 
+                    notEquals(in.o,&#34;U&#34;)},
+
+            {210,Action.AC004,Action.AC000, 
+                    notEquals(in.l,&#34;U&#34;)
+                    &amp;&amp; varEqualsOneOf(in.e,&#34;FLG&#34;,&#34;FLR&#34;)}
+    }
+;
+</code></pre><p>driven by a method that jumps between conditions an logs the whole execution representing the path with the conditions&#39; ID.</p><p>At the beginning I thought this could have been a good idea, but I&#39;m not that sure now that it&#39;s written down.</p><p>How would you handle this problem? Is my solution totally worthless? Is there any other better way to achieve the goal?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I wouldn&#39;t go with the matrix idea.  While it is less code, I don&#39;t see it as being any more readable.  If anything, I think it&#39;s harder to read because I can&#39;t mentally evaluate one thing and then disregard half the code left in the method.  I have to check everything.</p><p>I would start by just working on reducing nesting.  For example, looking at the outermost if block and it&#39;s else block you have this:</p><pre><code>if (equalz(in.a, &#34;LOC&#34;)) {
+    ...
+} else {
+    if(varEqualsOneOf(in.a,&#34;MNC&#34;,&#34;BAN&#34;,&#34;LCI&#34;,&#34;CTV&#34;,&#34;LEA&#34;,&#34;INS&#34;)) {
+        ...
+    } else {
+        return Action.AC000;
+    }
+}
+</code></pre><p>Since the outermost else block only has another nested if-else and no common code, you can move that out a level so you have this:</p><pre><code>if (equalz(in.a, &#34;LOC&#34;)) {
+    ...
+} else if(varEqualsOneOf(in.a,&#34;MNC&#34;,&#34;BAN&#34;,&#34;LCI&#34;,&#34;CTV&#34;,&#34;LEA&#34;,&#34;INS&#34;)) {
+    ...
+} else {
+    return Action.AC000;
+}
+</code></pre><p>If we apply that same principle to this block:</p><pre><code>if(varEqualsOneOf(in.e,&#34;RRG&#34;,&#34;NL&#34;)//40
+    &amp;&amp; lessThan(in.f,in.g)) {
+    return Action.AC015;
+} else {
+    if(varEqualsOneOf(in.e,&#34;FLG&#34;,&#34;FLR&#34;)) {//50
+        return Action.AC015;
+    } else {
+        return Action.AC000;
+    }
+}
+</code></pre><p>we get:</p><pre><code>if(varEqualsOneOf(in.e,&#34;RRG&#34;,&#34;NL&#34;)//40
+    &amp;&amp; lessThan(in.f,in.g)) {
+    return Action.AC015;
+} else if(varEqualsOneOf(in.e,&#34;FLG&#34;,&#34;FLR&#34;)) {//50
+    return Action.AC015;
+} else {
+    return Action.AC000;
+}
+</code></pre><p>Wait a minute.  The if and the else if branch return the same thing.  We can combine those.  If we do so, we get:</p><pre><code>if((varEqualsOneOf(in.e,&#34;RRG&#34;,&#34;NL&#34;)/*40*/ &amp;&amp; lessThan(in.f,in.g))
+    || (varEqualsOneOf(in.e,&#34;FLG&#34;,&#34;FLR&#34;) /*50*/)) {
+    return Action.AC015;
+} else {
+    return Action.AC000;
+}
+</code></pre><p>Now that if condition is getting a bit messy, especially with all the poor names and magic numbers.  This is where I would start making helper functions that just encapsulate the conditions and give them meaningful names.  So I would get something like this:</p><pre><code>if(IsCondition40(in) || IsCondition50(in)) {
+    return Action.AC015;
+} else {
+    return Action.AC000;
+}
+.....
+// obviously these still need better names but you get the idea.  Magic strings and numbers should be replaced, etc.
+// also, forgive my poor java, not a language I use often enough to be any good at it
+private boolean IsCondition40(In in) {
+    return varEqualsOneOf(in.e,&#34;RRG&#34;,&#34;NL&#34;) &amp;&amp; lessThan(in.f,in.g);
+}
+private boolean IsCondition50(In in) {
+    return varEqualsOneOf(in.e,&#34;FLG&#34;,&#34;FLR&#34;);
+}
+</code></pre><p>And now it is starting to get somewhere.  Keep picking it apart step by step and it will start to get better.  Don&#39;t forget to run your tests after each go to make sure you didn&#39;t break something (you did make tests before starting this, right?).</p><p>Look for common return values and conditions and combine them or make helper functions.  Reduce the nesting.  Eventually you will get something much more readable.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-how-to-find-sub-trees-in-non-binary-tree/'>Java &#8211; How to find Sub-trees in non-binary tree</a></li><li class="list-group-item"><a href='../optimal-if-else-tree-algorithm-to-minimize-duplicate-code/'>Optimal &#8220;if-else&#8221; tree algorithm to minimize duplicate code</a></li><li class="list-group-item"><a href='../c-how-to-traverse-a-tree-without-using-recursion/'>C# &#8211; How to traverse a tree without using recursion</a></li><li class="list-group-item"><a href='../how-exactly-is-an-abstract-syntax-tree-created/'>How exactly is an Abstract Syntax Tree created</a></li><li class="list-group-item"><a href='../how-to-find-the-closest-right-neighbour-in-a-tree/'>How to find the closest right neighbour in a tree</a></li><li class="list-group-item"><a href='../how-to-represent-a-recursive-process-down-a-tree-in-a-sequence-diagramm/'>How to represent a recursive process down a tree in a sequence diagramm</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

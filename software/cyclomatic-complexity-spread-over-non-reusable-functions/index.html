@@ -1,0 +1,116 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Cyclomatic Complexity spread over non-reusable functions &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1074697 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1074697" class="post-1074697 software type-software status-publish hentry category-software tag-code-quality tag-complexity tag-cyclomatic-complexity tag-quality-attributes"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Cyclomatic Complexity spread over non-reusable functions</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">code-quality</span><span class="mr-2 badge badge-info">complexity</span><span class="mr-2 badge badge-warning">cyclomatic-complexity</span><span class="mr-2 badge badge-primary">quality-attributes</span></p><div class="entry-content"><p>I am frequently writing parser and mappers of some sort. This means that the switch statement gets used a lot and often many if statements for checking for valid input.</p><p>This of course creates a lot of cyclomatic complexity. I usually split out value parsers. So I have some data format and I have to convert/map the data into a more generic or internal format, often also converting units. So I create functions or methods to convert those.</p><p>I care about readability, and the best measurement that people come up with seems to be cyclomatic complexity.</p><p>Now I think it might be a great measure for code that you read line by line, but I struggle a bit when it&#39;s just clear mappings. An example is the conversion of cardinal direction (so WSW for example) to degrees (247.5°). The function contains a straight forward switch statement, yet it&#39;s cyclomatic complexity is really high. That is despite never having anyone that didn&#39;t instantly know what this function does, how it works, etc. So I&#39;d argue it&#39;s actually one of the most readable functions in the code, yet linters complain about it and similar functions.</p><p>I dug a bit more into this and also looked at what others did. Here I noticed what I consider a problem. Measuring cyclomatic complexity on a per function basis leads people to what I consider &#34;cheating&#34;. Functions are split into many functions that only work when used with another function.</p><p>So developers who want to increase their scores with linters &#34;refactor&#34; the code by essentially breaking up the code in the middle and calling both functions. Each of these functions then have half the cyclomatic complexity, but they must both be called one after another. So it doesn&#39;t actually make it easier for anyone to read the function and the split out (private) functions also can&#39;t be reused because they are interdependent with the calling function and the second function. This results in a spread of the complexity into three functions, lowering the reported complexity for them, yet not making it any simpler to read.</p><p>Sometimes those approaches are well hidden, by interesting sounding function names and by not just having two functions called in a row, but by having multiple functions, things being pretty out of order and all that happens is code with high complexity and a spaghetti code like structure being considered okay by linters, yet being incredibly hard to read by other developers.</p><p>My question is whether those things do actually have a benefit that I am missing and if not, whether there is a way to prevent that from happening at linting time.</p><p>Would it make more sense to measure it over whole classes, modules, the whole program?</p><p>This of course isn&#39;t limited to functions, but also methods or classes that only exist to be used together with another class, and require the developer to have a good understanding of the other class to be used at all.</p><p>EDIT: What I mean with cheating is not breaking something into individual functions that make sense. Let me give you an example.</p><pre><code>func cardinal16ToDegree(dir string) (float64, error) {
+    switch strings.ToLower(dir) {
+    case &#34;n&#34;:
+        return 0, nil
+    case &#34;nne&#34;:
+        return 22.5, nil
+    case &#34;ne&#34;:
+        return 45, nil
+    case &#34;ene&#34;:
+        return 67.5, nil
+    case &#34;e&#34;:
+        return 90, nil
+    case &#34;ese&#34;:
+        return 112.5, nil
+    case &#34;se&#34;:
+        return 135, nil
+    case &#34;sse&#34;:
+        return 157.5, nil
+    case &#34;s&#34;:
+        return 180, nil
+    case &#34;ssw&#34;:
+        return 202.5, nil
+    case &#34;sw&#34;:
+        return 225, nil
+    case &#34;wsw&#34;:
+        return 247.5, nil
+    case &#34;w&#34;:
+        return 270, nil
+    case &#34;wnw&#34;:
+        return 292.5, nil
+    case &#34;nw&#34;:
+        return 315, nil
+    case &#34;nnw&#34;:
+        return 337.5, nil
+    }
+
+    return 0, errors.New(&#34;could not parse cardinal direction&#34;)
+}
+</code></pre><p>is not more complex than:</p><pre><code>func Cardinal16ToDegree(dir string) (float64, error) {
+    switch dir {
+    case &#34;n&#34;:
+        return 0, nil
+    case &#34;nne&#34;:
+        return 22.5, nil
+    case &#34;ne&#34;:
+        return 45, nil
+    case &#34;ene&#34;:
+        return 67.5, nil
+    case &#34;e&#34;:
+        return 90, nil
+    case &#34;ese&#34;:
+        return 112.5, nil
+    default:
+        return cardinalHelper(dir)
+    }
+    return 0, errors.New(&#34;unreachable&#34;)
+}
+
+func cardinalHelper(dir string) (float64, error) {
+  switch dir {
+    case &#34;se&#34;:
+        return 135, nil
+    case &#34;sse&#34;:
+        return 157.5, nil
+    case &#34;s&#34;:
+        return 180, nil
+    case &#34;ssw&#34;:
+        return 202.5, nil
+    case &#34;sw&#34;:
+        return 225, nil
+    case &#34;wsw&#34;:
+        return 247.5, nil
+    case &#34;w&#34;:
+        return 270, nil
+    case &#34;wnw&#34;:
+        return 292.5, nil
+    case &#34;nw&#34;:
+        return 315, nil
+    case &#34;nnw&#34;:
+        return 337.5, nil
+  }
+  return 0, errors.New(&#34;could not parse cardinal direction&#34;)
+}
+</code></pre><p>This is an extreme case. When I say cheating I mean lowering the score, by taking something out of a function that still <em>always</em> has to be seen in a unit with the other function, as the logic is split, but not encapsulated. So when you want to reason about it there is no way to either only consider one function by seeing the other as a &#34;black box&#34; or by considering the other independent.</p><p>This is often also &#34;reached&#34; by creating complex data structures, like a giant state object that gets passed around between functions and classes, and is not following a clear schema. This of course then happens in a language where this is easy to remove an add arbitrary keys and values from non-flat dictionaries. These means that you &#34;hide&#34; spaghetti code, by using an dictionary as a global object or what would be the scope of one big function. Again, here I don&#39;t talk about a well-defined object, but merely a way to lower the cyclomatic complexity. That&#39;s why I call it cheating.</p><p>An example of what I mean by that is this form:</p><pre><code>function foo(a, b, c) {
+  // many lines of code
+  x = ...
+  y = ...
+  z = ...
+  // more code
+  result = _foo(a, b, c, x, y, z)
+  return result
+}
+
+function _foo(a, b, c, x, y, z) {
+  // many lines of code that require
+  // knowledge of the implementation of
+  // foo and that are not a logical
+  // separate step, but an extension
+  // of foo
+  return some_result
+}
+</code></pre><p>Again the cyclomatic complexity is considered lower for each of these functions.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Yes, this “cheating” is real, and yes, cyclomatic complexity is not an ideal measure of subjective code simplicity. It is still a very useful code quality indicator.</p><p>When we extract a function, we are introducing an abstraction. Any abstraction has a cognitive overhead, it is not “for free”. The art in this refactoring is then choosing abstractions carefully so that understanding the abstraction is simpler than understanding the extracted code. This is likely (but not necessarily) the case when the new abstraction can be used to simplify multiple pieces of code, but even a single-use abstraction can be useful when it is sufficiently powerful.</p><p>Arbitrarily breaking a function up does not have any value. That doesn&#39;t create any abstractions and just obfuscates the actual control flow. What was now a lot of complexity in one place is now a lot of complexity all over the place: the code has become less cohesive.</p><p>Instead of a simple function-based cyclomatic complexity, it would make more sense to calculate the cyclomatic complexity of the part of the code that is unit-tested and understood together. In this sense, it has limited value to introduce <em>private</em> helper functions that offer no abstractions and do not have a well defined interface. Eliminating repetitions would be the only benefit here. In contrast, introducing modules, classes, or functions that can be tested, understood, and documented separately do more likely represent useful abstractions. Including them in the cyclomatic complexity calculation of your code is not useful.</p><p>I don&#39;t know any tool that does this kind of calculation. As a proxy, I use the testing effort with the goal of high branch coverage for the system under test. When the code is decoupled by the use of good abstractions, anything of interest can be tested fairly directly without much effort. If there are parts of the code that refuse to be covered easily, this might indicate these parts are a candidate for abstraction. This tends to be the case with nested control flow constructs, and also with multiple unrelated sequential conditionals or loops.</p><p>Finally, it&#39;s worth pointing out that subjective complexity is more important than the numbers produced by a tool. Automatic quality checks are likely to miss many parts that make the code difficult to understand for humans, such as issues with the design or naming, but also overuse of reflection and metaprogramming. And some kinds of code are easier for humans to understand then for the tools. The switch/case construct is the prime example of this. For a human, 20 cases look maybe twice as complicated as 5 cases, as long as the cases are simple and don&#39;t interact with each other. Tabular formats are super easy for us   to understand! But a linter sees 20 branches, which is way over any acceptable cyclomatic complexity.</p><p>For that reason, any linter worth its salt can be selectively turned off for a small code region. Linter warnings are just a suggestion to investigate. If your investigation concludes that the warning was a false positive and that the code is in fact easy to understand, then please don&#39;t refactor that function.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../unit-testing-understanding-cyclomatic-complexity/'>Unit-testing &#8211; Understanding Cyclomatic Complexity</a></li><li class="list-group-item"><a href='../php-is-an-npath-complexity-of-over-sixteen-octillion-realistic-or-have-i-broken-the-tool/'>Php &#8211; Is an NPath complexity of over sixteen octillion realistic? Or have I broken the tool</a></li><li class="list-group-item"><a href='../can-we-have-a-negative-cyclomatic-complexity/'>Can we have a negative cyclomatic complexity</a></li><li class="list-group-item"><a href='../java-why-is-cyclomatic-complexity-that-important-for-a-single-method/'>Java &#8211; Why is cyclomatic complexity that important for a single method</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

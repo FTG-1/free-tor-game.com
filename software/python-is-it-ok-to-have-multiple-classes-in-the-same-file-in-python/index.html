@@ -1,0 +1,126 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Python &#8211; Is it ok to have multiple classes in the same file in Python &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1064644 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1064644" class="post-1064644 software type-software status-publish hentry category-software tag-coding-style tag-python"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Python &#8211; Is it ok to have multiple classes in the same file in Python</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">coding-style</span><span class="mr-2 badge badge-info">python</span></p><div class="entry-content"><p>I&#39;m freshly coming to the Python world after years of Java and PHP. While the language itself is pretty much straightforward, I&#39;m struggling with some &#39;minor&#39; issues that I can&#39;t wrap my head around — and to which I couldn&#39;t find answers in the numerous documents and tutorials I&#39;ve read this far.</p><p>To the experienced Python practitioner, this question might seem silly, but I really want an answer to it so I can go further with the language:</p><p>In Java and PHP (<a href="https://docs.oracle.com/javase/tutorial/java/javaOO/nested.html" rel="noreferrer">although not strictly required</a>), you are expected to write each <code>class</code> on its own file, with file&#39;s name is that of the <code>class</code> as a best practice.</p><p>But in Python, or at least in the tutorials I&#39;ve checked, it is <strong>ok</strong> to have multiple classes in the same file.</p><p>Does this rule hold in production, deployment-ready code or it&#39;s done just for the sake of brevity in educative-only code?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><blockquote><h2>Is it ok to have multiple classes in the same file in Python?</h2></blockquote><p>Yes. Both from a philosophical perspective as well as a practical one.</p><p>In Python, modules are a namespace that exist once in memory.</p><p>Say we had the following hypothetical directory structure, with one class defined per file:</p><pre><code>                    Defines
+ abc/
+ |-- callable.py    Callable
+ |-- container.py   Container
+ |-- hashable.py    Hashable
+ |-- iterable.py    Iterable
+ |-- iterator.py    Iterator
+ |-- sized.py       Sized
+ ... 19 more
+</code></pre><p>All of these classes are available in the <code>collections</code> module and (there are, in fact, 25 in total) defined in the standard library module in <a href="https://github.com/python/cpython/blob/master/Lib/_collections_abc.py" rel="noreferrer"><code>_collections_abc.py</code></a></p><p>There are a couple of issues here that I believe makes the <code>_collections_abc.py</code> superior to the alternative hypothetical directory structure.</p><ul><li>These files are sorted alphabetically. You could sort them in other ways, but I am not aware of a feature that sorts files by semantic dependencies. The _collections_abc module source is organized by dependency.</li><li>In non-pathological cases, both modules and class definitions are singletons, occurring once each in memory. There would be a bijective mapping of modules onto classes - making the modules redundant.</li><li>The increasing number of files makes it less convenient to casually read through the classes (unless you have an IDE that makes it simple) - making it less accessible to people without tools.</li></ul><h2>Are you prevented from breaking groups of classes into different modules when you find it desirable from a namespacing and organizational perspective?</h2><p>No.</p><p>From the <a href="https://www.python.org/dev/peps/pep-0020/" rel="noreferrer">Zen of Python</a> , which reflects the philosophy and principles under which it grew and evolved:</p><blockquote><p>Namespaces are one honking great idea -- let&#39;s do more of those!</p></blockquote><p>But let us keep in mind that it also says:</p><blockquote><p>Flat is better than nested.</p></blockquote><p>Python is incredibly clean and easy to read. It encourages you to read it. Putting every separate class in a separate file discourages reading. This goes against the core philosophy of Python. Look at the structure of the <a href="https://github.com/python/cpython/tree/master/Lib" rel="noreferrer">Standard Library</a>, the vast majority of modules are single-file modules, not packages. I would submit to you that idiomatic Python code is written in the same style as the CPython standard lib.</p><p>Here&#39;s the actual code from the <a href="https://github.com/python/cpython/blob/master/Lib/_collections_abc.py" rel="noreferrer">abstract base class module</a>. I like to use it as a reference for the denotation of various abstract types in the language.</p><p>Would you say that each of these classes should require a separate file?</p><pre><code>class Hashable:
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def __hash__(self):
+        return 0
+
+    @classmethod
+    def __subclasshook__(cls, C):
+        if cls is Hashable:
+            try:
+                for B in C.__mro__:
+                    if &#34;__hash__&#34; in B.__dict__:
+                        if B.__dict__[&#34;__hash__&#34;]:
+                            return True
+                        break
+            except AttributeError:
+                # Old-style class
+                if getattr(C, &#34;__hash__&#34;, None):
+                    return True
+        return NotImplemented
+
+
+class Iterable:
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def __iter__(self):
+        while False:
+            yield None
+
+    @classmethod
+    def __subclasshook__(cls, C):
+        if cls is Iterable:
+            if _hasattr(C, &#34;__iter__&#34;):
+                return True
+        return NotImplemented
+
+Iterable.register(str)
+
+
+class Iterator(Iterable):
+
+    @abstractmethod
+    def next(self):
+        &#39;Return the next item from the iterator. When exhausted, raise StopIteration&#39;
+        raise StopIteration
+
+    def __iter__(self):
+        return self
+
+    @classmethod
+    def __subclasshook__(cls, C):
+        if cls is Iterator:
+            if _hasattr(C, &#34;next&#34;) and _hasattr(C, &#34;__iter__&#34;):
+                return True
+        return NotImplemented
+
+
+class Sized:
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def __len__(self):
+        return 0
+
+    @classmethod
+    def __subclasshook__(cls, C):
+        if cls is Sized:
+            if _hasattr(C, &#34;__len__&#34;):
+                return True
+        return NotImplemented
+
+
+class Container:
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def __contains__(self, x):
+        return False
+
+    @classmethod
+    def __subclasshook__(cls, C):
+        if cls is Container:
+            if _hasattr(C, &#34;__contains__&#34;):
+                return True
+        return NotImplemented
+
+
+class Callable:
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def __call__(self, *args, **kwds):
+        return False
+
+    @classmethod
+    def __subclasshook__(cls, C):
+        if cls is Callable:
+            if _hasattr(C, &#34;__call__&#34;):
+                return True
+        return NotImplemented
+</code></pre><p>So should they each have their own file?</p><p>I hope not.</p><p>These files are not just code - they are documentation on the semantics of Python.</p><p>They are maybe 10 to 20 lines on average.  Why should I have to go to a completely separate file to see another 10 lines of code? That would be highly impractical. Further, there would be nearly identical boilerplate imports on each file, adding more redundant lines of code.</p><p>I find it quite useful to know that there is a single module where I can find all of these Abstract Base Classes, instead of having to look over a list of modules. Viewing them in context with each other allows me to better understand them. When I see that an Iterator <em>is an</em> Iterable, I can quickly review what an Iterable consists of by glancing up.</p><p>I sometimes wind up having a couple of very short classes. They stay in the file, even if they need to grow larger over time. Sometimes mature modules have over 1000 lines of code. But ctrl-f is easy, and some IDE&#39;s make it easy to view outlines of the file - so no matter how large the file, you can quickly go to whatever object or method that you&#39;re looking for.</p><h2>Conclusion</h2><p>My direction, in the context of Python, is to prefer to keep related and semantically similar class definitions in the same file. If the file grows so large as to become unwieldy, then consider a reorganization.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../python-how-does-python-work/'>Python &#8211; How does Python work</a></li><li class="list-group-item"><a href='../python-strategy-for-keeping-up-with-python-language-changes/'>Python &#8211; Strategy for keeping up with (Python) language changes</a></li><li class="list-group-item"><a href='../python-is-it-considered-pythonic-to-have-multiple-classes-defined-in-the-same-file/'>Python &#8211; Is it considered Pythonic to have multiple classes defined in the same file</a></li><li class="list-group-item"><a href='../python-multiple-sites-with-the-same-codebase-in-python/'>Python &#8211; Multiple sites with the same codebase in Python</a></li><li class="list-group-item"><a href='../python-file-naming-convention/'>Python file naming convention</a></li><li class="list-group-item"><a href='../python-why-is-the-_replace-method-of-python-namedtuple-classes-protected/'>Python &#8211; Why is the _replace method of Python namedtuple classes protected</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,178 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Benefits of using .NET style delegates compared to custom ones &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1078448 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1078448" class="post-1078448 software type-software status-publish hentry category-software tag-c"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Benefits of using .NET style delegates compared to custom ones</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span></p><div class="entry-content"><p>I know about C# events and delegates. I find them incredibly useful for event-driven sub-systems. One thing I don&#39;t understand, however, is why all the .NET documentation for events uses a very specific pattern for delegates:</p><pre><code>public class Foo
+{
+    public class CustomEventArgs : System.EventArgs
+    {
+        ...
+    }
+
+    public delegate void CustomEventHandler(object sender, EventArgs e);
+    public event CustomEventHandler CustomEvent;
+
+    public void OnCustomEvent(int x, float y, bool z)
+    {
+        if (CustomEvent != null)
+            CustomEvent(this, new CustomEventArgs(x, y, z));
+    }
+}
+</code></pre><p>I find this method of declaring and using delegates incredibly unsecure and clunky compared to using custom delegates. For example:</p><pre><code>public class Foo
+{
+    public delegate void CustomEventHandler(Foo foo, int x, float y, bool z);
+    public event CustomEventHandler CustomEvent;
+
+    public void OnCustomEvent(int x, int y, int z)
+    {
+        if (CustomEvent != null)
+            CustomEvent(this, x, y, z);
+    }
+}
+</code></pre><p>Besides the obvious advantage of &#34;It&#39;s the pattern most familiar to .NET programmers&#34;, I fail to see any other practical advantages to using delegates with the <code>void CustomEventHandler(object sender, CustomEventArgs e)</code> signatures as opposed to custom delegates. Mainly, you have the following advantages with custom delegates:</p><ol><li>You can guarantee the sender is of a specific type.</li><li>You don&#39;t need a whole new class just to pass the event data, leading to messier code and name pollution</li></ol><p>I would be interested to know if there are any other advantages to using the .NET pattern for events and delegates that I might be missing.</p><p><strong>Edit:</strong></p><p>Mainly as a response to @MainMa, I wanted to give a more concrete example. The example is a simple representation of a character with a concept of health and death. The character throws events when its hurt, or dies. Consider the scenario below, using custom delegates:</p><pre><code>public class Character
+{
+    public delegate void DeathEventHandler(Character character);
+    public delegate void HurtEventHandler(Character character, float damage);
+
+    public event DeathEventHandler DeathEvent;
+    public event HurtEventHandler HurtEvent;
+
+    public bool IsDead { ... }
+
+    public void ApplyDamage(float damage)
+    {
+        ...
+        OnHurt(damage);
+        ...
+        if (IsDead)
+            OnDeath();
+    }
+
+    public void OnHurt(float damage)
+    {
+        if (HurtEvent != null)
+            HurtEvent(this, damage);
+    }
+
+    public void OnDeath()
+    {
+        if (DeathEvent != null)
+            DeathEvent(this);
+    }
+}
+</code></pre><p>To me, this is simple. It separates concerns, and enforces encapsulation. A handler that is only concerned about the death of a character doesn&#39;t need to know how much damage was applied to the character before death. So on and so forth.</p><p>Now compare this to the .NET pattern:</p><pre><code>public class Character
+{
+    public class CharacterHurtEventArgs : EventArgs
+    {
+        public float Damage { ... }
+        public bool Dead { ... }
+    }
+
+    public event EventHandler&lt;CharacterHurtEventArgs&gt; HurtEvent;
+    public event EventHandler&lt;EventArgs&gt; DeathEvent; // No args ...?
+
+    // ... The rest is the same story as above more or less ...
+}
+</code></pre><p>Using this, I&#39;ve just added an extra class. The handler still needs different delegates for these events, and there is no guarantee that the object which died was a character. Anything could throw this.</p><p>Of course, going by @MainMa&#39;s suggestion, we could change this into:</p><pre><code>public class Character
+{
+    public class HealthConditionEventArgs : EventArgs
+    {
+        public float Damage { ... }
+        public bool Dead { ... }
+        public float Hitpoints { ... }
+        ...
+    }
+
+    public event EventHandler&lt;HealthConditionEventArgs&gt; HealthConditionChangedEvent;
+
+    public void ApplyDamage(float damage)
+    {
+        ...
+        HealthConditionChangedEventArgs e = new HealthConditionChangedEventArgs();
+        ...
+        OnHealthConditionChanged(e);
+        ...
+    }
+
+    public void OnHealthConditionChanged(HealthConditionEventArgs e)
+    {
+        if (HealthConditionChangedEvent != null)
+            HealthConditionChangedEvent(e);
+    }
+}
+</code></pre><p>This is slightly neater, but it eliminates separation of concerns. Now if the handler only cares about death, it will have to receive all hurt events. Of course, we could have separate events taking in the same event args, but you&#39;d still be passing around the entire character health condition as part of the event. Again, if you care only about death, there is no need for the handler to know any more than the fact that the character died.</p><p>In my opinion, the first example, however, resolves all these encapsulation issues. Discrete delegates for discrete events, with only the necessary information passed in each event. No new classes either.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Let&#39;s imagine an example of a presentation layer. The layer has mouse interactions: every time the user moves a mouse, an event telling which mouse moved (imagine the user may have multiple mice) and how the mouse moved can be raised.</p><p>With your approach, the draft code would be:</p><pre><code>public delegate void MouseMovedHandler(
+    PresentationLayer l, Guid mouseId, int fromX, int fromY, int toX, int toY);
+</code></pre><p>It will obviously be quickly refactored into:</p><pre><code>public delegate void MouseMovedHandler(
+    PresentationLayer l, Guid mouseId, Coord from, Coord to);
+</code></pre><p>But then, you&#39;ll find that you want to know, for instance, the distance between <code>from</code> and <code>to</code>. So you&#39;ll create a <code>Line</code> class, defined by two points, and your delegate will become:</p><pre><code>public delegate void MouseMovedHandler(PresentationLayer l, Guid mouseId, Line motion)
+</code></pre><p>Better. Now, what if we want to be able to make a difference between a simple line and a motion of a specific, identified mouse? Right, we&#39;ll end up creating the class:</p><pre><code>class MouseMotion : Line
+{
+    public Mouse Mouse { get; }
+    public Line Motion { get; }
+    ...
+}
+
+public delegate void MouseMovedHandler(PresentationLayer l, MouseMotion motion)
+</code></pre><p>Now, there is a location in your app where you need to track every possible input: mouse motion, mouse button clicks, keyboard strokes. You need that because your application starts background processing when the user is not doing anything, but should stop it and free the resources to the UI if the user is using your app.</p><p>This means that now, you need something common between <code>MouseMotion</code>, <code>MouseButtonChange</code> and <code>KeyboardStroke</code>. Something like <code>IEvent</code>. Or wouldn&#39;t it be easier to simply use <code>EventArgs</code>?</p><p>So you end up with:</p><pre><code>class MouseMotionEventArgs: EventArgs { ... }
+public delegate void MouseMovedHandler(PresentationLayer l, MouseMotionEventArgs motion)
+</code></pre><p>Except that you could avoid the delegate, as explained at the beginning of the answer. You can now either stick with the delegate in order to have your strongly typed <code>PresentationLayer</code> you probably don&#39;t need most of the time, or replace it with a lousy <code>object</code> by using <code>EventHandler&lt;MouseMotionEventArgs&gt;</code>.</p><hr/><p><strong>The previous version of the answer</strong>, for the sake of completeness:</p><p>Is there a reason you create a <code>CustomEventHandler</code> instead of using <code>EventHandler&lt;CustomEventArgs&gt;</code>?</p><p>With the generic <code>EventHandler&lt;T&gt;</code>, the code starts looking like this:</p><pre><code>public class Foo
+{
+    public event EventHandler&lt;3DPointChangedEventArgs&gt; CustomEvent;
+
+    public void OnCustomEvent(3DPoint point)
+    {
+        if (CustomEvent != null)
+        {
+            CustomEvent(this, (3DPointChangedEventArgs)point);
+        }
+    }
+}
+</code></pre><p>Now, compare it to the code you suggested:</p><ul><li><p>Yours is longer. Chances are, your colleagues will refactor <code>x</code>, <code>y</code> and <code>z</code> into <code>3DPoint</code> object, making it a bit shorter.</p></li><li><p>Yours doesn&#39;t match the convention used in .NET Framework. Therefore, it will be difficult to know how to use it.</p></li><li><p>The one used in .NET Framework makes it possible <a href="https://stackoverflow.com/a/104702/240613">“to write a single event handler for multiple events, regardless of sender or event.”</a></p></li></ul><p>Talking specifically about name pollution, having <code>*EventArgs</code> classes is not that bad. Those names are usually very clear and express the intention of the author and cannot be confused with other business objects.</p><hr/><p>Answering your last edit, there are three points to consider:</p><ol><li><p>It is not necessarily useful to separate the death from the health. The most basic representation of health could be a number; for instance, 0.0 can represent death and 100.0 can correspond to the full health.</p><p>Of course, a number would better be replaced by <code>Health</code> class which can then contain business rules which can be modified through time. For example, if it is a game, further features may include additional health slots, making it possible to have, say, 120% of health.</p><p>This may create a performance issue: one event less means that if something is listening to the death events, it will now be notified about all the health change events. I wouldn&#39;t be concerned about that early, and wait until it becomes an actual bottleneck. After all, what if the performance becomes even better, now that we don&#39;t have a condition in <code>ApplyDamage()</code>?</p></li><li><p>If the author decides to keep both events, death event can use <code>EventArgs</code>, making it possible to use <code>EventArgs.Empty</code>. This makes one delegate less to write.</p></li><li><p>Who listens to the event? Let&#39;s imagine the world listens to it in order to remove objects a few minutes after their death (which makes sense, since objects may not be aware of the world, and so won&#39;t be able to remove themselves from it).</p><p>This also means that we don&#39;t really care if the dead object is a <code>Character</code> or a <code>Trebuchet</code> or a <code>WarShip</code> or a <code>Horse : Animal</code>. This means that it is OK to lose types when transmitting the information through the event: the removal will be the same for a paladin or a sheep.</p></li></ol><p>Here&#39;s the final result which applies the point 1 and 3:</p><pre><code>public class Health
+{
+    private double value;
+
+    public Health(double value) { ... }
+
+    public void ApplyDamage() { ... }
+}
+
+public class Character
+{
+    public event EventHandler&lt;HealthEventArgs&gt; HealthChanged;
+
+    public Health Health { get { return this.health; } }
+
+    public void ApplyDamage(double damage)
+    {
+        ...
+        this.health.ApplyDamage(damage);
+        ...
+    }
+
+    public void OnHealthChange(float damage)
+    {
+        if (HurtEvent != null)
+        {
+            HurtEvent(this, damage);
+        }
+    }
+}
+</code></pre><p>The events handling can then be done like this, making abstraction of the type of the world object being removed:</p><pre><code>public class World
+{
+    public void MarkAsDead(object worldObject)
+    {
+        // Wait for five minutes.
+        this.elements.Remove(worldObject);
+    }
+}
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-what-are-the-disadvantages-of-using-writting-a-net-custom-membership-provider/'>C# &#8211; What are the disadvantages of using/writting a .Net Custom Membership Provider</a></li><li class="list-group-item"><a href='../c-testing-c-eventhandler-subscription/'>C# &#8211; Testing C# Eventhandler Subscription</a></li><li class="list-group-item"><a href='../c-using-delegates-to-avoid-duplicate-creation-of-resources/'>C# &#8211; Using delegates to avoid duplicate creation of resources</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,64 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Unit-testing &#8211; How to not test implementation when method returns void &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1086740 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1086740" class="post-1086740 software type-software status-publish hentry category-software tag-mocking tag-refactoring tag-unit-testing"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Unit-testing &#8211; How to not test implementation when method returns void</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">mocking</span><span class="mr-2 badge badge-info">refactoring</span><span class="mr-2 badge badge-warning">unit testing</span></p><div class="entry-content"><p>Many places in stackexchange state that you should not unit test implementations, only the public interface of a class. But what if the public interface is a method that doesn&#39;t return any value, for example a public <code>SendMailNotifications()</code> method with certain logic that has some internal logic (private methods) and sends different recipients emails &#8211; I&#39;d like to add tests that email is sent to the correct recipients depending on my business logic.</p><p>The only way I could think of is to convert the private methods to protected and then Verify() that they&#39;re called. But this seem to contradict the &#39;spirit&#39; of unit tests where you shouldn&#39;t test implementations\private methods (and to convert the private methods to protected only for the sake of testing).</p><p>Is there any better way (a way which is more in the &#39;spirit&#39; of unit tests) to accomplish this?  Perhaps the code itself should be rafactored for this purpose? If so, how?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Dependency Injection and mocking is your friend.  Whenever you find something hard to test, it usually means your class is having too many responsibilities.  I&#39;m assuming you are sending your emails using some library.  That library most likely takes your message info (destination address, subject, body).  What you want to do, is decouple your business logic that&#39;s in charge of collecting all email addresses, email subject and body, from that 3rd party library.  How?  By abstracting that library using an interface, and then injecting it into your Email class.</p><pre><code>IEmailLibrary
+{
+   void SendEmail(EmailInfo emailInfo);
+}
+
+class Email
+{
+   private IEmailLibrary _emailLibrary;
+
+   public Email(IEmailLibrary emailLibrary)
+   {
+      _emailLibrary = emailLibrary;
+   }
+
+   public void SendEmailNotifications()
+   {
+      EmailInfo emailInfo = ComposeEmail(); 
+      _emailLibrary.SendEmail(emailInfo);
+   }
+
+   private EmailInfo ComposeEmail()
+   {
+      //your business logic
+   }
+}
+</code></pre><p>Now in your production code, you would create  a real EmailLibrary like this:</p><pre><code>public RealEmailLibrary : IEmailLibrary
+{
+   ...
+
+   public SendEmail(EmailInfo emailInfo)
+   {
+      _3rdPartyEmailComponent.SendEmail(emailInfo....);
+   }
+}
+</code></pre><p>and then inject it into your Email class, like this:</p><pre><code>RealEmailLibrary realEmailLibrary = new RealEmailLibrary();
+Email email = new email(realEmailLibrary);
+</code></pre><p>And if you wanted to test your business logic, all you need to do in your test code, is inject either a mock, or your own stub that implements an IEmailLibrary interface.  For example:</p><pre><code>public FakeEmailLibrary : IEmailLibrary
+{
+   public EmailInfo _iWasCalledWithThisEmailInfo;
+
+   public void SendEmail(EmailInfo emailInfo)
+   {
+      _iWasCalledWithThisEmailInfo = emailInfo;
+   }
+}
+</code></pre><p>You inject it in your test like this:</p><pre><code>FakeEmailLibrary fakeEmailLibrary = new FakeEmailLibrary();
+Email email = new email(fakeEmailLibrary);
+email.SendEmailNotifications();
+AssertStuff(fakeEmailLibrary.iWasCalledWithThisEmailInfo, expectedEmailInfo);
+</code></pre><p>I recommend using mocking frameworks, as opposed to my stub example (like Moq for C#), which make it really easy to verify your injected dependencies were called with the right arguments.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../python-how-to-populate-a-private-container-for-unit-test/'>Python &#8211; How to populate a private container for unit test</a></li><li class="list-group-item"><a href='../unit-testing-how-to-unit-test-method-that-returns-a-collection-while-avoiding-logic-in-the-test/'>Unit-testing &#8211; How to unit test method that returns a collection while avoiding logic in the test</a></li><li class="list-group-item"><a href='../c-unit-test-private-method-in-c-using-a-friend-class/'>C++ &#8211; Unit test private method in c++ using a friend class</a></li><li class="list-group-item"><a href='../unit-testing-how-to-unit-test-that-the-correct-implementation-of-an-interface-is-used/'>Unit-testing &#8211; How to unit test that the correct implementation of an interface is used</a></li><li class="list-group-item"><a href='../c-how-does-breaking-up-a-big-method-into-smaller-methods-improve-unit-testability-when-the-methods-are-all-private/'>C# &#8211; How does breaking up a big method into smaller methods improve unit testability when the methods are all private</a></li><li class="list-group-item"><a href='../unit-testing-how-to-avoid-the-need-to-unit-test-private-methods/'>Unit-testing &#8211; How to avoid the need to Unit test private methods</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

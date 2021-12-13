@@ -1,0 +1,110 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C++ design for encoder/decoder classes with different stored types &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1077268 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1077268" class="post-1077268 software type-software status-publish hentry category-software tag-c tag-design-patterns tag-inheritance"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C++ design for encoder/decoder classes with different stored types</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">design-patterns</span><span class="mr-2 badge badge-warning">inheritance</span></p><div class="entry-content"><p>I need to handle different elements in a vector, each element owning a specific parameter (integer or string), so that I can easily handle encoding/decoding of a series of elements.</p><ul><li><p>Encoding a list of elements serializes the elements, inserting a separator in-between each.</p></li><li><p>Decoding a string consists in finding the separators then for each substring, extracting the ID and type-specific value. Example (knowing that &#34;FOO&#34; is associated to an integer and &#34;BAR&#34; is associated to a string): &#34;FOO=54,BAR=hello&#34; gives {{ID_FOO, 54}, {ID_BAR, &#34;hello&#34;}} .</p></li></ul><p>I have the current following bare design:</p><pre><code>#include &lt;cstdint&gt;
+#include &lt;cstdlib&gt;
+#include &lt;string&gt;
+#include &lt;memory&gt;
+
+enum eID { /*...*/ };
+
+// Base class
+class Base {
+private:
+    enum eID m_Id;
+public:
+    Base(enum eID = 0): m_Id(eID) {}
+    virtual std::string Encode() {
+        // Return encoding of m_Id
+    }
+    static Base* Decode(const std::string &amp;str) {
+        Base *ptr;
+        // Extract id
+        // According to the kind of id, create a new Derived&lt;T&gt;
+        // giving the substring to the constructor
+        // ptr = new Derived&lt;...&gt;(id, str.substr(...));
+        return ptr;
+    }
+};
+
+template &lt;class T&gt;
+class Derived&lt;T&gt; : public Base {
+private:
+    T m_Value;
+public:
+    Derived(enum eID id, const std::string &amp;str); // participates to decoding
+    std::string Encode();
+};
+
+template&lt;&gt;
+Derived&lt;std::string&gt;::Derived(enum eID id, const std::string &amp;str) {
+    m_Value = str; // easy
+}
+
+template&lt;&gt;
+std::string Derived&lt;std::string&gt;::Encode() {
+    return static_cast&lt;Base*&gt;(this)-&gt;Encode() + m_Value;
+}
+
+template&lt;&gt;
+Derived&lt;long&gt;::Derived(enum eID id, const std::string &amp;str) {
+    m_Value = strtol(str.c_str(), nullptr, 10);
+}
+
+template&lt;&gt;
+std::string Derived&lt;long&gt;::Encode() {
+    // Encode id and integer param to a string
+}
+
+class BaseList {
+private:
+    std::vector&lt;std::unique_ptr&lt;Base&gt;&gt; m_List;
+public:
+    void Append(Base *ptr) {
+        m_List.push_back(std::unique_ptr&lt;Base&gt;(ptr));
+    }
+    std::string Encode() {
+        // Call each Encode() function and concatenate strings together
+        // Insert a delimiter in-between substrings
+    }
+    void Decode(const std::string &amp;sToDecode) {
+        // Look for delimiters in sToDecode
+        // For each delimited substring:
+        // - call Base::Decode() to allocate a new type-specific object
+        // - push back into m_List
+    }
+}
+</code></pre><p>(This is not be a complete compiling example.)</p><p>Is it a logic design? How could it be optimized so that it may match any existing design pattern(s)? In particular I am concerned with the decoding technique, which here is split into BaseList::Decode() and the static method Base::Decode().</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Ok, the actual question was about how to handle the difference between {FOO, 54} and {BAR, &#34;hello&#34;}. This is classic use case of an union:</p><pre><code>struct A { int id; union { long val; std::string s; } un; };
+</code></pre><p>unfortunately, unions don&#39;t handle constructors very well, so std::string wont work very well inside union (unless they changed it recently :-). But there&#39;s another way to implement an union:</p><pre><code>class Union {
+public:
+  Union() : m_s(0), m_val(0) {}
+  Union(std::string s) : m_s(new string(s)), m_val(0) { }
+  Union(long val) : m_s(0), m_val(new long(val)) { }
+  ~Union() { delete m_s; delete m_val; }
+  Union(const Union &amp;u) 
+  : m_s(u.m_s ? new string(*u.m_s) : 0), 
+    m_val(u.m_val ? new long(*u.m_val) : 0) { }
+  void operator=(const Union &amp;u) { 
+        delete m_s; m_s=0;
+        delete m_val; m_val=0;
+        if (u.m_s) m_s = new std::string(*u.m_s); 
+        if (u.m_val) m_val = new long(*u.m_val);
+        }
+ private:
+  std::string *m_s; 
+  long *m_val;
+ };
+</code></pre><p>NULL pointers are indicating that the value is not being used. (note that this Union class becomes a nightmare to maintain, if you need to add more alternative types to it)</p><p>Now the required struct looks like this:</p><pre><code>struct A { int id; Union u; };
+</code></pre><p>Once you have this, making an array out of it is very trivial:</p><pre><code>std::vector&lt;A&gt; vec;
+</code></pre><p>will be able to store values like {{ID_FOO,33}, {ID_BAR,&#34;hello&#34;}}</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../how-to-share-the-same-behaviour-in-different-classes/'>How to share the same behaviour in different classes</a></li><li class="list-group-item"><a href='../c-design-vector-classes-with-different-element-types/'>C++ design &#8211; vector classes with different element types</a></li><li class="list-group-item"><a href='../c-how-to-improve-a-pattern-enum-class-with-methods/'>C++ &#8211; How to improve a pattern &#8216;enum class with methods&#8217;</a></li><li class="list-group-item"><a href='../object-oriented-design-pattern-for-similar-classes-that-require-different-implementations/'>Object-oriented &#8211; Design pattern for similar classes that require different implementations</a></li><li class="list-group-item"><a href='../object-oriented-handling-different-parameters-for-derived-classes/'>Object-oriented &#8211; Handling Different Parameters for Derived Classes</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

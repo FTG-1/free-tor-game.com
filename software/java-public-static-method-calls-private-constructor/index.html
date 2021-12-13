@@ -1,0 +1,166 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; Public static method calls private constructor &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1075329 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1075329" class="post-1075329 software type-software status-publish hentry category-software tag-c tag-constructors tag-java tag-static-methods"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; Public static method calls private constructor</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">constructors</span><span class="mr-2 badge badge-warning">java</span><span class="mr-2 badge badge-primary">static methods</span></p><div class="entry-content"><p>I&#39;m working in a C# codebase that was largely written by a former developer and this pattern is used extensively&#8230;</p><pre><code>public class AuditInserter
+{
+    public static void Insert(
+        DataContext dataContext,
+        Person person,
+        AuditableAction action)
+    {
+        return
+            new AuditInserter(
+                dataContext,
+                person)
+            .InsertAudit(action);
+    }
+
+    private AuditInserter(
+        DataContext dataContext,
+        Person person)
+    {
+        _dataContext = dataContext;
+        _person = person;
+    }
+
+    private readonly _dataContext;
+    private readonly _person;
+
+    private void InsertAudit(AuditableAction action)
+    {
+        _dataContext.AuditTable.Insert(_person, action);
+    }
+}
+
+// Consuming object
+public class MainProgram
+{
+    public static void Main()
+    {
+        AuditInserter.Insert(
+            new DataContext,
+            new Person,
+            new AuditableAction);
+    }
+}
+</code></pre><p>The constructor is private and construction of the object is handled by the static method. Note that this is not an example of the singleton pattern &#8211; the object does not hold a reference to a static instance of itself.</p><p>Is there any benefit of this design? It would be my natural inclination to design it like so:</p><pre><code>public class AuditInserter
+{
+    public AuditInserter(
+        DataContext dataContext,
+        Person person)
+    {
+        _dataContext = dataContext;
+        _person = person;
+    }
+
+    private readonly _dataContext;
+    private readonly _person;
+
+    public void Insert(
+        AuditableAction action)
+    {
+        return InsertAudit(action);
+    }
+
+    private void InsertAudit(AuditableAction action)
+    {
+        _dataContext.AuditTable.Insert(_person, action);
+    }
+}
+
+// Consuming object
+public class MainProgram
+{
+    public static void Main()
+    {
+        new AuditInserter(
+            new DataContext,
+            new Person)
+        .Insert(
+            new AuditableAction);
+    }
+}
+</code></pre><p>I&#39;m loathe to just blindly follow this existing pattern without understanding what benefits it offers (if any).</p><p>The code is in C# but this issue is not C#-specific.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>(Answer rewritten in light of the comment, &#34;<em>Sorry, I should&#39;ve mentioned that I made a very simple example to help show the main design element that confused me. The InsertAudit method would call several other private instance methods.</em>&#34;. This clarification changes the static approach from &#34;deeply confused and confusing&#34; to being a viable solution to avoiding passing around parameters.)</p><p>From the example you give, your colleague&#39;s code is deeply confused and confusing. However, with your clarification that the <code>InsertAudit</code> method would call several other private instance methods, is becomes much clearer what&#39;s happening. All of the static code you show can be reduced to the following with no change of function:</p><pre><code>public class AuditInserter
+{
+    public static void Insert(DataContext dataContext,
+                              Person person,
+                              AuditableAction action)
+    {
+        dataContext.AuditTable.Insert(person, action);
+    }
+}
+</code></pre><p>But let&#39;s revisit that code and add some private methods to make it more representative of the real code. I&#39;ve taken the liberty of using syntax features in C# 7 to reduce the size of the code to for brevity):</p><pre><code>public class AuditInserter
+{
+    public static void Insert(DataContext dataContext,
+                              Person person,
+                              AuditableAction action)
+        =&gt; new AuditInserter(dataContext, person).InsertAudit(action);
+
+    private AuditInserter(DataContext dataContext, Person person)
+        =&gt; (_dataContext, _person) = (dataContext, person);
+
+    private readonly _dataContext;
+    private readonly _person;
+
+    private void InsertAudit(AuditableAction action)
+    {
+        DoSomethingFirst();
+        DoTheInsert(action);
+        DoSomethingAfter();
+    }
+
+    private void DoSomethingFirst()
+        =&gt; // do something with _person and _dataContext here
+
+    private void DoTheInsert(AuditableAction action)
+        =&gt; _dataContext.AuditTable.Insert(_person, action);
+
+    private void DoSomethingAfter()
+        =&gt; // do something with _person and _dataContext here
+}
+</code></pre><p>Again that code can be simplified in one respect by just making it all static: we can get rid of the constructor and the fields. But we then increase complexity in another respect: the methods now have multiple parameters to allow those values to be passed around:</p><pre><code>public class AuditInserter
+{
+    public static void Insert(DataContext dataContext,
+                              Person person,
+                              AuditableAction action)
+    {
+        DoSomethingFirst(dataContext, person);
+        DoTheInsert(dataContext, person, action);
+        DoSomethingAfter(dataContext, person);
+    }
+
+    private void DoSomethingFirst(DataContext dataContext,
+                                  Person person)
+        =&gt; // do something with person and dataContext here
+
+    private void DoTheInsert(DataContext dataContext,
+                             Person person,
+                             AuditableAction action)
+        =&gt; dataContext.AuditTable.Insert(person, action);
+
+    private void DoSomethingAfter(DataContext dataContext,
+                                  Person person)
+        =&gt; // do something with person and dataContext here
+}
+</code></pre><p>Which approach you take is a mixture of personal preference and how many parameters you have in the real example. For just those two items, I&#39;d stick with the fully static approach. If it increased to five, six or more, I&#39;d likely adopt something similar to that former developer. Other folk will have other personal preferences and might even just adopt that caching of parameters approach for all cases (as your former developer seems to have done).
+Your version of the code behaves quite differently to either static version though. This can be shown by changing the <code>Main</code> to:</p><pre><code>public class MainProgram
+{
+    public static void Main()
+    {
+        var inserter = new AuditInserter(new DataContext, new Person);
+        inserter.Insert(new AuditableAction);
+        inserter.Insert(new AuditableAction);
+    }
+}
+</code></pre><p>We are now using the same <code>AuditInserter</code> to insert two actions. This may be a good thing, in which case you could switch to using your approach if you find it easier to work with. It may be bad though, in which case leave things as they are (or switch to a fully static approach).</p><p>One thing we can be sure on though (subject to you revealing some other important detail you mistakenly removed when simplifying the code example) is that this pattern is wholly unrelated to factories.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-object-oriented-class-design/'>Java &#8211; Object-Oriented Class Design</a></li><li class="list-group-item"><a href='../c-static-variable-usage-and-implications-on-threading/'>C# &#8211; Static variable &#8211; Usage and Implications on Threading</a></li><li class="list-group-item"><a href='../c-best-practices-returning-read-only-object/'>C# &#8211; Best Practices Returning Read-Only Object</a></li><li class="list-group-item"><a href='../use-a-factory-class-instead-of-direct-object-construction/'>Use a factory class instead of direct object construction</a></li><li class="list-group-item"><a href='../c-is-using-multiple-static-classes-with-maximum-one-public-method-is-a-good-idea/'>C# &#8211; Is using multiple static classes with maximum one public method is a good idea</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

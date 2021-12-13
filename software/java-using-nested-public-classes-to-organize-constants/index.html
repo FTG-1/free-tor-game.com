@@ -1,0 +1,72 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; Using nested public classes to organize constants &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1067517 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1067517" class="post-1067517 software type-software status-publish hentry category-software tag-code-organization tag-java"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; Using nested public classes to organize constants</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">code-organization</span><span class="mr-2 badge badge-info">java</span></p><div class="entry-content"><p>I&#39;m working on an application with many constants. At the last code review it came up that the constants are too scattered and should all be organized into a single &#34;master&#34; constants file. The disagreement is about how to organize them. The majority feel that using the constant name should be good enough, but this will lead to code that looks like this:</p><pre><code>public static final String CREDITCARD_ACTION_SUBMITDATA = &#34;6767&#34;;
+public static final String CREDITCARD_UIFIELDID_CARDHOLDER_NAME = &#34;3959854&#34;;
+public static final String CREDITCARD_UIFIELDID_EXPIRY_MONTH = &#34;3524&#34;;
+public static final String CREDITCARD_UIFIELDID_ACCOUNT_ID = &#34;3524&#34;;
+...
+public static final String BANKPAYMENT_UIFIELDID_ACCOUNT_ID = &#34;9987&#34;;
+</code></pre><p>I find this type of naming convention to be cumbersome. I thought it might be easier to use public nested class, and have something like this:</p><pre><code>public class IntegrationSystemConstants
+{
+    public class CreditCard
+    {
+        public static final String UI_EXPIRY_MONTH = &#34;3524&#34;;
+        public static final String UI_ACCOUNT_ID = &#34;3524&#34;;
+        ...
+    }
+    public class BankAccount
+    {
+        public static final String UI_ACCOUNT_ID = &#34;9987&#34;;
+        ...
+    }
+}
+</code></pre><p>This idea wasn&#39;t well received because it was &#34;too complicated&#34; (I didn&#39;t get much detail as to <em>why</em> this might be too complicated). I think this creates a better division between groups of related constants and the auto-complete makes it easier to find these as well. I&#39;ve never seen this done though, so I&#39;m wondering if this is an accepted practice or if there&#39;s better reasons that it shouldn&#39;t be done.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I don&#39;t agree with either of the two proposals.</p><p>Constants should be in their <strong>pertinent classes</strong>, <strong>not in an all-constant class</strong> in <strong>either of the two forms</strong> proposed.</p><p><strong>There shouldn&#39;t be constants-only classes/interfaces.</strong></p><p>A class <code>CreditCard</code> (not an internal class) should exist. This class/interface has methods relative to credits cards as well as the constants <code>UI_EXPIRY_MONTH</code> and <code>UI_ACCOUNT_ID</code>.</p><p>There should exist a class/interface <code>BankAccount</code> (not an internal class). This class/interface has methods relative to bank accounts as well as constant <code>UI_ACCOUNT_ID</code>.</p><p>For example in the Java API every class/interface has its constants. They are not in a Constants class/interface with hundreds of constants, either grouped into inner classes or not.</p><p>For example, these constants pertinent to result sets are in the interface <code>ResultSet</code>:</p><pre><code>static int  CLOSE_CURSORS_AT_COMMIT 
+static int  CONCUR_READ_ONLY 
+static int  CONCUR_UPDATABLE 
+static int  FETCH_FORWARD 
+static int  FETCH_REVERSE 
+static int  FETCH_UNKNOWN 
+static int  HOLD_CURSORS_OVER_COMMIT 
+static int  TYPE_FORWARD_ONLY 
+static int  TYPE_SCROLL_INSENSITIVE 
+static int  TYPE_SCROLL_SENSITIVE 
+</code></pre><p>This interface has method signatures relative to result sets, and implementing classes implement that behavior. They are not mere constant-holders.</p><p>These constants pertinent to UI actions are in the interface <code>javax.swing.Action</code>:</p><pre><code>static String   ACCELERATOR_KEY 
+static String   ACTION_COMMAND_KEY 
+static String   DEFAULT 
+static String   LONG_DESCRIPTION 
+static String   MNEMONIC_KEY 
+static String   NAME 
+static String   SHORT_DESCRIPTION 
+static String   SMALL_ICON 
+</code></pre><p>Implementing classes have behavior relative to UI actions, they are not mere constant holders.</p><p>I know at least one &#34;constants&#34; interface (<code>SwingConstants</code>) with no methods but it doesn&#39;t have hundreds of constants, just a few, and they are all related to directions and positions of UI elements:</p><pre><code>static int  BOTTOM 
+static int  CENTER 
+static int  EAST 
+static int  HORIZONTAL 
+static int  LEADING 
+static int  LEFT 
+static int  NEXT 
+static int  NORTH 
+static int  NORTH_EAST 
+static int  NORTH_WEST 
+static int  PREVIOUS 
+static int  RIGHT 
+static int  SOUTH 
+static int  SOUTH_EAST 
+static int  SOUTH_WEST 
+static int  TOP 
+static int  TRAILING 
+static int  VERTICAL 
+static int  WEST 
+</code></pre><p>I think constants only classes are not good OO design.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../how-should-i-organize-the-source-tree/'>How should I organize the source tree</a></li><li class="list-group-item"><a href='../java-the-purpose-of-using-a-constants-pool-for-immutable-constants/'>Java &#8211; The purpose of using a constants pool for immutable constants</a></li><li class="list-group-item"><a href='../java-would-combining-enums-with-static-strings-in-java-be-sloppy/'>Java &#8211; Would combining enums with static strings in java be sloppy</a></li><li class="list-group-item"><a href='../java-how-to-minimize-a-java-librarys-exposed-interface-surface-while-breaking-down-the-library-into-subpackages/'>Java &#8211; How to minimize a Java library&#8217;s exposed interface surface while breaking down the library into subpackages</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

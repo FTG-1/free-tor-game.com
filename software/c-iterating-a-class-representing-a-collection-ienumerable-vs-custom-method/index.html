@@ -1,0 +1,92 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Iterating a class representing a collection: IEnumerable vs custom method &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1076741 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1076741" class="post-1076741 software type-software status-publish hentry category-software tag-c"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Iterating a class representing a collection: IEnumerable<T> vs custom method</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span></p><div class="entry-content"><p>I often find myself needing to implement a class which is an enumeration/collection of something. Consider for this thread the <strong>contrived example</strong> of <code>IniFileContent</code> which is an enumeration/collection of lines.</p><p>The reason this class must exist in my codebase is that I want to avoid business logic being spread all over the place (=encapsulating the <code>where</code>) and I want to do it in the most object-oriented possible way.</p><p>Usually I would implement it as below:</p><pre><code>public sealed class IniFileContent : IEnumerable&lt;string&gt;
+{
+    private readonly string _filepath;
+    public IniFileContent(string filepath) =&gt; _filepath = filepath;
+    public IEnumerator&lt;string&gt; GetEnumerator()
+    {
+        return File.ReadLines(_filepath)
+                   .Where(l =&gt; !l.StartsWith(&#34;;&#34;))
+                   .GetEnumerator();
+    }
+    public IEnumerator IEnumerable.GetEnumerator() =&gt; GetEnumerator();
+}
+</code></pre><p>I choose to implement <code>IEnumerable&lt;string&gt;</code> because it makes its usage convenient:</p><pre><code>foreach(var line in new IniFileContent(...))
+{
+    //...
+}
+</code></pre><p>However I&#39;m wondering if doing so &#34;shadows&#34; the class intent ? When one looks at <code>IniFileContent</code>&#39;s interface one only see <code>Enumerator&lt;string&gt; GetEnumerator()</code>. I think it makes non-obvious which service the class is actually providing.</p><p>Consider then this second implementation:</p><pre><code>public sealed class IniFileContent2
+{
+    private readonly string _filepath;
+    public IniFileContent2(string filepath) =&gt; _filepath = filepath;
+    public IEnumerable&lt;string&gt; Lines()
+    {
+        return File.ReadLines(_filepath)
+                   .Where(l =&gt; !l.StartsWith(&#34;;&#34;));
+    }
+}
+</code></pre><p>Which is used less conveniently (by the way, seeing <code>new X().Y()</code> feels like something went wrong with the class design):</p><pre><code>foreach(var line in new IniFileContent2(...).Lines())
+{
+    //...
+}
+</code></pre><p>But with a clear interface <code>IEnumerable&lt;string&gt; Lines()</code> making obvious what this class can actually do.</p><p>Which implementation would you foster and why ? Implied, is it a good practice to implement IEnumerable to represent an enumeration of something ?</p><p>I&#39;m not looking for answers on how to:</p><ul><li>unit test this code</li><li>make a static function instead of a class</li><li>make this code more prone to future business logic evolution</li><li>optimize performance</li></ul><h1>Appendix</h1><p>Here is the kind of <strong>real code</strong> living in my codebase which implements <code>IEnumerable</code></p><pre><code>public class DueInvoices : IEnumerable&lt;DueInvoice&gt;
+{
+    private readonly IEnumerable&lt;InvoiceDto&gt; _invoices;
+    private readonly IEnumerable&lt;ReminderLevel&gt; _reminderLevels;
+    public DueInvoices(IEnumerable&lt;InvoiceDto&gt; invoices, IEnumerable&lt;ReminderLevel&gt; reminderLevels)
+    {
+        _invoices = invoices;
+        _reminderLevels = reminderLevels;
+    }
+    public IEnumerator&lt;DueInvoice&gt; GetEnumerator() =&gt; _invoices.Where(invoice =&gt; invoice.DueDate &lt; DateTime.Today &amp;&amp; !invoice.Paid)
+                                                               .Select(invoice =&gt; new DueInvoice(invoice, _reminderLevels))
+                                                               .GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() =&gt; GetEnumerator();
+}
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p><em>I&#39;m reviewing your approach before suggesting a wholly different approach. I&#39;m preferring the different approach but it seems important to explain why your approach has flaws.</em></p><hr/><blockquote><p>I choose to implement <code>IEnumerable&lt;string&gt;</code> because it makes its usage convenient</p></blockquote><p>Convenience should not outweigh correctness.</p><p>I wonder if your <code>MyFile</code> class will contain more logic than this; because that will affect the correctness of this answer. I&#39;m especially interested in:</p><pre><code>.Where(l =&gt; ...) //some business logic for filtering
+</code></pre><p>because if this is complex or dynamic enough, you&#39;re hiding that logic in a class whose name does not reveal that it filters it content before serving it to the consumer.<br/> Part of me hopes/assumes that this filter logic is intended to be hardcoded (e.g. a simple filter that ignores commented lines, e.g. like how .ini files consider lines starting with <code>#</code> to be a comment) and not a file-specific ruleset.</p><hr/><pre><code>public class MyFile : IEnumerable&lt;string&gt;
+</code></pre><p>There is something really grating about having a singular (<code>File</code>) represent a plural (<code>IEnumerable</code>). A file is a singular entity. It consist of more than just its content. It also contains metadata (filename, extension, creation date, modify date, ...).</p><p>A human is more than the sum of its children. A car is more than the sum of its parts. A painting is more than a collection of paints and canvas. And a file is more than a collection of lines.</p><hr/><p>If I assume that your <code>MyFile</code> class will never contain more logic than just this enumeration of lines (and the <code>Where</code> only applies a simple static hardcoded filter), then what you&#39;ve got here is a confusing usage of the &#34;file&#34; name and its intended designation. This can easily be fixed by renaming the class as <code>FileContent</code>. It retains your intended syntax:</p><pre><code>foreach(var line in new FileContent(@&#34;C:\Folder\File.txt&#34;))
+</code></pre><p>It also makes more sense from a semantical point of view. The content of a file can be broken into separate lines. This still assumes that the file&#39;s content is text and not binary, but that&#39;s fair enough.</p><hr/><p>If, however, your <code>MyFile</code> class will contain more logic, the situation changes. There are a few ways this could happen:</p><ul><li>You start using this class to represent the file&#39;s metadata, not just its contents.</li></ul><p>When you start doing this, then the <strong>file</strong> represents the <em>file in the directory</em>, which is more than just its content.<br/> The correct approach here is then what you&#39;ve done in <code>MyFile2</code>.</p><ul><li>The <code>Where()</code> filter starts having complicated filter logic that is not hardcoded, e.g. when different files start being filtered differently.</li></ul><p>When you start doing this, files start having identities of their own, as they have their own custom filter. This means that your class has more become a <code>FileType</code> than a <code>FileContent</code>. The two behaviors need to be either separated, or combined using composition (which favors your <code>MyFile2</code> approach), or preferably <strong>both</strong> (separate classes for the <code>FileType</code> and <code>FileContent</code> behavior, and then having both composed into the <code>MyFile</code> class).</p><hr/><p><strong>A wholly different suggestion.</strong></p><p>As it stands, both your <code>MyFile</code> and <code>MyFile2</code> exist purely to give you a wrapper around your <code>.Where(l =&gt; ...)</code> filter. Secondly, you&#39;re effectively creating a class to wrap a static method (<code>File.ReadLines()</code>), which is not a great approach.</p><blockquote><p><em>As an aside, I don&#39;t get why you&#39;ve chose to make your class <code>sealed</code>. If anything, I&#39;d expect that inheritance would be its biggest feature: different derived classes with different filtering logic (assuming that it&#39;s more complex than a simple value change, because inheritance shouldn&#39;t be used just to change a single value)</em></p></blockquote><p>I would rewrite your whole class as:</p><pre><code>foreach(var line in File.ReadLines(...).Where(l =&gt; ...))
+</code></pre><p>The only downside to this simplified approach is that you&#39;d have to repeat the <code>Where()</code> filter every time you wish to access the file&#39;s contents. I agree that that is not desirable.</p><p>However, it seems overkill that when you want to create a reusable <code>Where(l =&gt; ...)</code> statement, that you then also force that class to implement <code>File.ReadLines(...)</code>. You&#39;re bundling more than you really need.</p><p>Instead of trying to wrap the static method in a custom class, I think it&#39;s much more fitting if you wrap it in a static method of its own:</p><pre><code>public static IEnumerable&lt;string&gt; GetFilteredFileContent(string filePath)
+{
+    return File.ReadLines(filePath).Where(l =&gt; ...);
+}
+</code></pre><p>Assuming you have different filters, you could pass the appropriate filter as a a parameter. I&#39;ll show you an example that can handle multiple filters, which should be able to handle everything you need it to do while maximizing reusability:</p><pre><code>public static class MyFile
+{
+    public static Func&lt;string, bool&gt; IgnoreComments = 
+                  (l =&gt; !l.StartsWith(&#34;#&#34;));
+
+    public static Func&lt;string, bool&gt; OnlyTakeComments = 
+                  (l =&gt; l.StartsWith(&#34;#&#34;));
+
+    public static Func&lt;string, bool&gt; IgnoreLinesWithTheLetterE = 
+                  (l =&gt; !l.ToLower().contains(&#34;e&#34;));
+
+    public static Func&lt;string, bool&gt; OnlyTakeLinesWithTheLetterE = 
+                  (l =&gt; l.ToLower().contains(&#34;e&#34;));
+
+    public static IEnumerable&lt;string&gt; ReadLines(string filePath, params Func&lt;string, bool&gt;[] filters)
+    {
+        var lines = File.ReadLines(filePath).Where(l =&gt; ...);
+
+        foreach(var filter in filters)
+            lines = lines.Where(filter);
+
+        return lines;
+    }
+}
+</code></pre><p>And its usage:</p><pre><code>MyFile.ReadLines(&#34;path&#34;, MyFile.IgnoreComments, MyFile.OnlyTakeLinesWithTheLetterE);
+</code></pre><p>This is just a run of the mill example that&#39;s meant to prove the point that static methods make more sense than creating a class here.</p><p>Don&#39;t get caught up on the specifics of implementing the filters. You can implement them however you want (I just personally like parametrizing <code>Func&lt;&gt;</code> because of its inherent extensibility and adaptability to refactoring). But since you didn&#39;t actually an example of the filters you intend to use, I made a few assumption to show you a workable example.</p><hr/><blockquote><p>seeing <code>new X().Y()</code> feels like something went wrong with the class design)</p></blockquote><p>In your approach, you could&#39;ve made it <code>new X().Y</code> which is less grating.</p><p>However, I think that your dislike of <code>new X().Y()</code> proves the point that you feel like a class is not warranted here, but a method is; which can only be represented without a class by being static.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-derived-class-method-naming/'>C# &#8211; Derived Class Method Naming</a></li><li class="list-group-item"><a href='../c-how-to-write-a-custom-eventhandler-class/'>C# &#8211; How to write a custom EventHandler class</a></li><li class="list-group-item"><a href='../c-custom-serializer-or-create-base-class-which-implements-ixmlserializable/'>C# &#8211; Custom serializer or create base class which implements IXmlSerializable</a></li><li class="list-group-item"><a href='../c-representing-different-method-results-via-the-return-type-in-c/'>C# &#8211; Representing different method results via the return type in C#</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

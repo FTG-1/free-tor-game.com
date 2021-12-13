@@ -1,0 +1,117 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Python &#8211; How to generate random Boolean functions in Algebraic Normal Form in Python &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1083921 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1083921" class="post-1083921 software type-software status-publish hentry category-software tag-boolean tag-cryptography tag-python tag-python-3-x"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Python &#8211; How to generate random Boolean functions in Algebraic Normal Form in Python</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">boolean</span><span class="mr-2 badge badge-info">cryptography</span><span class="mr-2 badge badge-warning">python</span><span class="mr-2 badge badge-primary">python-3.x</span></p><div class="entry-content"><p>I am looking at <a href="http://eprint.iacr.org/2015/771" rel="nofollow">A SAT-based Public Key Cryptography Scheme</a> and got inspired to challenge myself to write an implementation of this Cryptography Scheme on Python.</p><p>A part of the cipher encoding would be to generate random Boolean functions in Algebraic Normal Form in a certain set of binary variables. I am new to coding and I can not figure out how to generate the required random functions.</p><p><strong>EDIT</strong><br /> I have already written some code in sage (and made several runs in Python as well) for the key generation. Since I can&#39;t put the code in a comment I am putting it here. While I am conscious that the code might be naive I have checked with small examples and it looks okay to me.</p><pre><code>#n-number of binary variables
+#m-number of clauses
+#k-number of literals in each clause
+
+
+def key_gen(n,m,k):
+
+    print(&#34;the list of variables&#34;)
+
+    print([var(&#39;x&#39;+str(n)) for n in range(n+1)])   #listing the variables
+    print(&#34;&#34;)
+
+    priv=[randint(0,1) for x in range(n)]          #choose randomly the private key 
+
+    pub=matrix(m,k,0)                           #store the variables used as a m*k matrix
+    signs=matrix(m,k,0)                         #store the signs as a m*k matrix           
+
+    i=0
+    j=0
+    while j&lt;m:
+
+        clause=sorted((sample(xrange(0,n),k)))     #choose k variables at random 
+        sgn=[randint(0,1) for x in range(k)]       #choose their signs at random
+
+        value=0
+        for i in xrange(0,k):                     
+            value += (mod(sgn[i]+priv[clause[i]],2))  #check the truth value of the clause
+
+        if value!=0:                                  #the clause is accepted iff there is
+            pub[j]=clause                             #at least one literal with truth value one
+            signs[j]=sgn
+            j=j+1
+
+
+        i=i+1                           
+    print(&#34;&#34;)
+    print(&#34;private key&#34;)
+    print(priv)
+    print(&#34;&#34;)
+    print(&#34;the matrix of variables &#34;)
+    print(pub)
+    print(&#34;&#34;)
+    print(&#34;the matrix of signs&#34;)
+    print(signs)
+</code></pre><p>I have tried to do something regarding encryption.</p><pre><code>#encryption
+#n-number of variables
+#pub is a m*k-matrix, where in its rows are stored the clauses
+#signs-a m*k matrix where are stored the signs of literals
+#y-bit to be encrypted
+#alpha, beta encryption parameters
+
+
+def encrypt(n,pub,signs,alpha,beta,y):
+
+    if ((beta &gt; len(pub.rows())) or (beta &gt;= alpha)):     
+        print(&#34;Encryption  is not possible&#34;)
+    else:
+        m=len(pub.rows())
+        k=len(pub.columns())
+
+        g_alpha=0
+        for i in xrange(0,alpha):              
+
+            block=matrix(beta,k,0)          #store the tuples of clauses as beta*k matrix
+            nr=sorted((sample(xrange(0,m),beta)))       #choose at random beta clauses
+
+            g_beta=0
+            for j in xrange(0,beta):
+                block[j]=pub[nr[j]]              #store clauses according to their position                   
+                B=BooleanPolynomialRing(n,&#39;x&#39;)
+                used_var=[B.gens()[pub[nr[j]][i]] for i in xrange(k)]   #store the 
+                c_j=0                                                   #used variables
+                for i in xrange(0,k):  
+                    c_j+=(B.gen(pub[nr[j]][i]) + signs[nr[j]][i]+1) #calculate the negation 
+
+                zero_list=[0 for x in xrange(k)]                        
+                dict={key:value for key,value in zip(used_var,zero_list)}      
+
+                f=B.random_element()
+                R=f.subs(dict)                                       #generate R 
+
+                g_beta+= c_j*R
+        g_alpha+=g_beta      
+
+    g=y+g_alpha
+    print(&#34;the encrypted bit is&#34;,g)
+</code></pre><p>Decryption:</p><pre><code>#priv- a list of numbers
+#g-a symbolic expression-the cipher
+
+def decrypt(priv,g):
+
+    n=len(priv)
+    B=BooleanPolynomialRing(n,&#39;x&#39;)
+
+    A=[B.gen(i) for i in xrange(n)]
+
+    f=B(g)                          #get a Boolean Polynomial from symbolic expression
+
+    dict={key:value for key,value in zip(A,priv)}
+
+    s=f.subs(dict)    #evaluate g(priv)
+    print(&#39;decrypted bit is&#39;,s)
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I&#39;m basing this off of the Algorithms section of the paper, which is kind of hard to understand, so I would appreciate someone else checking this. Also, I hope you&#39;re doing this for fun and not planning on using this for real cryptography without thorough analysis by professionals and academics,</p><p>The public Boolean function (13) is a series of clauses ANDed together, <code>x -&gt; ^ c_j(x)</code>. Each clause is a series of subclauses ORed together, <code>x -&gt; V(...)</code>. And each subclause is an element of the input <code>x_[I(i, j)]</code> XORed with some sign <code>s(i, j)</code>.</p><p>The signs come from a matrix of Booleans and are chosen randomly as 1 or 0, which is pretty straightforward, but picking the elements out of the input is trickier. The input is a vector of Booleans, and we want a random way to choose which one to put in each subclause. So, we make a matrix of integers size <code>m, k</code> and call it <code>I</code>. For each row in this matrix, <code>c_j(x)</code> has to be true for the private key (since they will be ANDed together). So, generate a row of random integers (from <code>1</code> to <code>n</code> so we don&#39;t go out of bounds of the input) and a row of random signs. Each of these should be <code>k</code> items, since they will be rows of their matrices.</p><p>Once we&#39;ve come up with candidate rows, we need to make sure they satisfy the private key. So, for each index in the row, we derive a subclause for the function <code>c_j</code> and make sure at least one is true (since they will be ORed together). For example, the first elements might be 5 and 1, so we XOR the 5th element of the private key with 1 and see if it is true. Continue down the rows until at least one is true, and if it is, add the rows to your matrices.</p><p>Thinking in the other direction, if you have the matrices <code>I</code> and <code>s</code>, you can check a candidate key pretty easily. For each row of the matrices, make sure that with the integer from <code>I</code> indexing the key, you get a value that can be XORed with the Boolean from <code>s</code>.</p><p>Let&#39;s take the rows <code>[1, 3, 2]</code> and <code>[1, 0, 0]</code>, and a candidate key <code>[1, 1, 0]</code>. First, take the first element from the key (<code>1</code>) and XOR it with <code>1</code>. This gives you <code>0</code>, so continue on. Take the third element from the key (<code>0</code>) and XOR it with <code>0</code>. This gives <code>0</code>, so keep going. Finally, we XOR the second element (<code>1</code>) and the third sign (<code>0</code>) to get <code>1</code>. Since we got a <code>1</code>, these rows work with this key.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../python-random-with-a-skew/'>Python random with a skew</a></li><li class="list-group-item"><a href='../python-how-python-random-shuffle-works/'>Python &#8211; How Python random shuffle works</a></li><li class="list-group-item"><a href='../python-how-to-achieve-inheritance-when-using-just-modules-and-vanilla-functions-in-python/'>Python &#8211; How to achieve inheritance when using just modules and vanilla functions in Python</a></li><li class="list-group-item"><a href='../python-how-should-i-name-functions-that-return-values-in-python/'>Python &#8211; How should I name functions that return values in Python</a></li><li class="list-group-item"><a href='../how-to-make-a-call-with-a-boolean-clearer-boolean-trap/'>How to make a call with a boolean clearer? Boolean Trap</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

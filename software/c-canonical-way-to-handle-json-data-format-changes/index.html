@@ -1,0 +1,84 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211;  canonical way to handle JSON data format changes &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1075481 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1075481" class="post-1075481 software type-software status-publish hentry category-software tag-c tag-json tag-serialization"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211;  canonical way to handle JSON data format changes</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">json</span><span class="mr-2 badge badge-warning">serialization</span></p><div class="entry-content"><p><strong>Problem</strong></p><p>Say we have a C# class with is serialized to JSON (currently via Newtonsoft&#39;s <a href="https://www.newtonsoft.com/json" rel="nofollow noreferrer">JSON.Net</a>) and stored in a database:</p><pre><code>public class User
+{
+    public string authInfo;
+}
+</code></pre><p>If the class definition changes, the old data will fail to load. Even if we try to update the database by hand, data may be lost unless we have server downtime during conversion.</p><pre><code>public class User
+{
+    public string username;
+    public string token;
+}
+</code></pre><p><strong>Solution</strong> (my attempt)</p><p>We may use a callback which is run after deserialization that converts the old data to the new data format. (The attribute and parameters need to be adapted based on which serialization framework is being used.):</p><pre><code>public class User
+{
+    public string username;
+    public string token;
+    [Obsolete] public string authInfo;
+
+    [OnDeserialized]
+    public void FixData()
+    {
+        if (username == null)
+        {
+            var parts = authInfo.Split(&#34;/&#34;);
+            username = parts[0];
+            token = parts[1];
+            authInfo = null;
+        }
+    }
+}
+</code></pre><p>If a field&#39;s format needs to change from a list to an object (or number) or vice versa, the newer field should be called <code>authInfo_2</code>, and incremented when the type changes again.<br /> If a field&#39;s format needs to change from a list of one type to a list of another type, a new field must also be created.</p><pre><code>public class User
+{
+    [Obsolete] public List&lt;string&gt; address;
+    public List&lt;AddressLine&gt; address_2;
+    // FixData() will convert from address to address_2
+}
+</code></pre><p>Problem: If <code>null</code> is a valid value for the old or new data, we can&#39;t determine whether the data has been migrated to the newer format. The following is a workaround that will track whether new data has been added:</p><pre><code>public class User
+{
+    [Obsolete] public List&lt;string&gt; name; // serialized old data
+    private string _familyName; // serialized
+    private bool _isFamilyNameSet; // serialized
+    public string familyName { get { return _familyName; } set { _familyName = value; _isFamilyNameSet = true; } } // not serialized
+    // FixData() will convert from name to familyName
+}
+</code></pre><p><strong>Question</strong></p><p>This procedure is a bunch of rules I made up, and I&#39;ve probably missed something important. Is there an accepted best practice that deals with versioning in serialized data? (Including a version number seems like it would lead to a lot of problems.)</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><h3>Problems</h3><p>Generally speaking, handling different versions of the same data model in the same code results in extra unwanted complexity.   Some common issues include:</p><ul><li>Fields renamed</li><li>Data types changed</li><li>Old fields removed</li><li>New fields added</li><li>Existing data refactored into multiple fields</li><li>Existing data combined together into a single field</li><li>Semantics of existing fields redefined</li></ul><p>None of these are things which you want to have creeping in to your core/domain logic if you can at all help it.</p><p>Furthermore, if you have other version changes planned in the future, then by holding on to old formats, you&#39;re potentially looking at an explosion in complexity once you&#39;ve been through multiple evolutions of the data format.</p><hr/><h3>Ideally, migrate all old data into the new Format and disband the old format entirely</h3><p>The ideal way to handle this scenario is to make sure that your domain logic is never bothered by different data formats in the first place.    Every time you add a new format, complexity increases, but by migrating data it can be a &#39;one off&#39; operation.</p><p>When performing Data Migration, it&#39;s important to create a &#39;rollback&#39; path - i.e. put appropriate backup/restore procedures in place so that you can prevent data loss if anything goes wrong during the migration.</p><p>Also ensure that you have appropriate sanity checks and data verification in-place to make sure the data is in a good state following the migration.</p><p>Of course, this is not always an option.  Multiple data versions are sometimes an unavoidable, necessary evil.</p><hr/><h3>If Migration is not an option, separate your Persistence format away from your Domain Models</h3><p>The logic would be the somewhat similar to the migration code, except it would occur at run-time instead, and the &#39;migration logic&#39; would be sticking around long-term until the data is either fully migrated or retired, and extra care is needed to decouple it from the rest of the application.</p><p>Any concerns regarding different versions or variations in the <em>shape</em> of the same data stored in different formats within your database should be handled in one place away from the rest of your code; hidden behind a standard Data Layer interface which contains everything that the rest of the logic needs.  This can minimise the complexity and impact of storing multiple data formats in your database.</p><p><strong>Avoid exposing multiple different formats to your core logic wherever possible</strong> The rest of your code should be agnostic to the actual shape or format of your persistent data.</p><p>Internally to your data layer, keep different &#39;model&#39; structures which you can use to deserialise into with JSON.NET.    Have a look at AutoMapper for switching between your &#39;persistence&#39; models and the domain model -- don&#39;t use these JSON serialiser models anywhere in your core logic because they represent knowledge of your persistence format.</p><p>Some form of versioning will be necessary for this - your repository/serialiser will need to know which internal JSON model format to deserialise into, so you&#39;d probably need to store a version number within the database alongside the serialised data, or otherwise have some way of unambiguously distinguishing between different data versions.</p><p>Avoid using a boolean field to switch between your versions -- if your way of distinguishing data formats ends up being a true/false value such as &#34;isNewVersion&#34; then that&#39;ll be a problem if you ever happen to introduce version 3 in the future.</p><p>For example:</p><pre><code>internal class MyDataModelVersion1 { /* Old JSON Persistence Format POCO */ }
+
+internal class MyDataModelVersion2 { /* New JSON Persistence Format POCO */ }
+
+public class MyStandardModel { /* Common/Domain Model */ }
+
+public class MyRepository 
+{
+    public MyStandardModel GetData(int id) 
+    {
+        var row = ReadFromDatabase(id);
+        MyStandardModel model = null;
+
+        if (row.Version == 1)
+        {
+            var data = Json.DeserializeObject&lt;MyDataModelVersion1&gt;(row.Json);
+            model = Mapper.Map&lt;MyStandardModel&gt;(data);
+        }
+        else if (row.Version == 2)
+        {
+            var data = Json.DeserializeObject&lt;MyDataModelVersion2&gt;(row.Json);
+            model = Mapper.Map&lt;MyStandardModel&gt;(data);
+        }
+        else { /* throw exception */ }
+
+        return model;
+    }
+}
+</code></pre><p>The main reason for this approach is to ensure that the only part of your code which needs to change when you introduce a new data shape is in the Repository/Data layer -- the rest of your code shouldn&#39;t need to care.</p><p>It&#39;s still less ideal than migration but it encapsulates the data version switching into one place and avoids polluting your core logic.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-storing-object-graphs-with-class-evolution-in-java-with-transformation-long-time-archiving/'>Java &#8211; Storing object-graphs with class-evolution in Java with transformation (long time archiving)</a></li><li class="list-group-item"><a href='../c-best-way-of-validating-class-properties/'>C# &#8211; Best way of validating Class properties</a></li><li class="list-group-item"><a href='../xml-serialization-and-deserialization-complex-situation/'>Xml serialization and deserialization complex situation</a></li><li class="list-group-item"><a href='../java-how-should-i-design-json-serializable-data-classes-to-respect-future-nonnull-fields/'>Java &#8211; How Should I Design JSON Serializable Data Classes To Respect Future @NonNull Fields</a></li><li class="list-group-item"><a href='../c-why-isnt-there-a-data-type-for-just-a-date/'>C# &#8211; Why isn&#8217;t there a data type for just a date</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

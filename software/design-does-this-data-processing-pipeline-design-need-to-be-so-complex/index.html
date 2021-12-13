@@ -1,0 +1,92 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Design &#8211; Does this data processing pipeline design need to be so complex &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1083331 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1083331" class="post-1083331 software type-software status-publish hentry category-software tag-architecture tag-design tag-object-oriented-design"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Design &#8211; Does this data processing pipeline design need to be so complex</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">Architecture</span><span class="mr-2 badge badge-info">design</span><span class="mr-2 badge badge-warning">object-oriented-design</span></p><div class="entry-content"><p>I have a data processing pipeline with well defined stages and IO boundaries.  I can choose a language to suit the needs of this design.  It starts with an <code>InputObject</code>.  At the end of each stage, there is some additional data derived from some or all of the results of previous steps and the <code>InputObject</code>.  That is, <code>StageN</code> extends <code>Stage</code> and produces an immutable <code>ResultsObjN</code>, which extends <code>Result</code>.  After the pipeline is complete, the final output I&#39;m interested in is some subset of all results from each step:</p><pre><code>InputObject
+    |
+    |
+    v
+ -----------
+|  Stage 1  | &lt;-- Tunable Parameters
+ -----------
+    |
+    |
+InputObject
+ResultsObj1
+    |
+    |
+    v
+ -----------
+|  Stage 2  | &lt;-- Tunable Parameters
+ -----------
+    |
+    |
+InputObject
+ResultsObj1
+ResultsObj2
+    |
+    |
+    v
+   ...
+</code></pre><p>Currently, I&#39;m modeling each stage as a <code>Stage</code> object.  I&#39;ll explain what I mean by &#34;tunable&#34; parameters soon.</p><ul><li>Each <code>Stage</code> has each tunable parameters as attributes exposed by getters and setters.</li><li>Each <code>Stage</code> is constructed with its input dependencies.</li><li>Each <code>Stage</code> has a method to compute its result based on the tunable parameters</li></ul><p>Here it is in almost-UML:</p><pre><code> --------------------------------------------------
+| &lt;&lt;abstract&gt;&gt;                                     |
+| Stage                                            |
+|--------------------------------------------------|
+|--------------------------------------------------|
+| +computeResult() : Result                        |
+ --------------------------------------------------
+</code></pre><p>For instance, <code>Stage3</code> computes <code>ResultObj3</code> using the <code>InputObject</code> and the results of <code>Stage2</code>.  There are 2 parameters that can be set to change the results.</p><pre><code> --------------------------------------------------
+| Stage3                                           |
+|--------------------------------------------------|
+| -param1 : Int                                    |
+| -param2 : Float                                  |
+|--------------------------------------------------|
+| +Stage3(raw : InputObject, corners : ResultObj2) |
+| +get/setParam1()                                 |
+| +get/setParam2()                                 |
+| +computeResult() : ResultObj3                    |
+ --------------------------------------------------
+</code></pre><p>I would like to reuse this processing pipeline pattern, with different stages in different quantities with different input dependencies.  The tunable parameters may be tweaked by an automated optimizer or by a human using some UI.  In either case, they follow the same feedback process.  Here it is tuning stage 3:</p><pre><code>ResultObj3 performStage(InputObject raw, ResultObj2 corners):
+
+1. Stage processor = new Stage3(raw, corners)
+2. ResultObj result = processor.computeResult()
+3. while (notAcceptable(result)):
+4.     tuneParams(processor, result)  // tune to &#34;more acceptable&#34; params 
+5.     result = processor.computeResult()
+6. return result
+</code></pre><p>I feel like the tuning process should be performed for each step by a queue executor, but I&#39;m not yet sure how to accommodate the growing set of differently typed results , or the varying construction requirements of each stage.</p><h2>Sample Pipeline</h2><p>The point of this pipeline is to read a set of coordinates from a CSV (into <code>String raw</code>) and pass the string through a pipeline that will parse the string, cluster the points, and plot the clusters.  The cluster data and plot images are extracted from the pipeline after it is run.</p><p>The string is parsed into a collection of <code>Point</code> objects at the <code>&#34;ExtractPoints&#34;</code> stage.  That collection is clustered/segmented into a set of <code>Cluster</code> objects at the <code>&#34;ClusterPoints&#34;</code> stage.  The <code>Point</code> and <code>Cluster</code> data is used to plot the points visually into a <code>Plot</code> image object at the <code>&#34;PlotClusters&#34;</code> stage.</p><pre><code>QueuedPipeline pipeline = new QueuedPipeline()
+
+String raw = readFile(&#34;points.csv&#34;)
+pipeline.setInput(raw)
+
+// addStage() takes the name of the stage, the stage runner, and the names of the stages it needs results from
+pipeline.addStage(&#34;ExtractPoints&#34;, new StageTuner(PointExtractor, ), [])
+pipeline.addStage(&#34;ClusterPoints&#34;, new StageTuner(PointClusterer), [&#34;ExtractPoints&#34;])
+pipeline.addStage(&#34;PlotClusters&#34;, new StageTuner(ClusterPlotter), [&#34;ExtractPoints&#34;, &#34;ClusterPoints&#34;])
+
+// tune and execute each stage with the StageTuners
+PipelineResultList results = pipeline.run()
+
+// pipeline is done, collect the interesting results
+Result pointClusters = results.getResult(&#34;ClusterPoints&#34;)
+Result clusterPlot = results.getResult(&#34;PlotClusters&#34;)
+
+saveClusterFile(pointClusters)
+saveCllusterPlotImage(clusterPlot)
+</code></pre><ul><li>The classes <code>PointExtractor</code>, <code>PointClusterer</code>, and <code>ClusterPlotter</code> all inherit from <code>Stage</code>.</li><li>Each <code>StageTuner</code> takes the class of the <code>Stage</code> to tune and implements the above feedback loop.</li><li>Variables <code>pointClusters</code> and <code>clusterPlots</code> are of <code>Result</code> type</li></ul><h2>Problem</h2><p>But simply passing around classes for construction is a headache in some languages.  Also, I&#39;m not really sure how to generically construct and set parameters of each <code>Stage</code> subclass because of the different number/type of parameters &#8211; perhaps each <code>Stage</code> subclass needs a corresponding <code>StageRunner</code> subclass.  Finally, casting <code>Result</code> objects to the type I need within the final two functions sounds dangerous. <strong>&#8230;but these are just symptoms of my real problem:  This is all starting to get complex and fuzzy for what I expected to be a straightforward problem.</strong></p><p>Am I defining my objects and behaviours badly?  Or is this not as straightforward a problem as I thought?  Something else entirely?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>This sort of problem is well-suited to dynamic typing.  That will give you the most straightforward solution, with the obvious trade offs.</p><p>If you wish to use static typing, you&#39;ll have better luck if you don&#39;t centralize your pipeline construction.  Your stages are the ones who know the most about the types of their dependencies and results, so you should give them the responsibility for managing that.  I would start by making your example read something like this:</p><pre><code>extractedPoints = new PointExtractor(raw)
+clusterPoints   = new PointClusterer(extractedPoints)
+plot            = new ClusterPlotter(extractedPoints, clusterPoints)
+
+saveClusterFile(clusterPoints.result())
+saveClusterPlotImage(plot.result())
+</code></pre><p>Note this directly uses the type system, which makes for a very natural-looking and idiomatic syntax.  Inside <code>result()</code> you would call common code to handle the tuning and memoize the result.  Because each calculation calls <code>result()</code> on each dependency before performing its own calculation, your &#34;queue&#34; ends up getting naturally formed in the call stack, and memoization prevents multiple execution.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../architecture-modular-architecture-for-processing-pipeline/'>Architecture &#8211; Modular Architecture for Processing Pipeline</a></li><li class="list-group-item"><a href='../java-program-design-with-multiple-data-sets-algorithms-and-results/'>Java &#8211; Program design with multiple data sets, algorithms and results</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

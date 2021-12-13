@@ -1,0 +1,100 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; How to design an IDisposable that unconditionally needs to be disposed &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1074462 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1074462" class="post-1074462 software type-software status-publish hentry category-software tag-c tag-class-design tag-design tag-garbage-collection"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; How to design an IDisposable that unconditionally needs to be disposed</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">class-design</span><span class="mr-2 badge badge-warning">design</span><span class="mr-2 badge badge-primary">garbage-collection</span></p><div class="entry-content"><p>Consider a class that implements <code>IDisposable</code>, and that has members in such a way that it will never become eligible for garbage collection when it is not disposed. And as it will not be garbage collected, it will not have the chance to use the destructor for cleaning up.</p><p>As a result, when it is not disposed (e.g. unreliable users, programming errors), resources will be leaked.</p><p>Is there a general approach how such a class can be designed to deal with such a situation or to avoid it?</p><p><em>Example</em>:</p><pre><code>using System;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        new Cyclical();
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        Console.ReadKey();
+    }
+}
+
+class Cyclical
+{
+    public Cyclical()
+    {
+        timer = new System.Threading.Timer(Callback, null, 0, 1000);
+    }
+
+    System.Threading.Timer timer;
+
+    void Callback(object state)
+    {
+        Console.Write(&#39;.&#39;);  // do something useful
+    }
+
+    ~Cyclical()
+    {
+        Console.WriteLine(&#34;destructor&#34;);
+    }
+}
+</code></pre><p>(Omitted <code>IDisposable</code> to keep example short.) This class uses a <code>Timer</code> to do something useful at certain intervals. It needs a reference to the <code>Timer</code> to avoid it is garbage collected.</p><p>Let’s assume the user of that class will not dispose it. As a result of the timer, somewhere some worker thread has a reference to the <code>Cyclical</code> instance via the callback, and as a result, the <code>Cyclical</code> instance will never become eligible for garbage collection, and its destructor will never run, and resources will leak.</p><p>In this example, a possible fix (or workaround) could be to use a helper class that receives callbacks from the <code>Timer</code>, and that does not have a reference, but only a <code>WeakReference</code> to the <code>Cyclical</code> instance, which it calls using that <code>WeakReference</code>.</p><p>However, in general, is there a design rule for classes like this that need to be disposed to avoid leaking resources?</p><hr/><p>For the sake of completeness, here the example including <code>IDispose</code> and including a workaround/solution (and with a hopefully less distracting name):</p><pre><code>class SomethingWithTimer : IDisposable
+{
+   public SomethingWithTimer()
+   {
+      timer = new System.Threading.Timer(StaticCallback,
+         new WeakReference&lt;SomethingWithTimer&gt;(this), 0, 1000);
+   }
+
+   System.Threading.Timer timer;
+
+   static void StaticCallback(object state)
+   {
+      WeakReference&lt;SomethingWithTimer&gt; instanceRef
+         = (WeakReference&lt;SomethingWithTimer&gt;) state;
+      SomethingWithTimer instance;
+      if (instanceRef.TryGetTarget(out instance))
+         instance.Callback(null);
+   }
+
+   void Callback(object state)
+   {
+      Console.Write(&#39;.&#39;);  // do something useful
+   }
+
+   public void Dispose()
+   {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+   }
+
+   protected virtual void Dispose(bool disposing)
+   {
+      if (disposing)
+      {
+         Console.WriteLine(&#34;dispose&#34;);
+         timer.Dispose();
+      }
+   }
+
+   ~SomethingWithTimer()
+   {
+      Console.WriteLine(&#34;destructor&#34;);
+      Dispose(false);
+   }
+}
+</code></pre><ul><li>If disposed, the timer will be disposed.</li><li>If not disposed, the object will become eligible for garbage collection.</li></ul></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>One approach which can be helpful is to expose wrapper objects to the outside world, but don&#39;t hold any strong references to them internally.  Either have the internal objects keep weak references to the wrappers, or else have each wrapper hold the only reference anywhere in the world to a finalizable object which in turn holds a reference to the &#34;real&#34; object [I don&#39;t like having any outside-world-facing objects implement <code>Finalize</code>, since objects have no control over who can call things like <code>GC.SuppressFinalize()</code> on them].  When all outside-world references to the wrapper object have disappeared, any weak references to the wrapper object will be invalidated [and can be recognized as such], and any finalizable object to which the wrapper held the only reference will run its <code>Finalize</code> method.</p><p>For event handlers which are guaranteed to be triggered on some period basis (e.g. timer ticks) I like the <code>WeakReference</code> approach.  There&#39;s no need to use a finalizer to ensure the timer gets cleaned up; instead, the timer-tick event can notice that the outside-world link has been abandoned and clean itself up.  Such an approach may also be workable for things whose only resources are subscriptions to rarely-fired events from long-lived (or static) objects, if those objects have a <code>CheckSubscription</code> event which fires periodically when a subscriber is added (the rate at which those events fire should depend upon the number of subscriptions).  Event subscriptions pose a real problem is when an unbounded number of objects may subscribe to an event from a single instance of a long-lived object and be abandoned without unsubscribing; in that case, the number of abandoned-but-uncollectable subscriptions may grow without bound.  If 100 instances of a class subscribe to an event from a long-lived object and are subsequently abandoned, and nothing else ever subscribes to that event, memory used by those subscriptions may never get cleaned up, but the quantity of wasted memory would be limited to those 100 subscriptions.  Adding more subscriptions would at some point cause the <code>CheckSubscription</code> event to fire, which would in turn cause all the abandoned objects&#39; subscriptions to get canceled.</p><p>PS--Another advantage of using weak references is that one can request that a <code>WeakReference</code> remain valid until the object to which it refers is 100% absolutely and irretrievably gone.  It&#39;s possible for an object to appear abandoned and have its <code>Finalize</code> method scheduled, but then get resurrected and returned to active use even before its <code>Finalize</code> method actually executes; this can happen completely outside the object&#39;s control.  If code holds a long weak reference to the public wrapper object, <em>and if it makes sure the reference itself remains rooted</em>, it can hold off on performing any cleanup until resurrection becomes impossible.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/c-passing-data-between-concrete-states/'>C# &#8211; Passing data between concrete states</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/java-why-cant-java-c-implement-raii/'>Java &#8211; Why can&#8217;t Java/C# implement RAII</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-idisposable-without-finalizer-in-a-singleton-scenario/'>C# &#8211; IDisposable without finalizer in a Singleton scenario</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/how-a-garbage-collector-follows-pointers-to-discover-live-objects/'>How a Garbage Collector follows pointers to discover live objects</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-struct-with-nonsensical-default-value/'>C# &#8211; struct with nonsensical default value</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

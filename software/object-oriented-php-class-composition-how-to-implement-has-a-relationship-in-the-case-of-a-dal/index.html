@@ -1,0 +1,149 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Object-oriented &#8211; php class composition: how to implement “has a” relationship in the case of a DAL &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1082132 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1082132" class="post-1082132 software type-software status-publish hentry category-software tag-object-oriented tag-object-oriented-design tag-php"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Object-oriented &#8211; php class composition: how to implement “has a” relationship in the case of a DAL</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">object-oriented</span><span class="mr-2 badge badge-info">object-oriented-design</span><span class="mr-2 badge badge-warning">PHP</span></p><div class="entry-content"><p>I&#39;m learning about OOD and good practices in OOP and find myself struggling with some key concepts. As a practice I&#39;m rewriting my custom PDO database abstraction layer which used to be a single file class with &gt;2000 lines of code.</p><p>I <a href="https://www.youtube.com/watch?v=wfMtDGfHWpA" rel="nofollow noreferrer">learned</a> one should use inheritance if classes are in a &#34;is an&#34; relationship and composition if they have a &#34;has a&#34; relationship. Composition can be implemented as this, given that I would avoid php&#39;s <code>traits</code> (example from <a href="https://stackoverflow.com/questions/39276932/how-implement-composition-in-php">here</a>):</p><pre><code>&lt;?php
+
+class Head {
+}
+
+class Human {
+    private $head;
+    public function __construct(Head $head) {
+       $this-&gt;head = $head;
+    }
+}
+
+$bob = new Human(new Head);
+</code></pre><p>Good. However, in my case I want to composite a class B to A, while there can be multiple instances of B. Precisely, the main <code>database</code> class (A) <strong>has</strong> one or multiple <code>table</code> classes (B). Injecting a <code>table</code> object similar to the <code>head</code> object in the above example might be not what I want. Later, there might be also maybe a <strong>select</strong> class or a <strong>insert</strong> class. I do this just for practice and learn how I can keep my classes small in file size. Should I all inject all dependencies during construction and recylcle them? Or should I instantiate them within the main <code>database</code> class and inject the connection to the subclasses. The main database class holds the PDO object in &#39;$_connection&#39;.</p><h1>Q1: what is the best way to compose the classes <code>database</code> and <code>table</code>.</h1><p>I can think of these strategies.</p><h3>Strategy #1</h3><pre><code>&lt;?php
+
+class db extends PDO{
+
+  private $_connection;
+
+  public function __construct($dsn){
+
+    $this-&gt;_connection = new parent::__construct($dsn);
+
+  }
+
+  public function createTable($def){
+    
+     $table = new Table(this-&gt;_connection, $def);    
+
+  }
+
+}
+</code></pre><p>Cons:</p><ul><li>I have the <code>new</code> operator in a method which I assume is generally not ideal. Better, I should inject all instances.</li><li>I have to declare a <code>createTable</code> method in the base class. This spams my base class. If functionality increases the base class will be bigger and bigger, which is what I wanted to circumvent in the first place. I would rather like to be able to call <code>create</code> on the table object as in <code>Table-&gt;create()</code>.</li><li>I&#39;m not sure about the the injection of the connection to the table class. Is that good practice?</li></ul><h3>Strategy #2</h3><pre><code>&lt;?php
+
+class db extends PDO{
+
+  private $_connection;
+  public  $table;
+
+  public function __construct($dsn, $table){
+
+    $this-&gt;_connection = new parent::__construct($dsn);
+    $this-&gt;table = $table;
+
+  }    
+
+}
+
+$db = new db($dsn, new $Table)
+$db-&gt;table-&gt;create($def);
+</code></pre><p>Cons:</p><ul><li>I don&#39;t have the <code>connection</code> available in the Table class as it is neither a child nor is the connection manually injected.</li></ul><p>I don&#39;t think the db and Table classes are in a &#34;is a&#34; relationship and thus should not be inherited from each other. But currently I&#39;m lacking a good composition implementation.</p><p><strong>Disclaimer</strong></p><p>I tried to work for a solution but need help on what could be the best practice for this. Composition, as posted with the example (human, head), just doesn&#39;t feel right here in the case of database and table. I hope I&#39;ll receive helpful answers, also links or buzz words are welcome as I&#39;m just learning and I seem to have a hard time to enter the next level.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I&#39;m not sure why you have a <code>Table</code> object, or why your <code>db</code> class extends <code>PDO</code>, but I&#39;ll try to explain a decent approach to database access in a PHP context, as this is an area I&#39;ve spent a lot of time on and have a great deal of interest in.</p><hr/><p><strong>Basic DI approach with PDOs and prepared statements</strong></p><p>When considering database access for PHP in a <code>PDO</code>/<code>PDOStatement</code> context, we can really boil it down to a bare few things:</p><ol><li>We want to be able to open and close connections to a database</li><li>We want to be able to begin, commit and rollback transactions</li><li>We want to be able to prepare statements</li><li>We want to be able to execute SQL as prepared statements by providing parameters</li></ol><p>Point 1 is the responsibility of a database accessor, and involves the creation of a PDO. This is a &#34;has a&#34; relationship.</p><p>Points 2 and 3, I would argue, are also the responsibility of a database accessor, by way of the database accessor&#39;s PDO. The database accessor would act as a Mediator or Facade in this case.</p><p>Point 4 is the responsibility of a data access object (DAO).</p><p>Your database accessor would implement an interface something like this:</p><pre><code>interface DatabaseAccessorInterface
+{
+    public static function beginTransaction(): void;
+    public static function commitTransaction(): void;
+    public static function dropConnection(): void;
+    public static function getConnection(): PDO;
+    public static function isActiveTransaction(): bool;
+    public static function prepare($sql): PDOStatement;
+    public static function rollbackTransaction(): void;
+}
+</code></pre><p>...and your data access object abstract an implementation would look something like this:</p><pre><code>abstract class AbstractDAO
+{
+    private $db;
+
+    public function __construct(DatabaseAccessorInterface $db)
+    {
+        $this-&gt;db = $db;
+    }
+
+    protected function db(): DatabaseAccessorInterface
+    {
+        return $this-&gt;db;
+    }
+}
+
+class UserDAO extends AbstractDAO
+{
+    public function getAllUsers(): array
+    {
+        $sql = &#34;SELECT * FROM user&#34;;
+        $stmt = $this-&gt;db()-&gt;prepare($sql);
+        $stmt-&gt;execute();
+        return $stmt-&gt;fetchAll();
+    }
+
+    public function getUserByUsername($username): array
+    {
+        $sql = &#34;SELECT * FROM user WHERE username = :username&#34;;
+        $stmt = $this-&gt;db()-&gt;prepare($sql);
+        $parameters = [
+            &#39;:username&#39; =&gt; $username
+        ];
+        $stmt-&gt;execute($parameters);
+        return $stmt-&gt;fetch();
+    }
+}
+</code></pre><hr/><p>Note that this is a traditional &#34;easy&#34; approach to the problem, and is not the best approach IMO but is a great starting point if you&#39;re getting into designing around PDOs and prepared statements.</p><p>Ways to augment this approach include:</p><ul><li>Adding a configurator, such that the database accessor &#34;has a&#34; configuration</li><li>Implementing a cache of prepared statements</li><li>Returning a custom <code>Result</code> object instead of <code>fetch</code> or <code>fetchAll()</code>, so that you can get additional information, such as <code>rowCount</code>, <code>errorCode</code>, etc.</li></ul><hr/><p><strong>Author&#39;s thoughts</strong></p><p>Personally, I believe thinking about data access in a database context is heavily restricting in this day and age. Nowadays, databases are simply one form of persistence amongst a myriad of choices. We could be connecting to an SQL database, a NoSQL database, a CSV file, a remote API, etc. I think it&#39;s better to broaden the idea of data access from simply connecting to and querying against a database, to that of accessing a remote data store that could take on many forms.</p><p>When we look at it this way, we find that there are various parts in play:</p><ul><li>An <code>Accessor</code> which is responsible for a connection to a particular type of data source</li><li>An <code>AccessorConfiguration</code> which holds configuration information for an <code>Accessor</code></li><li>A <code>PersistenceStrategy</code> which hold information about which artefact in the data source will be the target for queries and commands</li><li><code>Calls</code>, which are equivalent to SQL query strings</li><li><code>Responses</code>, which hold information about the execution of the <code>Calls</code> (e.g. number of rows/columns returned, error info, etc.)</li><li>An <code>OperationRepository</code> which is responsible for the execution of <code>Calls</code> and returns <code>Responses</code></li><li>An <code>OperationCache</code> that stores <code>Responses</code> against <code>Calls</code></li></ul><p>Once we start down this road, we find the interfaces become a lot simpler in their language, and you avoid polluting your code with database-specific lingo:</p><pre><code>interface PersistenceStrategyInterface
+{
+    /**
+     * Deletes a DataEntity from the persistence mechanism.
+     *
+     * @param DataEntityInterface $dataEntity
+     * @return ResponseInterface
+     */
+    public function delete(DataEntityInterface $dataEntity);
+
+    /**
+     * Gets a DataEntity from the persistence mechanism.
+     *
+     * @param DataEntityInterface $dataEntity
+     * @return ResponseInterface|null
+     */
+    public function get(DataEntityInterface $dataEntity);
+
+    /**
+     * Saves the DataEntity to the persistence mechanism.
+     *
+     * @param DataEntityInterface $dataEntity
+     * @return ResponseInterface
+     */
+    public function save(DataEntityInterface $dataEntity);
+}
+
+interface OperationRepositoryInterface
+{
+    /**
+     * Gets the Response from the OperationRepository.
+     *
+     * @param CallInterface $call The Call that generates the Response.
+     * @param AccessorInterface $accessor The Accessor that the Call is made against.
+     * @return ResponseInterface
+     */
+    public function response(CallInterface $call, AccessorInterface $accessor);
+}
+</code></pre><p><em>Disclaimer: this code is from <a href="https://github.com/circle314/circle314" rel="nofollow noreferrer">Circle314 framework</a>, which I am currently developing</em></p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../object-oriented-php-injecting-the-same-database-connection-into-multiple-objects/'>Object-oriented &#8211; PHP: Injecting the same database connection into multiple objects</a></li><li class="list-group-item"><a href='../object-oriented-oop-should-i-set-the-database-connection-as-public-for-other-classes-to-use-it-although-it-might-be-unsafe/'>Object-oriented &#8211; OOP &#8211; Should I set the database connection as `public` for other classes to use it, although it might be unsafe</a></li><li class="list-group-item"><a href='../java-uml-do-i-use-aggregation-or-composition-in-this-case/'>Java &#8211; UML: do I use aggregation or composition in this case</a></li><li class="list-group-item"><a href='../php-what-layer-does-a-query-builder-belong-in/'>Php &#8211; What Layer does a Query Builder belong in</a></li><li class="list-group-item"><a href='../java-how-to-avoid-code-duplication-while-extending-two-umodifiable-classes/'>Java &#8211; How to avoid code duplication while extending two umodifiable classes</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

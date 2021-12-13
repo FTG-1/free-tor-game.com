@@ -1,0 +1,121 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Should one make the database calls in the constructor or method of a class &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1075926 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1075926" class="post-1075926 software type-software status-publish hentry category-software tag-c tag-clean-code tag-design tag-object-oriented tag-unit-testing"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Should one make the database calls in the constructor or method of a class</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">clean code</span><span class="mr-2 badge badge-warning">design</span><span class="mr-2 badge badge-primary">object-oriented</span><span class="mr-2 badge badge-danger">unit testing</span></p><div class="entry-content"><p>Take the following instance for example:<br /> <strong>CreditCardApplication</strong> class</p><pre><code> public class CreditCardApplication
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public int Age { get; set; }
+        public decimal GrossAnnualIncome { get; set; }
+        public string FrequentFlyerNumber { get; set; } 
+    }
+</code></pre><p>And there is a <strong>CreditCardApplicationEvaluator</strong> class</p><pre><code>public class CreditCardApplicationEvaluator
+    {
+        private const int AutoReferralMaxAge = 20;
+        private const int HighIncomeThreshhold = 100_000;
+        private const int LowIncomeThreshhold = 20_000;
+
+        public CreditCardApplicationDecision Evaluate(CreditCardApplication application)
+        {
+            if (application.GrossAnnualIncome &gt;= HighIncomeThreshhold)
+            {
+                return CreditCardApplicationDecision.AutoAccepted;
+            }
+
+            if (application.Age &lt;= AutoReferralMaxAge)
+            {
+                return CreditCardApplicationDecision.ReferredToHuman;
+            }
+
+            if (application.GrossAnnualIncome &lt; LowIncomeThreshhold)
+            {
+                return CreditCardApplicationDecision.AutoDeclined;
+            }
+
+            return CreditCardApplicationDecision.ReferredToHuman;
+        }       
+    }
+</code></pre><p><strong>CreditCardApplicationDecision</strong> is an enum.</p><p>Now as you can see there are certain private const defined inside <strong>CreditCardApplicationEvaluator</strong> class. In a real world application these values will most probably come from a database.</p><p>So the question is where do I make the database call to set these constants?<br /> Inside the constructor? Or within <code>Evaluate</code> method?</p><p>Should I create another class <code>Thresholds</code> with the properties such as <code>AutoReferralMaxAge</code>etc and pass it on to <code>Evaluate</code> method as follows:</p><pre><code>static void Main(string[] args)
+{
+   //CreditCardApplication instance creation code goes here... 
+
+   Thresholds thresholds =new Thresholds();
+   thresholds = _unitOfWork.CreditcardRepository.GetThresholds();
+   CreditCardApplicationEvaluator eval=new CreditCardApplicationEvaluator();
+  var decision = eval.Evaluate(creditCardApplication,thresholds);
+}
+</code></pre><p>Or should I just place <code>unitOfWork.CreditcardRepository.GetThresholds()</code> inside <code>Evaluate</code> method of <strong>CreditCardApplicationEvaluator</strong> class, or perhaps it&#39;s constructor?</p><hr/><p>Calling database inside a constructor is probably a bad idea as pointed out by @Greg. So now what is left unanswered is that should I :</p><ol><li>Have unitOfWork.CreditcardRepository.GetThresholds() inside main()</li><li>or within Evaluate() method of <strong>CreditCardApplicationEvaluator</strong><br /> class</li></ol></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Constructors should not do work. The initialization of a new object should happen very quickly, and making database calls, or interacting with any resource outside of the current process, can take considerably longer.</p><p>Instead, your constructor should either require the data from the database as separate arguments, so that the database calls are made before creating the new object, or move that logic into an instance method.</p><p>Constructors should be limited to allocating new memory for the new object (like initializing empty collections or assigning default values to required fields) and ensuring the object is in a valid state upon first being created.</p><p>Anything beyond that belongs in an instance method, or arguments passed into the constructor.</p><p>To be specific to your use case, the three &#34;const&#34; integers should be arguments to the constructor. Furthermore, the income threshold is actually a good candidate for a new class, because you don&#39;t want a high threshold of 20,000 and a low threshold of 100,000.</p><pre><code>public class IncomeThreshhold
+{
+    public int Low { get; }
+    public int High { get; }
+
+    public IncomeThreshhold(int low, int high)
+    {
+        if (low &lt; 0)
+            throw new ArgumentOutOfRangeException();
+
+        if (high &lt; 0)
+            throw new ArgumentOutOfRangeException();
+
+        if (high &lt; low)
+            throw new ArgumentOutOfRangeException();
+
+        Low = low;
+        High = high;
+    }
+}
+</code></pre><p>Then your CreditCardApplicationEvaluator class becomes a little easier to construct with valid data:</p><pre><code>public class CreditCardApplicationEvaluator
+{
+    private int AutoReferralMaxAge { get; }
+    private IncomeThreshhold IncomeThreshhold { get; }
+
+    public CreditCardApplicationEvaluator(int autoReferralMaxAge, IncomeThreshhold incomeThreshhold)
+    {
+        if (autoReferralMaxAge &lt; someValueProbablyDrivenByRegulations)
+            throw new ArgumentOutOfRangeException();
+
+        AutoReferralMaxAge = autoReferralMaxAge;
+        IncomeThreshhold = incomeThreshhold;
+    }
+
+    public CreditCardApplicationDecision Evaluate(CreditCardApplication application)
+    {
+        if (application.GrossAnnualIncome &gt;= IncomeThreshhold.High)
+        {
+            return CreditCardApplicationDecision.AutoAccepted;
+        }
+
+        if (application.Age &lt;= AutoReferralMaxAge)
+        {
+            return CreditCardApplicationDecision.ReferredToHuman;
+        }
+
+        if (application.GrossAnnualIncome &lt; IncomeThreshhold.Low)
+        {
+            return CreditCardApplicationDecision.AutoDeclined;
+        }
+
+        return CreditCardApplicationDecision.ReferredToHuman;
+    }
+}
+</code></pre><p>The initialization of these objects in conjunction with a unit of work or repository ends up like this:</p><pre><code>static void Main(string[] args)
+{
+    var incomeThreshhold = unitOfWork.CreditcardRepository.GetThreshold(...);
+    var autoReferralMaxAge = unitOfWork.CreditcardRepository.GetAutoReferralMaxAge(...);
+    var evaluator = new CreditCardApplicationEvaluator(autoReferralMaxAge, incomeThreshhold);
+    var application  unitOfWork.CreditcardRepository.GetApplication(...);
+    var decision = evaluator.Evaluate(application);
+}
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-object-oriented-class-design/'>Java &#8211; Object-Oriented Class Design</a></li><li class="list-group-item"><a href='../c-interfacing-application-code-with-unit-tests/'>C++ &#8211; Interfacing application code with unit tests</a></li><li class="list-group-item"><a href='../c-where-to-store-formulas-and-formula-constants/'>C# &#8211; Where to store formulas and formula &#8220;constants&#8221;</a></li><li class="list-group-item"><a href='../object-oriented-clean-code-consequences-of-short-methods-with-few-parameters/'>Object-oriented &#8211; Clean code: consequences of short methods with few parameters</a></li><li class="list-group-item"><a href='../php-how-to-pass-a-mock-object-into-a-class-for-unit-tests/'>Php &#8211; How to pass a mock object into a class for unit tests</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

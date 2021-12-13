@@ -1,0 +1,72 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; Is mixing Builders and Factory pattern a good idea &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1067444 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1067444" class="post-1067444 software type-software status-publish hentry category-software tag-builder-pattern tag-design-patterns tag-factory tag-java"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; Is mixing Builders and Factory pattern a good idea</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">builder-pattern</span><span class="mr-2 badge badge-info">design-patterns</span><span class="mr-2 badge badge-warning">factory</span><span class="mr-2 badge badge-primary">java</span></p><div class="entry-content"><p>I have an object <code>Car</code>constructed using builder pattern.<br /> Issue was a lot of code redundancy.</p><pre><code>    Car.Builder builder = new Car.Builder(&#34;Mercedes&#34;);
+    builder.numDoors(carConfig.getNumDoors()
+    builder.engineType(carConfig.getEngineType())
+    builder.isManual(isManual)
+    builder.build())
+
+    Car.Builder builder = new Car.Builder(&#34;BMW&#34;);
+    builder.numDoors(carConfig.getNumDoors()
+    builder.engineType(carConfig.getEngineType())
+    builder.isManual(isManual)
+    builder.build())
+
+    Car.Builder builder = new Car.Builder(&#34;FlyingCar&#34;);
+    builder.numDoors(carConfig.getNumDoors()
+    builder.engineType(carConfig.getEngineType())
+    builder.wing(TypeName)
+    builder.build())
+</code></pre><p>So thought of an idea to reduce code clutter using factory pattern.<br /> Using the factory below, I can create Car easily.</p><pre><code>Car mercedes = CarFactory.createNonFlyingCar(&#34;Mercedes&#34;);
+
+Car bmw = CarFactory.createNonFlyingCar(&#34;BMW&#34;);
+
+Car flyCar = CarFactory.createFlyingCar(&#34;FlyingCarBrand&#34;);
+</code></pre><hr/><pre><code>public class CarFactory {
+
+    // brand can be BMW or Mercedes or Audi etc.
+    public static Car createNonFlyingCar(String brand, CarConfiguration carConfig, Engine engine) {
+        Car.Builder builder = new Car.Builder(brand);
+        append(builder, carConfig.getNumDoors(), carConfig.getEngineType(), engine.isManual()).build();
+    }
+
+    public static Car createFlyingCar(CarConfiguration carConfig, Wings wings) {
+        Car.Builder builder = new Car.Builder(&#34;NewFlyingCar&#34;);
+        append(builder, carConfig.getNumDoors(), carConfig.getEngineType()).wings(wing.getType()).build(); // added extra &#39;wings&#39; method here.
+    }
+
+    // overload append.
+    private static void append(
+        Car.Builder builder,
+        int numDoors,
+        Sting engineType,
+        boolean isManual;
+    )
+    {
+        return append(builder, numDoors, engineType).isManual(isManual);
+
+    }
+
+    private static void append(
+        Car.Builder builder,
+        int numdoors,
+        String engineTye
+    )
+    {
+        return builder.numdoors(numdoors).engineType(engineTyoe);
+    }
+
+}
+</code></pre><ol><li><p>One thing which I did in the factory was overloading append method.<br /> When common fields were involved, used them. Eg: <code>numdoors</code> and <code>enginetype</code> was shared between flying and nonflying cars. so I created an <code>append(numdoors, engineType)</code> which was called by append with more param.</p></li><li><p>Next thing is the <code>wing</code> which was unique to flying car was left out of append.</p></li></ol><p>Is this a known pattern ? Good ? Bad ? And Why ?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Factories really have to do with abstractions and polymorphism, e.g. create an instance for some interface or abstract class without specifying the concrete implementation. You have only one concrete class Car in this case.</p><p>So both your variants are builders, the first one has a lot more clarity. The second one, the one you call factory is not communicating intent (I really need to analyze it thoroughly to figure out what it is doing). I don&#39;t like it at all, it&#39;s make some very simple convoluted.</p><p>Why do you spawn of a builder from a new instantiated Car? That seems weird to me, builder should instantiate Car, not the other way around.</p><p>Leading from this. If your Car has a default parameterless constructor then why do you even have the builder? You could just new up the Car and set properties against it coming from carConfig? The builder does not seems to provide any guarantee, defaults or otherwise complete logic on how to construct a car.</p><p>You could consider introducing a FlyingCar class with a wing property, the patterns will start to make more sense then. You builder could expose wing configuration options, only when you are constructing a FlyingCar etc.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../factory-method-vs-factory-design-pattern/'>Factory method vs Factory design pattern</a></li><li class="list-group-item"><a href='../design-does-the-factory-pattern-violate-the-open-closed-principle/'>Design &#8211; Does the Factory Pattern violate the Open/Closed Principle</a></li><li class="list-group-item"><a href='../architecture-domain-model-design-best-practices-for-robust-fluency-encapsulation-and-extensibility/'>Architecture &#8211; Domain Model Design &#8211; Best Practices for Robust Fluency, Encapsulation, and Extensibility</a></li><li class="list-group-item"><a href='../when-to-use-factory-design-pattern-instead-of-dependency-injection/'>When to use Factory design pattern instead of Dependency Injection</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

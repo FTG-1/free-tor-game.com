@@ -1,0 +1,67 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>What simple techniques do you use to improve performance &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1070962 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1070962" class="post-1070962 software type-software status-publish hentry category-software tag-code-quality tag-performance"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">What simple techniques do you use to improve performance</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">code-quality</span><span class="mr-2 badge badge-info">performance</span></p><div class="entry-content"><p>I&#39;m talking about the way we write simple routines in order to improve performance without making your code harder to read&#8230; for instance, this is the typical for we learned:</p><pre><code>for(int i = 0; i &lt; collection.length(); i++ ){
+   // stuff here
+}
+</code></pre><p>But, I usually do this when a <code>foreach</code> is not applicable:</p><pre><code>for(int i = 0, j = collection.length(); i &lt; j; i++ ){
+   // stuff here
+}
+</code></pre><p>I think this is a better approach since it will call the <code>length</code> method once only&#8230; my girlfriend says it&#39;s cryptic though. Is there any other simple trick you use on your own developments?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p><em>insert premature-discussion-is-the-root-of-all-evil lecture</em></p><p>That said, here are some habits I&#39;ve gotten into to avoid unnecessary efficiency, and in some cases, make my code simpler and more correct as well.</p><p>This isn&#39;t a discussion of general principles, but of some things to be aware of to avoid introducing unnecessary inefficiencies into code.</p><h2>Know your <a href="http://en.wikipedia.org/wiki/Big_O_notation#Orders_of_common_functions">big-O</a></h2><p>This should probably be merged into the lengthy discussion above.  It&#39;s pretty much common sense that a loop inside of a loop, where the inner loop repeats a calculation, is gonna be slower.  For example:</p><pre><code>for (i = 0; i &lt; strlen(str); i++) {
+    ...
+}
+</code></pre><p>This will take a horrendous amount of time if the string is really long, because the length is being recalculated on every iteration of the loop.  Note that <a href="http://gcc.gnu.org/">GCC</a> actually optimizes this case because <code>strlen()</code> is marked as a pure function.</p><p>When sorting a million 32-bit integers, <a href="http://www.youtube.com/watch?v=k4RRi_ntQc8">bubble sort would be the wrong way to go</a>.  In general, sorting can be done in O(n * log n) time (or better, in the case of radix sort), so unless you know your data is going to be small, look for an algorithm that&#39;s at least O(n * log n).</p><p>Likewise, when dealing with databases, be aware of indexes.  If you <code>SELECT * FROM people WHERE age = 20</code>, and you don&#39;t have an index on people(age), it&#39;ll require an O(n) sequential scan rather than a much faster O(log n) index scan.</p><h2>Integer arithmetic hierarchy</h2><p>When programming in C, bear in mind that some arithmetic operations are more expensive than others.  For integers, the hierarchy goes something like this (least expensive first):</p><ul><li><code>+ - ~ &amp; | ^</code></li><li><code>&lt;&lt; &gt;&gt;</code></li><li><code>*</code></li><li><code>/</code></li></ul><p>Granted, the compiler will usually optimize things like <code>n / 2</code> to <code>n &gt;&gt; 1</code> automatically if you&#39;re targeting a mainstream computer, but if you&#39;re targeting an embedded device, you might not get that luxury.</p><p>Also, <code>% 2</code> and <code>&amp; 1</code> have different semantics.  Division and modulus usually rounds toward zero, but it&#39;s implementation defined.  Good ol&#39; <code>&gt;&gt;</code> and <code>&amp;</code> always rounds toward negative infinity, which (in my opinion) makes a lot more sense.  For instance, on my computer:</p><pre><code>printf(&#34;%d\n&#34;, -1 % 2); // -1 (maybe)
+printf(&#34;%d\n&#34;, -1 &amp; 1); // 1
+</code></pre><p>Hence, use what makes sense.  Don&#39;t think you&#39;re being a good boy by using <code>% 2</code> when you were originally going to write <code>&amp; 1</code>.</p><h2>Expensive floating point operations</h2><p>Avoid heavy floating point operations like <code>pow()</code> and <code>log()</code> in code that doesn&#39;t really need them, especially when dealing with integers.  Take, for example, reading a number:</p><pre><code>int parseInt(const char *str)
+{
+    const char *p;
+    int         digits;
+    int         number;
+    int         position;
+
+    // Count the number of digits
+    for (p = str; isdigit(*p); p++)
+        {}
+    digits = p - str;
+
+    // Sum the digits, multiplying them by their respective power of 10.
+    number = 0;
+    position = digits - 1;
+    for (p = str; isdigit(*p); p++, position--)
+        number += (*p - &#39;0&#39;) * pow(10, position);
+
+    return number;
+}
+</code></pre><p>Not only is this use of <code>pow()</code> (and the <code>int</code>&lt;-&gt;<code>double</code> conversions needed to use it) rather expensive, but it creates an opportunity for precision loss (incidentally, the code above doesn&#39;t have precision issues).  That&#39;s why I wince when I see this type of function used in a non-mathematical context.</p><p>Also, notice how the &#34;clever&#34; algorithm below, which multiplies by 10 on each iteration, is actually more concise than the code above:</p><pre><code>int parseInt(const char *str)
+{
+    const char *p;
+    int         number;
+
+    number = 0;
+    for (p = str; isdigit(*p); p++) {
+        number *= 10;
+        number += *p - &#39;0&#39;;
+    }
+
+    return number;
+}
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/are-ddd-aggregates-really-a-good-idea-in-a-web-application/'>Are DDD Aggregates really a good idea in a Web Application</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/java-how-to-significantly-improve-java-performance/'>Java &#8211; How to significantly improve Java performance</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/would-using-ajax-extensively-improve-server-performance/'>Would using AJAX extensively improve server performance</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/database-are-mutliple-database-calls-really-significant-with-a-network-call-for-a-web-api/'>Database &#8211; Are mutliple database calls really significant with a network call for a web API</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/list-comparing-techniques-for-faster-performance/'>List comparing techniques for faster performance</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/java-is-an-interface-with-only-getters-a-code-smell/'>Java &#8211; Is an interface with only getters a code smell</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/pushing-untested-unproven-unused-code-to-production-with-a-view-of-future-use/'>Pushing untested, unproven, unused code to production with a view of future use</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/python-working-through-the-single-responsibility-principle-srp-in-python-when-calls-are-expensive/'>Python &#8211; Working through the single responsibility principle (SRP) in Python when calls are expensive</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

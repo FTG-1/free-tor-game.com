@@ -1,0 +1,104 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Design &#8211; concerns about constructor dependency injection logic &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1082912 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1082912" class="post-1082912 software type-software status-publish hentry category-software tag-dependency-injection tag-design tag-object-oriented-design"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Design &#8211; concerns about constructor dependency injection logic</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">dependency-injection</span><span class="mr-2 badge badge-info">design</span><span class="mr-2 badge badge-warning">object-oriented-design</span></p><div class="entry-content"><p>There is a kind of rule in dependency injection literature, stating that we should declare all arguments in the constructor, in order to have a constructor injection, which is better than other approaches.</p><p>At first, there is nothing wrong with that.</p><p>But I’ve come to realize that this “rule” applies only to the realm of – let’s say – MVC controllers. Because a controller is spawned to do a certain job, doesn’t diverge from its purpose, and then disposes. In general, it applies to a &#39;request based system&#39;.<br /> Now, let’s say that we have a block that gets data, transforms them, and outputs the transformed data. This block has various other parameters that must be configured, such as an IConditionStrategy (Equals, GreaterThan etc..).</p><p>We configure the block and run the application. Then, we want to get some other results and so we change the parameters of that block (a good example of this is matlab’s simulink).<br /> The block doesn’t dispose, it exists in a workspace. It has done its job (transforming the data) and waits in the workspace to rerun another job.<br /> It would be very expensive (let alone complicated) to recreate all the possible blocks of the workspace.<br /> But when we start to change its parameters, which can vary from numbers to various strategies, we must provide in code behind certain concrete implementations to this block that its interface needs.<br /> In this case, how would the &#39;standard&#39; constructor dependency injection fit?</p><p>Unfortunately, we have to get rid of the constructor, because we have to change the parameters at runtime. But then again, if we get rid of the constructor, we won’t be able to ensure that a parameter is always valid.<br /> Should we provide a kind of default implementation? (We’ll fall in the service locator trap!)</p><p>And another thing that’s always bothered me. I understand the danger of a null appearing at runtime (so we should have constructor injection), but what do we actually gain when we create an object and then constrain it from changing its internal strategies, parameters etc. after its creation.<br /> An answer to this could that we don’t have to change it at all, just dispose it and create another one. Sure, but I can’t see how this technique fits in domains other than &#39;request based systems&#39;, such as web apps.</p><p>Imagine that we have a neural network with neurons that have an internal strategy, for example change their transfer functions at runtime even while an identification or learning is in process. We can’t dispose a neuron and create another one with the desired internal strategy just to maintain constructor injection.<br /> Of course, in various dependency injection books, other types of injection are mentioned, such as method injection, but I got the feeling that constructor injection should be used on 80% of the occasions according to literature. Given various applications, my estimate is that it has to be way lower than 80%.<br /> I am misunderstanding something?<br /> I would very much appreciate your opinions on the matter.</p><p>As example I give the following snippet.<br /> The object needs to change at runtime, but the constructor injection constrains it.</p><pre class="lang-cs prettyprint-override"><code>public class Transformation {
+  private readonly IConditionStrategy _condition;
+  private readonly ISource _input;
+
+  public Transformation(IConditionStrategy condition, ISource input) {
+    this._condition = condition;
+    this._input = input;
+  }
+
+  public ISource Transform() {
+    ISource source = new Source();
+
+    foreach(var i in this._input) {
+      if(this._condition.Check(i)){
+        source.Add(i);
+      }
+    }
+
+    return source;
+  }
+}
+</code></pre><p>In the following example we change the parameters at runtime. Because we can&#39;t just dispose and recreate another object with the desired parameters, we don&#39;t use the classical dependency injection practice.</p><pre class="lang-cs prettyprint-override"><code>public class Transformation{
+  public IConditionStrategy Condition{get;set;}
+  public ISource Input{get;set;}
+
+  public Transformation() {
+    // we could provide some default 
+    // implementations just to avoid null
+  }
+
+  public ISource Transform(){
+    ISource source = new Source();
+
+    foreach(var i in this._input){
+      if(this._condition.Check(i)){
+        source.Add(i);
+      }
+    }
+
+    return source;
+  }
+}
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>As @Mark noticed there no such rule that all arguments should be instantiated in the constructor.</p><blockquote><p>Given various applications, my estimate is that it has to be way lower
+ than 80%</p></blockquote><p>I think it is not right to make design decision based on the percentage values. You can use the way to inject dependencies which fits requirements of current context.</p><p>In your particular example <code>IConditionStrategy</code> is dependency which could change during runtime - so why you not introduce it as &#34;external&#34; dependency and pass it to the method as argument?</p><pre><code>public class Transformation
+{
+    public Transformation() { }
+
+    public ISource Transform(IConditionStrategy condition, ISource input)
+    {
+        ISource source = new Source();
+
+        foreach(var i in input){
+             if (condition.Check(i))
+             {
+                 source.Add(i);
+             }
+        }
+
+        return source;
+    }
+}
+</code></pre><p>In constructor you can inject default strategy conditions which remain unchanged during transformation lifetime</p><pre><code>public class Transformation
+{
+    private readonly IConditionStrategy _defaultCondition;
+
+    public Transformation(IConditionStrategy defaultCondition) 
+    { 
+        _defaultCondition = defaultCondition;
+    }
+
+    public ISource Transform(ISource input)
+    {
+        return Transform(_defaultCondition, input);
+    }
+
+    public ISource Transform(IConditionStrategy condition, ISource input)
+    {
+        ISource source = new Source();
+
+        foreach(var i in input){
+             if (condition.Check(i))
+             {
+                 source.Add(i);
+             }
+        }
+
+        return source;
+    }
+}
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../dependency-injection-dependency-chain-pattern/'>Dependency Injection &#8211; Dependency Chain Pattern</a></li><li class="list-group-item"><a href='../c-what-does-dependency-injection-mean-by-saying-it-can-inject-on-runtime/'>C# &#8211; What does Dependency Injection mean by saying it can inject on runtime</a></li><li class="list-group-item"><a href='../c-ambient-dependency-injection-through-static-service-locator/'>C# &#8211; Ambient dependency injection through static service locator</a></li><li class="list-group-item"><a href='../dependency-injection-via-constructor-vs-setter/'>Dependency Injection via Constructor vs Setter</a></li><li class="list-group-item"><a href='../handling-disposables-with-dependency-injection/'>Handling disposables with dependency injection</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

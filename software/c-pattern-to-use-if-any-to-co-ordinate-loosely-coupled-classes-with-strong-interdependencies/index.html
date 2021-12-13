@@ -1,0 +1,84 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Pattern to use (if any) to co-ordinate loosely coupled classes with strong interdependencies &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1084016 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1084016" class="post-1084016 software type-software status-publish hentry category-software tag-abstract-factory tag-builder-pattern tag-c tag-design-patterns tag-factory"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Pattern to use (if any) to co-ordinate loosely coupled classes with strong interdependencies</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">abstract-factory</span><span class="mr-2 badge badge-info">builder-pattern</span><span class="mr-2 badge badge-warning">c</span><span class="mr-2 badge badge-primary">design-patterns</span><span class="mr-2 badge badge-danger">factory</span></p><div class="entry-content"><p>I have a collection of cooperative classes whose behaviors are interdependent upon one another. But I wish to keep them loosely coupled, so I&#39;ve created appropriate interfaces.</p><p>I want to determine an appropriate pattern to instantiate specific implementations of these objects.</p><p>Here&#39;s an outline of their interdependencies:</p><ul><li><code>IService : IDisposable</code>: listens for messages; exposes a <code>Listen</code> method which:<ul><li>calls <code>IMessageClient.GetNextMessage</code> iteratively</li><li>invokes a (delegate which creates a?) new <code>IMessageHandler</code> instance in a new thread for each message</li><li>up to <code>NumberOfThreads</code> concurrent threads</li></ul></li><li><code>IServiceMonitor&lt;IService&gt;</code>: monitors the service:<ul><li>exposes <code>Start</code> method which invokes the <code>IService.Listen()</code></li><li>exposes <code>Stop</code> method which disposes <code>IService</code></li><li>exposes <code>Pause</code> and <code>Resume</code> methods which respectively zero or reset the <code>IService.NumberOfThreads</code></li><li>calls <code>CreateRemoteConfigClient()</code> to get a client every 90 seconds, then <code>IRemoteConfigClient.GetConfig</code></li><li>notifies any configuration changes to <code>IMessageClient</code>, <code>IService</code>, and any subsequent <code>IMessageHandler</code></li></ul></li><li><code>IMessageClient : IDisposable</code>; exposes <code>GetNextMessage</code> which:<ul><li>long polls a message queue for the next request</li></ul></li><li><code>IMessageHandler : IDisposable</code>; exposes <code>HandleMessage</code> which:<ul><li>does something with the message, requesting on the way further <code>IXyzClient</code>s from the <code>IFactory</code> to access other services</li></ul></li><li><code>IRemoteConfigClient : IDisposable</code>; exposes <code>GetConfig</code> which:<ul><li>retrieves any remote overrides of the current configuration state</li></ul></li></ul><p>This has led me to create:</p><ul><li><code>IFactory</code>; with the following members:<ul><li><code>CreateMonitor</code>: returns a new <code>IServiceMonitor&lt;IService&gt;</code></li><li><code>GetService</code>: returns the <code>IService</code> created to accompany the most recent <code>IServiceMonitor</code>, or a new <code>IService</code><ul><li>NB: a Service should be able to be obtained without a Monitor having been created</li></ul></li><li><code>CreateMessageClient</code>: returns a new <code>IMessageClient</code></li><li>Either:<ul><li><code>CreateMessageHandler</code>: returns a <code>new IMessageHandler</code></li><li><code>MessageHandlerDelegate</code>: creates a <code>new IMessageHandler</code> and invokes <code>HandleMessage</code></li></ul></li><li><code>CreateRemoteConfigClient</code>: returns a <code>new IRemoteConfigClient</code></li></ul></li></ul><p>Implementations of the core interfaces accept the <code>IFactory</code> in their constructors.<br /> This is so that:</p><ul><li><code>IService</code> can call <code>CreateMessageClient()</code> to get a single <code>IMessageClient</code> which it will <code>Dispose</code> when it&#39;s done</li><li><code>IServiceMonitor</code> can call <code>GetService()</code> to allow it to coordinate and monitor the <code>IService</code></li><li><code>IMessageHandler</code> can report its progress back via <code>IMessageClient</code></li></ul><p><code>IFactory</code>, of course, started out ostensibly as an implementation of the Factory pattern, then it began to lean more towards a Builder pattern, but in reality none of those feel right.<br /> I&#39;m <code>Create</code>-ing some objects, <code>Get</code>-ting others, and certain things, like the fact that a subsequent call to <code>CreateMonitor</code> will modify the result of <code>GetService</code>, just feel wrong.</p><p>What&#39;s the right naming convention for a class which co-ordinates all these others, and IS there an actual pattern that can be followed, am I over-engineering, or am I over-analyzing?!</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>You could try the <a href="http://www.dofactory.com/net/mediator-design-pattern" rel="nofollow">Mediator pattern</a>. We used it a couple of times.</p><p>For example:</p><pre><code>// interface for all &#34;Collegues&#34; 
+public interface IColleague
+{
+    Mediator Mediator { get; }
+    void OnMessageNotification(MediatorMessages message, object args);
+}
+public enum MediatorMessages
+{
+    ChangeLocale,
+    SetUIBusy,
+    SetUIReady
+}
+public class Mediator
+{
+    private readonly MultiDictionary&lt;MediatorMessages, IColleague&gt; internalList =
+        new MultiDictionary&lt;MediatorMessages, IColleague&gt;(EnumComparer&lt;MediatorMessages&gt;.Instance); //contains more than one value per key
+    public void Register(IColleague colleague, IEnumerable&lt;MediatorMessages&gt; messages)
+    {
+        foreach (MediatorMessages message in messages)
+            internalList.AddValue(message, colleague);
+    }
+    public void NotifyColleagues(MediatorMessages message, object args)
+    {
+        if (internalList.ContainsKey(message))
+        {
+            //forward the message to all listeners
+            foreach (IColleague colleague in internalList[message])
+                colleague.MessageNotification(message, args);
+        }
+    }
+
+    public void NotifyColleagues(MediatorMessages message)
+    {
+        NotifyColleagues(message, null);
+    }
+}
+</code></pre><p>And now the collegues (or controllers in our case implemented it like this):</p><pre><code>public class AddInController : IColleague
+{
+    public Mediator Mediator
+    {
+        get { return mediatorInstance; }
+    }
+
+    public AddInController()
+    {
+        Mediator.Register(this, new[]
+                                    {
+                                        MediatorMessages.ChangeLocale,
+                                        MediatorMessages.SetUIBusy,
+                                        MediatorMessages.SetUIReady
+                                    });
+    }
+
+    public void OnMessageNotification(MediatorMessages message, object args)
+    {
+        switch(message)
+        {
+            case MediatorMessages.ChangeLocale:
+                UpdateUILocale();
+                break;
+            case MediatorMessages.SetUIBusy:
+                SetBusyUI();
+                break;
+            case MediatorMessages.SetUIReady:
+                SetReadyUI();
+                break;
+        }
+    }
+}
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-avoid-having-an-initialization-method/'>C++ &#8211; Avoid having an initialization method</a></li><li class="list-group-item"><a href='../java-visitor-stability-vs-instanceof-flexibility/'>Java &#8211; Visitor stability vs instanceof flexibility</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

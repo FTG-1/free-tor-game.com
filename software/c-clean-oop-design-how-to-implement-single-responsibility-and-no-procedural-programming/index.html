@@ -1,0 +1,105 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Clean OOP-Design: How to implement single responsibility and no procedural programming &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1084516 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1084516" class="post-1084516 software type-software status-publish hentry category-software tag-c tag-clean-code tag-object-oriented tag-object-oriented-design tag-single-responsibility"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Clean OOP-Design: How to implement single responsibility and no procedural programming</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">clean code</span><span class="mr-2 badge badge-warning">object-oriented</span><span class="mr-2 badge badge-primary">object-oriented-design</span><span class="mr-2 badge badge-danger">single-responsibility</span></p><div class="entry-content"><p>I am currently trying to refactor a piece of C# code that is somewhat procedurally written. I want to make the design clean, object oriented and using classes with single responsibilities.</p><p>The code contains a class &#34;Solution&#34;, which represents a Visual Studio solution and only contains data. This class is used by other classes, which have the responsibility to build the solution (class SolutionBuilder, interface ISolutionBuilder), update the solution&#39;s NuGet packages (class NuGetUpdater, interface INuGetUpdater), and commit the changes to Subversion (class SubversionClient, interface ISubversionClient).</p><p>I believe, the current implementation has the following design flaws:</p><ul><li>The class &#34;Solution&#34; only holds data, is no real OOP-class with behaviour</li><li>The other classes are not really OOP-classes either, because they only have one method and are rather procedural</li><li>Code smell: Class SolutionBuilder and NuGetUpdater end with &#34;er&#34;</li></ul><p>Concrete code:</p><pre><code>public class Solution
+{
+    public string Name { get; set; }
+    public string SolutionFileName { get; set; }
+}
+
+public interface ISolutionBuilder
+{
+    void Build(Solution solution);
+}
+
+public interface INuGetUpdater
+{
+    void Update(Solution solution, string packageSourceUrl, bool safe = true, bool prerelease = false);
+}
+
+...
+</code></pre><p>I agree that it is totally okay if a class has only one method, but recently I have read many blogs saying this is bad OOP and rather procedural coding. So my first idea really was to move all those methods into the solution class, but then I thought this would certainly violate the single responsibility principle and also make the class Solution become quite large.</p><p><strong>Links to the blog posts I read:</strong><br /> <a href="http://www.carlopescio.com/2011/04/your-coding-conventions-are-hurting-you.html" rel="noreferrer">Your Coding Conventions are Hurting You</a><br /> <a href="http://objology.blogspot.de/2011/09/one-of-best-bits-of-programming-advice.html" rel="noreferrer">Don&#39;t make objects that end with &#39;er&#39;</a></p><p>Did I misunderstand the authors of these blog posts?<br /> Does anyone have a better idea how to structure this code in a object oriented way? Or is this a case where this is the best way to do it?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><blockquote><p>I agree that it is totally okay if a class has only one method, but recently I have read many blogs saying this is bad OOP and rather procedural coding.</p></blockquote><p><a href="https://softwareengineering.stackexchange.com/questions/225893/are-classes-with-only-a-single-public-method-a-problem">If a class has only one method</a>, it&#39;s usually <code>Execute()</code>, or something equivalent.  The question you have to ask yourself is, what are you encapsulating by using a class, if you only have one method?  That&#39;s why those blogs say you might want to rethink it.</p><blockquote><p>So my first idea really was to move all those methods into the solution class, but then I thought this would certainly violate the single responsibility principle and also make the class Solution become quite large</p></blockquote><p>A &#34;responsibility&#34; is simply an &#34;area of expertise.&#34; <a href="https://softwareengineering.stackexchange.com/q/220230/1204">Classes specialize in something.</a> They might do more than one thing with that something.  It&#39;s up to you to figure out where that balance is.  Bob Martin says that a responsibility is a &#34;reason to change,&#34; and that classes should have only one reason to change, ergo one responsibility.</p><blockquote><p>Did I misunderstand the authors of these blog posts?</p></blockquote><p>Yes, you did.</p><p>The point of <a href="http://www.carlopescio.com/2011/04/your-coding-conventions-are-hurting-you.html" rel="nofollow noreferrer">Your Coding Conventions are Hurting You</a> is that <strong>we are drowning in architectural principles,  and a lot of it is unnecessary.</strong></p><p>Sure, you can throw around GOF and SOLID and <a href="http://discuss.joelonsoftware.com/?joel.3.219431.12" rel="nofollow noreferrer">FactoryFactoryFactory</a> objects all day long.  Your house of cards will be beautiful, but how much of it actually does useful work?</p><p>Or you can go write some code and get something done.</p><p>I&#39;ve seen this firsthand, on more than one occasion.  Armies of developers doing everything right, following all of the latest architectural principles, but writing software that is utterly inflexible, difficult to reason about, and requiring reams of code to evolve.</p><p>Meanwhile, a small agile team is writing a new UI for a system using <a href="http://aurelia.io/" rel="nofollow noreferrer">a cutting-edge framework</a> that, while it probably breaks all sorts of architectural rules, allows for flexibility in design, leverages a ton of work done by others, drastically simplifies the coding and reduces time to market.  It can do all of these things because it is <strong>pragmatic, not dogmatic.</strong></p><p>Steve Yegge illustrates it better than I can in his <a href="http://steve-yegge.blogspot.com/2006/03/execution-in-kingdom-of-nouns.html" rel="nofollow noreferrer">&#34;Kingdom of Nouns&#34; article</a>:</p><pre><code>For the lack of a nail,
+    throw new HorseshoeNailNotFoundException(&#34;no nails!&#34;);
+
+For the lack of a horseshoe,
+    EquestrianDoctor.getLocalInstance().getHorseDispatcher().shoot();
+
+For the lack of a horse,
+    RidersGuild.getRiderNotificationSubscriberList().getBroadcaster().run(
+      new BroadcastMessage(StableFactory.getNullHorseInstance()));
+
+For the lack of a rider,
+    MessageDeliverySubsystem.getLogger().logDeliveryFailure(
+      MessageFactory.getAbstractMessageInstance(
+        new MessageMedium(MessageType.VERBAL),
+        new MessageTransport(MessageTransportType.MOUNTED_RIDER),
+        new MessageSessionDestination(BattleManager.getRoutingInfo(
+                                        BattleLocation.NEAREST))),
+      MessageFailureReasonCode.UNKNOWN_RIDER_FAILURE);
+
+For the lack of a message,
+    ((BattleNotificationSender)
+      BattleResourceMediator.getMediatorInstance().getResource(
+        BattleParticipant.PROXY_PARTICIPANT,
+        BattleResource.BATTLE_NOTIFICATION_SENDER)).sendNotification(
+          ((BattleNotificationBuilder)
+            (BattleResourceMediator.getMediatorInstance().getResource(
+            BattleOrganizer.getBattleParticipant(Battle.Participant.GOOD_GUYS),
+            BattleResource.BATTLE_NOTIFICATION_BUILDER))).buildNotification(
+              BattleOrganizer.getBattleState(BattleResult.BATTLE_LOST),
+              BattleManager.getChainOfCommand().getCommandChainNotifier()));
+
+For the lack of a battle,
+    try {
+        synchronized(BattleInformationRouterLock.getLockInstance()) {
+          BattleInformationRouterLock.getLockInstance().wait();
+        }
+    } catch (InterruptedException ix) {
+      if (BattleSessionManager.getBattleStatus(
+           BattleResource.getLocalizedBattleResource(Locale.getDefault()),
+           BattleContext.createContext(
+             Kingdom.getMasterBattleCoordinatorInstance(
+               new TweedleBeetlePuddlePaddleBattle()).populate(
+                 RegionManager.getArmpitProvince(Armpit.LEFTMOST)))) ==
+          BattleStatus.LOST) {
+        if (LOGGER.isLoggable(Level.TOTALLY_SCREWED)) {
+          LOGGER.logScrewage(BattleLogger.createBattleLogMessage(
+            BattleStatusFormatter.format(BattleStatus.LOST_WAR,
+                                         Locale.getDefault())));
+        }
+      }
+    }
+
+For the lack of a war,
+    new ServiceExecutionJoinPoint(
+      DistributedQueryAnalyzer.forwardQueryResult(
+        NotificationSchemaManager.getAbstractSchemaMapper(
+          new PublishSubscribeNotificationSchema()).getSchemaProxy().
+            executePublishSubscribeQueryPlan(
+              NotificationSchema.ALERT,
+              new NotificationSchemaPriority(SchemaPriority.MAX_PRIORITY),
+              new PublisherMessage(MessageFactory.getAbstractMessage(
+                MessageType.WRITTEN,
+                new MessageTransport(MessageTransportType.WOUNDED_SURVIVOR),
+                new MessageSessionDestination(
+                  DestinationManager.getNullDestinationForQueryPlan()))),
+              DistributedWarMachine.getPartyRoleManager().getRegisteredParties(
+                PartyRoleManager.PARTY_KING ||
+                PartyRoleManager.PARTY_GENERAL ||
+                PartyRoleManager.PARTY_AMBASSADOR)).getQueryResult(),
+        PriorityMessageDispatcher.getPriorityDispatchInstance())).
+      waitForService();
+
+All for the lack of a horseshoe nail.
+</code></pre><p>If your head hurts looking at that, well... it hurts mine too.</p><p>The point of <a href="http://objology.blogspot.de/2011/09/one-of-best-bits-of-programming-advice.html" rel="nofollow noreferrer">Don&#39;t make objects that end with &#39;er&#39;</a> is simply that, if your class ends in <code>er</code>, you might be better off putting that functionality into the actual object that your helper class is helping.  That&#39;s all.</p><p>A final note: <strong>There is no right or wrong way.  There is only the way that best meets your software requirements and business needs.</strong> If all that ceremony works because you&#39;re a Java shop, the legacy code is all Kingdom of Nouns and everyone understands it, then by all means, continue along that path.</p><p>It&#39;s not the only path, though.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-single-responsibility-principle-how-to-avoid-code-fragmentation/'>C# &#8211; Single Responsibility Principle &#8211; How to Avoid Code Fragmentation</a></li><li class="list-group-item"><a href='../c-force-derived-class-to-implement-static-method-c/'>C# &#8211; Force Derived Class to Implement Static Method C#</a></li><li class="list-group-item"><a href='../c-does-this-class-design-violate-the-single-responsibility-principle/'>C# &#8211; Does this class design violate the single responsibility principle</a></li><li class="list-group-item"><a href='../design-am-i-making-the-classes-too-granular-how-should-single-responsibility-principle-be-applied/'>Design &#8211; Am I making the classes too granular? How should Single Responsibility Principle be applied</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

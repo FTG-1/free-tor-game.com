@@ -1,0 +1,69 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; How to deal with IOException when file to be opened already checked for existence &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1075267 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1075267" class="post-1075267 software type-software status-publish hentry category-software tag-exceptions tag-java"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; How to deal with IOException when file to be opened already checked for existence</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">exceptions</span><span class="mr-2 badge badge-info">java</span></p><div class="entry-content"><p>This is a specific question here, but I&#39;m interested in the general &#34;best practice&#34; for similar situations as I&#39;m new to Java.</p><p>Suppose I have Java code that needs to open a file (see below for code). I first have a function that checks for the files existence. If the file exists, we call functions to open it and process it. Otherwise we return a message to the user stating the file could not be found.</p><p>Now in the functions that open the file, we still need to have a try/catch statement for the possible IOException because it&#39;s a checked exception. The function openSpecifiedFile has to return a FileInputStream. The fact that our file was proven to exist several milliseconds ago is not enough to guarantee the catch statement will never be executed (though it&#39;s unlikely) so I&#39;d rather not return a null here.</p><p><strong>Is there away to return a default object instead, or just avoid the null return statement all together and exit the program with some kind of runtime exception? The only way things could go bad here is if something very bad had happened I feel&#8230;</strong></p><p><strong>I suppose the general question is &#34;When running checks to ensure certain checked exceptions shouldn&#39;t occur, what is a good way to deal with the necessary try/catch blocks?&#34;</strong></p><pre><code> public static void main(String[] args) {
+    String filename = args[0];
+    if (specifiedFileExists(filename)) {
+        FileInputStream specifiedFile = openSpecifiedFile(filename);
+        processFile(specifiedFile);
+    } else
+        System.out.println(&#34;The specified file does not exist&#34;);
+}
+
+
+private static boolean specifiedFileExists(String filename) {
+    File currentFile = new File(filename);
+    return currentFile.exists();
+}
+
+private static FileInputStream openSpecifiedFile(String filename) {
+    try {
+        return new FileInputStream(filename);
+    } catch (IOException e) {}
+    return null;
+}
+
+private static void processFile(FileInputStream currentFile) {
+    ByteBuffer filledBuffer = fillBufferFromFile(currentFile);
+    String messageFromFile = processBufferToString(filledBuffer);
+    System.out.println(messageFromFile);
+}
+
+private static ByteBuffer fillBufferFromFile(FileInputStream currentFile) {
+    try {
+        FileChannel currentChannel = currentFile.getChannel();
+        ByteBuffer textBuffer = ByteBuffer.allocate(1024);
+        currentChannel.read(textBuffer);
+        textBuffer.flip();
+        return textBuffer;
+    } catch (IOException e) {}
+    return ByteBuffer.allocate(0);
+}
+
+private static String processBufferToString(ByteBuffer filledBuffer) {
+    StringBuilder characterBuilderFromFile = new StringBuilder();
+    while (filledBuffer.hasRemaining())
+        characterBuilderFromFile.append((char) filledBuffer.get());
+    return characterBuilderFromFile.toString();
+}
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>While @gnasher729&#39;s suggestion is probably the best answer <em>in this specific situation</em>, there is a more general question here, which is (paraphrasing): &#34;how do I handle checked exceptions that shouldn&#39;t ever happen?&#34; And in cases where you cannot use them to eliminate a redundant (and potentially incorrect) check, the best alternative is to probably rethrow them as an unchecked exception.  In most of my projects, I usually end up with an exception that looks like this:</p><pre><code> public class UnexpectedException extends RuntimeException
+ {
+       public UnexpectedException (Throwable cause, String whyItShouldntHaveHappened)
+       { 
+           super (&#34;Caught an exception with description: &#34; + cause.toString() + 
+                  &#34;\nThis shouldn&#39;t have happened because: &#34; + whyItShouldntHaveHappened, 
+                  cause); 
+       }
+ }
+</code></pre><p><code>UnexpectedException</code> is then handled at the top level of the application and is logged everywhere you could possibly think of logging it.   Even if logging is turned off.  Because any occasion where one actually gets thrown is direct evidence of a bug.  It has no constructors other than the one shown, because you always need both parameters.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-exception-versus-return-code-in-dao-pattern/'>Java &#8211; Exception versus return code in DAO pattern</a></li><li class="list-group-item"><a href='../c-exception-hierarchy-and-use-of-what-message-for-parsing-strings/'>C++ &#8211; Exception Hierarchy and Use of What Message for Parsing Strings</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,87 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Python &#8211; How to refactor a Python “god class” &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1072344 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1072344" class="post-1072344 software type-software status-publish hentry category-software tag-design tag-python tag-refactoring"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Python &#8211; How to refactor a Python “god class”</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">design</span><span class="mr-2 badge badge-info">python</span><span class="mr-2 badge badge-warning">refactoring</span></p><div class="entry-content"><h1>Problem</h1><p>I’m working on a Python project whose main class is a bit “<a href="http://en.wikipedia.org/wiki/God_object" rel="noreferrer">God Object</a>”.  There are <em>so</em> friggin’ many attributes and methods!</p><p>I want to refactor the class.</p><h2>So Far…</h2><p>For the first step, I want to do something relatively simple; but when I tried the most straightforward approach, it broke some tests and existing examples.</p><p>Basically, the class has a loooong list of attributes—but I can clearly look over them and think, <em>“These 5 attributes are related…These 8 are also related…and then there’s the rest.”</em></p><h3><strong>getattr</strong></h3><p>I basically just wanted to group the related attributes into a dict-like helper class.  I had a feeling <code>__getattr__</code> would be ideal for the job.  So I moved the attributes to a separate class, and, sure enough, <code>__getattr__</code> worked its magic perfectly well…</p><p>At <em>first</em>.</p><p>But then I tried running one of the examples.  The example subclass tries to set one of these attributes directly (at the <em>class level</em>).  But since the attribute was no longer “physically located” in the parent class, I got an error saying that the attribute did not exist.</p><h3>@property</h3><p>I then read up about the <code>@property</code> decorator.  But then I also read that it creates problems for subclasses that want to do <code>self.x = blah</code> when <code>x</code> is a property of the parent class.</p><h1>Desired</h1><ul><li>Have all client code continue to work using <code>self.whatever</code>, even if the parent’s <code>whatever</code> property is not “physically located” in the class (or instance) itself.</li><li>Group related attributes into dict-like containers.</li><li>Reduce the extreme noisiness of the code in the main class.</li></ul><p>For example, I <strong>don’t</strong> simply want to change this:</p><pre><code>larry = 2
+curly = &#39;abcd&#39;
+moe   = self.doh()
+</code></pre><p>Into this:</p><pre><code>larry = something_else(&#39;larry&#39;)
+curly = something_else(&#39;curly&#39;)
+moe   = yet_another_thing.moe()
+</code></pre><p>…because that’s still noisy.  Although that successfully makes a simply attribute into something that can manage the data, the original had 3 variables and the tweaked version still has 3 variables.</p><p>However, I would be fine with something like this:</p><pre><code>stooges = Stooges()
+</code></pre><p>And if a lookup for <code>self.larry</code> fails, something would check <code>stooges</code> and see if <code>larry</code> is there.  (But it must also work if a subclass tries to do <code>larry = &#39;blah&#39;</code> at the class level.)</p><h1>Summary</h1><ul><li>Want to replace related groups of attributes in a parent class with a single attribute that stores all the data elsewhere</li><li>Want to work with existing client code that uses (e.g.) <code>larry = &#39;blah&#39;</code> at the class level</li><li>Want to continue to allow subclasses to extend, override, and modify these refactored attributes without knowing anything has changed</li></ul><p></p><p>Is this possible?  Or am I barking up the wrong tree?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Having written and then refactored a python &#34;God object&#34;, I sympathize. What I did is break the original object down into sub sections based upon methods. For instance, the original looked like this pseudo code:</p><pre><code>method A():
+    self.bla += 1
+
+method B():
+    self.bla += 1
+
+do stuff():
+    self.bla = 1
+    method A()
+    method B()
+    print self.bla
+</code></pre><p>The stuff method is a self contained &#34;unit&#34; of work. I migrated it out to a new class which the original instantiates. This pulled out the necessary properties as well. Some were used only by the sub class and could move straight across. Others were shared, and got moved into a shared class.</p><p>The &#34;God object&#34; creates a new copy of the shared class at start up, and each of the new sub classes accepts a pointer as part of their init method. For example, here&#39;s a stripped version of the mailer:</p><pre><code>#!/usr/bin/env python
+# -*- coding: ascii -*-
+&#39;&#39;&#39;Functions for emailing with dirMon.&#39;&#39;&#39;
+
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEBase import MIMEBase
+from email.MIMEText import MIMEText
+from email.Utils import COMMASPACE, formatdate
+from email import Encoders
+import os
+import smtplib
+import datetime
+import logging
+
+class mailer:
+    def __init__(self,SERVER=&#34;mail.server.com&#34;,FROM=&#34;support@server.com&#34;):
+        self.server = SERVER
+        self.send_from = FROM
+        self.logger = logging.getLogger(&#39;dirMon.mailer&#39;)
+
+    def send_mail(self, send_to, subject, text, files=[]):
+        assert type(send_to)==list
+        assert type(files)==list
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self.logger.debug(&#39; &#39;.join((&#34;Sending email to:&#34;,&#39; &#39;.join(send_to))))
+            self.logger.debug(&#39; &#39;.join((&#34;Subject:&#34;,subject)))
+            self.logger.debug(&#39; &#39;.join((&#34;Text:&#34;,text)))
+            self.logger.debug(&#39; &#39;.join((&#34;Files:&#34;,&#39; &#39;.join(files))))
+        msg = MIMEMultipart()
+        msg[&#39;From&#39;] = self.send_from
+        msg[&#39;To&#39;] = COMMASPACE.join(send_to)
+        msg[&#39;Date&#39;] = formatdate(localtime=True)
+        msg[&#39;Subject&#39;] = subject
+        msg.attach( MIMEText(text) )
+        for f in files:
+            part = MIMEBase(&#39;application&#39;, &#34;octet-stream&#34;)
+            part.set_payload( open(f,&#34;rb&#34;).read() )
+            Encoders.encode_base64(part)
+            part.add_header(&#39;Content-Disposition&#39;, &#39;attachment; filename=&#34;%s&#34;&#39; % os.path.basename(f))
+            msg.attach(part)
+        smtp = smtplib.SMTP(self.server)
+        mydict = smtp.sendmail(self.send_from, send_to, msg.as_string())
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self.logger.debug(&#34;Email Successfully Sent!&#34;)
+        smtp.close()
+        return mydict
+</code></pre><p>It is created once and shared between the different classes that need mailing capabilities.</p><p>So for you, create a class <code>larry</code> with the properties and methods you need. Everywhere the client says <code>larry = blah</code> replace it with <code>larryObj.larry = blah</code>. This migrates things to sub projects without breaking the current interface.</p><p>The only other thing to do is look for &#34;units of work&#34;. If you were going to turn part of the &#34;God Object&#34; into it&#39;s own method, <em>do so</em>. But, put the method <em>outside</em> it. This forces you to create an interface between the components.</p><p>Laying that groundwork allows everything else to follow it. For example, a piece of the helper object demonstrating how it interfaces with the mailer:</p><pre><code>#!/usr/bin/env python
+&#39;&#39;&#39;This module holds a class to spawn various subprocesses&#39;&#39;&#39;
+import logging, os, subprocess, time, dateAdditionLib, datetime, re
+
+class spawner:
+    def __init__(self, mailer):
+        self.logger = logging.getLogger(&#39;dirMon.spawner&#39;)
+        self.myMailer = mailer
+</code></pre><p>Concentrate on the smallest individual unit of work possible, and move it out. This is easier to do, and lets you play with the setup quickly. Don&#39;t look at properties for moving stuff, they are ancillary to the <em>tasks</em> being done with them in most cases. Whatever is left over after you have dealt with the methods should probably <em>stay</em> in the original object, since it is part of the shared state.</p><p><strong>But</strong>, the new objects should now accept the properties they need as init variables, not touching the caller objects property. They then return any necessary values, which the caller can use to update the shared properties as necessary. This helps to decouple the objects and makes for a more robust system.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-how-to-add-properties-to-subclasses-and-access-them-without-casting-from-a-superclass/'>C# &#8211; How to add properties to subclasses and access them without casting from a superclass</a></li><li class="list-group-item"><a href='../python-better-pattern-than-multiple-inheritance-here/'>Python &#8211;  better pattern than multiple inheritance here</a></li><li class="list-group-item"><a href='../java-same-interface-for-classes-with-some-common-attributes/'>Java &#8211; Same Interface for Classes with some common attributes</a></li><li class="list-group-item"><a href='../design-architecture-for-a-tower-defense-game-with-multiple-towers-of-similar-type/'>Design &#8211; Architecture for a Tower Defense game with multiple towers of similar type</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

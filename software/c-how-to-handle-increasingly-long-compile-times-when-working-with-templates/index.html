@@ -1,0 +1,66 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C++ &#8211; How to handle increasingly long compile times when working with templates &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1067202 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1067202" class="post-1067202 software type-software status-publish hentry category-software tag-c tag-tdd tag-templates"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C++ &#8211; How to handle increasingly long compile times when working with templates</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">tdd</span><span class="mr-2 badge badge-warning">templates</span></p><div class="entry-content"><p>I use Visual Studio 2012 and he have cases where we added templates parameters to a class &#34;just&#34; in order to introduce a &#34;seam point&#34; so that in unit-test we can replace those parts with mock objects.</p><p>How do you usually introduce seam points in C++: using interfaces and/or mixing based on some criteria with implicit interfaces by using templates parameters also ? One reason to ask this is also because when compiling sometimes a single C++ file (that includes templates files, that could also include other templates) results in an object file being generated that takes in the order of around 5-10 seconds on a developer machine.</p><p>VS compiler is also not particularly fast on compiling templates as far as I understand, and because of the templates inclusion model (you practically include the <em>definition</em> of the template in every file that uses it indirectly and possibly re-instantiate that template every time you modify something that has nothing to do with that template) you could have problems with compile times (when doing incremental compiling).</p><p>What are your ways of handling incremental(and not only) compile time when working with templates (besides a better/faster compiler :-)).</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p><em>If</em> your templates parameters can only assume a finite (and small) set of values, you could move their definition in a source file, and use <a href="https://stackoverflow.com/questions/2351148/explicit-instantiation">explicit instantiation</a>.</p><p>For instance, in <code>aaa.h</code> you only declare the template functions <code>f</code> and <code>g</code>:</p><pre><code>template &lt;int n&gt;
+int f();
+
+template &lt;class T&gt;
+void g(int a);
+</code></pre><p>Assume <code>n</code> template parameter can only be 1, 3, 6, and <code>T</code> template parameter can only be <code>int</code>, <code>long</code> and <code>void *</code>.</p><p>Then you define them in <code>aaa.cpp</code> like this:</p><pre><code>template &lt;int n&gt;
+int f()
+{
+    ...
+}
+
+template &lt;class T&gt;
+void g(int a)
+{
+    ...
+}
+
+template int f&lt;1&gt;();
+template int f&lt;3&gt;();
+template int f&lt;6&gt;();
+
+template void g&lt;int&gt;(int a);
+template void g&lt;long&gt;(int a);
+template void g&lt;void *&gt;(int a);
+</code></pre><p>In this way the compiler instantiates the template for the given parameters when compiling <code>aaa.cpp</code>. When compiling client code, it assumes that the definitions exist somewhere, and the linker will take care of that.</p><pre><code>#include &#34;aaa.h&#34;
+
+int main()
+{
+    f&lt;1&gt;();
+    f&lt;3&gt;();
+    f&lt;6&gt;();
+
+    g&lt;int&gt;(5);
+    g&lt;long&gt;(5);
+    g&lt;void *&gt;(5);
+}
+</code></pre><p>You can explicitly instantiate template classes too. The drawback is that you can not use <code>f</code> or <code>g</code> with other template parameters.</p><pre><code>#include &#34;aaa.h&#34;
+
+int main()
+{
+    f&lt;5&gt;();
+}
+</code></pre><p>results in</p><pre><code>undefined reference to `int f&lt;5&gt;()&#39;
+</code></pre><p>I used this technique in a project where few complex classes depended on a small (&lt; 10) set of integer template parameters, and it significantly reduced compilation time (since the compiler did not have to parse the complex template definitions when compiling the client code). Of course you may get lesser improvements, depending on the actual code.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/c-are-c-templates-just-a-kind-of-glorified-macros/'>C++ &#8211; Are C++ templates just a kind of glorified macros</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/implicit-vs-explicit-interfaces/'>Implicit vs explicit interfaces</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/java-is-template-metaprogramming-in-java-a-good-idea/'>Java &#8211; Is template &#8220;metaprogramming&#8221; in Java a good idea</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-enforcing-manual-inclusion-of-a-specific-header-file-banned-h/'>C++ &#8211; Enforcing manual inclusion of a specific header file (banned.h)</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

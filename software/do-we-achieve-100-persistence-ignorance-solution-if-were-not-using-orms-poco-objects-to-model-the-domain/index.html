@@ -1,0 +1,63 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Do we achieve 100% Persistence Ignorance solution if we&#8217;re not using ORM&#8217;s POCO objects to model the Domain &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1076218 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1076218" class="post-1076218 software type-software status-publish hentry category-software tag-domain-driven-design tag-orm"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Do we achieve 100% Persistence Ignorance solution if we&#8217;re not using ORM&#8217;s POCO objects to model the Domain</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">domain-driven-design</span><span class="mr-2 badge badge-info">orm</span></p><div class="entry-content"><p>Persistence ignorance is ability to retrieve/persist standard objects, where standard objects are considered as classes focused on particular business problem  and thus don&#39;t contain any <code>infrastructure-related logic</code>. In DDD a <em>Repository pattern</em> is used to achieve PI.</p><p>Assuming we don&#39;t use ORM&#39;s POCO objects to model the <em>Domain</em>, then our <em>Domain objects</em> don&#39;t have to adhere to design requirements of a particular O/RM ( such as using <em>default constructor</em> or marking properties as <code>virtual</code> ). Such <em>Domain objects</em> would be considered <em>Persistence Ignorant</em>.</p><p>But if we want these <em>Domain Objects</em> to also support features such as <em>lazy loading</em>, then their properties must contain some logic which at some point would need to check whether related data was already loaded and if it wasn&#39;t, it would contact the appropriate <em>Repository</em> and request the related data.</p><p>Now even though these <em>Domain Object</em> are completely unaware of how they are being persisted and as such their <em>Domain</em> is completely decoupled from the underlying <em>DAL provider</em>, <strong>couldn&#39;t we still argue that such <em>Domain Ojects</em> contain <code>Infrastructure-related logic</code> and thus still violate <em>PI</em></strong>?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>After coming across the same problem, here is the solution I implemented for it.</p><p><strong>Domain</strong></p><pre><code>public class DomainObject : AggregateRootBase //implements IAggregateRoot
+{
+    private ChildEntity _ChildEntity = null;
+    public ChildEntity ChildEntity
+    {
+        get
+        {
+            OnChildEntityRequested();
+            return _ChildEntity;
+        }
+    }
+
+    public event EventHandler ChildEntityRequested;
+    protected void OnChildEntityRequested()
+    {
+        if (ChildEntityRequested != null) { ChildEntityRequested(this, new EventArgs()); }
+    }
+
+    public static void SetChildEntity(DomainObject destination, ChildEntity child)
+    {
+        //To set or not to set, that is the question.
+        destination._ChildEntity = child;
+    }
+}
+</code></pre><p><strong>Repository Implementation</strong></p><pre><code>public class DomainObjectRepository : List&lt;DomainObjectTracker&gt;, IDomainObjectRepository
+{
+    private void Load() //Method called by constructor or other loading mechanism.
+    {
+        foreach (DomainObjectDataModel dodm in ORMSystem) //Iterating through each object returned from ORM.
+        {
+             DomainObject do = Translate(dodm); //Translate into domain object.
+             do.ChildEntityRequested += new EventHandler(DomainObject_ChildEntityRequested);
+             DomainObjectTracker tracker = new DomainObjectTracker(do, dodm.Key);
+             base.Add(tracker);
+        }
+    }
+
+    protected void DomainObject_ChildEntityRequested(object sender, EventArgs e)
+    {
+        DomainObject source = sender as DomainObject;
+        //Here, you could check to see if it is null or stale before loading it.
+        //if (source.ChildEntity == null || IsStale(source.ChildEntity))
+
+        DomainObjectTracker tracker = base[IndexOf(source)];
+        ChildEntity entity = LoadChildEntity(tracker.Key); //Load the child entity from ORM.
+        DomainObject.SetChildEntity(source, entity);
+    }
+}
+</code></pre><p>After examining my solution, you may be thinking, &#34;Isn&#39;t calling an event infrastructure related code, it certainly doesn&#39;t relate to my domain?&#34;.  While that may be true, if you think about it solely in terms of PI, then you realize that you&#39;re just offering a message from your domain saying, &#34;Hey, I&#39;m about to access this child entity.&#34; which allows your repository to respond with, &#34;Hold on, if you need one (or a new one), I got it right here in my db so let me give this to you before you continue!&#34;.</p><p>There are a few caveats here.  One, it means that you need an event for every child entity within an aggregate.  Two, it breaks encapsulation because you are allowing a public way of setting the child entity.  On the flip side, the benefits are expressive code, infrastructure implementations are easily separated from the domain, domain objects are PI, and the ORM remains encapsulated behind the repository implementation.</p><p>If someone has a better way of solving this problem, I&#39;m all eyes!</p><p><strong>EDIT</strong> Also, even though my answer provides a solution for PI, I agree with the commenters above.  You need to evaluate if DDD is even the right answer for you because, while it makes a project easier to maintain and simplifies what would otherwise be a highly complex project, it comes at a cost (usually up-front development time and training your team to organize code properly and utilize the various patterns).</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../php-anemic-domain-model-business-logic-and-datamapper-php/'>Php &#8211; Anemic Domain Model, Business Logic and DataMapper (PHP)</a></li><li class="list-group-item"><a href='../are-persistence-ignorant-objects-able-to-implement-lazy-loading/'>Are Persistence-Ignorant objects able to implement lazy loading</a></li><li class="list-group-item"><a href='../should-i-use-the-repository-in-the-domain-object-or-push-the-domain-object-back-to-the-service-layer/'>Should I use the repository in the Domain Object or push the Domain Object back to the Service Layer</a></li><li class="list-group-item"><a href='../design-business-logic-code-and-what-is-data-access-code-and-whats-the-difference/'>Design &#8211;  business logic code and what is data access code, and what&#8217;s the difference</a></li><li class="list-group-item"><a href='../architecture-how-to-structure-a-domain-driven-design-in-an-onion-architecture/'>Architecture &#8211; How to structure a Domain Driven Design in an Onion Architecture</a></li><li class="list-group-item"><a href='../is-domain-persistence-model-isolation-usually-this-awkward/'>Is domain/persistence model isolation usually this awkward</a></li><li class="list-group-item"><a href='../which-layer-do-ddd-repositories-belong-to/'>Which layer do DDD Repositories belong to</a></li><li class="list-group-item"><a href='../domain-driven-design-updating-and-persisting-aggregates/'>Domain Driven Design &#8211; Updating and persisting aggregates</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

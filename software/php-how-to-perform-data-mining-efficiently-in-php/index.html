@@ -1,0 +1,130 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Php &#8211; How to perform data mining efficiently (in PHP) &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1075601 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1075601" class="post-1075601 software type-software status-publish hentry category-software tag-data-mining tag-laravel tag-php tag-statistics"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Php &#8211; How to perform data mining efficiently (in PHP)</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">data mining</span><span class="mr-2 badge badge-info">laravel</span><span class="mr-2 badge badge-warning">PHP</span><span class="mr-2 badge badge-primary">statistics</span></p><div class="entry-content"><p>The moment of working on a system that gives you statistics based on some data gathered from the database has arrived in my company.</p><p>How do you efficiently gather statistics from a database in such a way that does not add too much overhead in loading a page, or too much complexity in cache management?</p><p>Currently, statistics are calculated at run-time, no data is saved or cached, the problem is that as you add new statistics, and those as well get calculated at run-time, I&#39;ll reach a point where the website is going to be <em>reaaally</em> slow, which is not acceptable.</p><p>The only idea that came to my mind to solve this issue is caching data that has date filters past the day of when they are calculated.</p><p>For example, let&#39;s say that I&#39;d like to know if a user has visited a specific page between 2017-01-01 and 2017-01-08. Since today it&#39;s 2017-01-12, it&#39;s implied that this result could never change in the future, since the dates selected are old.</p><p>This is an example of how I calculate statistics in Laravel (4.x):</p></p><pre><code>namespace App\Composers\Users;
+
+use Illuminate\Support\Collection;
+use User;
+
+class ShowComposer
+{
+    public function compose($view)
+    {
+        $viewData = $view-&gt;getData();
+
+        $view-&gt;with([
+            &#39;sellings&#39;    =&gt; $this-&gt;getSellingStatistics($viewData[&#39;user&#39;])
+        ]);
+    }
+
+    public function getSellingStatistics(User $user)
+    {
+        $sellings = [];
+
+        $getSellingsOf = function (User $user, $months) {
+            $startOfMonth = \Carbon::now()-&gt;subMonths($months)-&gt;startOfMonth();
+            $endOfMonth   = \Carbon::now()-&gt;subMonths($months)-&gt;endOfMonth();
+
+             return $user
+                -&gt;mavs()
+                -&gt;whereHas(&#39;buyerProposal&#39;, function ($proposal) use ($startOfMonth, $endOfMonth) {
+                    $proposal-&gt;whereBetween(&#39;sold_at&#39;, [
+                        $startOfMonth, $endOfMonth
+                    ]);
+                })
+                -&gt;count();
+        };
+
+        $sellings[&#39;best&#39;] = value(function () use ($getSellingsOf) {
+            $months = [];
+
+            for ($month = 0; $month &lt; 12; $month++) {
+                $startOfMonth = \Carbon::now()-&gt;subMonths($month)-&gt;startOfMonth();
+                $endOfMonth   = \Carbon::now()-&gt;subMonths($month)-&gt;endOfMonth();
+
+                $query = &lt;&lt;&lt;SQL
+            SELECT
+                id, (SELECT COUNT(*)
+                    FROM `mav`
+                    INNER JOIN `mav_proposals` ON `mav`.`mav_proposal_id` = `mav_proposals`.`id`
+                    WHERE sold_at BETWEEN ? AND ?
+                    AND mav.user_id = users.id) AS sellings
+            FROM users
+            ORDER BY sellings DESC
+            LIMIT 1
+SQL;
+
+                $response = \DB::select($query, [
+                    $startOfMonth-&gt;toDateTimeString(),
+                    $endOfMonth-&gt;toDateTimeString()
+                ]);
+
+                $user = User::find($response[0]-&gt;id);
+
+                $months[] = $getSellingsOf($user, $month);
+            }
+
+            $months = array_reverse($months);
+
+            return $months;
+        });
+
+        $sellings[&#39;personal&#39;] = value(function () use ($user, $getSellingsOf) {
+            $months = [];
+
+            for ($month = 0; $month &lt; 12; $month++) {
+                $months[] = $getSellingsOf($user, $month);
+            }
+
+            $months = array_reverse($months);
+
+            return $months;
+        });
+
+        $sellings[&#39;global&#39;] = value(function () use ($user) {
+            $months = [];
+
+            for ($month = 0; $month &lt; 12; $month++) {
+                $startOfMonth = \Carbon::now()-&gt;subMonths($month)-&gt;startOfMonth();
+                $endOfMonth   = \Carbon::now()-&gt;subMonths($month)-&gt;endOfMonth();
+
+                $companySoldMavs = \App\Models\MAV::whereHas(&#39;buyerProposal&#39;,
+                    function ($proposal) use ($startOfMonth, $endOfMonth) {
+                        $proposal-&gt;whereBetween(&#39;sold_at&#39;, [
+                            $startOfMonth, $endOfMonth
+                        ]);
+                    })-&gt;count();
+
+                $usersWithSoldMavs = \User::whereHas(&#39;mavs&#39;, function ($mav) use ($startOfMonth, $endOfMonth) {
+                    $mav-&gt;whereHas(&#39;buyerProposal&#39;, function ($proposal) use ($startOfMonth, $endOfMonth) {
+                        $proposal-&gt;whereBetween(&#39;sold_at&#39;, [
+                            $startOfMonth, $endOfMonth
+                        ]);
+                    });
+                })-&gt;count();
+
+                $months[] = ($usersWithSoldMavs &gt; 0)
+                    ? round($companySoldMavs / $usersWithSoldMavs)
+                    : 0;
+            }
+
+            $months = array_reverse($months);
+
+            return $months;
+        });
+
+        return $sellings;
+    }
+}
+</code></pre><p>Now, here are the only two options I have thought of:</p><ul><li>Calculate statistics every 24 hours and save them in a database.</li><li>Cache data based on the parameters used to gather the statistics.</li></ul><p>The first option is quite complicated and it takes a lot of time to be developed proplerly.</p><p>The second option could be interesting, however I am afraid that cache is going to give me headaches sooner or later.</p><p>Is there an other way to do it efficiently? How do enterprises move themselves towards data mining? Are languages like R always used in these cases, or PHP can be just fine if used properly?</p><p>It&#39;s a new world for me, please be kind.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>There are two problems in this.</p><p>Firstly storing results (in database or in cache etc.) so that the calculations does not have to be remade every time a page is loaded.</p><p>Secondly you need a mechanism to redo all calculations, you could have found a flaw in an old calculation or old data is updated/purged or new calculations are added.</p><p>The best way to do this is to add tables in the database that contains the calculations up and until a given time (eg. yesterday at midnight). As new calculations are added you&#39;ll need to update those tables or add new tables.</p><p>Whenever you need to you can empty the tables and run a script that does the calculations. This could very well be a script run automatically each night.</p><p>But you will also need to be able to clear the tables and run the script manually.</p><p>One important note is that the statistics tables are not supposed to contain permanent data. The data only needs to be easily regenerated.</p><p>The idea that old data never changes is a dangerous assumption. You can have data sources that no longer are considered reliable. There can be many reasons for old data to become obsolete. Designing a system to rely on old data never changing is designing for failure. You should design for not having to rely on old data.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-beginning-data-mining/'>C# &#8211; Beginning Data Mining</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

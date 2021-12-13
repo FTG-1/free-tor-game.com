@@ -1,0 +1,72 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>How to find average bits per symbol using huffman code &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1064580 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1064580" class="post-1064580 software type-software status-publish hentry category-software tag-compression tag-huffman-encoding"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">How to find average bits per symbol using huffman code</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">compression</span><span class="mr-2 badge badge-info">huffman encoding</span></p><div class="entry-content"><p>I&#39;m trying to write a program in c for Huffman coding, but I am stuck. For input I have:</p><pre><code>Sample input:
+4      // here I scan how many letters I have
+A 00   // and for everyone I scan how they are coded in string down
+B 10     
+C 01
+D 11
+001010010101001011010101010110011000 //this is a suboptimal huffman code
+</code></pre><p>So first I have to decode this string, and to find out how many times every letter         appear. And I already do that. But now I have to find out how many bits have every letter using huffman tree, and in the output I have to print the average bit per symbol.</p><p>The output for this example here have to be:</p><pre><code>Sample output
+1.722
+</code></pre><p>So now, how to find out how many bits have every letter with huffman coding?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>To solve this you need to create the huffman tree and compute the bits needed to represent every symbol. Then you can compute total bits needed for original string in huffman encoding and divide by number of characters.</p><p>First you map your input string based on the original character encoding :</p><pre><code>00 A
+10 B
+10 B
+01 C
+01 C
+01 C
+00 A
+10 B
+11 D
+01 C
+01 C
+01 C
+01 C
+01 C
+10 B
+01 C
+10 B
+00 A
+</code></pre><p>Next you count number of occurrence of each character:</p><pre><code>3 00,A
+9 01,C
+5 10,B
+1 11,D
+</code></pre><p>Now we make a min priority queue using the occurrence as key, this looks like :</p><pre><code>[(1,D), (3,A), (5, B), (9,C)]
+</code></pre><p>Keep applying the huffman process ( <a href="http://en.wikipedia.org/wiki/Huffman_coding" rel="noreferrer">http://en.wikipedia.org/wiki/Huffman_coding</a> ). So first you combine D and A to make a new node &#39;DA&#39; which key = 1+3 = 4. Put this back in the priority queue:</p><pre><code>[(4, DA), (5, B), (9,C)]
+</code></pre><p>Now DA and B combine to give DAB:</p><pre><code>[(9, DAB), (9,C)]
+</code></pre><p>Now DAB and C combine to give root node : &#39;DABC&#39;</p><pre><code>[(18, DABC)]
+</code></pre><p>Now the process stops and we give each character a new encoding based on how far it is away from the root node. &#39;C&#39; was combined the last so that get&#39;s only one bit. Let&#39;s say I always use &#39;0&#39; for the second element ( of the two that got picked from priority queue). The implicit bits are represented in parenthesis:</p><pre><code>C =      0, DAB =      1
+B = (1)  0, DA  = (1)  1
+A = (11) 0, D   = (11) 1
+</code></pre><p>So you get the encoding:</p><pre><code>C = 0
+B = 10
+A = 110
+D = 111
+</code></pre><p>Encoding original message:</p><pre><code>Total bits needed = 9 * 1 + 5 * 2 + 3 * 3 + 3 * 1 
+= 9 + 10 + 9 + 3 
+= 31
+
+Number of Characters = 18
+
+Average bits = 31 / 18 = 1.722222
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/does-it-matter-the-direction-of-a-huffmans-tree-child-node/'>Does it matter the direction of a Huffman&#8217;s tree child node</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/reconstructing-a-huffman-tree-using-minimal-information-in-the-header/'>Reconstructing a huffman tree using minimal information in the header</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/fast-lossless-compression-of-a-video-stream/'>Fast, lossless compression of a video stream</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

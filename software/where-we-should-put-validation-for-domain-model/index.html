@@ -1,0 +1,81 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Where we should put validation for domain model &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1065022 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1065022" class="post-1065022 software type-software status-publish hentry category-software tag-design-patterns tag-domain-driven-design tag-validation"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Where we should put validation for domain model</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">design-patterns</span><span class="mr-2 badge badge-info">domain-driven-design</span><span class="mr-2 badge badge-warning">validation</span></p><div class="entry-content"><p>I still looking best practice for domain model validation. Is that good to put the validation in constructor of domain model ?  my domain model validation example as follows:</p><pre><code>public class Order
+ {
+    private readonly List&lt;OrderLine&gt; _lineItems;
+
+    public virtual Customer Customer { get; private set; }
+    public virtual DateTime OrderDate { get; private set; }
+    public virtual decimal OrderTotal { get; private set; }
+
+    public Order (Customer customer)
+    {
+        if (customer == null)
+            throw new  ArgumentException(&#34;Customer name must be defined&#34;);
+
+        Customer = customer;
+        OrderDate = DateTime.Now;
+        _lineItems = new List&lt;LineItem&gt;();
+    }
+
+    public void AddOderLine //....
+    public IEnumerable&lt;OrderLine&gt; AddOderLine { get {return _lineItems;} }
+}
+
+
+public class OrderLine
+{
+    public virtual Order Order { get; set; }
+    public virtual Product Product { get; set; }
+    public virtual int Quantity { get; set; }
+    public virtual decimal UnitPrice { get; set; }
+
+    public OrderLine(Order order, int quantity, Product product)
+    {
+        if (order == null)
+            throw new  ArgumentException(&#34;Order name must be defined&#34;);
+        if (quantity &lt;= 0)
+            throw new  ArgumentException(&#34;Quantity must be greater than zero&#34;);
+        if (product == null)
+            throw new  ArgumentException(&#34;Product name must be defined&#34;);
+
+        Order = order;
+        Quantity = quantity;
+        Product = product;
+    }
+}
+</code></pre><p>Thanks for all of your suggestion.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>There&#39;s an <a href="http://martinfowler.com/bliki/ContextualValidation.html">interesting article by Martin Fowler</a> on that subject that highlights an aspect most people (including me) tend to overlook:</p><blockquote><p>But one thing that I think constantly trips people up is when they
+ think object validity on a context independent way such as an isValid
+ method implies.</p><p>I think it&#39;s much more useful to think of validation as something
+ that&#39;s bound to a context - typically an action that you want to do.
+ Is this order valid to be filled, is this customer valid to check in
+ to the hotel. So rather than have methods like isValid have methods
+ like isValidForCheckIn.</p></blockquote><p>From this follows that the constructor should <em>not</em> do validation, except perhaps some very basic sanity checking shared by all contexts.</p><p>Again from the article:</p><blockquote><p>In About Face Alan Cooper advocated that we shouldn&#39;t let our ideas of
+ valid states prevent a user from entering (and saving) incomplete
+ information. I was reminded by this a few days ago when reading a
+ draft of a book that Jimmy Nilsson is working on. He stated a
+ principle that you should always be able to save an object, even if it
+ has errors in it. While I&#39;m not convinced that this should be an
+ absolute rule, I do think people tend to prevent saving more than they
+ ought. Thinking about the context for validation may help prevent
+ that.</p></blockquote></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/architecture-where-to-validate-domain-model-rules-that-depend-on-database-content/'>Architecture &#8211; Where to validate domain model rules that depend on database content</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/where-to-put-format-validation-in-a-cqrs-stylish-domain-model/'>Where to put format validation in a CQRS “stylish” domain model</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/object-oriented-oop-behavior-data-but-what-about-validation-behaviors/'>Object-oriented &#8211; OOP: Behavior + Data, but what about &#8216;validation&#8217; behaviors</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/domain-model-validation-and-pushing-errors-to-the-model/'>Domain Model, validation, and pushing errors to the model</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/architecture-domain-model-design-best-practices-for-robust-fluency-encapsulation-and-extensibility/'>Architecture &#8211; Domain Model Design &#8211; Best Practices for Robust Fluency, Encapsulation, and Extensibility</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/understanding-ddd-when-using-an-orm-such-as-hibernate/'>Understanding DDD when using an ORM such as Hibernate</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/is-domain-persistence-model-isolation-usually-this-awkward/'>Is domain/persistence model isolation usually this awkward</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

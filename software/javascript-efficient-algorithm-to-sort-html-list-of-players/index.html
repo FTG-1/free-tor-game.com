@@ -1,0 +1,142 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Javascript &#8211; Efficient algorithm to sort html list of players &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1078293 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1078293" class="post-1078293 software type-software status-publish hentry category-software tag-algorithms tag-client-side tag-html tag-javascript"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Javascript &#8211; Efficient algorithm to sort html list of players</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">algorithms</span><span class="mr-2 badge badge-info">client-side</span><span class="mr-2 badge badge-warning">html</span><span class="mr-2 badge badge-primary">javascript</span></p><div class="entry-content"><p>We have list of players, which is represented in form like this:</p><pre><code>&lt;div class=&#34;players_list&#34;&gt;
+   &lt;div class=&#34;player&#34; data-points=&#34;500&#34;&gt;
+        &lt;div class=&#34;name&#34;&gt;Player1&lt;/div&gt;
+        &lt;div class=&#34;position&#34;&gt;1&lt;/div&gt;
+   &lt;/div&gt;     
+   &lt;div class=&#34;player&#34; data-points=&#34;400&#34;&gt;
+        &lt;div class=&#34;name&#34;&gt;Player2&lt;/div&gt;
+        &lt;div class=&#34;position&#34;&gt;2&lt;/div&gt;
+   &lt;/div&gt;
+   &lt;div class=&#34;player&#34; data-points=&#34;300&#34;&gt;
+        &lt;div class=&#34;name&#34;&gt;Player3&lt;/div&gt;
+        &lt;div class=&#34;position&#34;&gt;3&lt;/div&gt;
+   &lt;/div&gt;
+   &lt;div class=&#34;player&#34; data-points=&#34;200&#34;&gt;
+        &lt;div class=&#34;name&#34;&gt;Player4&lt;/div&gt;
+        &lt;div class=&#34;position&#34;&gt;4&lt;/div&gt;
+   &lt;/div&gt;  
+&lt;/div&gt; 
+</code></pre><p>Something happens, and Player 4 recieves 600 points. So it goes on 1st place.<br /> With him &#8211; player3 recieves 300 points and goes on 2nd place.</p><p>It happens after same event &#8211; let&#39;s assume, that they get these points from server, but that&#39;s all load that is allowed on server and server does not calculate positions.</p><p>What is most efficent way to get view like this:</p><pre><code>&lt;div class=&#34;players_list&#34;&gt;
+   &lt;div class=&#34;player&#34; data-points=&#34;800&#34;&gt;
+        &lt;div class=&#34;name&#34;&gt;Player4&lt;/div&gt;
+        &lt;div class=&#34;position&#34;&gt;1&lt;/div&gt;
+   &lt;/div&gt;
+   &lt;div class=&#34;player&#34; data-points=&#34;700&#34;&gt;
+        &lt;div class=&#34;name&#34;&gt;Player3&lt;/div&gt;
+        &lt;div class=&#34;position&#34;&gt;2&lt;/div&gt;
+   &lt;/div&gt;
+
+   &lt;div class=&#34;player&#34; data-points=&#34;500&#34;&gt;
+        &lt;div class=&#34;name&#34;&gt;Player1&lt;/div&gt;
+        &lt;div class=&#34;position&#34;&gt;3&lt;/div&gt;
+   &lt;/div&gt;     
+   &lt;div class=&#34;player&#34; data-points=&#34;400&#34;&gt;
+        &lt;div class=&#34;name&#34;&gt;Player2&lt;/div&gt;
+        &lt;div class=&#34;position&#34;&gt;4&lt;/div&gt;
+   &lt;/div&gt;
+&lt;/div&gt; 
+</code></pre><p>It&#39;s not question about code, it&#39;s question about:</p><ul><li>What kind of task it is? Just sort?</li><li>Is it ok to use JavaScript to solve this task if lists are less than 500 rows?</li><li>Is it ok to re-render whole players list, or there are some ways to just change div element position(index in DOM or something like this)?</li><li>Are there any tools and libraries around, that can help solve this task efficiently?</li></ul><p>P.S.: If we want to animate all this story &#8211; we should create a queue of animation tasks each time scores for all players recalculates?</p><p><strong>Update:</strong></p><p>I have followed @Jalayn&#39;s answer, and stuck on following problem:</p><p>Let&#39;s assume that list <code>[1,2,3,4]</code> transforms to <code>[2,3,4,1]</code>. If we map it, we will get following position diffs <code>[+1, +1, +1, -3]</code>.. Now, if we move one by one elements to it&#39;s position change, all will be ok, till we get to negotiate position diff &#8211; 1st position diff can&#39;t move down any more..</p><p>So, my update to question &#8211; how we can animate rows more than twice?</p><p><strong>And final problem, on which I am stucked:</strong></p><p>Not sure, if it most be solved in this question. BTW, if 2 players have same points &#8211; animation plan brakes and element_ids duplicates.</p><p>My question now is how to make following transformation of  structures list:<br /> <code>[(#id1, 1, 100),(#id2, 2, 50), (#id3, 2, 50), (#id4, 4, 25)] =&gt; [(#id3, 1, 150), (#id1, 2, 100), (#id4, 3, 75), (#id2, 4, 50)]</code></p><p>For now my solution is to refresh whole list, but not completly regenerate it &#8211; just move all elements to the first position in order they sorted in backed JSON. Animation is too complex to be done cause of final problem.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Well I hope, I&#39;ll answer all your questions and be precise enough.</p><p>The answer to all your questions is yes, it is possible to do all of that in Javascript:</p><blockquote><p>What kind of task it is? Just sort?</p></blockquote><p>You have to sort data, but you also have to update some data (points, name?, position) and display it to the user.</p><blockquote><p>Is it ok to use JavaScript to solve this task if lists are less than
+ 500 rows?</p></blockquote><p>You can rearrange tables composed of 500 rows with JavaScript, no problem (<a href="https://stackoverflow.com/q/1569889/866172">using a bit of JQuery</a>), and I don&#39;t think you would have any performance trouble with that. The only problem you could have is if you attempt to animate 500 moving rows (more on that later)</p><blockquote><p>Is it ok to re-render whole players list, or there are some ways to
+ just change div element position(index in DOM or something like this)?</p></blockquote><p>Well, I think it is ok to re-render the whole players list, but if you do that, how will perform position-change animations ?</p><blockquote><p>Are there any tools and libraries around, that can help solve this
+ task efficiently?</p></blockquote><p>Obvious answer: JQuery and JQuery UI (or your favorite JavaScript framework for performing animations)</p><blockquote><p>If we want to animate all this story - we should create a queue of
+ animation tasks each time scores for all players recalculates?</p></blockquote><p>I think you should perform the animations one by one after you know the final position of each player. Otherwise, you could perform animations when nothing has changed (player3 may move from 3 to 1, then player2 moves from 2 to 1, then player1 moves from 1 to ... 1, nothing has changed!)</p><h2>DOM only vs DOM backed by a JSON Data Model</h2><p>Now, regardless of the tools, or algorithm you are going to use, if you work only with DOM elements, without having a &#34;backend&#34; JSON data model (please someone complete here if you see more problems):</p><ul><li>Finding the new position of a given player will be a pain</li><li>Updating the positions of every player will be a pain</li></ul><p>If you work with DOM elements for rendering, backed by a JSON data model, and provided you make the following changes to your individual player display, you will have a much easier time:</p><pre><code>   &lt;div class=&#34;player&#34; id=&#34;player2&#34;&gt;
+        &lt;div class=&#34;name&#34;&gt;Player2&lt;/div&gt;
+        &lt;div class=&#34;points&#34; id=&#34;playerPoints2&#34;&gt;400&lt;/div&gt;
+        &lt;div class=&#34;position&#34; id=&#34;playerPosition2&#34;&gt;2&lt;/div&gt;
+   &lt;/div&gt;
+</code></pre><ul><li>Notice that I&#39;ve added an id attribute to the player <code>&lt;div&gt;</code> and to the elements displaying the points (&#34;playerPoints2&#34;) and the position (&#34;playerPosition2&#34;). Doing that will allow you to quickly find the position of a player or its points, given its unique id. You could do without, but that would affect performance and you would have to use more complex queries (see JQuery&#39;s <a href="http://api.jquery.com/find/" rel="nofollow noreferrer">.find()</a>)</li></ul><h2><strong>My attempt:</strong></h2><p><strong>In short, what I try to do is moving as few DOM elements as possible, and decorrelating the data from the display.</strong></p><p>Imagine having the following JSON data model in addition to your DOM model for displaying the players:</p><ul><li>player (array of players)<ul><li>id</li><li>position (you can write a <a href="http://www.javascriptkit.com/javatutors/arraysort.shtml" rel="nofollow noreferrer">custom function</a> for sorting the array given the &#34;position&#34; attribute if each item of the array)</li><li>points</li><li>name</li></ul></li></ul><p>and the following JSON data model for performing animations later:</p><ul><li>playerChanges (array of player changes)<ul><li>id</li><li>deltaPosition (example: +3 = 3 ranks higher than before)
+.   * isComputed (boolean)</li></ul></li></ul><p>After receiving data from the server, here&#39;s what I would do:</p><ul><li>sort the list of backend players, given their respective position. The first element of the array should be the top ranked player.</li><li>loop over the data received from the server</li><li>if the points of a player change, then:<ul><li>look up the player in the array</li><li>update its points</li><li>move the player to the position in the array where it should fit, but don&#39;t change the &#34;position&#34; attribute</li><li>create a new entry in the &#34;playerChanges&#34; array, storing only the id of the player (we will compute the delta only at the end)</li></ul></li><li>loop on the array of backend players, and for each player in &#34;playerChanges&#34; (this is important) that is nit yet conputed, compute the position attribute regarding to the position of the player in the array. Since you have his &#34;old&#34; position, and the position in the array, you can compute the &#34;deltaPosition&#34;. <strong>Edit: after you compute the delta, mark the &#34;playerChange&#34; as computed and restart looping on the array of backend players. Do that as long as there is an uncomputed &#34;&#34;playerChange&#34;&#34; in the array.</strong></li></ul><p>In the end you should have an array of &#34;playerChanges&#34;. This is the list of rows that you should move, given the &#34;deltaPosition&#34; of each player. Notice that it could be 0, which means that the player received new points, but his position did not change. To perform the animation, I would suggest looking at <a href="https://stackoverflow.com/a/974765/866172">this brilliant answer</a>.</p><p>After you have done these animations, you can loop again on the list of backend players in order to update the displayed position (&#34;playerPositionXXX&#34; where XXX is the id of the player) of each player.</p><p>What I&#39;ve attempted to do here is to decorrelate the &#34;update and sort&#34; from what happens on the screen, the animation that the user sees.</p><p><strong>Edit: here is a working code sample (on Chrome at least) of an animation with JQuery and JQueryUI.</strong></p><pre><code>&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Temp test&lt;/title&gt;
+        &lt;script src=&#34;http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js&#34;&gt;&lt;/script&gt;
+        &lt;script src=&#34;http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js&#34;&gt;&lt;/script&gt;
+        &lt;style type=&#34;text/css&#34;&gt;
+            * { font-family: Calibri;}
+            .player { border: 1px solid grey; background: #f0f0f0; width: 300px; 
+                        padding: 10px; margin-bottom: 5px; margin-top: 5px; }
+                .name { margin-left: 30px; font-size: 20px; font-weight: bold; }
+                .points { float: right; color: whitesmoke; font-size: 24px; font-weight: bold; margin-top: -30px; 
+                            background-color: #999; padding: 3px;}
+                .position { clear: both; display: block; float: left; 
+                            font-size: 20px; font-weight: bold; margin-top: -29px; padding-right: 10px; 
+                            border-right: 1px solid black;}
+        &lt;/style&gt;
+        &lt;script type=&#34;text/javascript&#34;&gt;
+
+            function movePlayer(playerToMoveId, delta) {
+                var $old = $(playerToMoveId);
+                var $new = $old.clone();
+
+                // TODO: here I don&#39;t take into account the delta
+                // 
+                // you need to write a simple method for determining the player
+                // that will be replaced (here I hardcoded &#34;p4&#34;). 
+                $(&#34;#p4&#34;).before($new);
+
+                var newOffset = $new.offset();
+                //Get the old position relative to document
+                var oldOffset = $old.offset();
+                //we also clone old to the document for the animation
+                var $temp = $old.clone().appendTo(&#39;body&#39;);
+                //hide new and old and move $temp to position
+                //also big z-index, make sure to edit this to something that works with the page
+                $temp
+                  .css(&#39;position&#39;, &#39;absolute&#39;)
+                  .css(&#39;left&#39;, oldOffset.left)
+                  .css(&#39;top&#39;, oldOffset.top)
+                  .css(&#39;zIndex&#39;, 1000);
+                $new.hide();
+                $old.hide();
+                //animate the $temp to the position of the new img
+                $temp.animate( {&#39;top&#39;: newOffset.top, &#39;left&#39;:newOffset.left}, &#39;slow&#39;, function(){
+                   //callback function, we remove $old and $temp and show $new
+                   $new.show();
+                   $old.remove();
+                   $temp.remove();
+                });
+            }
+        &lt;/script&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div class=&#34;players_list&#34; id=&#34;plist&#34;&gt;
+           &lt;div class=&#34;player&#34; id =&#34;p4&#34;&gt;
+                &lt;div class=&#34;name&#34; id=&#34;pName4&#34;&gt;Player4&lt;/div&gt;
+                &lt;div class=&#34;points&#34; id=&#34;pPts4&#34;&gt;800&lt;/div&gt;
+                &lt;div class=&#34;position&#34; id=&#34;pPos4&#34;&gt;1&lt;/div&gt;
+           &lt;/div&gt;
+           &lt;div class=&#34;player&#34; id=&#34;p3&#34;&gt;
+                &lt;div class=&#34;name&#34; id=&#34;pName3&#34;&gt;Player3&lt;/div&gt;
+                &lt;div class=&#34;points&#34; id=&#34;pPts3&#34;&gt;500&lt;/div&gt;
+                &lt;div class=&#34;position&#34; id=&#34;pPos3&#34;&gt;2&lt;/div&gt;
+           &lt;/div&gt;
+
+           &lt;div class=&#34;player&#34; id=&#34;p1&#34;&gt;
+                &lt;div class=&#34;name&#34; id=&#34;pName1&#34;&gt;Player1&lt;/div&gt;
+                &lt;div class=&#34;points&#34; id=&#34;pPts1&#34;&gt;300&lt;/div&gt;
+                &lt;div class=&#34;position&#34; id=&#34;pPos1&#34;&gt;3&lt;/div&gt;
+           &lt;/div&gt;     
+           &lt;div class=&#34;player&#34; id=&#34;p2&#34;&gt;
+                &lt;div class=&#34;name&#34; id=&#34;pName2&#34;&gt;Player2&lt;/div&gt;
+                &lt;div class=&#34;points&#34; id=&#34;pPts2&#34;&gt;250&lt;/div&gt;
+                &lt;div class=&#34;position&#34; id=&#34;pPos2&#34;&gt;4&lt;/div&gt;
+           &lt;/div&gt;
+        &lt;/div&gt; 
+
+        &lt;input type=&#34;button&#34; onclick=&#34;movePlayer($(&#39;#p2&#39;), 3)&#34; value=&#34;Animate&#34;/&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../efficient-graph-clustering-algorithm/'>Efficient graph clustering algorithm</a></li><li class="list-group-item"><a href='../web-development-should-website-frontends-be-rendered-in-client-side-or-server-side/'>Web-development &#8211; Should website frontends be rendered in client-side or server-side</a></li><li class="list-group-item"><a href='../making-an-algorithm-more-efficient/'>Making an algorithm more efficient</a></li><li class="list-group-item"><a href='../count-sort-algorithm-efficiency/'>Count Sort Algorithm efficiency</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

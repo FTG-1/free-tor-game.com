@@ -1,0 +1,161 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; How to design a complex REST API considering DB performance &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1070456 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1070456" class="post-1070456 software type-software status-publish hentry category-software tag-database tag-hibernate tag-java tag-performance tag-rest"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; How to design a complex REST API considering DB performance</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">database</span><span class="mr-2 badge badge-info">hibernate</span><span class="mr-2 badge badge-warning">java</span><span class="mr-2 badge badge-primary">performance</span><span class="mr-2 badge badge-danger">rest</span></p><div class="entry-content"><p>I&#39;ve been following some tutorials on how to design REST APIs, but I still have some big questions marks. All these tutorials show resources with relatively simple hierarchies, and I would like to know how the principles used in those apply to a more complex one. Furthermore, they stay at a very high/architectural level. They barely show any relevant code, let alone the persistence layer. I&#39;m specially concerned about database load/performance, as Gavin King <a href="http://www.javaperformancetuning.com/news/interview041.shtml">said</a>:</p><blockquote><p>you will save yourself effort if you pay attention to the database at<br /> all stages of development</p></blockquote><p>Let&#39;s say my application will provide training for <code>Companies</code>. <code>Companies</code> have <code>Departments</code> and <code>Offices</code>. <code>Departments</code> have <code>Employees</code>. <code>Employees</code> have <code>Skills</code> and <code>Courses</code>, and certain <code>Level</code> of certain skills are required to be able to sign for some courses. The hierarchy is as as follows, but with :</p><pre class="lang-none prettyprint-override"><code>-Companies
+  -Departments
+    -Employees
+      -PersonalInformation
+        -Address
+      -Skills (quasi-static data)
+        -Levels (quasi-static data)
+      -Courses
+        -Address
+  -Offices
+    -Address
+</code></pre><p>Paths would be something as:</p><pre class="lang-none prettyprint-override"><code>companies/1/departments/1/employees/1/courses/1
+companies/1/offices/1/employees/1/courses/1
+</code></pre><h2>Fetching a resource</h2><p>So ok, when returning a company, I obviously don&#39;t return the whole hierarchy <code>companies/1/departments/1/employees/1/courses/1</code> + <code>companies/1/offices/../</code>. I might return a list of links to the departments or the expanded departments, and have to take the same decission at this level: do I return a list of links to the department&#39;s employees or the expanded employees? That will depend on the number of departments, employees, etc.</p><p><strong>Question 1</strong>: Is my thinking correct, is &#34;where to cut the hierarchy&#34; a typical engineering decission I need to make?</p><p>Now let&#39;s say that when asked <code>GET companies/id</code>, I decide to return a list of links to the department collection, and the expanded office information. My companies don&#39;t have many offices, so joining with the tables <code>Offices</code> and <code>Addresses</code> shouldn&#39;t be a big deal. Example of response:</p><pre class="lang-none prettyprint-override"><code>GET /companies/1
+
+200 OK
+{
+  &#34;_links&#34;:{
+    &#34;self&#34; : {
+      &#34;href&#34;:&#34;http://trainingprovider.com:8080/companies/1&#34;
+      },
+      &#34;offices&#34;: [
+            { &#34;href&#34;: &#34;http://trainingprovider.com:8080/companies/1/offices/1&#34;},
+            { &#34;href&#34;: &#34;http://trainingprovider.com:8080/companies/1/offices/2&#34;},
+            { &#34;href&#34;: &#34;http://trainingprovider.com:8080/companies/1/offices/3&#34;}
+      ],
+      &#34;departments&#34;: [
+            { &#34;href&#34;: &#34;http://trainingprovider.com:8080/companies/1/departments/1&#34;},
+            { &#34;href&#34;: &#34;http://trainingprovider.com:8080/companies/1/departments/2&#34;},
+            { &#34;href&#34;: &#34;http://trainingprovider.com:8080/companies/1/departments/3&#34;}
+      ]
+  }
+  &#34;name&#34;:&#34;Acme&#34;,
+  &#34;industry&#34;:&#34;Manufacturing&#34;,
+  &#34;description&#34;:&#34;Some text here&#34;,
+  &#34;offices&#34;: {
+    &#34;_meta&#34;:{
+      &#34;href&#34;:&#34;http://trainingprovider.com:8080/companies/1/offices&#34;
+      // expanded offices information here
+    }
+  }
+}
+</code></pre><p>At the code level, this implies that (using Hibernate, I&#39;m not sure how it is with other providers, but I guess that&#39;s pretty much the same) I won&#39;t put a collection of <code>Department</code> as a field in my <code>Company</code> class, because:</p><ul><li>As said, I&#39;m not loading it with <code>Company</code>, so I don&#39;t want to load it eagerly</li><li>And if I don&#39;t load it eagerly, I might as well remove it, because the persistence context will close after I load a Company and there is no point in trying to load it afterwards (<code>LazyInitializationException</code>).</li></ul><p>Then, I&#39;ll put a <code>Integer companyId</code> in the <code>Department</code> class, so that I can add a department to a company.</p><p>Also, I need to get the ids of all the departments. Another hit to the DB but not a heavy one, so should be ok. The code could look like:</p><pre><code>@Service
+@Path(&#34;/companies&#34;)
+public class CompanyResource {
+
+    @Autowired
+    private CompanyService companyService;
+
+    @Autowired
+    private CompanyParser companyParser;
+
+    @Path(&#34;/{id}&#34;)
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findById(@PathParam(&#34;id&#34;) Integer id) {
+        Optional&lt;Company&gt; company = companyService.findById(id);
+        if (!company.isPresent()) {
+            throw new CompanyNotFoundException();
+        }
+        CompanyResponse companyResponse = companyParser.parse(company.get());
+        // Creates a DTO with a similar structure to Company, and recursivelly builds
+        // sub-resource DTOs such as OfficeDTO
+        Set&lt;Integer&gt; departmentIds = companyService.getDepartmentIds(id);
+        // &#34;SELECT id FROM departments WHERE companyId = id&#34;
+        // add list of links to the response
+        return Response.ok(companyResponse).build();
+    }
+}
+</code></pre><pre><code>@Entity
+@Table(name = &#34;companies&#34;)
+public class Company {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    private String name;
+
+    private String industry;
+
+    @OneToMany(fetch = EAGER, cascade = {ALL}, orphanRemoval = true)
+    @JoinColumn(name = &#34;companyId_fk&#34;, referencedColumnName = &#34;id&#34;, nullable = false)
+    private Set&lt;Office&gt; offices = new HashSet&lt;&gt;();
+
+    // getters and setters
+}
+</code></pre><pre><code>@Entity
+@Table(name = &#34;departments&#34;)
+public class Department {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    private String name;
+
+    private Integer companyId;
+
+    @OneToMany(fetch = EAGER, cascade = {ALL}, orphanRemoval = true)
+    @JoinColumn(name = &#34;departmentId&#34;, referencedColumnName = &#34;id&#34;, nullable = false)
+    private Set&lt;Employee&gt; employees = new HashSet&lt;&gt;();
+
+    // getters and setters
+}
+</code></pre><h2>Updating a resource</h2><p>For the update operation, I can expose an endpoint with <code>PUT</code> or <code>POST</code>. Since I want my <code>PUT</code> to be idempotent, I <a href="https://stormpath.com/blog/put-or-post/">can&#39;t allow partial updates</a>. But then, if I want to modify the company&#39;s description field, I need to send the whole resource representation. That seems too bloated. The same when updating an employee&#39;s <code>PersonalInformation</code>. I don&#39;t think it makes sense having to send all the <code>Skills</code> + <code>Courses</code> together with that.</p><p><strong>Question 2</strong>: Is PUT just used for fine-grained resources?</p><p>I&#39;ve seen in the logs that, when merging an entity, Hibernate executes a bunch of <code>SELECT</code> queries. I guess that&#39;s just to check if anything has changed and update whatever information needed. The upper the entity in the hierarchy, the heavier and more complex the queries. But some sources advise to <a href="../../../image.slidesharecdn.com/restjsonapis-120711135859-phpapp02/95/design-beautiful-rest-json-apis-26-638cc0e.jpg?cb=1389728264">use coarse grained</a> resources. So again, I&#39;ll need to check how many tables are too much, and find a compromise between resource granularity and DB query complexity.</p><p><strong>Question 3</strong>: Is this just another &#34;know where to cut&#34; engineering decission or am I missing something?</p><p><strong>Question 4</strong>: Is this, or if not, what is the right &#34;thinking process&#34; when designing a REST service and searching for a compromise between resource granularity, query complexity and network chattiness?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I think you have complexity because you are starting with over-complication:</p><blockquote><p>Paths would be something as:</p><p><code>companies/1/departments/1/employees/1/courses/1</code><br/> <code>companies/1/offices/1/employees/1/courses/1</code></p></blockquote><p>Instead I would introduce simpler URL scheme like this:</p><pre class="lang-none prettyprint-override"><code>GET companies/
+    Returns a list of companies, for each company 
+    return short essential info (ID, name, maybe industry)
+</code></pre><pre class="lang-none prettyprint-override"><code>GET companies/1
+    Returns single company info like this:
+
+    {
+        &#34;name&#34;:&#34;Acme&#34;,
+        &#34;description&#34;:&#34;Some text here&#34;
+        &#34;industry&#34;:&#34;Manufacturing&#34;
+        departments: {
+            &#34;href&#34;:&#34;/companies/1/departments&#34;
+            &#34;count&#34;: 5
+        }
+        offices: {
+            &#34;href&#34;:&#34;/companies/1/offices&#34;
+            &#34;count&#34;: 3
+        }
+    }
+
+    We don&#39;t expand the data for internal sub-resources, 
+    just return the count, so client knows that some data is present.
+    In some cases count may be not needed too.
+</code></pre><pre class="lang-none prettyprint-override"><code>GET companies/1/departments
+    Returns company departments, again short info for each department
+</code></pre><pre class="lang-none prettyprint-override"><code>GET departments/
+    Here you need to decide if it makes sense to expose 
+    a list of departments or not. 
+    If not - leave only companies/X/departments method.
+
+    Note, that you can also use query string to make this 
+    method &#34;searchable&#34;, like:
+        /departments?company=1 - list of all departments for company 1
+        /departments?type=support - all &#39;support&#39; departments for all companies
+</code></pre><pre class="lang-none prettyprint-override"><code>GET departments/1
+    Returns department 1 data
+</code></pre><p>This way it answers most of your questions - you &#34;cut&#34; the hierarchy right away and you don&#39;t bind your URL scheme to the internal data structure.
+For example, if we know employee ID, would you expect to query it like <code>employees/:ID</code> or like <code>companies/:X/departments/:Y/employees/:ID</code>?</p><p>Regarding <code>PUT</code> vs <code>POST</code> requests, from your question it is clear that you feel the partial updates will be more efficient for your data.
+So I would just use <code>POST</code>s.</p><p>In practice, you actually want to cache data reads (<code>GET</code> requests) and it is less important for data updates. 
+And update are often can&#39;t be cached regardless of what type of request you do (like if server automatically sets the update time - it will be different for every request).</p><p>Update: regarding the right &#34;thinking process&#34; - since it is based on HTTP, we can apply the regular way of thinking when designing the web-site structure.
+In this case on the top we can have a list of companies and show a short description for each with a link to the &#34;view company&#34; page, where we show company details and links to offices / departments and so on.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../rest-the-limit-on-rest-api-resource-levels/'>Rest &#8211;  the limit on REST API resource levels</a></li><li class="list-group-item"><a href='../rest-how-to-design-a-restful-api-with-good-performance/'>Rest &#8211; How to design a RESTful API with good performance</a></li><li class="list-group-item"><a href='../javascript-rest-api-design-patterns/'>Javascript &#8211; REST Api Design Patterns</a></li><li class="list-group-item"><a href='../java-rest-api-design-in-case-of-partial-success/'>Java &#8211; Rest API Design in case of partial success</a></li><li class="list-group-item"><a href='../rest-how-to-implement-a-partial-resource-rest-api/'>Rest &#8211; How to implement a partial resource rest api</a></li><li class="list-group-item"><a href='../rest-api-design-reordering-collections/'>REST API Design &#8211; Reordering Collections</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

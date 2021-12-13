@@ -1,0 +1,136 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; XElement.Parse and querying versus serialization (strongly typed objects) &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1070846 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1070846" class="post-1070846 software type-software status-publish hentry category-software tag-c tag-performance tag-serialization"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; XElement.Parse and querying versus serialization (strongly typed objects)</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">performance</span><span class="mr-2 badge badge-warning">serialization</span></p><div class="entry-content"><p>We have a rather large code base that interacts with many SOAP based XML services.</p><p>Each one of these services makes 1 to n service calls  A typical low level web service call looks like this (simplified):</p><pre><code>public XElement ExecuteWebService(string xmlRequest) 
+</code></pre><p>We use WCF to build the SOAP message send it and get back the response.  We get the body using <code>GetReaderAtBodyContents()</code> and then convert that string to XMLElement using:</p><pre><code>XElement.Parse(response)
+</code></pre><p>Then we use that XElement throughout the rest of the layers of the application.  There are not any strongly typed data contracts or classes that are marked with XmlSerialization attributes.</p><p>This type of structure makes it very difficult to write tests since an XElement can be any valid XML structure, as well as there are many additional lines of code to read, parse, and update XElement as they are passed around, some pretty messy code.</p><p>Are there valid reasons for this type of structure?  I was told it was done for performance reasons and it&#39;s more flexible.</p><p>Is XElement parsing and reading really faster than one time serialization (Data contract, XML Serialization)?   Is this really more flexible then using a strongly typed object model?</p><p>On other systems I have always used serialization and strongly typed objects because it&#39;s easier to understand and maintain.  I am not certain if this XElement approach is valid.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I did some research and testing and here are my results:</p><p><strong>Analysis</strong></p><p>We have several possibilities when reading and writing messages for web services under the .Net platform.</p><ul><li>Strongly Typed Classes using XmlSerializer</li><li>Strongly Typed Classes implementing IXmlSerializable</li><li>Strongly Typed Classes using Data Contract Serializer</li><li>Loading to XElement/Document and using Linq to Xml</li><li>Custom</li></ul><p>XmlSerializer can serialize both elements and attributes.  It’s the default choice when dealing with legacy or existing message structures.  When creating your data model classes, one can simply attribute the public properties or members appropriately to produce or consume the outgoing or incoming XML.</p><p>Implementing IXmlSerializable is very similar to using the XmlSerializer, except that one will write code to manage the reading and writing of Xml by implementing <code>GetSchema(), ReadXml(), and WriteXml().</code> This method will still use XmlReader and XmlWriters to read and write the Xml message.</p><p>The Data Contract Serializer is also very easy to implement and use.  It does not support attributes, so it is suitable for green field development when dealing with Xml.  The data contract serializer is ideal for code first scenarios where the message structure is not important.</p><p>It may be difficult or not viable to use the data contract serializer when an existing message structure is present.  In those cases, one should default back to the XmlSerializer as that offer much more granular control of the format of the incoming and outgoing message structure.</p><p>The Data Contract Serializer is the default serializer for WCF and usually offers similar or greater performance improvement over the Xml Serializer when serializing Xml.  The data contract serializer can also serialize out to JSON as well and is a more modern approach when dealing with messages.</p><p>Data Contract Serializer should always be the first choice for green field development as it produces the least amount of code to maintain and offers good performance.</p><p>XElement/XDocument loading and parsing allows for great flexibility when reading and writing Xml messages.</p><p>Some of the things to keep in mind:</p><ul><li>An XElement/XDocument is not strongly typed, it is a representation
+of a Xml document</li><li>One must write code to pull information from the XElement/XDocument. 
+This is straight forward with Linq to Xml, but complexities can
+arise.</li><li>One must convert the string values to appropriate data types as
+needed.</li><li>One must know some internals of the message structure (XPaths, etc.)</li><li>Testing is cumbersome when using XElement and XDocument structures in
+code.</li><li>More code is needed than serialization techniques.</li></ul><p>This method is suitable for cherry picking data off of a large Xml structure.  For example, if one has an Xml message with 100 elements and only a few or those elements are needed, this method is appropriate.  It is recommended that message processing be centralized and that the data elements that are parsed are put into a strong typed object that can be used throughout the code base.  Do not pass XElements or XDocument around in the code as this will be difficult to test.  Also, if message processing is not centralized, there could be duplication of XElement parsing throughout the code base with different approaches being used.</p><p>Typically, this method offers better performance than serialization when a small amount of parsing is done.  As the amount of manual processing and parsing increases, serialization is a better option, even if the performance is slightly worse as there will be less code to maintain and test.</p><p>When performance is of utmost concern, implementing a custom approach can be suitable, but costly from a code and maintenance standpoint.  Here’s a naïve implementation of producing the some Xml that is being used for performance tests.  We have a constructor that takes in an Xml string and creates the object.  We have also overrode <code>ToString()</code> to create the Xml string.</p><pre><code>public class FoobarHandRolled
+{
+    public FoobarHandRolled(string name, int age, bool isContent, DateTime birthDay)
+    {
+        Name = name;
+        Age = age;
+        IsContent = isContent;
+        BirthDay = birthDay;
+    }
+
+    public FoobarHandRolled(string xml)
+    {
+        if (string.IsNullOrWhiteSpace(xml))
+        {
+            return;
+        }
+
+        SetName(xml);
+        SetAge(xml);
+        SetIsContent(xml);
+        SetBirthday(xml);
+    }
+
+    public string Name { get; set; }
+    public int Age { get; set; }
+    public bool IsContent { get; set; }
+    public DateTime BirthDay { get; set; }
+
+    /// &lt;summary&gt;
+    ///     Takes this object and creates an XML representation.
+    /// &lt;/summary&gt;
+    /// &lt;returns&gt;An XML string that represents this object.&lt;/returns&gt;
+    public override string ToString()
+    {
+        var builder = new StringBuilder();
+        builder.Append(&#34;&lt;FoobarHandRolled&gt;&#34;);
+
+        if (!string.IsNullOrWhiteSpace(Name))
+        {
+            builder.Append(&#34;&lt;Name&gt;&#34; + Name + &#34;&lt;/Name&gt;&#34;);
+        }
+
+        builder.Append(&#34;&lt;Age&gt;&#34; + Age + &#34;&lt;/Age&gt;&#34;);
+        builder.Append(&#34;&lt;IsContent&gt;&#34; + IsContent + &#34;&lt;/IsContent&gt;&#34;);
+        builder.Append(&#34;&lt;BirthDay&gt;&#34; + BirthDay.ToString(&#34;yyyy-MM-dd&#34;) + &#34;&lt;/BirthDay&gt;&#34;);
+        builder.Append(&#34;&lt;/FoobarHandRolled&gt;&#34;);
+
+        return builder.ToString();
+    }
+
+    private void SetName(string xml)
+    {
+        Name = GetSubString(xml, &#34;&lt;Name&gt;&#34;, &#34;&lt;/Name&gt;&#34;);
+    }
+
+    private void SetAge(string xml)
+    {
+        var ageString = GetSubString(xml, &#34;&lt;Age&gt;&#34;, &#34;&lt;/Age&gt;&#34;);
+        int result;
+        var success = int.TryParse(ageString, out result);
+        if (success)
+        {
+            Age = result;
+        }
+    }
+
+    private void SetIsContent(string xml)
+    {
+        var isContentString = GetSubString(xml, &#34;&lt;IsContent&gt;&#34;, &#34;&lt;/IsContent&gt;&#34;);
+        bool result;
+        var success = bool.TryParse(isContentString, out result);
+        if (success)
+        {
+            IsContent = result;
+        }
+    }
+
+    private void SetBirthday(string xml)
+    {
+        var dateString = GetSubString(xml, &#34;&lt;BirthDay&gt;&#34;, &#34;&lt;/BirthDay&gt;&#34;);
+        DateTime result;
+        var success = DateTime.TryParseExact(dateString, &#34;yyyy-MM-dd&#34;, null, DateTimeStyles.None, out result);
+        if (success)
+        {
+            BirthDay = result;
+        }
+    }
+
+    private string GetSubString(string xml, string startTag, string endTag)
+    {
+        var startIndex = xml.IndexOf(startTag, StringComparison.Ordinal);
+        if (startIndex &lt; 0)
+        {
+            return null;
+        }
+
+        startIndex = startIndex + startTag.Length;
+
+        var endIndex = xml.IndexOf(endTag, StringComparison.Ordinal);
+        if (endIndex &lt; 0)
+        {
+            return null;
+        }
+
+        return xml.Substring(startIndex, endIndex - startIndex);
+    }
+}
+</code></pre><p>Here we are using string parsing techniques and hardcoded values to read and write the Xml message.  This method will offer the best performance at the cost of additional code, maintenance and custom implementation.  This method is not recommended unless there is a critical need for the best performance.</p><p><strong>Performance Summary</strong></p><p>The chart will list initial performance (1st) time, and the average 1000 reads.  Hardware used was W530 laptop using visual studio 2013 and .net 4.5.2.  The processor was an i7-3840QM at 2.80Ghz.  All serializers offer nanosecond read times.  The warm up times can be mitigated by performing proper initialization at startup.  Xml Serializer can be mitigated by using SGEN prior.</p><pre><code>Serializer                      First Time  Average 1000 Reads
+XmlSerializer                   2448965         245
+Implementing XmlSerializable    2051813         208
+Custom                          161105          29
+Using XElement/XDocument        247024          113
+Data Contact (Json)             1979593         303
+</code></pre><p>All times are in ticks.  Ticks are hardware dependent but as a guideline there are roughly 10,000,000 ticks in 1 second.</p><p><strong>Final Recommendations</strong></p><p>The following guidelines should be followed when designing messages in which services exchange data:</p><ul><li>Exchange the minimal amount of data that is needed to satisfy the
+requirements</li><li>Avoid complex or generic data structures</li><li>Avoid messages that contain meta data that describes the data</li><li>Avoid data within data (Example: Xml within Xml)</li><li>Be mindful of the size of the message</li></ul><p>By following these guidelines clients consuming those messages can be made simpler and faster.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-webservice-return-generic-result-type-or-purposed-result-type/'>C# &#8211; Webservice Return Generic Result Type or Purposed Result Type</a></li><li class="list-group-item"><a href='../validating-objects-with-xsds-is-re-serializing-redundant-or-negligible/'>Validating Objects With XSDs: Is Re-Serializing Redundant or Negligible</a></li><li class="list-group-item"><a href='../c-ddd-soa-in-net-mvc-and-message-patterns-request-response/'>C# &#8211; DDD/SOA in (.NET) MVC and Message pattern(s) / Request Response</a></li><li class="list-group-item"><a href='../c-compatibility-of-enum-vs-string-constants/'>C# &#8211; Compatibility of Enum Vs. string constants</a></li><li class="list-group-item"><a href='../c-best-practices-for-serializing-persisting-string-object-dictionary-entities/'>C# &#8211; Best Practices for serializing/persisting String Object Dictionary entities</a></li><li class="list-group-item"><a href='../xml-serialization-and-deserialization-complex-situation/'>Xml serialization and deserialization complex situation</a></li><li class="list-group-item"><a href='../c-using-struct-to-enforce-validation-of-built-in-type/'>C# &#8211; Using struct to enforce validation of built-in type</a></li><li class="list-group-item"><a href='../c-custom-serializer-or-create-base-class-which-implements-ixmlserializable/'>C# &#8211; Custom serializer or create base class which implements IXmlSerializable</a></li><li class="list-group-item"><a href='../c-wcf-server-for-a-mobile-apps-xamarin-forms/'>C# &#8211; WCF Server for a mobile apps (Xamarin.Forms)</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

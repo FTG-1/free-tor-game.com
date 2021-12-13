@@ -1,0 +1,212 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; Is it safe to return a new object from static method &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1066467 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1066467" class="post-1066467 software type-software status-publish hentry category-software tag-java tag-static-methods"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; Is it safe to return a new object from static method</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">java</span><span class="mr-2 badge badge-info">static methods</span></p><div class="entry-content"><p>Is it OK to have a class something like this</p><pre><code>public class Weapon {
+    private string name;
+    private int might;
+    // etc...
+
+    private Weapon(String name, int might) {
+        this.name = name;
+        this.might = might;
+    }
+
+    public static final Weapon Alondite = new Weapon(&#34;Alondite&#34;, 16);
+    // 100++ weapon
+}
+</code></pre><p>Then calling the weapon anywhere in the project, like this <code>Weapon.Alondite</code>, will this create new object every time the static <strike>method</strike> member called?</p><p>Or should I do like this, to ensure the object only created once</p><pre><code>public class Weapon {
+    private string name;
+    private int might;
+    // etc...
+
+    private Weapon(String name, int might) {
+        this.name = name;
+        this.might = might;
+    }
+
+    private static Weapon mAlondite;
+    public static Weapon Alondite() {
+        //if (mAlondite == null) {
+        //    mAlondite = new Weapon(&#34;Alondite&#34;, 16);
+        //    return mAlondite;
+        //} else {
+        //    return mAlondite;
+        //}
+
+        // EDIT: as suggested by everyone
+        if (mAlondite == null) {
+            mAlondite = new Weapon(&#34;Alondite&#34;, 16);
+        }
+        return mAlondite;
+    }
+}
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>No, your first code snippet will not create a new weapon every time you reference it.</p><p>The second example you posted is an example of the singleton pattern.</p><p>Based on your comment at the bottom of your first example, it seems to indicate that you will have over 100 instances of different weapons. This is a lot. You&#39;re right that you don&#39;t necessarily want to have more than one instance of the same weapon (one might for different reasons, but your examples seem to indicate singleton-ness).</p><p>You might want to consider what might happen if you needed to make another weapon type, or maybe a hundred, or a thousand. You might not want to have to recompile every single time. Otherwise, the purpose of the class might be misconstrued as an weapon type list, not the weapon itself.</p><p>Based on your example, it would seem that the 100+ weapon types only differ in name and might. If that&#39;s the case, being only different in the data, not behavior, I might consider reading them from a file or something else, and providing a means to look them up (similar to the repository pattern).</p><pre><code>public class WeaponLookup {
+
+    private Map&lt;String, Weapon&gt; weapons = new HashMap&lt;&gt;();
+
+    public WeaponLookup(Map&lt;String, Weapon&gt; weapons) { // loaded from file or something
+        this.weapons = weapons;
+    }
+
+    public Weapon Lookup(String name) {
+        return weapons.get(name);
+    } 
+}
+</code></pre><p>You mentioned in a comment that your weapons will have many attributes, not limited to two. I think this moves more into the favor of using an external, non-compiled data file, as opposed to being compiled into the class.</p><p>You can compare something like this</p><pre><code>{
+    &#34;weapons&#34; : [
+        {
+            &#34;name&#34; : &#34;Almonite&#34;,
+            &#34;might&#34; : 16,
+            &#34;def-bonus&#34; : 7,
+            &#34;spd-bonus&#34; : 9
+        },
+        {
+            &#34;name&#34; : &#34;Alphite&#34;,
+            &#34;might&#34; : 22,
+            &#34;def-bonus&#34; : 2,
+            &#34;spd-bonus&#34; : 3
+        },
+        {
+            &#34;name&#34; : &#34;Betite&#34;,
+            &#34;might&#34; : 16,
+            &#34;def-bonus&#34; : 11,
+            &#34;spd-bonus&#34; : 4
+        },
+        {
+            &#34;name&#34; : &#34;Gammite&#34;,
+            &#34;might&#34; : 12,
+            &#34;def-bonus&#34; : 7,
+            &#34;spd-bonus&#34; : 7
+        },
+        {
+            &#34;name&#34; : &#34;Deltite&#34;,
+            &#34;might&#34; : 19,
+            &#34;def-bonus&#34; : 6,
+            &#34;spd-bonus&#34; : 5
+        },
+        {
+            &#34;name&#34; : &#34;Thetite&#34;,
+            &#34;might&#34; : 11,
+            &#34;def-bonus&#34; : 2,
+            &#34;spd-bonus&#34; : 11
+        }
+    ]
+}
+</code></pre><p>To something like</p><pre><code>public static final Weapon Almonite = new Weapon(&#34;Almonite&#34;, 16, 7, 9);
+public static final Weapon Alphite = new Weapon(&#34;Alphite&#34;, 22, 2, 3);
+public static final Weapon Betite = new Weapon(&#34;Betite&#34;, 16, 11, 4);
+public static final Weapon Gammite = new Weapon(&#34;Gammite&#34;, 12, 7, 7);
+public static final Weapon Deltite = new Weapon(&#34;Deltite&#34;, 19, 6, 5);
+public static final Weapon Thetite = new Weapon(&#34;Thetite&#34;, 11, 2, 11);
+</code></pre><p>Looking at this example, can you tell which of those numbers belong to which field; is the 11 of Betite spd-bonus or def-bonus? I certainly can&#39;t tell. I could go to the constructor and see what it is (it&#39;s def-bonus), but I don&#39;t really want to do that. If there&#39;s going to be 100+, it would be about this long</p><pre><code>public static final Weapon Almonite = new Weapon(&#34;Almonite&#34;, 16, 7, 9);
+public static final Weapon Alphite = new Weapon(&#34;Alphite&#34;, 22, 2, 3);
+public static final Weapon Betite = new Weapon(&#34;Betite&#34;, 16, 11, 4);
+public static final Weapon Gammite = new Weapon(&#34;Gammite&#34;, 12, 7, 7);
+public static final Weapon Deltite = new Weapon(&#34;Deltite&#34;, 19, 6, 5);
+public static final Weapon Thetite = new Weapon(&#34;Thetite&#34;, 11, 2, 11);
+public static final Weapon Almonite = new Weapon(&#34;Almonite&#34;, 16, 7, 9);
+public static final Weapon Alphite = new Weapon(&#34;Alphite&#34;, 22, 2, 3);
+public static final Weapon Betite = new Weapon(&#34;Betite&#34;, 16, 11, 4);
+public static final Weapon Gammite = new Weapon(&#34;Gammite&#34;, 12, 7, 7);
+public static final Weapon Almonite = new Weapon(&#34;Almonite&#34;, 16, 7, 9);
+public static final Weapon Alphite = new Weapon(&#34;Alphite&#34;, 22, 2, 3);
+public static final Weapon Betite = new Weapon(&#34;Betite&#34;, 16, 11, 4);
+public static final Weapon Gammite = new Weapon(&#34;Gammite&#34;, 12, 7, 7);
+public static final Weapon Deltite = new Weapon(&#34;Deltite&#34;, 19, 6, 5);
+public static final Weapon Thetite = new Weapon(&#34;Thetite&#34;, 11, 2, 11);
+public static final Weapon Almonite = new Weapon(&#34;Almonite&#34;, 16, 7, 9);
+public static final Weapon Alphite = new Weapon(&#34;Alphite&#34;, 22, 2, 3);
+public static final Weapon Betite = new Weapon(&#34;Betite&#34;, 16, 11, 4);
+public static final Weapon Gammite = new Weapon(&#34;Gammite&#34;, 12, 7, 7);
+public static final Weapon Almonite = new Weapon(&#34;Almonite&#34;, 16, 7, 9);
+public static final Weapon Alphite = new Weapon(&#34;Alphite&#34;, 22, 2, 3);
+public static final Weapon Betite = new Weapon(&#34;Betite&#34;, 16, 11, 4);
+public static final Weapon Gammite = new Weapon(&#34;Gammite&#34;, 12, 7, 7);
+public static final Weapon Deltite = new Weapon(&#34;Deltite&#34;, 19, 6, 5);
+public static final Weapon Thetite = new Weapon(&#34;Thetite&#34;, 11, 2, 11);
+public static final Weapon Almonite = new Weapon(&#34;Almonite&#34;, 16, 7, 9);
+public static final Weapon Alphite = new Weapon(&#34;Alphite&#34;, 22, 2, 3);
+public static final Weapon Betite = new Weapon(&#34;Betite&#34;, 16, 11, 4);
+public static final Weapon Gammite = new Weapon(&#34;Gammite&#34;, 12, 7, 7);
+public static final Weapon Almonite = new Weapon(&#34;Almonite&#34;, 16, 7, 9);
+public static final Weapon Alphite = new Weapon(&#34;Alphite&#34;, 22, 2, 3);
+public static final Weapon Betite = new Weapon(&#34;Betite&#34;, 16, 11, 4);
+public static final Weapon Gammite = new Weapon(&#34;Gammite&#34;, 12, 7, 7);
+public static final Weapon Deltite = new Weapon(&#34;Deltite&#34;, 19, 6, 5);
+public static final Weapon Thetite = new Weapon(&#34;Thetite&#34;, 11, 2, 11);
+public static final Weapon Almonite = new Weapon(&#34;Almonite&#34;, 16, 7, 9);
+public static final Weapon Alphite = new Weapon(&#34;Alphite&#34;, 22, 2, 3);
+public static final Weapon Betite = new Weapon(&#34;Betite&#34;, 16, 11, 4);
+public static final Weapon Gammite = new Weapon(&#34;Gammite&#34;, 12, 7, 7);
+public static final Weapon Almonite = new Weapon(&#34;Almonite&#34;, 16, 7, 9);
+public static final Weapon Alphite = new Weapon(&#34;Alphite&#34;, 22, 2, 3);
+public static final Weapon Betite = new Weapon(&#34;Betite&#34;, 16, 11, 4);
+public static final Weapon Gammite = new Weapon(&#34;Gammite&#34;, 12, 7, 7);
+public static final Weapon Deltite = new Weapon(&#34;Deltite&#34;, 19, 6, 5);
+public static final Weapon Thetite = new Weapon(&#34;Thetite&#34;, 11, 2, 11);
+public static final Weapon Almonite = new Weapon(&#34;Almonite&#34;, 16, 7, 9);
+public static final Weapon Alphite = new Weapon(&#34;Alphite&#34;, 22, 2, 3);
+public static final Weapon Betite = new Weapon(&#34;Betite&#34;, 16, 11, 4);
+public static final Weapon Gammite = new Weapon(&#34;Gammite&#34;, 12, 7, 7);
+public static final Weapon Almonite = new Weapon(&#34;Almonite&#34;, 16, 7, 9);
+public static final Weapon Alphite = new Weapon(&#34;Alphite&#34;, 22, 2, 3);
+public static final Weapon Betite = new Weapon(&#34;Betite&#34;, 16, 11, 4);
+public static final Weapon Gammite = new Weapon(&#34;Gammite&#34;, 12, 7, 7);
+public static final Weapon Deltite = new Weapon(&#34;Deltite&#34;, 19, 6, 5);
+public static final Weapon Thetite = new Weapon(&#34;Thetite&#34;, 11, 2, 11);
+public static final Weapon Almonite = new Weapon(&#34;Almonite&#34;, 16, 7, 9);
+public static final Weapon Alphite = new Weapon(&#34;Alphite&#34;, 22, 2, 3);
+public static final Weapon Betite = new Weapon(&#34;Betite&#34;, 16, 11, 4);
+public static final Weapon Gammite = new Weapon(&#34;Gammite&#34;, 12, 7, 7);
+public static final Weapon Almonite = new Weapon(&#34;Almonite&#34;, 16, 7, 9);
+public static final Weapon Alphite = new Weapon(&#34;Alphite&#34;, 22, 2, 3);
+public static final Weapon Betite = new Weapon(&#34;Betite&#34;, 16, 11, 4);
+public static final Weapon Gammite = new Weapon(&#34;Gammite&#34;, 12, 7, 7);
+public static final Weapon Deltite = new Weapon(&#34;Deltite&#34;, 19, 6, 5);
+public static final Weapon Thetite = new Weapon(&#34;Thetite&#34;, 11, 2, 11);
+public static final Weapon Almonite = new Weapon(&#34;Almonite&#34;, 16, 7, 9);
+public static final Weapon Alphite = new Weapon(&#34;Alphite&#34;, 22, 2, 3);
+public static final Weapon Betite = new Weapon(&#34;Betite&#34;, 16, 11, 4);
+public static final Weapon Gammite = new Weapon(&#34;Gammite&#34;, 12, 7, 7);
+public static final Weapon Almonite = new Weapon(&#34;Almonite&#34;, 16, 7, 9);
+public static final Weapon Alphite = new Weapon(&#34;Alphite&#34;, 22, 2, 3);
+public static final Weapon Betite = new Weapon(&#34;Betite&#34;, 16, 11, 4);
+public static final Weapon Gammite = new Weapon(&#34;Gammite&#34;, 12, 7, 7);
+public static final Weapon Deltite = new Weapon(&#34;Deltite&#34;, 19, 6, 5);
+public static final Weapon Thetite = new Weapon(&#34;Thetite&#34;, 11, 2, 11);
+public static final Weapon Almonite = new Weapon(&#34;Almonite&#34;, 16, 7, 9);
+public static final Weapon Alphite = new Weapon(&#34;Alphite&#34;, 22, 2, 3);
+public static final Weapon Betite = new Weapon(&#34;Betite&#34;, 16, 11, 4);
+public static final Weapon Gammite = new Weapon(&#34;Gammite&#34;, 12, 7, 7);
+public static final Weapon Almonite = new Weapon(&#34;Almonite&#34;, 16, 7, 9);
+public static final Weapon Alphite = new Weapon(&#34;Alphite&#34;, 22, 2, 3);
+public static final Weapon Betite = new Weapon(&#34;Betite&#34;, 16, 11, 4);
+public static final Weapon Gammite = new Weapon(&#34;Gammite&#34;, 12, 7, 7);
+public static final Weapon Deltite = new Weapon(&#34;Deltite&#34;, 19, 6, 5);
+public static final Weapon Thetite = new Weapon(&#34;Thetite&#34;, 11, 2, 11);
+public static final Weapon Almonite = new Weapon(&#34;Almonite&#34;, 16, 7, 9);
+public static final Weapon Alphite = new Weapon(&#34;Alphite&#34;, 22, 2, 3);
+public static final Weapon Betite = new Weapon(&#34;Betite&#34;, 16, 11, 4);
+public static final Weapon Gammite = new Weapon(&#34;Gammite&#34;, 12, 7, 7);
+public static final Weapon Almonite = new Weapon(&#34;Almonite&#34;, 16, 7, 9);
+public static final Weapon Alphite = new Weapon(&#34;Alphite&#34;, 22, 2, 3);
+public static final Weapon Betite = new Weapon(&#34;Betite&#34;, 16, 11, 4);
+public static final Weapon Gammite = new Weapon(&#34;Gammite&#34;, 12, 7, 7);
+public static final Weapon Deltite = new Weapon(&#34;Deltite&#34;, 19, 6, 5);
+public static final Weapon Thetite = new Weapon(&#34;Thetite&#34;, 11, 2, 11);
+public static final Weapon Almonite = new Weapon(&#34;Almonite&#34;, 16, 7, 9);
+public static final Weapon Alphite = new Weapon(&#34;Alphite&#34;, 22, 2, 3);
+public static final Weapon Betite = new Weapon(&#34;Betite&#34;, 16, 11, 4);
+public static final Weapon Gammite = new Weapon(&#34;Gammite&#34;, 12, 7, 7);
+</code></pre><p>Do you want to release a new version of your program every time you make a change that doesn&#39;t really affect functionality? I don&#39;t. I&#39;d much rather just have some sort of update checker that downloads the latest version of the data file. Functionality never changes, but suddenly you can add thousands more weapons. Or even removing weapons; if you add a weapon that ends up being more over-powered than anticipated, you can easily just remove the entry from the file; as opposed to building your code again, testing it, and making it available for your clients to download.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-object-oriented-class-design/'>Java &#8211; Object-Oriented Class Design</a></li><li class="list-group-item"><a href='../java-why-doesnt-java-string-have-static-string-manipulation-methods/'>Java &#8211; Why doesn&#8217;t Java String have static string manipulation methods</a></li><li class="list-group-item"><a href='../c-is-using-multiple-static-classes-with-maximum-one-public-method-is-a-good-idea/'>C# &#8211; Is using multiple static classes with maximum one public method is a good idea</a></li><li class="list-group-item"><a href='../java-does-making-a-method-static-save-memory-on-a-class-youll-have-many-instances-of/'>Java &#8211; Does making a method static save memory on a class you&#8217;ll have many instances of</a></li><li class="list-group-item"><a href='../c-calling-a-static-method-from-constructors-member-initializer-list/'>C++ &#8211; Calling a static method from constructor&#8217;s member initializer list</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

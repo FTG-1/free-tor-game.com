@@ -1,0 +1,86 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Mvc &#8211; Usage of MVVM in iOS &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1075561 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1075561" class="post-1075561 software type-software status-publish hentry category-software tag-ios tag-model tag-mvc tag-mvvm tag-swift-language"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Mvc &#8211; Usage of MVVM in iOS</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">ios</span><span class="mr-2 badge badge-info">model</span><span class="mr-2 badge badge-warning">mvc</span><span class="mr-2 badge badge-primary">mvvm</span><span class="mr-2 badge badge-danger">swift-language</span></p><div class="entry-content"><p>I&#39;m an iOS developer and I&#39;m guilty of having Massive View Controllers in my projects so I&#39;ve been searching for a better way to structure my projects and came across the MVVM (Model-View-ViewModel) architecture. I&#39;ve been reading a lot of MVVM with iOS and I have a couple of questions. I&#39;ll explain my issues with an example.</p><p>I have a view controller called <code>LoginViewController</code>.</p><p><strong>LoginViewController.swift</strong></p><pre><code>import UIKit
+
+class LoginViewController: UIViewController {
+
+    @IBOutlet private var usernameTextField: UITextField!
+    @IBOutlet private var passwordTextField: UITextField!
+
+    private let loginViewModel = LoginViewModel()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+    }
+
+    @IBAction func loginButtonPressed(sender: UIButton) {
+        loginViewModel.login()
+    }
+}
+</code></pre><p>It doesn&#39;t have a Model class. But I did create a view model called <code>LoginViewModel</code> to put the validation logic and network calls.</p><p><strong>LoginViewModel.swift</strong></p><pre><code>import Foundation
+
+class LoginViewModel {
+
+    var username: String?
+    var password: String?
+
+    init(username: String? = nil, password: String? = nil) {
+        self.username = username
+        self.password = password
+    }
+
+    func validate() {
+        if username == nil || password == nil {
+            // Show the user an alert with the error
+        }
+    }
+
+    func login() {
+        // Call the login() method in ApiHandler
+        let api = ApiHandler()
+        api.login(username!, password: password!, success: { (data) -&gt; Void in
+            // Go to the next view controller
+        }) { (error) -&gt; Void in
+            // Show the user an alert with the error
+        }
+    }
+}
+</code></pre><ol><li><p>My first question is simply is my MVVM implementation correct? I have this doubt because for example I put the login button&#39;s tap event (<code>loginButtonPressed</code>) in the controller. I didn&#39;t create a separate view for the login screen because it has only a couple of textfields and a button. Is it acceptable for the controller to have event methods tied to UI elements?</p></li><li><p>My next question is also about the login button. When the user taps the button, the username and password values should gte passed into the LoginViewModel for validation and if successful, then to the API call. My question how to pass the values to the view model. Should I add two parameters to the <code>login()</code> method and pass them when I call it from the view controller? Or should I declare properties for them in the view model and set their values from the view controller? Which one is acceptable in MVVM?</p></li><li><p>Take the <code>validate()</code> method in the view model. The user should be notified if either of them are empty. That means after the checking, the result should be returned to the view controller to take necessary actions (show an alert). Same thing with the <code>login()</code> method. Alert the user if the request fails or go to the next view controller if it succeeds. How do I notify the controller of these events from the view model? Is it possible to use binding mechanisms like KVO in cases like this?</p></li><li><p>What are the other binding mechanisms when using MVVM for iOS? KVO is one. But I read it&#39;s not quite suitable for larger projects because it require a lot of boilerplate code (registering/unregistering observers etc). What are other options? I know ReactiveCocoa is a framework used for this but I&#39;m looking to see if there are any other native ones.</p></li></ol><p>All the materials I came across on MVVM on the Internet provided little to no information on these parts I&#39;m looking to clarify, so I&#39;d really appreciate your responses.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I am only just approaching these questions myself but I will give the best answers I can and make some observations.</p><p>We are told that iOS&#39; MVC expects us to break our program up into models, views and controllers which link specific views to specific models. Sadly, in practice we will have a number of views and a number of models but only one (View)Controller taking care of all the linkages. This is what leads to massive ViewControllers.</p><p>Adopting MVVM in this context means breaking the ViewController up into two parts. The part that deals directly with Views (which stays in the ViewController class proper,) and the part that deals directly with Models (which is moved into the ModelView class/struct.)</p><p>This means that <em>only</em> the ViewController should be sending/receiving messages from/to the Views and the only non-view object the VC should be conversing with is the ModelView. While the ModelView should be conversing with all the various Model objects and should never converse with a View.</p><p>The above notion of the ViewController/ViewModel split leeds to the following answers to your questions:</p><ol><li><p>No, your MVVM implementation is not correct. Your ViewModel methods have a fundamental flaw. They should not be talking directly with any view objects so they aren&#39;t in charge of showing the user any alerts. That&#39;s the ViewController&#39;s job. The ViewModel also isn&#39;t in charge of transitioning between ViewControllers.</p></li><li><p>The ViewController should not be dealing with any model objects. It should only be conversing with Views and the ModelView. Therefore, the ViewController should <em>not</em> be pulling the username and password out of it&#39;s views and passing them to the ViewModel&#39;s login function. That would require the ViewController to understand something about the differences between Usernames and Passwords and when it is appropriate to use them.</p></li></ol><p>Instead, the ViewController should inform the ViewModel when changes occur in the username and password fields. It should inform the ViewModel when the login button is pressed. It shouldn&#39;t have any knowledge about what model objects the viewModel needs in any particular method.</p><ol start="3"><li>I would expect the <code>validate()</code> function to return a Bool (better to call it <code>isValid</code> and make it a computed property.) I would expect the <code>login()</code> function to accept two blocks (one for pass and one for fail.) It can communicate what happened by calling the correct block. Another option would be to have the function accept one block as a parameter with a <code>success</code> boolean. So something like this:</li></ol><p>-</p><pre><code>struct LoginViewModel {
+
+    var username: String = &#34;&#34;
+    var password: String = &#34;&#34;
+
+    init(username: String, password: String) {
+        self.username = username
+        self.password = password
+    }
+
+    var isValid: Bool {
+        return !username.isEmpty &amp;&amp; !password.isEmpty
+    }
+
+    func login(callback: (error: NSError?) -&gt; Void) {
+        let api = ApiHandler()
+        api.login(username, password: password, success: { (data) -&gt; Void in
+            callback(error: nil)
+            }) { (error) -&gt; Void in
+                callback(error: error)
+        }
+    }
+
+}
+</code></pre><ol start="4"><li>In the MVVM paradigm, ReactiveCocoa (and RxSwift is another library) are used to communicate changes in the ModelView back to the ViewController, but let me ask you this... Does your ModelView ever change in any substantive way that your ViewController doesn&#39;t know about? So far, I have not been in a situation where any other object is sending messages to my ModelView other than the ViewController it is attached to, so there isn&#39;t any way for the ModelView to mutate without the ViewController knowing it&#39;s at least possible. Because of this, I generally have an <code>updateUI()</code> function in my ViewController. Every time my ViewController sends a potentially mutating message to the ModelView, it then calls <code>updateUI()</code> which examines the ViewModel and updates the UI accordingly. No need for any tricks.</li></ol><p>-
+Hope this helps you and hopefully my answer will stimulate some discussion on this question.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-communication-between-view-and-model/'>Java &#8211; Communication between View and Model</a></li><li class="list-group-item"><a href='../who-is-responsible-for-setting-color-in-mvvm/'>Who is responsible for setting color in MVVM</a></li><li class="list-group-item"><a href='../c-net-mvvm-software-architecture-and-naming-conventions/'>C# .NET MVVM software architecture and naming conventions</a></li><li class="list-group-item"><a href='../state-handling-in-wpf-mvvm/'>State handling in WPF-MVVM</a></li><li class="list-group-item"><a href='../wpf-mvvm-loading-data-on-startup/'>WPF MVVM Loading data on startup</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,70 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>How to a compiler be written for a language that allows rewriting code at runtime (such as Lisp macros) &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1078121 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1078121" class="post-1078121 software type-software status-publish hentry category-software tag-compiler tag-lisp tag-macros"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">How to a compiler be written for a language that allows rewriting code at runtime (such as Lisp macros)</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">compiler</span><span class="mr-2 badge badge-info">lisp</span><span class="mr-2 badge badge-warning">macros</span></p><div class="entry-content"><p>There are some programming languages, like the many dialects of Lisp, that allow for macro-metaprogramming: rewriting and altering sections of code before the code is run.</p><p>It is relatively trivial to write a simple interpreter for Lisp (mostly because there is only very little special syntax). However, I cannot understand how it would be possible to write a compiler for a language that allows you to rewrite code <em>at-runtime</em> (and then execute that code).</p><p>How is this done? Is the compiler itself basically included in the generated compiled program, such that it can compile new sections of code? Or is there another way?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p><strong>Macros have the advantage to be expanded at compile time</strong></p><p>The idea of Lisp macros is to be able to fully expand them at compile time. Then no compiler is needed at runtime. Most Lisp systems allow you to fully compile code. The compilation step includes the macro expansion phase. There is no expansion needed at runtime.</p><p>Often Lisp systems include a compiler, but this is needed when code is generated at runtime and this code would need to be compiled. But this is independent of macro expansion.</p><p>You will even find Lisp systems which don&#39;t include a compiler and even no full interpreter at runtime. All code will be compiled before runtime.</p><p><strong>FEXPRs were code modifying functions, but were mostly replaced by Macros</strong></p><p>In earlier times in the 60s/70s many Lisp systems included so-called FEXPR functions, which could translate code at runtime. But they could not be compiled before runtime. Macros replaced them mostly, since they enable full compilation.</p><p><strong>An example of a macro interpreted and compiled</strong></p><p>Let&#39;s look at LispWorks, which has both an interpreter and a compiler. It allows to mix interpreted and compiled code freely. The Read-Eval-Print-Loop uses the Interpreter to execute code.</p><p>Let&#39;s define a trivial macro. But the macro prints the code it gets called with, every time the macro runs.</p><pre><code>CL-USER 45 &gt; (defmacro my-if (test yes no)
+               (format t &#34;~%Expanding (my-if ~a ~a ~a)&#34; test yes no)
+               `(if ,test ,yes ,no))
+MY-IF
+</code></pre><p>Let&#39;s define a function which uses the macro from above. Remember: here in LispWorks the function will be interpreted.</p><pre><code>CL-USER 46 &gt; (defun test (x y)
+               (my-if (&gt; x y) &#39;larger &#39;not-larger))
+TEST
+</code></pre><p>If you look above, the Lisp system only printed the function name. The macro did not run - otherwise the macro would have printed something. So the code is not expanded.</p><p>Let&#39;s run the TEST function using the Interpreter:</p><pre><code>CL-USER 47 &gt; (loop for i below 5 collect (test i 3))
+
+Expanding (my-if (&gt; X Y) (QUOTE LARGER) (QUOTE NOT-LARGER))
+Expanding (my-if (&gt; X Y) (QUOTE LARGER) (QUOTE NOT-LARGER))
+Expanding (my-if (&gt; X Y) (QUOTE LARGER) (QUOTE NOT-LARGER))
+Expanding (my-if (&gt; X Y) (QUOTE LARGER) (QUOTE NOT-LARGER))
+Expanding (my-if (&gt; X Y) (QUOTE LARGER) (QUOTE NOT-LARGER))
+Expanding (my-if (&gt; X Y) (QUOTE LARGER) (QUOTE NOT-LARGER))
+Expanding (my-if (&gt; X Y) (QUOTE LARGER) (QUOTE NOT-LARGER))
+Expanding (my-if (&gt; X Y) (QUOTE LARGER) (QUOTE NOT-LARGER))
+Expanding (my-if (&gt; X Y) (QUOTE LARGER) (QUOTE NOT-LARGER))
+Expanding (my-if (&gt; X Y) (QUOTE LARGER) (QUOTE NOT-LARGER))
+(NOT-LARGER NOT-LARGER NOT-LARGER NOT-LARGER LARGER)
+</code></pre><p>So you see that for some reason the macro expansion is run twice for each of the five calls to test. The macro is expanded by the interpreter every time the function TEST is called.</p><p>Now let&#39;s compile the function TEST:</p><pre><code>CL-USER 48 &gt; (compile &#39;test)
+
+Expanding (my-if (&gt; X Y) (QUOTE LARGER) (QUOTE NOT-LARGER))
+TEST
+NIL
+NIL
+</code></pre><p>You can see above that the compiler runs the macro once.</p><p>If we now run the function TEST, no macro expansion will happen. The macro form <code>(MY-IF ...)</code> has already been expanded by the compiler:</p><pre><code>CL-USER 49 &gt; (loop for i below 5 collect (test i 3))
+(NOT-LARGER NOT-LARGER NOT-LARGER NOT-LARGER LARGER)
+</code></pre><p>If you used some other Lisps like SBCL or CCL, they will compile everything by default. SBCL has in new versions also an interpreter. Let&#39;s do the example from above in a recent SBCL:</p><p>Let&#39;s use the new SBCL interpreter:</p><pre><code>CL-USER&gt; (setf sb-ext:*evaluator-mode* :interpret)
+:INTERPRET
+
+CL-USER&gt; (defmacro my-if (test yes no)
+           (format t &#34;~%Expanding (my-if ~a ~a ~a)&#34; test yes no)
+           `(if ,test ,yes ,no))
+MY-IF
+CL-USER&gt; (defun test (x y)
+           (my-if (&gt; x y) &#39;larger &#39;not-larger))
+TEST
+CL-USER&gt; (loop for i below 5 collect (test i 3))
+
+Expanding (my-if (&gt; X Y) &#39;LARGER &#39;NOT-LARGER)
+Expanding (my-if (&gt; X Y) &#39;LARGER &#39;NOT-LARGER)
+Expanding (my-if (&gt; X Y) &#39;LARGER &#39;NOT-LARGER)
+Expanding (my-if (&gt; X Y) &#39;LARGER &#39;NOT-LARGER)
+Expanding (my-if (&gt; X Y) &#39;LARGER &#39;NOT-LARGER)
+(NOT-LARGER NOT-LARGER NOT-LARGER NOT-LARGER LARGER)
+CL-USER&gt; (compile &#39;test)
+
+Expanding (my-if (&gt; X Y) &#39;LARGER &#39;NOT-LARGER)
+TEST
+NIL
+NIL
+CL-USER&gt; (loop for i below 5 collect (test i 3))
+(NOT-LARGER NOT-LARGER NOT-LARGER NOT-LARGER LARGER)
+CL-USER&gt; 
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../python-general-rules-for-writing-a-x-compiler-to-z-in-y/'>Python &#8211; General rules for writing a X compiler to Z in Y</a></li><li class="list-group-item"><a href='../how-does-garbage-collection-work-in-languages-which-are-natively-compiled/'>How does garbage collection work in languages which are natively compiled</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

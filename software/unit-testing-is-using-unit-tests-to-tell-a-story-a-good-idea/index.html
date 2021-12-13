@@ -1,0 +1,64 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Unit-testing &#8211; Is using unit tests to tell a story a good idea &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1084035 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1084035" class="post-1084035 software type-software status-publish hentry category-software tag-design-patterns tag-net tag-testing tag-unit-testing tag-user-story"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Unit-testing &#8211; Is using unit tests to tell a story a good idea</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">design-patterns</span><span class="mr-2 badge badge-info">net</span><span class="mr-2 badge badge-warning">testing</span><span class="mr-2 badge badge-primary">unit testing</span><span class="mr-2 badge badge-danger">user-story</span></p><div class="entry-content"><p>So, I have an authentication module I wrote some time ago. Now I&#39;m seeing the errors of my way and writing unit tests for it. While writing unit tests, I have a hard time coming up with good names and good areas to test. For instance, I have things like</p><ul><li>RequiresLogin_should_redirect_when_not_logged_in</li><li>RequiresLogin_should_pass_through_when_logged_in</li><li>Login_should_work_when_given_proper_credentials</li></ul><p>Personally, I think it&#39;s a bit ugly, even though it seems &#34;proper&#34;. I also have trouble differentiating between tests by just scanning over them (I have to read the method name at least twice to know what just failed)</p><p>So, I thought that maybe instead of writing tests that purely test functionality, maybe write a set of tests that cover scenarios.</p><p>For instance, this is a test stub I came up with:</p><pre><code>public class Authentication_Bill
+{
+    public void Bill_has_no_account() 
+    { //assert username &#34;bill&#34; not in UserStore
+    }
+    public void Bill_attempts_to_post_comment_but_is_redirected_to_login()
+    { //Calls RequiredLogin and should redirect to login page
+    }
+    public void Bill_creates_account()
+    { //pretend the login page doubled as registration and he made an account. Add the account here
+    }
+    public void Bill_logs_in_with_new_account()
+    { //Login(&#34;bill&#34;, &#34;password&#34;). Assert not redirected to login page
+    }
+    public void Bill_can_now_post_comment()
+    { //Calls RequiredLogin, but should not kill request or redirect to login page
+    }
+}
+</code></pre><p>Is this a heard of pattern? I&#39;ve seen acceptance stories and such, but this is fundamentally different. The big difference is that I&#39;m coming up with scenarios to &#34;force&#34; the tests out. Rather than manually trying to come up with possible interactions that I&#39;ll need to test. Also, I know that this encourages unit tests that don&#39;t test exactly one method and class. I think this is OK though. Also, I&#39;m aware that this will cause problems for at least some testing frameworks, as they usually assume that tests are independent from each other and order doesn&#39;t matter(where it would in this case).</p><p>Anyway, is this an advisable pattern at all? Or, would this be a perfect fit for integration tests of my API rather than as &#34;unit&#34; tests? This is just in a personal project, so I&#39;m open to experiments that may or may not go well.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Yes, it is a good idea to give your tests names of the example scenarios you are testing. And using your unit testing tool for more than just unit tests maybe ok, too, lots of people do this with success (me too).</p><p>But no, it is definitely not a good idea to write your tests in a fashion where the order of execution of the tests matters. For example, NUnit allows the user to select interactively which test he/she wants to be executed, so this will not work the way intended any more.</p><p>You can avoid this easily here by separating the main testing part of each test (including the &#34;assert&#34;) from the parts which set your system in the correct initial state. Using your example above: write methods for creating an account, logging on and post a comment - without any assert. Then reuse those methods in different tests. You will also have to add some code to the <code>[Setup]</code> method of your test fixtures to make sure the system is in a properly defined initial state (for example, no accounts so far in the database, noone connected so far etc.).</p><p>EDIT: Of course, this seems to be against the &#34;story&#34; nature of your tests, but if you give your helper methods meaningful names, you find your stories within each test.</p><p>So, it should look like this:</p><pre><code>[TestFixture]
+public class Authentication_Bill
+{
+    [Setup]
+    public void Init()
+    {  // bring the system in a predefined state, with noone logged in so far
+    }
+
+    [Test]
+    public void Test_if_Bill_can_create_account()
+    {
+         CreateAccountForBill();
+         // assert that the account was created properly 
+    }
+
+    [Test]
+    public void Test_if_Bill_can_post_comment_after_login()
+    { 
+         // here is the &#34;story&#34; now
+         CreateAccountForBill();
+         LoginWithBillsAccount();
+         AddCommentForBill();
+        //  assert that the right things happened
+    }
+
+    private void CreateAccountForBill()
+    {
+        // ...
+    }
+    // ...
+}
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-interfacing-application-code-with-unit-tests/'>C++ &#8211; Interfacing application code with unit tests</a></li><li class="list-group-item"><a href='../c-brittle-unit-tests-due-to-need-for-excessive-mocking/'>C# &#8211; Brittle unit tests due to need for excessive mocking</a></li><li class="list-group-item"><a href='../unit-testing-help-in-ensuring-unit-tests-are-meaningful/'>Unit-testing &#8211; Help in ensuring unit tests are meaningful</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

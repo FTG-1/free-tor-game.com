@@ -1,0 +1,92 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Service locator vs Dependency Injection &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1080044 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1080044" class="post-1080044 software type-software status-publish hentry category-software tag-dependency-injection tag-design-patterns tag-inversion-of-control tag-object-oriented-design tag-service-locator"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Service locator vs Dependency Injection</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">dependency-injection</span><span class="mr-2 badge badge-info">design-patterns</span><span class="mr-2 badge badge-warning">inversion-of-control</span><span class="mr-2 badge badge-primary">object-oriented-design</span><span class="mr-2 badge badge-danger">service-locator</span></p><div class="entry-content"><p>I have a class which acts as a Adaptor between an HTTP request and our Application&#39;s custom domain request.<br /> So every Http request element: URI, headers, content are mapped to our customized domain object elements.</p><p>Another class DataMapper which performs serialization/deserilaiztion of content.<br /> This class is used by the adaptor to encode/decode content of HttpRequest.</p><p><strong>DataMapper</strong></p><pre><code>public abstract class DataMapper {
+
+    /**
+     * Factory method to create Data mapper types
+     * @param mediaType: Type for which Datamapper is to be created
+     * @return
+     */
+    public static DataMapper getMapper(String mediaType) {
+        MediaType type = MediaType.findType(mediaType); 
+
+        switch(type) {
+
+        case JSON:
+            return new JSONDataMapper();
+
+        case XML:
+            return new XMLDataMapper();
+
+        }
+        throw new IllegalArgumentException(&#34;Invalid media Type: &#34; + mediaType );
+
+    }
+
+    /**
+     * Serialize general obj to XML
+     * 
+     */
+    public abstract String serialize(Object ob);
+
+    /**
+     * Deserialize general obj to XML
+     * 
+     */
+    public abstract Object deserialize(String obj);
+
+}
+</code></pre><p><strong>Adaptor</strong></p><pre><code>public class HttpToCustomDomainConverter {
+
+    private DataMapper dataMapper;     
+
+    /**
+     * @param httpRequest: HTTP request
+     * @param domainReq: Domain request 
+     * @return nothing
+     * @return Converts HTTP request to Domain Request
+     */
+    public void httpToCustomDomainRequest(HttpServletRequest httpRequest, CustomDomainRequest domainReq) {
+
+        domainReq.setRequestIdentifier(httpRequest.getHeader(&#34;X-Domain-RI&#34;));
+
+        String acceptType = httpRequest.getHeader(&#34;Accept&#34;);
+        String contentTypeHeader = httpRequest.getContentType();
+
+        String serializedPayload = getPayload(httpRequest, contentType);
+
+        dataMapper = DataMapper.getMapper(contentType);
+
+        switch(httpMethod){
+
+        case POST:
+        case PUT:
+
+            Object content = dataMapper.deserialize(serializedPayload));
+            domainReq.setContent(content);
+
+            break;
+
+        case GET:
+        case DELETE:
+            break;
+        }
+
+        // ........
+   }   
+}
+</code></pre><p><strong>Question:</strong></p><p>I want my code to follow SOLID principles, the one I am worried about in this is Dependency Injection.</p><pre><code>dataMapper = DataMapper.getMapper(contentType);
+dataMapper.deserialize(serializedPayload));
+</code></pre><p>Here I take out http requestContentType header and then find it&#39;s corresponding DataMapper (XML or JSON) and then serialize/deserialize content.</p><p>So shall I pass the specific implementation of DataMapper (XmlDataMapper or JsonDataMapper) in the constructor of this class to follow DI.</p><p>Or my code is correct in locating the DataMapper at run time based on contentType in request.</p><p>Any advice is appreciated.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Your line,</p><blockquote><p>I want my code to follow SOLID principles, the one I am worried about in this is Dependency Injection.</p></blockquote><p>is confusing. Are you worried that it&#39;s not using dependency injection (DI)? If so, I&#39;d say you are right to consider it, but you may not be right to be worried.</p><p>By using this service locator, rather than using DI, then you are potentially making your code harder to test as you cannot mock that data mapper during the tests. However, if these mappers are side-effect free, then you may have no need to mock them. DI purists, such as myself, might cringe at this locator, but pragmatically, it might be your best choice here.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../ioc-containers-and-service-locator-pattern/'>IoC containers and service locator pattern</a></li><li class="list-group-item"><a href='../xml-serialization-and-deserialization-complex-situation/'>Xml serialization and deserialization complex situation</a></li><li class="list-group-item"><a href='../c-ambient-dependency-injection-through-static-service-locator/'>C# &#8211; Ambient dependency injection through static service locator</a></li><li class="list-group-item"><a href='../java-implementing-strategy-pattern-multiple-variables/'>Java &#8211; Implementing strategy pattern multiple variables</a></li><li class="list-group-item"><a href='../whats-the-difference-between-using-dependency-injection-with-a-container-and-using-a-service-locator/'>What&#8217;s the difference between using dependency injection with a container and using a service locator</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

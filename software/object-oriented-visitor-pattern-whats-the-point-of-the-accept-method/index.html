@@ -1,0 +1,62 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Object-oriented &#8211; Visitor Pattern: what&#8217;s the point of the `accept` method &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1069432 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1069432" class="post-1069432 software type-software status-publish hentry category-software tag-design-patterns tag-object-oriented tag-object-oriented-design tag-visitor-pattern"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Object-oriented &#8211; Visitor Pattern: what&#8217;s the point of the `accept` method</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">design-patterns</span><span class="mr-2 badge badge-info">object-oriented</span><span class="mr-2 badge badge-warning">object-oriented-design</span><span class="mr-2 badge badge-primary">visitor-pattern</span></p><div class="entry-content"><p>I&#39;m trying to fully understand the visitor pattern. What I&#39;ve learnt so far (correct me if I&#39;m wrong) is:</p><ul><li>It&#39;s about adding operations to classes, without modifying the source code of those classes. Or put another way, to bend the OOP approach to have functions and data structures separated.</li><li>It&#39;s a common misunderstanding that it has to do with hierarchies of objects (although it can be very useful in that case).</li></ul><p>I think I get it, but there is a thing that looks unnecessary to me, and that&#39;s the <code>accept</code> method in the classes &#34;to be visited&#34;. Let&#39;s set up a small example in Java. First the class hierarchy to be enriched with operations, but it&#39;s not to be modified:</p><pre><code>interface Animal {
+    void accept(AnimalVisitor visitor);
+}
+
+class Dog implements Animal {
+    void accept(AnimalVisitor visitor) {
+        visitor.visitDog(this);
+    }    
+}
+
+class Cat implements Animal {
+    void accept(AnimalVisitor visitor) {
+        visitor.visitCat(this);
+    }    
+}
+</code></pre><p>Then the visitor interface and a dummy implementation of that interface, representing an operation to make some sound.</p><pre><code>interface AnimalVisitor {
+    // These methods could be just called &#34;visit&#34; and rely on overloading,
+    void visitDog(Dog dog);
+    void visitCat(Cat cat);
+}
+
+class MakeSoundVisitor implements AnimalVisitor {
+    void visitDog(Dog dog) {
+        // In a real case you&#39;d obviously do something with the dog object
+        System.out.println(&#34;bark! bark bark!!&#34;);
+    }
+
+    void visitCat(Cat cat) {
+        System.out.println(&#34;meow meeeoooww!!&#34;);
+    }
+}
+</code></pre><p>And then an usage of all of this would be:</p><pre><code>var makeSoundVisitor = new MakeSoundVisitor();
+var cat = new Cat();
+var dog = new Dog();
+
+cat.accept(makeSoundVisitor);
+dog.accept(makeSoundVisitor);
+</code></pre><p>But I really don&#39;t see the point of that <code>accept</code> call. If you&#39;ve got the visitor and the objects to be visited, why not just pass these objects directly to the visitor and avoid the indirection? You could even get rid of the <code>accept</code> method on the <code>Animal</code> interface. Something like this:</p><pre><code>var makeSoundVisitor = new MakeSoundVisitor();
+var cat = new Cat();
+var dog = new Dog();
+
+makeSoundVisitor.visitCat(cat);
+makeSoundVisitor.visitDog(dog);
+</code></pre><p>Sources:</p><ul><li><a href="https://craftinginterpreters.com/representing-code.html#the-visitor-pattern" rel="noreferrer">Crafting Interpreters: The visitor pattern</a></li><li><a href="https://en.wikipedia.org/wiki/Visitor_pattern" rel="noreferrer">Wikipedia</a></li><li>Head First Design Patterns</li></ul></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>In your simple example, you know exactly the real type of the object on which you invoke the visitor and can therefore chose yourself the right visitor method:</p><pre><code>makeSoundVisitor.visitCat(cat);      // You know that cat is a Cat
+makeSoundVisitor.visitDog(dog);      // You know that dog is a Dog
+</code></pre><p>But what if you don&#39;t know the type of the object?  For example</p><pre><code>Animal pet = getRandomAnimal();  
+</code></pre><p>How would you now invoke your simplified visitor without the <code>accept()</code> method ?  You&#39;d probably need to find out the real type of <code>pet</code> first, and then call <code>visitDog()</code> or <code>visitCat()</code> with a downcast. This is all very cumbersome and error-prone.</p><p>With the classical visitor pattern, it&#39;s just the beauty of polymorphism that <code>accept()</code> allows:</p><pre><code>pet.accept(makeSoundVisitor);
+</code></pre><p>The underlying technique of <a href="https://en.wikipedia.org/wiki/Double_dispatch" rel="noreferrer">double dispatch</a> is worth to be known outside the visitor context.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-using-visitor-pattern-with-large-object-hierarchy/'>C# &#8211; Using visitor pattern with large object hierarchy</a></li><li class="list-group-item"><a href='../java-how-to-solve-cyclic-dependencies-in-a-visitor-pattern/'>Java &#8211; How to solve cyclic dependencies in a visitor pattern</a></li><li class="list-group-item"><a href='../what-makes-the-iterator-a-design-pattern/'>What Makes the Iterator a Design Pattern</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

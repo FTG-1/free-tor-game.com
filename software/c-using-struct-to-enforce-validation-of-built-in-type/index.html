@@ -1,0 +1,77 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Using struct to enforce validation of built-in type &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1081685 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1081685" class="post-1081685 software type-software status-publish hentry category-software tag-c tag-net"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Using struct to enforce validation of built-in type</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">net</span></p><div class="entry-content"><p>Commonly domain objects have properties which can be represented by a built-in type but whose valid values are a subset of the values which may be represented by that type.</p><p>In these cases, the value can be stored using the built-in type but it is necessary to ensure values are always validated at the point of entry, otherwise we might end up working with an invalid value.</p><p>One way to solve this is to store the value as a custom <code>struct</code> which has a single <code>private readonly</code> backing field of the built-in type and whose constructor validates the provided value. We can then always be sure of only using validated values by using this <code>struct</code> type.</p><p>We can also provide cast operators from and to the underlying built-in type so that values can seamlessly enter and exit as the underlying type.</p><p>Take as an example a situation where we need to represent the name of a domain object, and valid values are any string which is between 1 and 255 characters in length inclusive. We could represent this using the following struct:</p><pre><code>public struct ValidatedName : IEquatable&lt;ValidatedName&gt;
+{
+    private readonly string _value;
+
+    private ValidatedName(string name)
+    {
+        _value = name;
+    }
+
+    public static bool IsValid(string name)
+    {
+        return !String.IsNullOrEmpty(name) &amp;&amp; name.Length &lt;= 255;
+    }
+
+    public bool Equals(ValidatedName other)
+    {
+        return _value == other._value;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj is ValidatedName)
+        {
+            return Equals((ValidatedName)obj);
+        }
+        return false;
+    }
+
+    public static implicit operator string(ValidatedName x)
+    {
+        return x.ToString();
+    }
+
+    public static explicit operator ValidatedName(string x)
+    {
+        if (IsValid(x))
+        {
+            return new ValidatedName(x);
+        }
+        throw new InvalidCastException();
+    }
+
+    public static bool operator ==(ValidatedName x, ValidatedName y)
+    {
+        return x.Equals(y);
+    }
+
+    public static bool operator !=(ValidatedName x, ValidatedName y)
+    {
+        return !x.Equals(y);
+    }
+
+    public override int GetHashCode()
+    {
+        return _value.GetHashCode();
+    }
+
+    public override string ToString()
+    {
+        return _value;
+    }
+}
+</code></pre><p>The example shows the to-<code>string</code> cast as <code>implicit</code> as this can never fail but the from-<code>string</code> cast as <code>explicit</code> as this will throw for invalid values, but of course these could both be either <code>implicit</code> or <code>explicit</code>.</p><p>Note also that one can only initialize this struct by way of a cast from <code>string</code>, but one can test whether such a cast will fail in advance using the <code>IsValid</code> <code>static</code> method.</p><p>This would seem to be a good pattern to enforce validation of domain values which can be represented by simple types, but I don&#39;t see it used often or suggested and I&#39;m interested as to why.</p><p>So my question is: what do you see as being the advantages and disadvantages of using this pattern, and why?</p><p>If you feel that this is a bad pattern, I would like to understand why and also what you feel is the best alternative.</p><p><strong>NB</strong> I originally asked <a href="https://stackoverflow.com/questions/27799135/pros-cons-of-using-struct-to-enforce-validation-of-built-in-type">this question on Stack Overflow</a> but it was put on hold as primarily opinion-based (ironically subjective in itself) &#8211; hopefully it can enjoy more success here.</p><p>Above is the original text, below a couple more thoughts, partly in response to the answers received there before it went on hold:</p><ul><li>One of the major points made by the answers was around the amount of boiler plate code necessary for the above pattern, especially when many such types are required. However in defence of the pattern, this could be largely automated using templates and actually to me it doesn&#39;t seem too bad anyway, but that is just my opinion.</li><li>From a conceptual point of view, does it not seem strange when working with a strongly-typed language such as C# to only apply the strongly-typed principle to composite values, rather than extending it to values which can be represented by an instance of a built-in type?</li></ul></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>This is fairly common in ML-style languages like Standard ML/OCaml/F#/Haskell where it&#39;s much easier to create the wrapper types. It provides you with two benefits:</p><ul><li>It allows a piece of code to enforce that a string has undergone validation, without having to take care of that validation itself.</li><li>It allows you to localize the validation code in one place. If a <code>ValidatedName</code> ever contains an invalid value, you know the error is in the <code>IsValid</code> method.</li></ul><p>If you get the <code>IsValid</code> method right, you have a guarantee that any function that receives a <code>ValidatedName</code> is in fact receiving a validated name.</p><p>If you need to do string manipulations you can add a public method that accepts a function that takes a String (the value of the <code>ValidatedName</code>) and returns a String (the new value) and validates the result of applying the function. That eliminates the boilerplate of getting the underlying String value and re-wrapping it.</p><p>A related use for wrapping values is to track their provenance. E.g. C-based OS APIs sometimes give handles for resources as integers. You can wrap the OS APIs to instead use a <code>Handle</code> structure and only provide access to the constructor to that part of the code. If the code that produces the <code>Handle</code>s is correct, then only valid handles will ever be used.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../what-type-of-encoding-can-i-use-to-make-a-string-shorter/'>What type of encoding can I use to make a string shorter</a></li><li class="list-group-item"><a href='../c-how-does-go-improve-productivity-with-implicit-interfaces-and-how-does-that-compare-with-cs-notion-of-extension-methods/'>C# &#8211; How does Go improve productivity with &#8220;implicit&#8221; interfaces, and how does that compare with C#&#8217;s notion of Extension Methods</a></li><li class="list-group-item"><a href='../c-having-an-inherited-function-return-the-derived-type-instead-of-the-base-type/'>C# &#8211; Having an inherited function return the derived type instead of the base type</a></li><li class="list-group-item"><a href='../c-is-it-a-good-idea-to-use-strings-in-a-struct-as-values-to-static-properties/'>C# &#8211; Is it a good idea to use strings in a struct as values to static properties</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

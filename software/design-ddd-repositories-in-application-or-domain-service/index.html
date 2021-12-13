@@ -1,0 +1,90 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Design &#8211; DDD repositories in application or domain service &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1064094 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1064094" class="post-1064094 software type-software status-publish hentry category-software tag-design tag-domain-driven-design"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Design &#8211; DDD repositories in application or domain service</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">design</span><span class="mr-2 badge badge-info">domain-driven-design</span></p><div class="entry-content"><p>I m studying DDD these days, and I m having some questions concerning how to manage repositories with DDD.</p><p>Actually, I have met two possibilies :</p><p><strong>First one</strong></p><p>The first way of manage services I&#39;ve read is to inject a repository and a domain model in an application service.</p><p>This way, in one of the application service methods, we call a domain service method (checking business rules) and if the condition is good, the repository is called on a special method to persist / retrieve the entity from the database.</p><p>A simple way of doing this could be :</p><pre><code>class ApplicationService{
+
+  constructor(domainService, repository){
+    this.domainService = domainService
+    this.repository = repository
+  }
+
+  postAction(data){
+    if(this.domainService.validateRules(data)){
+      this.repository.persist(new Entity(data.name, data.surname))
+    }
+    // ...
+  }
+
+}
+</code></pre><p><strong>Second one</strong></p><p>The second possibility is to inject the repository inside of the domainService instead, and to only use the repository through the domain service :</p><pre><code>class ApplicationService{
+
+  constructor(domainService){
+    this.domainService = domainService
+  }
+
+  postAction(data){
+    if(this.domainService.persist(data)){
+      console.log(&#39;all is good&#39;)
+    }
+    // ...
+  }
+
+}
+
+class DomainService{
+
+  constructor(repository){
+    this.repository = repository
+  }
+
+  persist(data){
+    if(this.validateRules(data)){
+      this.repository.save(new Entity(data.name))
+    }
+  }
+
+  validateRules(data){
+    // returns a rule matching
+  }
+
+}
+</code></pre><p>From now, I m not able to distinguish which one is the best (if there&#39;s one best) or what they imply both in their context.</p><p>Can you provide me example where one could be better than the other and why ?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>The short answer is - you can use repositories from an application service, or a domain service - but it is important to consider why, and how, you are doing so.</p><h2>Purpose of a Domain Service</h2><p>Domain Services should encapsulate domain concepts/logic - as such, the the domain service method:</p><pre><code>domainService.persist(data)
+</code></pre><p>does not belong on a domain service, as <code>persist</code> is not a part of the <em>ubiquitious language</em> and the operation of persistence is not part of the domain business logic.</p><p>Generally, domain services are useful when you have business rules/logic that require coordinating or working with more than one aggregate.  If the logic is only involving one aggregate, it should be in a method on that aggregate&#39;s entities.</p><h2>Repositories in Application Services</h2><p>So in that sense, in your example, I prefer your first option - but even there there is room for improvement, as your domain service is accepting raw data from the api - why should the domain service know about the structure of <code>data</code>?.  In addition, the data appears to only be related to a single aggregate, so there is limited value in using a domain service for that - generally I&#39;d put the validation inside the entity constructor. e.g.</p><pre><code>postAction(data){
+
+  Entity entity = new Entity(data.name, data.surname);
+
+  this.repository.persist(entity);
+
+  // ...
+}
+</code></pre><p>and throw an exception if it&#39;s invalid.  Depending on your application framework, it may be simple to have a consistent mechanism for catching the exception and mapping it to the appropriate response for the api type - e.g. for a REST api, return a 400 status code.</p><h2>Repositories in Domain Services</h2><p>Notwithstanding the above, sometimes it is useful to inject and use a repository in a domain service, but only if your repositories are implemented such that they accept and return aggregate roots only, and also where you are abstracting logic that involves multiple aggregates. e.g.</p><pre><code>postAction(data){
+
+  this.domainService.doSomeBusinessProcess(data.name, data.surname, data.otherAggregateId);
+
+  // ...
+}
+</code></pre><p>the implementation of the domain service would look like:</p><pre><code>doSomeBusinessProcess(name, surname, otherAggregateId) {
+
+  OtherEntity otherEntity = this.otherEntityRepository.get(otherAggregateId);
+
+  Entity entity = this.entityFactory.create(name, surname);
+
+  int calculationResult = this.someCalculationMethod(entity, otherEntity);
+
+  entity.applyCalculationResultWithBusinessMeaningfulName(calculationResult);
+
+  this.entityRepository.add(entity);
+
+}
+</code></pre><h2>Conclusion</h2><p>The key here is that the domain service <em>encapsulates</em> a process that is part of the ubiquitous language.  In order to fulfill its role, it needs to use repositories - and it&#39;s perfectly fine to do so.</p><p>But adding a domain service that wraps a repository with a method called <code>persist</code> adds little value.</p><p>On that basis, if your application service is expressing a use case that calls for only working with a single aggregate, there is no problem using the repository directly from the application service.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../ddd-a-rookies-unanswered-questions/'>DDD – A rookie’s unanswered questions</a></li><li class="list-group-item"><a href='../design-ddd-domain-model-factory-design/'>Design &#8211; DDD: Domain Model Factory Design</a></li><li class="list-group-item"><a href='../php-applying-ddd-to-a-simple-app-with-a-configuration-twist/'>Php &#8211; Applying DDD to a simple app with a configuration twist</a></li><li class="list-group-item"><a href='../should-i-use-the-repository-in-the-domain-object-or-push-the-domain-object-back-to-the-service-layer/'>Should I use the repository in the Domain Object or push the Domain Object back to the Service Layer</a></li><li class="list-group-item"><a href='../c-in-ddd-should-repositories-expose-an-entity-or-domain-objects/'>C# &#8211; in DDD, should repositories expose an entity or domain objects</a></li><li class="list-group-item"><a href='../php-ddd-creating-reusable-modules-and-service-type-distinctions-domain-infrastructure-application/'>Php &#8211; DDD: Creating reusable modules and service type distinctions (Domain, Infrastructure, Application)</a></li><li class="list-group-item"><a href='../c-architecture-how-to-pass-models-between-controllers-services-and-repositories/'>C# &#8211; Architecture: How to pass models between controllers, services and repositories</a></li><li class="list-group-item"><a href='../architecture-where-does-data-import-task-service-fit-in-ddd/'>Architecture &#8211; Where does Data import task/service fit in DDD</a></li><li class="list-group-item"><a href='../object-oriented-ddd-injecting-services-on-entity-methods-calls/'>Object-oriented &#8211; DDD Injecting Services on Entity Methods Calls</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

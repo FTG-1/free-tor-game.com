@@ -1,0 +1,95 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Javascript &#8211; Is Node.js correct choice for JSON parsing and IO driven &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1073754 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1073754" class="post-1073754 software type-software status-publish hentry category-software tag-javascript tag-node-js tag-profiling tag-scalability"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Javascript &#8211; Is Node.js correct choice for JSON parsing and IO driven</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">javascript</span><span class="mr-2 badge badge-info">node.js</span><span class="mr-2 badge badge-warning">profiling</span><span class="mr-2 badge badge-primary">scalability</span></p><div class="entry-content"><p>My program should perform following task:<br /> It listen on http port after getting request it does following things.</p><ol><li>Connect to gearman</li><li>Parse gearman payload to JSON (Upto 100 bytes)</li><li>Connect to Redis</li><li>Parse redis payload to JSON  (256 bytes to 10KB. 80% cases it will ~256 bytes)</li><li>Put some data in MySQL</li><li>Put data in Redis server</li></ol><p>As my program seems to be IO driven. I have chosen nodesjs for developing. But after developing I am facing CPU hike related issue with nodejs.</p><p>My program taking 70%-100% cpu with 20 parallel clients. First I thought JSON parsing could be the issue. I was targetting near about 1K-3K request. As my redis server is able to process that may request in one second.</p><p>But for profiling I have started with one sample http server in node</p><p>Example code:</p><pre><code>var http = require(&#39;http&#39;);
+var url = require(&#34;url&#34;);
+http.createServer(function (req, res) {
+    var uri = url.parse(req.url).pathname;
+
+
+    var body = &#34;&#34;;
+
+    req.on(&#39;data&#39;, function (chunk) {
+        body += chunk;
+    });
+
+    req.on(&#39;end&#39;, function () {     
+        res.writeHead(200, {&#39;Content-Type&#39;: &#39;text/plain&#39;});            
+                res.end(&#39;hi vivek&#39;);
+    });
+
+
+}).listen(9097, &#34;127.0.0.1&#34;);
+</code></pre><p><strong>Now my concern is with this hello world http server. Node CPU usage is spiking b/w 17%-20%.</strong></p><pre><code>My node version is v0.10.0
+My OS is ubuntu 12.04
+</code></pre><p>My cpu information is</p><pre><code>processor   : 0
+vendor_id   : GenuineIntel
+cpu family  : 6
+model       : 23
+model name  : Intel(R) Core(TM)2 Duo CPU     E8400  @ 3.00GHz
+stepping    : 10
+microcode   : 0xa07
+cpu MHz     : 2992.491
+cache size  : 6144 KB
+physical id : 0
+siblings    : 2
+core id     : 0
+cpu cores   : 2
+apicid      : 0
+initial apicid  : 0
+fpu     : yes
+fpu_exception   : yes
+cpuid level : 13
+wp      : yes
+flags       : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx lm constant_tsc arch_perfmon pebs bts rep_good nopl aperfmperf pni dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm sse4_1 xsave lahf_lm dtherm tpr_shadow vnmi flexpriority
+bogomips    : 5984.98
+clflush size    : 64
+cache_alignment : 64
+address sizes   : 36 bits physical, 48 bits virtual
+power management:
+
+processor   : 1
+vendor_id   : GenuineIntel
+cpu family  : 6
+model       : 23
+model name  : Intel(R) Core(TM)2 Duo CPU     E8400  @ 3.00GHz
+stepping    : 10
+microcode   : 0xa07
+cpu MHz     : 2992.491
+cache size  : 6144 KB
+physical id : 0
+siblings    : 2
+core id     : 1
+cpu cores   : 2
+apicid      : 1
+initial apicid  : 1
+fpu     : yes
+fpu_exception   : yes
+cpuid level : 13
+wp      : yes
+flags       : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx lm constant_tsc arch_perfmon pebs bts rep_good nopl aperfmperf pni dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm sse4_1 xsave lahf_lm dtherm tpr_shadow vnmi flexpriority
+bogomips    : 5984.96
+clflush size    : 64
+cache_alignment : 64
+address sizes   : 36 bits physical, 48 bits virtual
+power management:
+</code></pre><p>My questions are:</p><ol><li>Is node correct choice for my problem description?</li><li><p>If nodejs is not correct choice for my problem description. What will be better alternative? As thread based approach will not scale for IO driven application.</p></li><li><p>How to find out what is causing that much CPU hike in complete integrated application and simple http program?</p></li><li>According to some node blog, I can support upto 10K parallel request with nodejs. But with if with only simple http server node is spiking b/w 20% cpu. How I will be able to support 10K user?</li></ol></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><h2>Is node correct choice for my problem description?</h2><p>Nodejs seems like a good fit to what you&#39;re doing. Node was built for exactly this sort of scenario. That&#39;s not to say other technologies wouldn&#39;t work as well.</p><p>Node is a young technology, and you often find yourself sacrificing comfort for performance. Often it&#39;s a lot more work, but once you learn how to work with it, it starts to be rewarding.</p><p>That said, other technologies might be able to accommodate your needs.</p><h3>Pros for node</h3><ul><li>Fast</li><li>Optimized for this sort of IO driven task</li><li>Has an enthusiastic community which is very interested in helping beginners.</li><li>Fun to work with (That&#39;s totally subjective and is my personal opinion).</li></ul><h3>Cons for node</h3><ul><li>Often has less stable and mature drivers. If you&#39;re writing a production project, this is a biggie in my opinion.</li><li>New, sometimes has rough edges, sometimes APIs change.</li><li>Often requires tweaking and reading source code to get working in a satisfactory way.</li></ul><h3>Your task:</h3><blockquote><p>Connect to gearman</p></blockquote><p>This node does nicely. <a href="https://github.com/mreinstein/node-gearman">node-gearman</a> works nicely, it&#39;s pretty stable.</p><blockquote><p>Parse gearman payload to JSON (Upto 100 bytes)</p></blockquote><p>JS engines have been and will be extremely fast at parsing JSON. This is because JSON is a subset of JavaScript object literal notation (hence the name!). V8, which is the engine node runs on does JSON processing reliably fast.</p><blockquote><p>Connect to Redis</p></blockquote><p><a href="https://github.com/mranney/node_redis">node-redis</a> lets you do that, it also works nicely.</p><blockquote><p>Parse redis payload to JSON (256 bytes to 10KB. 80% cases it will ~256 bytes)</p></blockquote><p>Again, JSON is not an issue to V8.</p><blockquote><p>Put some data in MySQL</p></blockquote><p><a href="https://github.com/felixge/node-mysql">node-mysql</a> is getting better, it still lacks support for prepared statements, but it does transactions, and emulates prepared statements with internal escaping.</p><blockquote><p>Put data in Redis server</p></blockquote><p>Again, <a href="https://github.com/mranney/node_redis">node-redis</a></p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/javascript-significance-and-role-of-node-js-in-web-development/'>Javascript &#8211; Significance and role of Node.js in Web development</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-use-cases-for-node-js-and-c/'>C# &#8211; Use-cases for node.js and c#</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/javascript-is-parsing-a-submitted-json-object-safe/'>Javascript &#8211; Is parsing a submitted JSON object safe</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/node-js-and-cpu-intensive-web-applications/'>Node.js and CPU intensive web applications</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

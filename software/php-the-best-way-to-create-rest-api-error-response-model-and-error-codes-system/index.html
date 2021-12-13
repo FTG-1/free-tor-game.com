@@ -1,0 +1,138 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Php &#8211;  the best way to create REST API error response model and error codes system &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1063759 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1063759" class="post-1063759 software type-software status-publish hentry category-software tag-api tag-mvc tag-php tag-rest"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Php &#8211;  the best way to create REST API error response model and error codes system</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">api</span><span class="mr-2 badge badge-info">mvc</span><span class="mr-2 badge badge-warning">PHP</span><span class="mr-2 badge badge-primary">rest</span></p><div class="entry-content"><p>My REST implementation will return errors in JSON with next structure:</p><pre><code>{
+ &#34;http_response&#34;:400,
+ &#34;dev_message&#34;:&#34;There is a problem&#34;,
+ &#34;message_for_user&#34;:&#34;Bad request&#34;,
+ &#34;some_internal_error_code&#34;:12345
+}
+</code></pre><p>I suggest to create special response model, where I can pass needed values for properties(dev_message, message_for_user, some_internal_error_code), and return them. In code it would be similar to this:</p><pre><code>$responseModel = new MyResponseModel(400,&#34;Something is bad&#34;, etc...);
+</code></pre><p>How this model should look like? Should I implement methods e.g. successResponse() where I&#39;ll pass only text information, and code will be default 200 there? I&#39;m stuck with this.<br /> And this is first part of my question: do I need to implement this model, is this good practise? Because for now, I&#39;m just returning arrays directly from code.</p><p>The second part is about error code system. Error codes will be described in documentation. But the problem I&#39;m encountering is in code.<br /> What is the best way to manage error codes? Should I write them inside model? Or it would be better to create separate service for handling this?</p><p><strong>UPDATE 1</strong></p><p>I&#39;ve implemented model class for response. It is similar Greg&#39;s answer, the same logic, but additionaly I have <strike>hardcoded</strike> written errors in model  and here it is how it looks like:</p><pre><code>    class ErrorResponse
+    {
+     const SOME_ENTITY_NOT_FOUND = 100;
+     protected $errorMessages = [100 =&gt; [&#34;error_message&#34; =&gt; &#34;That entity doesn&#39;t exist!&#34;]];
+
+     ...some code...
+    }
+</code></pre><p>Why I did this? And what for?</p><ol><li>It&#39;s looks cool in  code:<br /> <code>return new ErrorResponse(ErrorResponse::SOME_ENTITY_NOT_FOUND );</code></li><li>Easy to change error message. All messages are in one place instead of controller/service/etc or whatever you&#39;ll placed it.</li></ol><p>If you have any suggestions to improve this, please, comment.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>In this situation, I always think of the interface first, then write PHP code to support it.</p><ol><li>It&#39;s a REST API, so meaningful HTTP status codes are a must.</li><li>You want consistent, flexible data structures being sent to and from the client.</li></ol><p>Let&#39;s think of all the things that could go wrong and their HTTP status codes:</p><ul><li>The server throws an error (500)</li><li>Authentication failure (401)</li><li>The resource requested was not found (404)</li><li>The data you are modifying has been changed since you loaded it (409)</li><li>Validation errors when saving data (422)</li><li>The client has exceeded their request rate (429)</li><li>Unsupported file type (415)</li></ul><p>Note, there are others which you can research later.</p><p>For most of the failure conditions, there is only one error message to be returned. The <code>422 Unprocessable Entity</code> response, which I&#39;ve used for &#34;validation errors&#34; could return more than one error --- One or more errors per form field.</p><p>We need a flexible data structure for error responses.</p><p>Take as an example, the <code>500 Internal Server Error</code>:</p><pre><code>HTTP/1.1 500 Internal Server Error
+Content-Type: text/json
+Date: Fri, 16 Jan 2015 17:44:25 GMT
+... other headers omitted ...
+
+{
+    &#34;errors&#34;: {
+        &#34;general&#34;: [
+            &#34;Something went catastrophically wrong on the server! BWOOP! BWOOP! BWOOP!&#34;
+        ]
+    }
+}
+</code></pre><p>Contrast that with simple validation errors when trying to POST something to the server:</p><pre><code>HTTP/1.1 422 Unprocessable Entity
+Content-Type: text/json
+Date: Fri, 16 Jan 2015 17:44:25 GMT
+... other headers omitted ...
+
+{
+    &#34;errors&#34;: {
+        &#34;first_name&#34;: [
+            &#34;is required&#34;
+        ],
+        &#34;telephone&#34;: [
+            &#34;should not exceed 12 characters&#34;,
+            &#34;is not in the correct format&#34;
+        ]
+    }
+}
+</code></pre><p>They key here is the content type being <code>text/json</code>. This tells client applications that they can decode the response body with a JSON decoder. If, say, an internal server error isn&#39;t caught and your generic &#34;Something went wrong&#34; web page gets delivered instead, the content type should be <code>text/html; charset=utf-8</code> so client applications won&#39;t attempt to decode the response body as JSON.</p><p>This looks all find and dandy, until you need to support <a href="http://json-p.org/" rel="noreferrer">JSONP</a> responses. You must return a <code>200 OK</code> response, even for failures. In this case you&#39;ll have to detect that the client is requesting a JSONP response (usually by detecting a URL request parameter called <code>callback</code>) and change up the data structure a bit:</p><p>(GET /posts/123?callback=displayBlogPost)</p><p><code>&lt;script type=&#34;text/javascript&#34; src=&#34;/posts/123?callback=displayBlogPost&#34;&gt;&lt;/script&gt;</code></p><pre><code>HTTP/1.1 200 OK
+Content-Type: text/javascript
+Date: Fri, 16 Jan 2015 17:44:25 GMT
+... other headers omitted ...
+
+displayBlogPost({
+    &#34;status&#34;: 500,
+    &#34;data&#34;: {
+        &#34;errors&#34;: {
+            &#34;general&#34;: [
+                &#34;Something went catastrophically wrong on the server! BWOOP! BWOOP! BWOOP!&#34;
+            ]
+        }
+    }
+});
+</code></pre><p>Then the response handler on the client (in a web browser) should have a global JavaScript function called <code>displayBlogPost</code> which accepts a single argument. This function would have to determine if the response was successful:</p><pre><code>function displayBlogPost(response) {
+    if (response.status == 500) {
+        alert(response.data.errors.general[0]);
+    }
+}
+</code></pre><p>So we&#39;ve taken care of the client. Now, let&#39;s take care of the server.</p><pre><code>&lt;?php
+
+class ResponseError
+{
+    const STATUS_INTERNAL_SERVER_ERROR = 500;
+    const STATUS_UNPROCESSABLE_ENTITY = 422;
+
+    private $status;
+    private $messages;
+
+    public function ResponseError($status, $message = null)
+    {
+        $this-&gt;status = $status;
+
+        if (isset($message)) {
+            $this-&gt;messages = array(
+                &#39;general&#39; =&gt; array($message)
+            );
+        } else {
+            $this-&gt;messages = array();
+        }
+    }
+
+    public function addMessage($key, $message)
+    {
+        if (!isset($message)) {
+            $message = $key;
+            $key = &#39;general&#39;;
+        }
+
+        if (!isset($this-&gt;messages[$key])) {
+            $this-&gt;messages[$key] = array();
+        }
+
+        $this-&gt;messages[$key][] = $message;
+    }
+
+    public function getMessages()
+    {
+        return $this-&gt;messages;
+    }
+
+    public function getStatus()
+    {
+        return $this-&gt;status;
+    }
+}
+</code></pre><p>And to use this in the case of a server error:</p><pre><code>try {
+    // some code that throws an exception
+}
+catch (Exception $ex) {
+    return new ResponseError(ResponseError::STATUS_INTERNAL_SERVER_ERROR, $ex-&gt;message);
+}
+</code></pre><p>Or when validating user input:</p><pre><code>// Validate some input from the user, and it is invalid:
+
+$response = new ResponseError(ResponseError::STATUS_UNPROCESSABLE_ENTITY);
+$response-&gt;addMessage(&#39;first_name&#39;, &#39;is required&#39;);
+$response-&gt;addMessage(&#39;telephone&#39;, &#39;should not exceed 12 characters&#39;);
+$response-&gt;addMessage(&#39;telephone&#39;, &#39;is not in the correct format&#39;);
+
+return $response;
+</code></pre><p>After that, you just need something that takes the returned response object and converts it into JSON and sends the response on its merry way.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../rest-should-http-status-codes-be-used-to-represent-business-logic-errors-on-a-server/'>Rest &#8211; Should HTTP status codes be used to represent business logic errors on a server</a></li><li class="list-group-item"><a href='../java-spring4-error-handling-and-http-status-codes-returned-for-rest-services/'>Java &#8211; Spring4 error handling and HTTP status codes returned for REST services</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

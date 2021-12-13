@@ -1,0 +1,66 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Object-oriented &#8211; How exactly are getters and setters defined &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1087330 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1087330" class="post-1087330 software type-software status-publish hentry category-software tag-encapsulation tag-getters tag-object-oriented tag-setters tag-terminology"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Object-oriented &#8211; How exactly are getters and setters defined</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">encapsulation</span><span class="mr-2 badge badge-info">getters</span><span class="mr-2 badge badge-warning">object-oriented</span><span class="mr-2 badge badge-primary">setters</span><span class="mr-2 badge badge-danger">terminology</span></p><div class="entry-content"><p><em>Note: Questions with similar title have been asked before, but please read the full text before claiming that this is a duplicate.</em></p><p>Since everybody in OOP uses the terms <em>getter</em> and <em>setter</em>, I would expect they<br /> have a well-defined meaning. But what I found are basically two statements that<br /> are somewhat contradictory:</p><p>(A) They provide read or write access to a specific attribute.</p><p>This is what practically all getters and setters I have seen in production code do. A getter returns the value of an attribute and a setter sets the value of one attribute.</p><p>On the other hand:</p><p>(B) They allow hiding the internal representation of data inside a class while still being able to access and modify it.</p><p>An example in Java:</p><pre><code>private double x, y;
+public double getX() { return x; }
+public double getY() { return y; }
+</code></pre><p>This obviously conforms with (A). Now according to (B) we could change the data representation:</p><pre><code>private double angle, distance;
+public double getX() { return distance * Math.cos(angle); }
+public double getY() { return distance * Math.sin(angle); }
+</code></pre><p>This no longer conforms with (A) because there are no longer attributes named X and Y and the return values are the result of a calculation. But I would still call them getters.</p><p>Some more examples:</p><ol><li><p>This is obviously a setter:</p><pre><code>private double length;
+public void setLength(double newLength) {
+    length = newLength;
+}
+</code></pre></li><li><p>Most definitions allow the setter to do some checks:</p><pre><code>private double length;
+public void setLength(double newLength) {
+    length = (newLength &gt; 0) ? newLength : 0;
+}
+</code></pre></li><li><p>Not sure about this one. Note that there could be multiple setters for one attribute:</p><pre><code>private double length;
+public void setLengthInInches(double newLength) {
+    length = 25.4 * newLength;
+}
+</code></pre></li><li><p>This one sets two attributes:</p><pre><code>private double length;
+private UnitType lengthUnit;
+public void setLengthInInches(double newLength) {
+    length = newLength;
+    lengthUnit = UNIT_INCH;
+}
+</code></pre></li><li><p>Similar to 4 but with two arguments:</p><pre><code>private double length;
+private UnitType lengthUnit;
+public void setLength(double newLength, UnitType newLengthUnit) {
+    length = newLength;
+    lengthUnit = newLengthUnit;
+}
+</code></pre></li><li><p>Another variation:</p><pre><code>private double length;
+private UnitType lengthUnit;
+public void setLength(LengthType newLength) {
+    length = newLength.getValue();
+    lengthUnit = newLength.getUnit();
+}
+</code></pre></li><li><p>Here the attribute does not exist but can be calculated:</p><pre><code>private double start;
+private double end;
+public void setLength(double newLength) {
+    end = start + newLength;
+}
+</code></pre></li><li><p>What about this one:</p><pre><code>private int productId;
+private Price price;
+public void setLength(double newLength) {
+    productId = getProductIdByLength(newLength);
+    price = BASE_PRICE + PRICE_PER_LENGTH_UNIT * newLength;
+}
+</code></pre></li><li><p>And this one:</p><pre><code>private double length;
+public void setLength(SomeInput input) {
+    length = input.doSomeComplicatedStuffToCalculateLength();
+}
+</code></pre></li></ol><p>Which of these are setters and which are not?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I like the C#/Ruby/Python/etc. terminology of <a href="https://en.wikipedia.org/wiki/Property_(programming)" rel="nofollow noreferrer">Properties</a>.  I think this helps disambiguate the concept a bit.  In C# properties are a nice way to write formalized setters and getters.  In Java properties are a matter of convention (i.e. JavaBeans with the set/get pair sharing the same name).</p><p>Properties are exposed <em>logical</em> values that you intend for other code to interact with.  As many of your examples demonstrated, internal representation is not required to match the <em>logical</em> representation.</p><p>As a general rule, you will find that keeping the implementation of the properties as simple as possible will give you the best option to maintain your software.  Things that are perfectly acceptable in setters/getters:</p><ul><li>Simple representation of internal state (i.e. exposing a class field)</li><li>Constraining values (setter forces value within a range)</li><li>Simple conversions to/from internal units (i.e. get/set <code>XInYards</code> can convert internal representation in meters to yards)</li><li>Calculated read only properties</li></ul><p>The stuff that can get you in trouble include:</p><ul><li>Mutating multiple properties when you set one</li><li>Performing actions that require try/catch semantics in a getter</li></ul><p>The assumption with properties is that setting and getting values is very simple, very fast, and safe.  In multiple languages, you can bind UI elements directly to your properties (even JavaBeans).  If your logic is sufficiently complex enough, it would be better to provide a proper method to assign or retrieve information.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-if-a-variable-has-getter-and-setter-should-it-be-public/'>C++ &#8211; If a variable has getter and setter, should it be public</a></li><li class="list-group-item"><a href='../object-oriented-object-oriented-programming-getters-setters-or-logical-names/'>Object-oriented &#8211; Object Oriented Programming: getters/setters or logical names</a></li><li class="list-group-item"><a href='../object-oriented-data-classes-getters-and-setters-or-different-method-design/'>Object-oriented &#8211; Data classes: getters and setters or different method design</a></li><li class="list-group-item"><a href='../object-oriented-what-should-be-allowed-inside-getters-and-setters/'>Object-oriented &#8211; What should be allowed inside getters and setters</a></li><li class="list-group-item"><a href='../object-oriented-can-renaming-a-method-preserve-encapsulation/'>Object-oriented &#8211; Can renaming a method preserve encapsulation</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

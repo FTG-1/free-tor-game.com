@@ -1,0 +1,101 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Compression algorithm for non-repeating integers &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1071409 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1071409" class="post-1071409 software type-software status-publish hentry category-software tag-algorithms tag-compression"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Compression algorithm for non-repeating integers</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">algorithms</span><span class="mr-2 badge badge-info">compression</span></p><div class="entry-content"><p>I have an array of unique integers, for example: {1,3,,7,9,31,46,&#8230;}, which I want to compress. I have found compression techniques and algorithms for the list of integers, where some integers are repeated but I couldn&#39;t find any compression technique for list of unique integers. I would appreciate if anyone could help me to get an idea so that I could start with.</p><p>I have 1024 datasets of size 512 where where each value is a distinct integer between 1 and N (or 0 and N-1), i.e., a permutation of a set of N consecutive integers. I also assume that there is given a tolerance x and so, I want to find a compressed representation that allows the original values to be recovered with deviations no greater than x.<br /> Thanks.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>You have to consider that <em>compression</em> - by which I assume you mean <em>lossless compression</em> - equates to the removal of <strong>redundant information</strong>. If you write 12,12,12,12,12 there&#39;s redundance and you can write it as 12*5.</p><p>So you need to find the information that you can make redundant. For example the sequence 1,2,3,4,5,6,7,18,19,20,21 is nonrepeating, yet there is redundance and you can &#34;compress&#34; it as 1,7,18,4 (storing the first element of an increasing sequence and the number of elements) or 1,7,18,21 (storing the first and last elements of all sequences).</p><p>Then you must keep in mind that this kind of compression a <em>trade</em> - instead of using a set of symbols with some known occurrence probability you use another set, with a different spectrum, organized so that the <em>most likely sequences</em> map to the <em>shortest symbols</em>, even if on average the symbols are bulkier. <strong>But there will always be a killer sequence</strong> to which your compression will be applied with little result, or even catastrophic results (as <em>whatsitsname</em> remarked, most random sequences will turn out to become <em>larger</em>; which is why applying a compression unsuited for <strong>your</strong> data will likely avail little). For example in the &#34;1,2,3...&#34; sequence, if you get 1,3,5,7,9,11,13 you&#39;re forced to store it as 1,1,3,1,5,1,7,1,9,1,13,1 -- <em>doubling</em> the sequence size. For the same reason if you rename a .zip file as .dat (to prevent Zip from refusing to compress it) and try to compress it, you&#39;ll notice that once compressed, the file actually gets <em>larger</em>. Perhaps by very little, perhaps just by that handful of bits necessary to store the information &#34;This file is stored uncompressed!&#34; - but larger nonetheless.</p><p>Finally you need to state what you <em>mean</em> by <em>compression</em>. Are you referring to the number of integers in the sequence? Or the number of characters in its text representation? Say you have 1,7,9,5,11. You notice that no number is larger or equal to 12. So no product of any two numbers A and B will be larger than 11*A+B (actually a product of N<sub>0</sub>, N<sub>1</sub>, ...N<sub>n</sub> can be translated as 11<sup>n</sup>*N<sub>n</sub>+...+11<sup>0</sup>*N<sub>0</sub>). Using Horner&#39;s algorithm, <em>n</em> integers become <em>one</em> (larger) integer. Using a larger base for clarity (100 instead of 12), 1,7,9,11 becomes 1070911. In characters, you haven&#39;t gained that much - eleven characters have become seven (using 12 as base, 1-7-9-11 becomes 2855 which is <em>four</em> characters). Counting integers, four have become one - or rather two, as you need to account for the need of storing the 12 also.</p><p>If you have an increasing sequence, you can store the first number and the differences (1-3-7-9-31-46 becomes 1-2-4-2-22-15), which may yield smaller numbers, which might be useful, though they&#39;ll now be probably non-monotonic.</p><p>Finally, a sequence with <em>no</em> redundancy because there is <em>no</em> relation between the previous numbers and the next one, so that each number provides 100% information on itself - in other words, a random sequence - will never be losslessly compressible, because there is nothing to squeeze out. You will be able to compress its textual representation, but this is not what your question seems to suggest.</p><p>So, without more information on the sequence&#39;s characteristics and your specific scenario, I&#39;m afraid there&#39;s very little that can be done for you.</p><h1>Case in point</h1><p>You need to deal with VERY large numbers (N=512, and you don&#39;t want to manipulate (N-1)! without heavy duty gloves).</p><p>But the main problem is that the permutation is essentially random, so compressing the numbers is not going to work reliably; I think we might have better luck with some ad hoc coding.</p><p>Now every integer in itself holds 9 bits of information (512 = 2<sup>9</sup>), so your data set is at a first glance actuality composed of 4608 bits (or 4599, since the last number is uniquely identified by the other 511 - it&#39;s the only one missing from the set).</p><p>But this is assuming that it&#39;s not a permutation but a combination, that every integer is free to assume any value; we do not exploit the uniqueness constraint, which adds at least 511 bits more information, or in other words requires 2<sup>n</sup>*(n-1)+1 bytes, not 2<sup>n</sup> * n. Let&#39;s look at it more closely.</p><p>The first number (0) has 512 possible positions which we can code in 9 bits (2<sup>9</sup> = 512).</p><p>The next number can only go in one of the remaining 511 positions, which still requires 9 bits. In short, the first 256 numbers all need 9 bits.</p><p>When the number of positions remaining drop below 256, we can use 8 bits. So, the next 128 numbers can be coded into the remaining 256 positions using 8 bits, until the number of free positions becomes 127.</p><p>And so on, until the 511th number can only go in either of two positions and requires one bit.</p><p>One number is left and it can only go in the last place, so it adds no information and it makes for a further 0 bits.</p><p>So we need</p><pre><code>256*9 + 128*8 + 64*7 + 32*6 + 16*5 + 8*4 + 4*3 + 2*2 + 1*1 bits =
+
+= 2304 + 1024 + 448 + 192 + 80 + 32 + 12 + 4 + 1 =
+
+= 4097 bits
+</code></pre><p>which is 2<sup>n</sup> * (n-1)+1 (in this case it looks like 2<sup>14</sup>+1).</p><p>You can represent those 4097 bits using 133 dword integers from 0 to 2147483648 if you want to code them in the smallest possible number of <em>integers</em>.</p><p>If you want to code them in the smallest possible number of <em>decimal digits</em>, then you want to find a power of ten which is the nearest possible to the immediately lesser power of two. With a number of bits below 32, this happens with three: 2<sup>3</sup> is 8, which requires one digit, and in one decimal digit you can code at the most the number 9.</p><p>But taking into account the <em>separator</em>, a single digit requires <em>two</em> characters each three bits, if you also need the comma (you mightn&#39;t, because one digit needs no separator).</p><p>The best becomes then 2<sup>23</sup> or 8388608, seven digits (plus one comma, eight).</p><p>So your 512 numbers (1940 characters) become (4097/23) * 8 = 1432 numeric characters and commas. Or it is an uninterrupted sequence of (4097/3) * 1 = 1366 digits. Using 63 bits and numbers up to 2<sup>63</sup>-1 or 9223372036854775807, we get around (4097/63)(19+1) = 1300 characters.</p><p>At best, you can code the sequence into 683 base64 characters, or a 65% reduction, which makes your 1024 dataset 684 Kb in total.</p><p>(Or you can binary-code it into 513 bytes).</p><h1>The algorithm</h1><pre><code>Let BUFFER be your sequence of numbers (137, 410, 128, ...)
+initialize a vector POSITION[512]
+for i = 0 to 511 included:
+    # The position of number BUFFER[i] (e.g. 128) is 2.
+    POSITION[BUFFER[i]] = i
+
+next = 256
+for i = 0 to 510 included:
+    POS = POSITION[i]
+    # How many unchecked positions are between 0 and POS?
+    Q   = 0
+    for j = 0 to POS:
+        if COPYOFBUFFER[j] &gt;= 0:
+            Q = Q + 1
+    # Mark the POS-th address as &#34;checked&#34; by setting it to -1
+    COPYOFBUFFER[POS] = -1;
+    # Or you could set it to the first unused number, 512, as MAXVAL, and
+    # modify the previous cycle  to check that COPYOFBUFFER[j] &lt; MAXVAL
+
+    # Now, i-th number is uniquely identified by Q
+    # And Q is uniquely identified by a diminishing number of bits
+    output(Q, bits)
+    if (i == next):
+        bits = bits - 1
+        next = next / 2
+</code></pre><p>The function &#34;output&#34; will output 8 bits (one character) or maybe 6 bits (one Base64 digit) and keep the rest internally, prepending said rest to the next call. You will need to make a last call to flush any remaining bits.</p><p>This is a not too efficient C implementation.</p><pre><code>/**
+ * outputs N bits (maximum N depends on integer type)
+ * @param n   number of bits
+ * @param val value holding the bits in its &#34;n&#34; least significant bits
+ */
+void output_bits(int n, int val) {
+    static int buffer = 0;
+    static int bits   = 0;
+    if (0 == n) {
+        // The request to output 0 bits makes no sense and is used
+        // to mean &#34;flush the buffer&#34;.
+        // If the buffer contains 5 bits, we need 3 additional bits.
+        if (0 == bits) {
+            // buffer is already flushed.
+            return;
+        }
+        n    = 8 - bits;
+        val  = 0;
+    }
+    int mask = 1 &lt;&lt; n; // we have 000111 (so, 7) and 3 bits. We get 0100 (4)
+    while (n--) {
+        // shift buffer by 1 bit left to accommodate next bit.
+        buffer = buffer &lt;&lt;= 1;
+        if (val &amp; mask) {
+            // We have a 1.
+            buffer |= 1;
+        }
+        bits++;
+        if (0 == (bits % 8)) {
+            // We have a full byte.
+            output_byte(buffer &amp; 0xff);
+        }
+        // Shift the mask right to get the next bit.
+        mask &gt;&gt;= 1;
+    }
+}
+</code></pre><p>To reconstruct the array, proceed in reverse: as soon as you&#39;ve gathered enough bits to retrieve a Q, move into the buffer by Q empty positions and place the number there:</p><pre><code> |__________________________________________|
+ read first byte:  23, but we need 9 bits
+ read second byte: 139, so the first number is 23*2+(139/128) = 47
+      and the remainder is (139-27) = 112
+ read first Q: 47
+ ...so the first number, 1, goes into slot 47
+ |______________________1___________________|
+ now read third byte: 34, so the second number is 112*2+(34/128) = 224
+ the second number, 2, should go into the 224th empty slot, which is
+ number 225 because slot 47 is already taken
+ |______________________1__________________2____|
+ ...and so on.
+</code></pre><h1>Another algorithm</h1><p>You can squeeze some more bits out of the sequence by operating as follows. You code the position of the first number among the 512 still free spaces in the sequence using 9 bits. Then, the second number&#39;s position requires a number from 0 to 511 to identify the p-<em>th</em> free slot in the sequence. 511 is 8.99718... bits. You have now need of coding <em>fractional bits</em>, and you can google those and look e.g. <a href="https://hbfs.wordpress.com/2008/09/02/phase-in-codes/" rel="nofollow noreferrer">phase-in codes</a>.</p><p>The sequence will now size <a href="https://i.stack.imgur.com/dw9kA.gif" rel="nofollow noreferrer"><img src="https://i.stack.imgur.com/dw9kA.gif" alt="sum"/></a> which is rounded to 3867, from the original naive estimate of 4599, or a reduction of around 16% to 484 bytes. Decoding will be quite slow as you need to walk the whole sequence to translate a number to its true position.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/best-two-way-compression-algorithm-for-32-bit-numbers/'>Best two-way compression algorithm for 32-bit numbers</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/fast-lossless-compression-of-a-video-stream/'>Fast, lossless compression of a video stream</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

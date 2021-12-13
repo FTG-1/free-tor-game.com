@@ -1,0 +1,224 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Not wrapping an IDisposable object in a using statement &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1072805 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1072805" class="post-1072805 software type-software status-publish hentry category-software tag-asp-net tag-asp-net-mvc tag-c tag-dependency-injection tag-unit-testing"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Not wrapping an IDisposable object in a using statement</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">asp.net</span><span class="mr-2 badge badge-info">asp.net-mvc</span><span class="mr-2 badge badge-warning">c</span><span class="mr-2 badge badge-primary">dependency-injection</span><span class="mr-2 badge badge-danger">unit testing</span></p><div class="entry-content"><p>I am updating some code to allow us to implement unit tests.  What I have so far is a Business Layer which calls the repository to get data from the database.</p><p>Business Layer example:</p><pre><code>public class ConversationLogic
+{
+    private IConversationData _conversationData { get; set; }
+
+    public ConversationLogic(IConversationData conversationData)
+    {
+        _conversationData = conversationData;
+    }
+
+    public ConversationListModel GetConversations(int loginID)
+    {
+        ConversationListModel model = new ConversationListModel();
+
+        dynamic list = _conversationData.GetConversations(loginID);
+
+        foreach (var item in list)
+        {
+            ConversationModel conversation = ConvertConversation(item);
+
+            model.Conversations.Add(conversation);
+        }
+
+        return model;
+    }
+}
+</code></pre><p>This allows an Interface of ConversationData to be passed in, this ConversationData is the repository layer which calls the database.</p><p>Conversation Data repository example:</p><pre><code>public class ConversationData : BaseMassiveTable, IConversationData
+{
+    public dynamic GetConversations(int loginID)
+    {
+        string sql = GetResourceFile(&#34;Project.SQL.GetConversations.sql&#34;, Assembly.GetExecutingAssembly());
+        dynamic result = Query(sql, loginID).ToList();
+        return result;
+    }
+}
+</code></pre><p>The ConversationData inherits from the class BaseMassive, which implements IDisposable:</p><pre><code>public class BaseMassiveTable : DynamicModel, IDisposable
+{
+    string connectionName;
+
+    public BaseMassiveTable(string connectionStringName, string tableName, string primaryKeyColumn) :
+        base(connectionStringName, tableName, primaryKeyColumn) 
+    { 
+        connectionName = connectionStringName;
+    }
+
+    public void Dispose()
+    {
+    }
+
+    protected void WriteErrorToFile(int userId, string url, Exception ex)
+    {
+        try
+        {
+            string path = &#34;~/Error/&#34; + DateTime.Today.ToString(&#34;yyyy-MM-dd&#34;) + &#34;.txt&#34;;
+            if (!File.Exists(System.Web.HttpContext.Current.Server.MapPath(path)))
+            {
+                File.Create(System.Web.HttpContext.Current.Server.MapPath(path)).Close();
+            }
+            using (StreamWriter w = File.AppendText(System.Web.HttpContext.Current.Server.MapPath(path)))
+            {
+                w.WriteLine(&#34;\r\nLog Entry : &#34;);
+                w.WriteLine(&#34;{0}&#34;, DateTime.Now.ToString(CultureInfo.InvariantCulture));
+                string err = &#34;Error in: &#34; + url +
+                              &#34;. Error Message:&#34; + ex.Message;
+                w.WriteLine(err);
+                w.WriteLine(ex.StackTrace.ToString());
+                w.WriteLine(&#34;__________________________&#34;);
+                w.Flush();
+                w.Close();
+            }
+        }
+        catch
+        {
+            //What do we do here ????
+        }
+    }
+
+    public string Truncate( string stringForTuncation, int maxLength)
+    {
+        string result = &#34;&#34;;
+        if (stringForTuncation == null)
+        {
+            result = null;
+        }
+        else if (stringForTuncation.Length &lt;= maxLength)
+        {
+            result = stringForTuncation;
+        }
+        else
+        {
+            result = stringForTuncation.Substring(0, maxLength);
+        }
+        return result;
+    }
+
+    public static string GetResourceFile(string name, Assembly assembly)
+    {
+        using (Stream stream = assembly.GetManifestResourceStream(name))
+        {
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                string result = reader.ReadToEnd();
+                return result;
+            }
+        }
+    }
+
+}
+</code></pre><p>As you may seen in my implementation of ConversationLogic I cannot wrap the IConversationData interface in a using as this does not work with the current implementation.</p><p>What you will also see that in ConversationData.GetConversations(), this calls the Massive ORM Query(), which looks like this:</p><pre><code>public virtual IEnumerable&lt;dynamic&gt; Query(string sql, params object[] args)
+{
+    using (var conn = OpenConnection())
+    {
+        var rdr = CreateCommand(sql, conn, args).ExecuteReader();
+        while (rdr.Read())
+        {
+            yield return rdr.RecordToExpando(); ;
+        }
+    }
+}
+</code></pre><p>What I am looking for is that, even though ConversationData inherits from BaseMassive, which implements IDisposable, do I actually need to wrap any calls using IConversationData in using statements, as every call to the repository calls the Massive Query() statement, which manages its own resources by creating a using() statement on any query?</p><p>Apologies for the long-winded question, if you need any clarifications, just let me know.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>The <em>caller</em> should use <code>using</code>; you need to implement <code>Dispose</code> in order for him to be able to. Then the <code>Dispose</code> calls will cascade and everything will get released in due course.</p><p>The class into which the disposable resource is injected should have its <em>own</em> <code>Dispose</code> method and should release the resources there. Then you need to make sure that whoever is using the <code>ConversationLogic</code> class is also disposing it, perhaps with a <code>using</code> clause of their own.</p><p>For example, if your <code>ConversationLogic</code> class is injected into an MVC controller, you can take advantage of the fact that the base Controller class <a href="https://msdn.microsoft.com/en-us/library/system.web.mvc.controller.dispose(v=vs.118).aspx" rel="nofollow noreferrer">already has a Dispose method</a>.  You just need to override it to Dispose your ConversationLogic, which will in turn release your resource-intensive service. The .NET pipeline will call the controller&#39;s <code>Dispose</code> method at the right time.</p><pre><code>class MyController : System.Web.Mvc.Controller
+{
+    private readonly IConversationLogic _conversationLogic;
+
+    public MyController(IConversationLogic conversationLogic)
+    { 
+        _conversationLogic = conversationLogic;
+    }
+
+    public override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            if (_conversationLogic != null)
+            {
+                _conversationLogic.Dispose(true);
+                _conversationLogic = null;
+            }
+            base.Dispose(true);
+        }
+    }
+}
+
+class ConversationLogic : IConversationLogic, IDisposable
+{
+    private readonly _conversationData;
+
+    public ConversationLogic(IConversationData conversationData)
+    {
+        _conversationData = conversationData;
+    }
+
+    public override Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            if (_conversationData != null)
+            {
+                _conversationData.Dispose();
+                _conversationData = null;
+            }
+        }
+        base.Dispose(disposing);
+    }
+}
+</code></pre><p>Sometimes you&#39;re not sure if the injected resource implements IDisposable. It is easy to check.</p><pre><code>    public override Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            if (_conversationData != null)
+            {
+                var d = _conversationData as IDisposable;
+                if (d != null) 
+                {
+                    d.Dispose();
+                }
+                _conversationData = null;
+            }
+        }
+        base.Dispose(disposing);
+    }
+</code></pre><p>If this pattern bothers you (because you&#39;re a purist, and you noticed that the code that created the resource didn&#39;t dispose it) you have two options:</p><ol><li><p>Get over it, because the code that created the resource was the IoC container, and it would require something really weird for the IoC container to deal with the disposal, or</p></li><li><p>Don&#39;t inject the disposable instance; inject a factory instead. That way your class can both create and dispose of the object and make everyone happy.</p><pre><code>class ConversationLogic: IConversationLogic, IDisposable
+{
+    private readonly _conversationData;
+
+    public ConversationLogic(IConversationDataFactory conversationDataFactory)
+    {
+        _conversationData = conversationDataFactory.GetInstance();
+    }
+
+    public override Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            if (_conversationData != null)
+            {
+                _conversationData.Dispose();
+                _conversationData = null;
+            }
+        }
+        base.Dispose(disposing);
+    }
+}
+</code></pre></li></ol><p>Either way, you don&#39;t use <code>using</code>, you use the <code>Dispose</code> override per the conventional pattern, and ensure that your controller (or other object) is itself enclosed in a <code>using</code> clause so that <code>Dispose</code> gets called.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/c-confused-on-how-to-properly-employ-a-repository-pattern-with-service-business-layer-on-top/'>C# &#8211; Confused on how to properly employ a Repository Pattern with Service/Business Layer on top</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-deferred-execution-of-dispose-for-idisposable-objects/'>C# &#8211; Deferred execution of Dispose for IDisposable objects</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-wrapping-controller-apicontroller-to-remove-boilerplates/'>C# &#8211; Wrapping Controller / ApiController to remove boilerplates</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-idisposable-without-finalizer-in-a-singleton-scenario/'>C# &#8211; IDisposable without finalizer in a Singleton scenario</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-asp-net-core-is-using-fromservices-attribute-bad-practice/'>C# &#8211; ASP.NET Core &#8211; Is using [FromServices] attribute bad practice</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

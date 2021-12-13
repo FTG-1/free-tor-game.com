@@ -1,0 +1,87 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Python &#8211; Functional style exception handling &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1069754 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1069754" class="post-1069754 software type-software status-publish hentry category-software tag-error-handling tag-functional-programming tag-python"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Python &#8211; Functional style exception handling</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">error handling</span><span class="mr-2 badge badge-info">functional programming</span><span class="mr-2 badge badge-warning">python</span></p><div class="entry-content"><p>I&#39;ve been told that in functional programming one is not supposed to throw and/or observe exceptions. Instead an erroneous calculation should be evaluated as a bottom value. In Python (or other languages that do not fully encourage functional programming) one can return <code>None</code>(or another alternative treated as the bottom value, though <code>None</code> doesn&#39;t strictly comply with the definition) whenever something goes wrong to &#34;remain pure&#34;, but to do so one has to observe an error in the first place, i.e.</p><pre><code>def fn(*args):
+    try:
+        ... do something
+    except SomeException:
+        return None
+</code></pre><p>Does this violate purity? And if so, does it mean, that it is impossible to handle errors purely in Python?</p><p><strong>Update</strong></p><p>In his comment Eric Lippert reminded me of another way to treat exceptions in FP. Though I&#39;ve never seen that done in Python in practice, I played with it back when I studied FP a year ago. Here any <code>optional</code>-decorated function returns<code>Optional</code> values, which can be empty, for normal outputs as well as for a specified list of exceptions (unspecified exceptions still can terminate the execution). <code>Carry</code> creates a delayed evaluation, where each step (delayed function call) either gets a nonempty <code>Optional</code> output from the previous step and simply passes it on, or otherwise evaluates itself passing a new <code>Optional</code>. In the end the final value is either normal or <code>Empty</code>. Here the <code>try/except</code> block is hidden behind a decorator, so the specified exceptions can be regarded as part of the return type signature.</p><pre><code>class Empty:
+    def __repr__(self):
+        return &#34;Empty&#34;
+
+
+class Optional:
+    def __init__(self, value=Empty):
+        self._value = value
+
+    @property
+    def value(self):
+        return Empty if self.isempty else self._value
+
+    @property
+    def isempty(self):
+        return isinstance(self._value, BaseException) or self._value is Empty
+
+    def __bool__(self):
+        raise TypeError(&#34;Optional has no boolean value&#34;)
+
+
+def optional(*exception_types):
+    def build_wrapper(func):
+        def wrapper(*args, **kwargs):
+            try:
+                return Optional(func(*args, **kwargs))
+            except exception_types as e:
+                return Optional(e)
+        wrapper.__isoptional__ = True
+        return wrapper
+    return build_wrapper
+
+
+class Carry:
+    &#34;&#34;&#34;
+    &gt;&gt;&gt; from functools import partial
+    &gt;&gt;&gt; @optional(ArithmeticError)
+    ... def rdiv(a, b):
+    ...     return b // a
+    &gt;&gt;&gt; (Carry() &gt;&gt; (rdiv, 0) &gt;&gt; (rdiv, 0) &gt;&gt; partial(rdiv, 1))(1)
+    1
+    &gt;&gt;&gt; (Carry() &gt;&gt; (rdiv, 0) &gt;&gt; (rdiv, 1))(1)
+    1
+    &gt;&gt;&gt; (Carry() &gt;&gt; rdiv &gt;&gt; rdiv)(0, 1) is Empty
+    True
+    &#34;&#34;&#34;
+    def __init__(self, steps=None):
+        self._steps = tuple(steps) if steps is not None else ()
+
+    def _add_step(self, step):
+        fn, *step_args = step if isinstance(step, Sequence) else (step, )
+        return type(self)(steps=self._steps + ((fn, step_args), ))
+
+    def __rshift__(self, step) -&gt; &#34;Carry&#34;:
+        return self._add_step(step)
+
+    def _evaluate(self, *args) -&gt; Optional:
+        def caller(carried: Optional, step):
+            fn, step_args = step
+            return fn(*(*step_args, *args)) if carried.isempty else carried
+        return reduce(caller, self._steps, Optional())
+
+    def __call__(self, *args):
+        return self._evaluate(*args).value
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>First of all, let&#39;s clear up some misconceptions. There is no &#34;bottom value&#34;. The bottom type is defined as a type that is a subtype of every other type in the language. From this, one can prove (in any interesting type system at least), that the bottom type <em>has no values</em> - it is <em>empty</em>. So there is no such thing as a bottom value.</p><p>Why is the bottom type useful? Well, knowing that it&#39;s empty let&#39;s us make some deductions on program behavior. For example, if we have the function:</p><pre><code>def do_thing(a: int) -&gt; Bottom: ...
+</code></pre><p>we know that <code>do_thing</code> can never return, since it would have to return a value of type <code>Bottom</code>. Thus, there are only two possibilities:</p><ol><li><code>do_thing</code> does not halt</li><li><code>do_thing</code> throws an exception (in languages with an exception mechanism)</li></ol><p>Note that I created a type <code>Bottom</code> which does not actually exist in the Python language. <code>None</code> is a misnomer; it is actually the <em>unit value</em>, the only value of the <em>unit type</em>, which is called <code>NoneType</code> in Python (do <code>type(None)</code> to confirm for yourself).</p><p>Now, another misconception is that functional languages do not have exception. This isn&#39;t true either. SML for example has a very nice exception mechanism. However, exceptions are used much more sparingly in SML than in e.g. Python. As you&#39;ve said, the <em>common</em> way to indicate some kind of failure in functional languages is by returning an <code>Option</code> type. For example, we would create a safe division function as follows:</p><pre><code>def safe_div(num: int, den: int) -&gt; Option[int]:
+  return Some(num/den) if den != 0 else None
+</code></pre><p>Unfortunately, since Python doesn&#39;t actually have sum types, this isn&#39;t a viable approach. You <em>could</em> return <code>None</code> as a poor-man&#39;s option type to signify failure, but this is really no better than returning <code>Null</code>. There is no type-safety.</p><p>So I would advise following the language&#39;s conventions in this case. Python uses exceptions idiomatically to handle control flow (which is bad design, IMO, but it&#39;s standard nonetheless), so unless you&#39;re only working with code you wrote yourself, I&#39;d recommend following standard practice. Whether this is &#34;pure&#34; or not is irrelevant.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../python-check-first-vs-exception-handling/'>Python &#8211; Check First vs Exception Handling</a></li><li class="list-group-item"><a href='../are-closures-considered-impure-functional-style/'>Are closures considered impure functional style</a></li><li class="list-group-item"><a href='../c-rust-style-error-handling-in-c/'>C++ &#8211; Rust-style error handling in C++</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

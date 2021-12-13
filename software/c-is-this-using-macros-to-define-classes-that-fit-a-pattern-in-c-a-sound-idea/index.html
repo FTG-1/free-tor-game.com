@@ -1,0 +1,69 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C++ &#8211; Is this using macros to define classes that fit a pattern in C++ a sound idea &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1072969 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1072969" class="post-1072969 software type-software status-publish hentry category-software tag-c tag-code-quality tag-design tag-macros"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C++ &#8211; Is this using macros to define classes that fit a pattern in C++ a sound idea</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">code-quality</span><span class="mr-2 badge badge-warning">design</span><span class="mr-2 badge badge-primary">macros</span></p><div class="entry-content"><p>I&#39;ve got a set of classes that all inherit from a base class that are responsible for different functions (sort of like a group of &#34;operators&#34;)  They all work on the same input and output the same output type, just different operations are performed internally with some other state. <strong>They need to be serialized to JSON and factoried from a UI.</strong></p><p>My requirements are that people need to be able to work on this without struggling to understand it. I was hoping some one else had employed this in a different project with other people and could <strong>tell me whether or not this is a bad idea from experience and why.</strong></p><p>In order to do this I&#39;ve employed maps that associate the class name to the constructor and method to serialize the class.  At first I was manually entering class information in a separate file that housed these maps, then I found <a href="https://blog.noctua-software.com/object-factory-c++.html" rel="noreferrer">a method to do so utilizing static class objects</a>, where they automatically add themselves to the parent abstract classes static map.  Because this was needed for each class no matter what, and had the same exact format except for the name of the class used, I created two macros to help with this (so you would only need do <code>MACRO_TAG_CLASS(classname)</code> inside class declaration and <code>MACRO_REGISTER_CLASS(classname)</code> after declaration).</p><p>Now I&#39;ve come to refactor the way I was doing serialization and GUI display, allowing less work for people creating new classes of this type and making them more versatile for how I now want to use them. I ended up needing to use QT properties in the same way with every class, so I decided to make a macro to deal with this as well (Note I&#39;m using boost pre-processor to help out)</p><p>Now I have classes that all look like this:</p><pre><code>class MyClass :
+        public AbstractBase {
+Q_OBJECT
+private:
+    TypeA m_foo;
+    TypeB m_bar;
+public:
+    MACRO_TAG_CLASS(MyClass)
+
+MACRO_ADD_PROPERTIES((TypeA, foo), (TypeB, bar))
+//adds qt properties, signals, and adds the strings of the properties to a list for the class
+
+   //other class functions...
+   //constructor that is different per class
+
+   //function every class in this heirarchy has, sort of operator(), 
+   //but class is doesn&#39;t correspond 1:1 with the concept of an operator, so not a functor.
+    AbstractBase *baz(X *x) override;
+
+    virtual ~MyClass() = default;
+};
+MACRO_REGISTER_CLASS(MyClass)
+</code></pre><p>and I was thinking of changing them to something that looks like this:</p><pre><code>#define START_CLASS_OF_BASE(CLASS_NAME, ...)\
+class CLASS_NAME : public AbstractBase { \
+Q_OBJECT \
+ public: \
+    MACRO_TAG_CLASS(CLASS_NAME) \
+MACRO_ADD_PROPERTIES(__VA_ARGS__) \
+private:
+
+#define END_CLASS_OF_BASE(CLASS_NAME) \
+}; \
+    MACRO_REGISTER_CLASS(CLASS_NAME)
+
+START_CLASS_OF_BASE(MyClass, (TypeA, foo), (TypeB, bar))
+private:
+    TypeA m_foo;
+    TypeB m_bar;
+public:
+   //other class functions...
+   //constructor that is different per class
+
+    AbstractBase *baz(X *x) override;
+
+    virtual ~MyClass() = default;
+END_CLASS_OF_BASE(MyClass)
+</code></pre><p>Note this pattern only appears in this particular class hierarchy, other people will need to maintain this code eventually, and there are about 20 classes that fit this pattern.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I oppose to use macros instead of normal class here because:</p><ol><li><p>It is harder to debug, especially when it has compile error</p></li><li><p>If the cost of creating a new class easily is harder to maintain later, I prefer do more works to create a class but easier to maintain later</p></li><li><p>I believe a gold of quote would be applied in this case :&#34;Reading code usually cost more time than writing code&#34;</p></li></ol></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/object-oriented-should-i-use-friend-classes-in-c-to-allow-access-to-hidden-members/'>Object-oriented &#8211; Should I use friend classes in C++ to allow access to hidden members</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-using-the-decorator-pattern-in-a-deep-class-hierarchy/'>C++ &#8211; Using the decorator pattern in a deep class hierarchy</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/design-how-to-solve-issue-of-consistency-in-concurrent-and-distributed-application-built-around-bankers-dilemma/'>Design &#8211; How to solve issue of consistency in concurrent and distributed application (built around Bankers Dilemma)</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,63 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Relational table design for data ownership &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1085795 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1085795" class="post-1085795 software type-software status-publish hentry category-software tag-code-reviews tag-database-design tag-design-patterns tag-relational-database tag-sql"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Relational table design for data ownership</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">code-reviews</span><span class="mr-2 badge badge-info">database-design</span><span class="mr-2 badge badge-warning">design-patterns</span><span class="mr-2 badge badge-primary">relational-database</span><span class="mr-2 badge badge-danger">sql</span></p><div class="entry-content"><p><strong>Setup</strong></p><p>(schema simplified for clarity)</p><p>Suppose I have a table called <code>resource</code>:</p><pre><code>+---------------+--------------+------+-----+
+| Field         | Type         | Null | Key |
++---------------+--------------+------+-----+
+| id            | int(11)      | NO   | PRI |
+| name          | varchar(255) | NO   |     |
+| owner_id      | int(11)      | NO   |     |
++---------------+--------------+------+-----+
+</code></pre><p>Each resource record is &#34;owned&#34; by a user defined in the <code>user</code> table:</p><pre><code>+---------------+--------------+------+-----+
+| Field         | Type         | Null | Key |
++---------------+--------------+------+-----+
+| id            | int(11)      | NO   | PRI |
+| name          | varchar(255) | NO   |     |
++---------------+--------------+------+-----+
+</code></pre><p>A resources ownership can be transferred to other users by two different methods:</p><ol><li>a resource owner can request that another user takes ownership of the resource, and ownership is transferred as soon as that user accepts ownership.</li><li>A user can request ownership from the current owner of a resource, ownership is transferred as soon as the current owner accepts the request.</li></ol><p>In both cases if the request is denied by the approver, than nothing is done.</p><p>My naive implementation of the tables required to implement these concepts.</p><pre><code>transferOwnershipRequest
++------------------------+--------------+------+-----+
+| Field                  | Type         | Null | Key |
++------------------------+--------------+------+-----+
+| id                     | int(11)      | NO   | PRI |
+| resource_id            | int(11)      | NO   |     |
+| requested_by_owner_id  | int(11)      | NO   |     |
+| approver_owner_id      | int(11)      | NO   |     |
+| requested_new_owner_id | int(11)      | NO   |     |
+| status_id              | int(11)      | NO   |     |
++------------------------+--------------+------+-----+
+
+transferOwnershipRequestStatus
++---------------+--------------+------+-----+
+| Field         | Type         | Null | Key |
++---------------+--------------+------+-----+
+| id            | int(11)      | NO   | PRI |
+| status        | varchar(10)  | NO   |     |
++---------------+--------------+------+-----+
+
+// status example data
++----+----------+
+| id | status   |
++----+----------+
+| 1  | pending  |
+| 2  | approved |
+| 3  | denied   |
++----+----------+
+</code></pre><p>My business logic would update the <code>transferOwnershipRequest</code>.<code>status_id</code> as a request makes its way through the approval process.</p><p><strong>Problem</strong></p><p>I immediately see multiple issues with this implementation.</p><ul><li>There is no way to track ownership changes over time.</li><li>Any timestamp fields in <code>transferOwnershipRequest</code> (like <code>last_updated</code>, <code>request_time</code>, <code>approver_response_time</code> etc) feel cumbersome</li><li>Any kind of fallback functionality (like reverting to a previous owner if the current owner is hit by a bus) would be difficult to implement.</li></ul><p><strong>Question</strong></p><p>What are my options as far as relational database design patterns for this type of situation? Have you implemented something similar to this?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Your request table looks fine, keep it as it is, just add a general concept of &#34;keeping track of historical records&#34; <strong>to your other tables</strong>, this will solve all your three additional requirements.</p><p>Start by implementing the concept of ownership in a separate table &#34;ownership&#34;:</p><pre><code>+---------------+--------------+------+-----+
+| Field         | Type         | Null | Key |
++---------------+--------------+------+-----+
+| id            | int(11)      | NO   | PRI |
+| resource_id   | int(11)      | NO   |     |
+| owner_id      | int(11)      | NO   |     |
++---------------+--------------+------+-----+
+</code></pre><p>(and remove the <code>owner_id</code> from resource).</p><p>Now, extend this model by adding a &#34;history functionality&#34; to the ownership table. There are basically two standard ways to accomplish this: either you add a nullable timestamp field to this table and use the convention &#34;timestamp=null&#34; means &#34;currently valid&#34;, &#34;timestamp set&#34; means &#34;ownership in the past&#34;. Or, you create a shadow table &#34;ownership_archive&#34;, with exactly the same attributes as the &#34;ownership&#34; table plus the timestamp field. Then you can move old ownership records which are not valid any more after approval of a request to that table.</p><p>If necessary, you can implement similar &#34;history functionality&#34; for your &#34;resource&#34; table and your &#34;users&#34; table, but that will be only necessary if you need to track the history of resources and users in detail as well.</p><p>You can find a broader discussion about storing historical data in a database in this <a href="https://stackoverflow.com/questions/3874199/how-to-store-historical-data">older stackoverflow question</a>.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../object-oriented-db-schema-for-acl-involving-3-subdomains/'>Object-oriented &#8211; DB Schema for ACL involving 3 subdomains</a></li><li class="list-group-item"><a href='../database-external-id-for-every-relational-table/'>Database &#8211; External id for every relational table</a></li><li class="list-group-item"><a href='../database-how-would-you-design-a-user-database-with-custom-fields/'>Database &#8211; How would you design a user database with custom fields</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

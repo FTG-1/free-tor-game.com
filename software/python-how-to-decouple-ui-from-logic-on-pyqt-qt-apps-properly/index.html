@@ -1,0 +1,166 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Python &#8211; How to decouple UI from logic on Pyqt/Qt apps properly &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1067699 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1067699" class="post-1067699 software type-software status-publish hentry category-software tag-coupling tag-design tag-gui tag-mvc tag-python"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Python &#8211; How to decouple UI from logic on Pyqt/Qt apps properly</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">coupling</span><span class="mr-2 badge badge-info">design</span><span class="mr-2 badge badge-warning">gui</span><span class="mr-2 badge badge-primary">mvc</span><span class="mr-2 badge badge-danger">python</span></p><div class="entry-content"><p>I&#39;ve read quite a lot about this subject in the past and watched some interesting talks like this one from <a href="https://www.youtube.com/watch?v=asLUTiJJqdE" rel="noreferrer">Uncle Bob&#39;s</a>. Still, I always find pretty difficult to architect properly my desktop applications and distinguish which should be the responsibilities on the <strong>UI</strong> side and which ones on the <strong>logic</strong> side.</p><p>Very brief summary of good practices is something like this. You should design your logic decoupled from UI, so that way you could use (theoretically) your library no matter which kind of backend/UI framework. What this means is basically the UI should be as dummy as possible and the heavy processing should be done on the logic side. Said otherwise, I could literally use my nice library with a console application, a web application or a desktop one.</p><p>Also, uncle Bob suggests differing discussions of which technology to use will give you a lot of benefits (good interfaces), this concept of deferring allows you to have highly decoupled well-tested entities, that sounds great but still is tricky.</p><p>So, I know this question is quite a broad question which has been discussed many many times over the whole internet and also in tons of good books. So to get something good out of it I&#39;ll post a very little dummy example trying to use MCV on pyqt:</p><pre><code>import sys
+import os
+import random
+
+from PyQt5 import QtWidgets
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+
+random.seed(1)
+
+
+class Model(QtCore.QObject):
+
+    item_added = QtCore.pyqtSignal(int)
+    item_removed = QtCore.pyqtSignal(int)
+
+    def __init__(self):
+        super().__init__()
+        self.items = {}
+
+    def add_item(self):
+        guid = random.randint(0, 10000)
+        new_item = {
+            &#34;pos&#34;: [random.randint(50, 100), random.randint(50, 100)]
+        }
+        self.items[guid] = new_item
+        self.item_added.emit(guid)
+
+    def remove_item(self):
+        list_keys = list(self.items.keys())
+
+        if len(list_keys) == 0:
+            self.item_removed.emit(-1)
+            return
+
+        guid = random.choice(list_keys)
+        self.item_removed.emit(guid)
+        del self.items[guid]
+
+
+class View1():
+
+    def __init__(self, main_window):
+        self.main_window = main_window
+
+        view = QtWidgets.QGraphicsView()
+        self.scene = QtWidgets.QGraphicsScene(None)
+        self.scene.addText(&#34;Hello, world!&#34;)
+
+        view.setScene(self.scene)
+        view.setStyleSheet(&#34;background-color: red;&#34;)
+
+        main_window.setCentralWidget(view)
+
+
+class View2():
+
+    add_item = QtCore.pyqtSignal(int)
+    remove_item = QtCore.pyqtSignal(int)
+
+    def __init__(self, main_window):
+        self.main_window = main_window
+
+        button_add = QtWidgets.QPushButton(&#34;Add&#34;)
+        button_remove = QtWidgets.QPushButton(&#34;Remove&#34;)
+        vbl = QtWidgets.QVBoxLayout()
+        vbl.addWidget(button_add)
+        vbl.addWidget(button_remove)
+        view = QtWidgets.QWidget()
+        view.setLayout(vbl)
+
+        view_dock = QtWidgets.QDockWidget(&#39;View2&#39;, main_window)
+        view_dock.setWidget(view)
+
+        main_window.addDockWidget(QtCore.Qt.RightDockWidgetArea, view_dock)
+
+        model = main_window.model
+        button_add.clicked.connect(model.add_item)
+        button_remove.clicked.connect(model.remove_item)
+
+
+class Controller():
+
+    def __init__(self, main_window):
+        self.main_window = main_window
+
+    def on_item_added(self, guid):
+        view1 = self.main_window.view1
+        model = self.main_window.model
+
+        print(&#34;item guid={0} added&#34;.format(guid))
+        item = model.items[guid]
+        x, y = item[&#34;pos&#34;]
+        graphics_item = QtWidgets.QGraphicsEllipseItem(x, y, 60, 40)
+        item[&#34;graphics_item&#34;] = graphics_item
+        view1.scene.addItem(graphics_item)
+
+    def on_item_removed(self, guid):
+        if guid &lt; 0:
+            print(&#34;global cache of items is empty&#34;)
+        else:
+            view1 = self.main_window.view1
+            model = self.main_window.model
+
+            item = model.items[guid]
+            x, y = item[&#34;pos&#34;]
+            graphics_item = item[&#34;graphics_item&#34;]
+            view1.scene.removeItem(graphics_item)
+            print(&#34;item guid={0} removed&#34;.format(guid))
+
+
+class MainWindow(QtWidgets.QMainWindow):
+
+    def __init__(self):
+        super().__init__()
+
+        # (M)odel ===&gt; Model/Library containing should be UI agnostic, right now it&#39;s not
+        self.model = Model()
+
+        # (V)iew      ===&gt; Coupled to UI
+        self.view1 = View1(self)
+        self.view2 = View2(self)
+
+        # (C)ontroller ==&gt; Coupled to UI
+        self.controller = Controller(self)
+
+        self.attach_views_to_model()
+
+    def attach_views_to_model(self):
+        self.model.item_added.connect(self.controller.on_item_added)
+        self.model.item_removed.connect(self.controller.on_item_removed)
+
+
+if __name__ == &#34;__main__&#34;:
+    app = QtWidgets.QApplication(sys.argv)
+
+    form = MainWindow()
+    form.setMinimumSize(800, 600)
+    form.show()
+    sys.exit(app.exec_())
+</code></pre><p>The above snippet contains a lot of flaws, the more obvious being the model being coupled to the UI framework (QObject, pyqt signals). I know the example is really dummy and you could code it on few lines using a single QMainWindow but my purpose is to understand how to architect properly a bigger pyqt application.</p><p><strong>QUESTION</strong></p><p>How would you architect properly a big PyQt application using MVC following good general practices?</p><p><strong>REFERENCES</strong></p><p>I&#39;ve made a similar question to this <a href="https://stackoverflow.com/questions/39508648/plugin-architectures-good-practices">here</a></p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I&#39;m coming from a (primarily) WPF / ASP.NET background and attempting to make an MVC-ish PyQT app right now and this very question is haunting me. I&#39;ll share what I&#39;m doing and I&#39;d be curious to get any constructive comments or criticism.</p><p>Here&#39;s a little ASCII diagram:</p><pre><code>View                          Controller             Model
+---------------
+| QMainWindow |   ---------&gt; controller.py &lt;----   Dictionary containing:
+---------------   Add, remove from View                |
+       |                                               |
+    QWidget       Restore elements from Model       UIElementId + data
+       |                                               |
+    QWidget                                         UIElementId + data
+       |                                               |
+    QWidget                                         UIElementId + data
+      ...
+</code></pre><p>My application has a lot (LOT) of UI elements and widgets that need to be easily modified by a number of programmers. The &#34;view&#34; code consists of a QMainWindow with a QTreeWidget containing items that get displayed by a QStackedWidget on the right (think Master-Detail view).</p><p>Because items can be added and removed dynamically from the QTreeWidget, and I&#39;d like to support undo-redo functionality, I opted to create a model that keeps track of current / prior states. The UI commands pass information through to the model (adding or removing a widget, updating the information in a widget) by the controller. The only time the controller passes information up to the UI is on validation, event handling, and loading a file / undo &amp; redo.</p><p>The model itself is composed of a dictionary of the UI element ID with the value it last held (and a few additional pieces of information). I keep a list of prior dictionaries and can revert to a previous one if someone hits undo. Eventually the model gets dumped to disk as a certain file format.</p><p>I&#39;ll be honest - I found this pretty hard to design. PyQT does not feel like it lends itself well to being divorced from the model, and I couldn&#39;t really find any open source programs trying to do something quite similar to this. Curious how other people have approached this.</p><p>PS: I realize QML is an option for doing MVC, and it seemed attractive until I realized how much Javascript was involved -- and the fact it&#39;s still fairly immature in terms of being ported to PyQT (or just period). The complicating factors of no great debugging tools (hard enough with just PyQT) and the need for other programmers to modify this code easily who don&#39;t know JS nixed it.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-how-to-completely-decouple-model-from-view-controller-in-java-swing/'>Java &#8211; How to completely decouple Model from View/Controller in Java Swing</a></li><li class="list-group-item"><a href='../mvc-entirely-separate-business-logic-layer-from-mvc/'>Mvc &#8211; Entirely separate business logic layer from MVC</a></li><li class="list-group-item"><a href='../object-oriented-how-to-output-exception-messages-in-gui-applications-in-order-to-decouple-application-code-to-gui-code/'>Object-oriented &#8211; How to output exception messages in GUI applications in order to decouple application code to GUI code</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

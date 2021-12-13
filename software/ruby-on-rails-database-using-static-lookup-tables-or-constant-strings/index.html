@@ -1,0 +1,54 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Ruby on Rails database using static lookup tables or constant strings &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1071457 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1071457" class="post-1071457 software type-software status-publish hentry category-software tag-activerecord tag-database-design tag-ruby-on-rails"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Ruby on Rails database using static lookup tables or constant strings</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">activerecord</span><span class="mr-2 badge badge-info">database-design</span><span class="mr-2 badge badge-warning">ruby-on-rails</span></p><div class="entry-content"><p>In some ruby on rails projects, I have seen instances where strings are used instead of a foreign key reference to a lookup table.</p><p>I usually code in C#/SQL Server and use lookup tables, but am not particularly experienced in ruby on rails.</p><p>So my <strong>question</strong> is, should I be using strings instead of lookup tables in my ruby on rails web project (mysql and active record)? Is this something specific to ruby on rails, or to dynamically typed languages? Or for some particular circumstances? Or is it just bad database design?</p><p>By lookup tables I mean, like the following</p><p><strong>UserStatus</strong></p><pre>Id    Name
+1     Active
+2     Disabled
+</pre><p><strong>User</strong></p><pre>Id    Username               UserStatusId
+1     john.smith@gmail.com   1
+1     jane.smith@gmail.com   2
+</pre><p>Whereas with just strings</p><p><strong>User</strong></p><pre>Id    Username               UserStatus
+1     john.smith@gmail.com   active
+1     jane.smith@gmail.com   disabled
+</pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p><strong>[EDIT] Ruby on Rails 4 enums</strong></p><p>Rails 4 supports enums, so you can declare an enum attribute where the values map to integers in the database, but can be queried by name.</p><pre><code>class Conversation &lt; ActiveRecord::Base
+  enum status: [ :active, :archived ]
+end
+
+conversation.archived!
+conversation.active? # =&gt; false
+conversation.status  # =&gt; &#34;archived&#34;
+
+Conversation.archived # =&gt; Relation for all archived Conversations
+
+Conversation.statuses # =&gt; { &#34;active&#34; =&gt; 0, &#34;archived&#34; =&gt; 1 }
+</code></pre><hr/><p><strong>Rails 3 and older</strong></p><p>You could implement something like this:</p><pre><code>USER_STATUS_VALUES = { 1 =&gt; :active, 2 =&gt; :disabled }
+
+class UserStatus
+  attr_reader :status_id
+
+  def status
+    USER_STATUS_VALUES[@status_id]
+  end
+
+  def status=(new_value)
+    @status_id = USER_STATUS_VALUES.invert[new_value]
+    new_value
+  end
+end
+</code></pre><p>You would use it like this:</p><pre><code>my_status = UserStatus.new
+
+my_status.status = :new
+puts &#34;status: #{my_status.status}&#34;
+puts &#34;status_id: #{my_status.status_id}&#34;
+</code></pre><p>Will return:</p><blockquote><p>status: new</p><p>status_id: 1</p></blockquote><p><strong>Note:</strong> I could have used <code>&#39;active&#39;</code> instead of <code>:active</code> but in this case, use of symbols is more appropriate.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../should-lookup-tables-enumerating-strings-have-an-integer-primary-key/'>Should lookup tables enumerating strings have an integer primary key</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

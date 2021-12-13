@@ -1,0 +1,68 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Object-oriented &#8211; PHP MVC Display many records &#8211; model logic &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1087627 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1087627" class="post-1087627 software type-software status-publish hentry category-software tag-mvc tag-object-oriented tag-php"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Object-oriented &#8211; PHP MVC Display many records &#8211; model logic</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">mvc</span><span class="mr-2 badge badge-info">object-oriented</span><span class="mr-2 badge badge-warning">PHP</span></p><div class="entry-content"><p>I bet this question has been asked already but I can&#39;t form my thought as you can see from the title, so I couldn&#39;t find anything. I am working with MVC for quite some time now and I&#39;m pretty happy to say that when things work out good they are nearly perfect ( in my eyes ), however I never feel like I&#39;m doing a good job at this particular task.</p><p>Say I have my model for a user, with all of its properties and methods like,</p><pre><code>namespace Models;
+
+class User {
+
+    private $id;
+    private $name;
+
+    public function __get($name){
+        return $this-&gt;$name;
+    }
+
+    public function setName($name){
+        $this-&gt;name = $name;
+        return true;
+    }
+
+    public function save(){
+        // Save user to database
+    }
+
+    public function getById($id){
+        // fill properties from database with id $id
+    }
+
+}
+</code></pre><p>All fine all good, but then when I need to display a list of users for, say a search page or something, I always end up doing something like adding a static method <code>getUsers</code> or something that returns an array of <code>\Models\User</code> objects which just doesn&#39;t give me that &#34;good code&#34; feeling, hopefully you know what I mean. It gets even worse when I need to only get a couple of columns from the database, then the greater number of properties is empty and just feels like I&#39;m messing up.</p><p>I want to ask you what is the correct way to do this?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I don&#39;t know if this is what you&#39;re looking for but here goes.</p><p>Methods like save, get, getBy, getAll, etc, are generic and would ideally work across multiple models. For the most part, the only difference is going to be SPECIFICALLY where that data is. So why not make a super model of sorts for all your models to extend.</p><pre><code>class Super_Model
+{
+    public $table; // this will be defined in the model
+
+    public function getAll(){
+        // returns all from $table
+    }
+
+    // etc
+}
+
+class User_Model extends Super_Model
+{
+    public function __construct()
+    {
+        $this-&gt;table = &#39;Users&#39;;
+    }
+}
+</code></pre><p>Now you can do the following without having to define getUsers:</p><pre><code>$user_model = new User_Model();
+$users = $user_model-&gt;getAll();
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/mvc-in-mvc-should-a-model-handle-validation/'>Mvc &#8211; In MVC should a model handle validation</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/php-mvc-error-handling-view-display-and-user-permissions/'>PHP MVC error handling, view display and user permissions</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/mvc-pattern-splitting-model-into-data-access-and-business-logic-layers/'>Mvc pattern &#8211; splitting model into data-access and business logic layers</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/php-application-logic-business-logic-models-controllers-where-to-put-the-applications-brains/'>Php &#8211; application logic, business logic, models, controllers &#8211; where to put the application&#8217;s brains</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/mvc-database-search-logic-in-view-or-model/'>MVC &#8211; Database search logic in View or Model</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/mvc-where-to-put-a-certain-kind-of-functions-in-mvc-structure/'>Mvc &#8211; Where to put a certain kind of functions in MVC structure</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

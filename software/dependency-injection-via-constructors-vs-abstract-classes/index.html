@@ -1,0 +1,203 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Dependency Injection via Constructors vs Abstract Classes &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1078528 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1078528" class="post-1078528 software type-software status-publish hentry category-software tag-abstract-class tag-dependency-injection tag-design-patterns"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Dependency Injection via Constructors vs Abstract Classes</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">abstract class</span><span class="mr-2 badge badge-info">dependency-injection</span><span class="mr-2 badge badge-warning">design-patterns</span></p><div class="entry-content"><p>For the past few days I&#39;ve been researching the relationship of abstract classes and dependency-injected via the constructor classes.</p><p>It appears that any time that I can have a dependency-injected class:</p><pre><code>public interface IServiceC
+{
+    void methodC();
+};
+
+public class ServiceC implements IServiceC
+{
+    ServiceC(IServiceA a, IServiceB b) { .. }
+
+    void methodC() { 
+      //..
+      a.methodA(); 
+      //.. 
+      b.methodB();
+    }
+};
+</code></pre><p>At some point I will have to provide it with instances say instanceA, instanceB.</p><p>But isn&#39;t that the same as having an abstract class and a concrete class using the instances?:</p><pre><code>public abstract class AServiceC implements IServiceC 
+{
+    abstract void methodA();
+    abstract void methodB();
+
+    void methodC() {
+       //...
+       serviceA();
+       //...
+       serviceB();
+    }
+}
+
+public class CServiceC extends AServiceC
+{
+    CServiceC(ServiceAArgs argsa, ServiceBArgs argsb)
+    {
+        instanceA = new CServiceA(argsa);
+        instanceB = new CServiceB(argsb);
+    }
+
+    void methodA() { instanceA.methodA(); }
+    void methodB() { instanceB.methodB(); }
+
+    CServiceA instanceA;
+    CServiceB instanceB;
+};
+</code></pre><p>This is all assuming we know the concrete classes, eg we have only testing and release configurations. The release code knows the concrete instances while the testing code simply implement the appropriate interfaces.</p><p>The abstract classes can then forward only the bottom-layer via the constructor and manage the plumbing.</p><p>Am I missing something crucial here? I am trying to applying DI for an embedded firmware written in C in which I must have everything statically allocated. This means that I need to know the concrete instances before passing them to another object that has them as a dependency. Currently I am using callbacks instead of accepting interfaces in the constructor which is basically the same as single-method interfaces but the more I look at this the more abstract classes seem useful since we usually need to own the lower-level components when writing a higher-level one.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I think you&#39;ve missed the point behind <em>Dependency Injection</em> which is <em>Dependency Inversion</em>.</p><p>Specifically the caller does not know the real implementation of the service, this necessitates indirection either via virtual (in C++) or function pointers (C).</p><p>It has several benefits, particularly with testing as the collaborators can be a test double of some sort. It also provides some flexibility by moving decisions from the doing part of the code, to the configuration part of the code which knows more about the larger desired behaviour.</p><p>In the case of your abstract object, the implementation (the actual constructed object) knows the implementations of its collaborates, because it specifically constructs them itself. It does manage to achieve logic sharing (via the base class), but you can&#39;t swap either of those two collaborators for any reason without that changing for everyone, or duplicating the derived class. This design also suffers from change ripples as implementations affect the base class, and the base class affects all its implementations.</p><p>This really needs an example. I&#39;m going to use a compression program - basic use case is: it reads a file, compresses it, and writes it to another file.</p><p>Since most C compilers are also C++ compilers I am going to mostly write C, but using some C++ features so the below is C+.</p><pre><code>int read_file(handle h, char* buffer, int length);
+int write_file(handle h, char* buffer, int length);
+
+int compress_file(handle from, handle to)
+{
+    handle h = //obtained by opening file
+    const int N = //some length.
+    char buffer[N];
+    int k;
+
+    while(0 != (k = read_file(from, buffer, N)))
+    {
+        //compression logic here
+        ...
+        //buffer and k now represent the compressed data.
+
+        if (k != write_file(to, buffer, k))
+        {
+            return -1; //failed report some error code
+        }
+    }
+
+    return 0; //some success code, or maybe the compressed length.
+}
+
+int main()
+{
+    //open handles
+
+    if (0 != compress_file(from, to))
+    {
+         //handle error
+    }
+
+    //cleanup
+}
+</code></pre><p>Great done.</p><p>Oops, requirements have changed and now we have to compress a file to a network. Unfortunately we have to use a different API.</p><pre><code>class NetworkPoint
+{
+   void write_byte(char a);
+}
+</code></pre><p>So how do you get around this? One option is to push the logic for compression out. It is probably the most complicated part of this system, no point in rewriting that.</p><pre><code>int compress_buffer(char* buffer_in, int N, int* n, char* buffer_out, int K, int* k)
+{
+     //logic about compression here
+}
+</code></pre><p>compress_file doesn&#39;t change much and now there is a second version to cover the new use case of compression to the network.</p><pre><code>int compress_file(handle from, handle to)
+{
+    handle h = //obtained by opening file
+    const int N = //some length.
+    char buffer[N];
+    int k;
+
+    while(0 != (k = read_file(from, buffer, N)))
+    {
+        compress_buffer(...);
+
+        if (k != write_file(to, buffer, k))
+        {
+            return -1; //failed report some error code
+        }
+    }
+
+    return 0; //some success code, or maybe the compressed length.
+}
+int compress_network(handle from, NetworkPoint&amp; to)
+{
+    handle h = //obtained by opening file
+    const int N = //some length.
+    char buffer[N];
+    int k;
+
+    while(0 != (k = read_file(from, buffer, N)))
+    {
+        compress_buffer(...);
+
+        for (int i = 0; i &lt; k; ++i)
+        {
+            to.write(buffer[i]);
+        }
+    }
+
+    return 0; //some success code, or maybe the compressed length.
+}
+</code></pre><p>That is code duplication.</p><p>If another end-point is needed it will add another duplicate. If the fundamental business logic changes, there are two (or more) places that have to be kept up to date. Clearly this is fine in some cases but in others this will get out of hand quickly.</p><p>So what does the &#34;compress&#34; business logic actually need? It needs to &#34;obtain data&#34;, preferably in a buffer, then it needs to do some &#34;compression&#34;, then it needs to &#34;send data&#34; that was just compressed. Turns out each &#34;&#34; is a service.</p><pre><code>class Reader
+{
+    virtual int read(char* buffer, int N)=0;
+}
+class Writer
+{
+    virtual int write(char* buffer, int N)=0;
+}
+class Compressor
+{
+    virtual int compress(char* buffer_in, int N, int* n, char* buffer_out, int K, int* k)=0;
+}
+</code></pre><p>Just to be clear an interface should never have any implemented functions, nor should it have any data members.</p><p>If you find some repeating structures implementing an abstract class for some of the service implementations may work, just don&#39;t pollute the interface definition itself.</p><p>This allows that behaviour to be compartmentalised.</p><pre><code>class FileWriter : public Writer
+{
+    int handle;
+
+    ...implement to write to a file handle...
+}
+class NetworkWriter : public Writer
+{
+    NetworkPoint point;
+
+    ...implement to write to a NetworkPoint...
+}
+</code></pre><p>And now the Dependency becomes invertable.</p><pre><code>int compress_data(Reader&amp; from, Compressor&amp; compress, Writer&amp; to)
+{
+    handle h = //obtained by opening file
+    const int N = //some length.
+    char buffer[N];
+    int k;
+
+    while(0 != (k = from.read(from, buffer, N)))
+    {
+        compress.compress(...);
+
+        if (k != to.write(to, buffer, k))
+        {
+            return -1; //failed report some error code
+        }
+    }
+
+    return 0; //some success code, or maybe the compressed length.
+}
+</code></pre><p>If we need a new kind of reader, writer, or compression algorithm, this business logic does not care. Just implement the service and pass it in.</p><p>Now we already have Dependency injection going on. That is what those function parameters are. The caller &#34;injects&#34; the dependencies into this function. The function doesn&#39;t have direct control of those services, but it can interact with them.</p><p>Now lets presume that this business logic is itself a configurable service, say it should be run by a task manager.</p><pre><code>class Task
+{
+   virtual void execute()=0;
+}
+
+class CompressionTask
+{
+   std::shared_ptr&lt;Reader&gt; reader;
+   std::shared_ptr&lt;Compressor&gt; compressor;
+   std::shared_ptr&lt;Writer&gt; writer;
+
+   CompressionTask(std::shared_ptr&lt;Reader&gt; reader, std::shared_ptr&lt;Compressor&gt; compressor, std::shared_ptr&lt;Writer&gt; writer)
+       : reader(reader), compressor(compressor), writer(writer)
+   {}
+
+   void execute()
+   {
+       compress_data(*reader, *compressor, *writer);
+   }
+}
+</code></pre><p>CompressionTask takes several injected dependencies, it does not care about them too much, but it does ask for some life-time guarantees (shared_ptr). These dependencies are hidden from the TaskManager, and aside from their function the implementation is hidden from business logic.</p><p>Someone somewhere will have to create the CompressionTask object, and will have to know enough about the dependencies to either create them, request them, or be passed them. This piece of code however should have all of that information available to make those decisions. The rest of the code base can ignore it - treating it as either a generic collaborator or a source of dependencies.</p><p>Inverting the dependencies above achieved:</p><ul><li>Multiple compressible data sources</li><li>Multiple compressible data sinks</li><li>Multiple compression algorithms</li><li>De-duplication of business logic</li><li>Hiding configuration decisions from the greater code base</li><li>Moving configuration decisions to one place were the knowledge to make that decision exists</li><li>Reduced resistance to requirement changes</li></ul></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-when-to-use-abstract-classes-instead-of-interfaces-with-extension-methods-in-c/'>C# &#8211; When to use abstract classes instead of interfaces with extension methods in C#</a></li><li class="list-group-item"><a href='../dependency-injection-ioc-container-practices-when-writing-frameworks/'>Dependency Injection/IoC container practices when writing frameworks</a></li><li class="list-group-item"><a href='../ninject-di-how-to-correctly-pass-initialisation-data-to-injected-type-at-runtime/'>Ninject/DI: How to correctly pass initialisation data to injected type at runtime</a></li><li class="list-group-item"><a href='../a-relation-between-dependency-injection-single-instance-and-singletons/'>A relation between Dependency Injection, single instance, and singletons</a></li><li class="list-group-item"><a href='../design-dependency-injection-vs-dependency-lookup-in-a-layered-architecture/'>Design &#8211; Dependency injection vs dependency lookup in a layered architecture</a></li><li class="list-group-item"><a href='../c-are-there-any-alternatives-to-dependency-injection-for-stateless-classes/'>C++ &#8211; Are there any alternatives to dependency injection for stateless classes</a></li><li class="list-group-item"><a href='../c-dependency-injection-multiple-instances-or-only-one-inrequestscope/'>C# &#8211; Dependency injection multiple instances or only one InrequestScope</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

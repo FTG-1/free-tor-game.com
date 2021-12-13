@@ -1,0 +1,71 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211;  design pattern to solve this problem &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1082419 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1082419" class="post-1082419 software type-software status-publish hentry category-software tag-c tag-design tag-design-patterns"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211;  design pattern to solve this problem</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">design</span><span class="mr-2 badge badge-warning">design-patterns</span></p><div class="entry-content"><p>I&#39;ve been struggling with a design so I figured I&#39;d ask here and see if anyone&#39;s able to help 🙂</p><p><strong>High level overview</strong></p><p>I&#39;m designing an app to gamify exercise by creating mini competitions (ex. Who can lose the most weight in 3 months or bike the most miles in a month).</p><p>Users can create competitions (calling them races for now) and they need to be able to specify constraints &#8211; participants have to be in a certain age range, over a certain weight, maximum number of participants in a race, etc.</p><p><strong>My Objects</strong></p><p>RaceParticipant &#8211; for brevity, the only pertinent property is int Age.</p><p>Race:</p><pre><code>public class Race
+{
+    public virtual int RaceId { get; set; }
+    public virtual string RaceName { get; set; }
+    public virtual int RaceTypeId { get; set; }
+    public virtual TrainingType RaceType { get; set; }
+    public virtual IEnumerable&lt;RaceParticipant&gt; RaceParticipants { get; set; }
+    public virtual IEnumerable&lt;RaceConstraint&gt; RaceConstraints { get; set; }
+}
+</code></pre><p>RaceConstraint abstract class:</p><pre><code>public abstract class RaceConstraint
+{
+    public string DisplayText { get; set; }
+    public string ValidationText { get; set; }
+    public virtual bool PassesConstraint(Race race, RaceParticipant participant); 
+}
+</code></pre><p>RaceConstraint implementation MaxNumberOfParticipants:</p><pre><code>public class MaxNumberOfParticipants : RaceConstraint
+{
+    public int MaximumNumberOfParticipants { get; set; }
+
+    public MaxNumberOfParticipants()
+    {
+        DisplayText = &#34;Maximum number of racers&#34;;
+        ValidationText = &#34;This race has reached the maximum number of racers.&#34;;
+    }
+
+    public override bool PassesConstraint(Race race, RaceParticipant participant) 
+    {
+        bool result = false;
+        if (race.RaceParticipants.Count() &lt;= MaximumNumberOfParticipants)
+        {
+            result = true;
+        }
+        return result;
+    }
+}
+</code></pre><p>RaceConstraint implementation AgeRange:</p><pre><code>public class AgeRange : RaceConstraint
+{
+    public int MinimumAge { get; set; }
+    public int MaximumAge { get; set; }
+
+    public AgeRange()
+    {
+        DisplayText = &#34;Age range of racers&#34;;
+        ValidationText = string.Format(&#34;Racers must be between the ages of {0} and {1}.&#34;, MinimumAge, MaximumAge);
+    }
+
+    public override bool PassesConstraint(Race race, RaceParticipant participant)
+    {
+        bool result = false;
+        if (MinimumAge &lt;= participant.Age &amp;&amp; participant.Age &lt;= MaximumAge)
+        {
+            result = true;
+        }
+        return result;
+    }
+}
+</code></pre><p><strong>The question</strong></p><p>My question is where to store MinimumAge, MaximumAge, and MaximumNumberOfParticipants.  I&#39;m using Entity Framework code-first so I know I don&#39;t need to worry about the schema directly, but I do need to think about which properties to add to EF and which object they&#39;ll be connected to.</p><p>Currently EF would make a separate table for each implementation of RaceConstraint which seems like overkill and I definitely don&#39;t want DisplayText and ValidationText stored in the db for each instance.</p><p>I thought about moving MinimumAge, MaximumAge, and MaximumNumberOfParticipants to properties of Race because each race will have values for these, but that feels like Race and RaceConstraint would be too coupled.  I&#39;d like to be able to add a RaceConstraint in the future as requirements change without having to add a property to Race and therefor add a column to the Race db table.</p><p>I think I&#39;m going to have to make a container object for RaceConstraint that holds a collection of all possible RaceConstraints.  Would it make sense to put these properties in that object and then remove IEnumerable RaceConstraints from Race and instead add a property for the RaceConstraintContainer?</p><p>Or maybe I&#39;m way over thinking this and there&#39;s a design pattern I can follow.  I&#39;m sure I&#39;m not the first person to come across this scenario!</p><p>Thanks in advance.</p><p><strong>UPDATE</strong></p><p>After mulling this over for a few days and trying out each of the answers, I think @maple_shaft really nailed the problem of EF getting in the way of OO design.  I think I found a compromise somewhere in the middle.  I added properties like MinimumAge, MaximumAge, and MaximumNumberOfParticipants to the Race object because from a database perspective, these are all very related and each race will have entries for each of these.</p><p>I changed the abstract class RaceConstraint to an interface that just requires bool PassesConstraint().  I made better use of DisplayText by making it a data annotation of the properties in race (ex. [Display(Name = &#34;Maximum number of racers&#34;)]) since I really only wanted it for labels in the UI.  I moved the text from ValidationText to an exception message if a PassesConstraint() fails.</p><p>Finally, I made a RaceManager class to hold a List of RaceConstraints and handle adding users by checking each RaceConstraint.  This class will also handle removing users, determining winners, etc.</p><p>I think this will work well from an MVC standpoint too because I&#39;m not passing models to the view that have methods.  The Race class will really just be there to hold EF data and will make for a clean model to use for adding or updating races from a view.</p><p>Thanks for the help everyone!</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>You are running into a limitation of Entity Framework that encourages what each type of object in your domain model to map directly to a single schema construct.  Creating sub types of <code>RaceConstraint</code> sounds like a good idea from an OO perspective but then the <a href="http://martinfowler.com/bliki/AnemicDomainModel.html" rel="nofollow">Anemic Domain Model</a> is a more encouraged pattern using this framework anyway.</p><p><code>RaceConstraint</code> should be the entity type and all the different possible constraint properties should exist in this one entity.  Display and Validation text are not well represented here, and may be more appropriate as references to an enum or a resource file as each individual constraint property in your RaceConstraint object may have a unique message.</p><p>To maintain the OO design however, you can translate your domain model to a view model that is not Anemic, however some would consider it bad practice to have business logic like <code>PassesConstraint</code> in your View Model or your Domain Model as well.  These are the two schools of thought on this.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-manager-container-class-vs-static-class-methods/'>C# &#8211; Manager/Container class vs static class methods</a></li><li class="list-group-item"><a href='../c-force-derived-class-to-implement-static-method-c/'>C# &#8211; Force Derived Class to Implement Static Method C#</a></li><li class="list-group-item"><a href='../c-how-to-add-properties-to-subclasses-and-access-them-without-casting-from-a-superclass/'>C# &#8211; How to add properties to subclasses and access them without casting from a superclass</a></li><li class="list-group-item"><a href='../c-how-to-argue-against-this-completely-public-mindset-of-business-object-class-design/'>C# &#8211; How to argue against this &#8220;completely public&#8221; mindset of business object class design</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

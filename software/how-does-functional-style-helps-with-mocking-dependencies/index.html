@@ -1,0 +1,60 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>How does functional style helps with mocking dependencies &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1083417 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1083417" class="post-1083417 software type-software status-publish hentry category-software tag-functional-programming tag-mocking tag-tdd"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">How does functional style helps with mocking dependencies</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">functional programming</span><span class="mr-2 badge badge-info">mocking</span><span class="mr-2 badge badge-warning">tdd</span></p><div class="entry-content"><p>From the interview with Kent Beck in a recent Java Magazine issue:</p><blockquote><p>Binstock: Let’s discuss microservices. It seems to me that test-first on microservices would become complicated in the sense that some services, in order to function, will need the presence of a whole bunch of other services. Do you agree?</p><p>Beck: It seems like the same set of trade-ofs about having one big class or lots of little classes.</p><p>Binstock: Right, except I guess, here you have to use an awful lot of mocks in order to be able to set up a system by which you can test a given service.</p><p>Beck: <strong>I disagree. If it is in an imperative style, you do have<br /> to use a lot of mocks. In a functional style where external dependencies are collected together high up in the call chain, then I don’t think that’s necessary. I think you can get a lot of coverage out of unit tests.</strong></p></blockquote><p>What does he mean? How can functional style liberate you from mocking external dependencies?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>A <a href="https://en.wikipedia.org/wiki/Pure_function">pure function</a> is one that:</p><ol><li>Will <strong>always</strong> give the same result given the same arguments</li><li>Doesn&#39;t have any observable side effects (e.g. state changes)</li></ol><p>Suppose we are writing some code to handle user login, where we want to check that the supplied username and password are correct and prevent the user logging in if there are too many failed attempts. In an imperative style our code might look like this:</p><pre><code>bool UserLogin(string username, string password)
+{
+    var user = _database.FindUser(username);
+    if (user == null)
+    {
+        return false;
+    }
+    if (user.FailedAttempts &gt; 3)
+    {
+        return false;
+    }
+    // Password hashing omitted for brevity
+    if (user.Password != password)
+    {
+        _database.RecordFailedLoginAttempt(username);
+    }
+    return true;
+}
+</code></pre><p>Its pretty clear that this is not a pure function:</p><ol><li>This function won&#39;t always give the same result for a given <code>username</code> and <code>password</code> combination as the result also depends on the user record stored in the database.</li><li>The function can change the state of the database, i.e. it has side effects.</li></ol><p>Also note that in order to unit test this function we need to mock out two database calls, <code>FindUser</code> and <code>RecordFailedLoginAttempt</code>.</p><p>If we were to refactor this code into a more functional style we might end up with something a bit like this:</p><pre><code>bool UserLogin(string username, string password)
+{
+    var user = _database.FindUser(username);
+    var result = UserLoginPure(user, password);
+    if (result == Result.FailedAttempt)
+    {
+        _database.RecordFailedLoginAttempt(username);
+    }
+    return result == Result.Success;
+}
+
+Result UserLoginPure(User user, string pasword)
+{
+    if (user == null)
+    {
+        return Result.UserNotFound;
+    }
+    if (user.FailedAttempts &gt; 3)
+    {
+        return Result.LoginAttemptsExceeded;
+    }
+    if (user.Password != password)
+    {
+        return Result.FailedAttempt;        
+    }
+    return Result.Success;
+}
+</code></pre><p>Note that although the <code>UserLogin</code> function is still not pure, the <code>UserLoginPure</code> function is now a pure function and as a result the core user authentication logic can be unit tested without needing to mock any external dependencies. This is because interaction with the database is handled higher up the call stack.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../unit-testing-how-do-functional-languages-handle-a-mocking-situation-when-using-interface-based-design/'>Unit-testing &#8211; How do functional languages handle a mocking situation when using Interface based design</a></li><li class="list-group-item"><a href='../unit-testing-how-much-mocking-is-just-right/'>Unit-testing &#8211; How much mocking is &#8220;just right?&#8221;</a></li><li class="list-group-item"><a href='../java-testing-using-mocking-must-i-mock-all-dependencies-too/'>Java &#8211; Testing using mocking, must I mock all dependencies too</a></li><li class="list-group-item"><a href='../python-functional-style-exception-handling/'>Python &#8211; Functional style exception handling</a></li><li class="list-group-item"><a href='../unit-testing-how-should-i-test-glue-functions-without-testing-that-the-code-i-wrote-is-the-code-i-wrote/'>Unit-testing &#8211; How should I test &#8220;Glue Functions&#8221; without testing that &#8220;the code I wrote is the code I wrote&#8221;</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

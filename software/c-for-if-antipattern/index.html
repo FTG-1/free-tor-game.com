@@ -1,0 +1,86 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; For-if antipattern &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1083727 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1083727" class="post-1083727 software type-software status-publish hentry category-software tag-anti-patterns tag-c"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; For-if antipattern</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">anti-patterns</span><span class="mr-2 badge badge-info">c</span></p><div class="entry-content"><p>I was reading on <a href="https://blogs.msdn.microsoft.com/oldnewthing/20111227-00/?p=8793" rel="noreferrer">this blog post</a> about the for-if anti-pattern, and I&#39;m not quite sure I understand why it&#39;s an anti-pattern.</p><pre><code>foreach (string filename in Directory.GetFiles(&#34;.&#34;))
+{
+    if (filename.Equals(&#34;desktop.ini&#34;, StringComparison.OrdinalIgnoreCase))
+    {
+        return new StreamReader(filename);
+    }
+}
+</code></pre><p><strong>Question 1:</strong></p><p>Is it because of <code>return new StreamReader(filename);</code> inside the <code>for loop</code>? or the fact that you don&#39;t need a <code>for</code> loop in this case?</p><p>As the author of the blog pointed out the less crazy version of this is:</p><pre><code>if (File.Exists(&#34;desktop.ini&#34;))
+{
+    return new StreamReader(&#34;desktop.ini&#34;);
+} 
+</code></pre><p>both suffer from a race condition because if the file is deleted before the creation of the <code>StreamReader</code>, you&#39;ll get a <code>File­Not­Found­Exception</code>.</p><p><strong>Question 2:</strong></p><p>To fix the second example, would you re-write it without the if statement, and instead surround the <code>StreamReader</code> with a try-catch block, and if it throws a <code>File­Not­Found­Exception</code> you handle it in the <code>catch</code> block accordingly?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>This is an antipattern as it takes the form of:</p><pre><code>loop over a set of values
+   if current value meets a condition
+       do something with value
+   end
+end
+</code></pre><p>and can be replaced with</p><pre><code>do something with value
+</code></pre><p>A classic example of this is code like:</p><pre><code>for (var i=0; i &lt; 5; i++)
+{
+    switch (i)
+        case 1:
+            doSomethingWith(1);
+            break;
+        case 2:
+            doSomethingWith(2);
+            break;
+        case 3:
+            doSomethingWith(4);
+            break;
+        case 4:
+            doSomethingWith(4);
+            break;
+    }
+}
+</code></pre><p>When the following works just fine:</p><pre><code>doSomethingWith(1);
+doSomethingWith(2);
+doSomethingWith(3);
+doSomethingWith(4);
+</code></pre><p>If you find yourself performing a loop and an <code>if</code> or <code>switch</code>, then stop and think about what you are doing. Are you overcomplicating things and can the whole loop and test just be replaced with a simple &#34;just do it&#34; line. Sometimes though, you will find you need to do that loop (more than one item might match the one condition, for example), in which case the pattern is fine.</p><p>That&#39;s why it&#39;s an anti-pattern: it takes the &#34;loop and test&#34; pattern and abuses it.</p><p>Regarding your second question: yes. A &#34;try do&#34; pattern is more robust than a &#34;test then do&#34; pattern in any situation where your code isn&#39;t the sole thread on the whole device that can change the state of the item under test.</p><p>The problem with this code:</p><pre><code>if (File.Exists(&#34;desktop.ini&#34;))
+{
+    return new StreamReader(&#34;desktop.ini&#34;);
+}
+</code></pre><p>is that in the time between the <code>File.Exists</code> and <code>StreamReader</code> attempting to open that file, another thread or process could delete the file. So you&#39;ll get an exception. Therefore that exception needs to be guarded against via something like:</p><pre><code>try
+{
+    return new StreamReader(&#34;desktop.ini&#34;);
+}
+catch (File­Not­Found­Exception)
+{
+    return null; // or whatever
+}
+</code></pre><p>@Flater raises a good point? Is this itself an antipattern? Are we using exceptions as control flow?</p><p>If the code read something like:</p><pre><code>try
+{
+    if (!File.Exists(&#34;desktop.ini&#34;)
+    {
+        throw new IniFileMissingException();
+        return new StreamReader(&#34;desktop.ini&#34;);
+    }
+}
+catch (IniFileMissingException)
+{
+    return null;
+}
+</code></pre><p>then I would indeed be using exceptions as a glorified goto and it would indeed be an anti-pattern. But in this case we are just working around the undesirable behaviour of creating a new stream, so this isn&#39;t an example of that anti-pattern. But it is an example of working around that anti-pattern.</p><p>Of course, what we really want is a more elegant way of creating the stream. Something like:</p><pre><code>return TryCreateStream(&#34;desktop.ini&#34;, out var stream) ? stream : null;
+</code></pre><p>And I&#39;d recommend wrapping that <code>try catch</code> code in a utility method like this if you find yourself using this code a lot.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/php-constant-interface-antipattern-php/'>Php &#8211; Constant Interface antipattern &#8211; PHP</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/object-oriented-is-functional-decomposition-really-an-antipattern/'>Object-oriented &#8211; Is functional decomposition really an antipattern</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/is-jquery-an-example-of-god-object-antipattern/'>Is jQuery an example of &#8220;god object&#8221; antipattern</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/the-for-case-antipattern/'>The For-Case Antipattern</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

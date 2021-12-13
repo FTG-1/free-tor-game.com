@@ -1,0 +1,68 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Algorithm/data structure to answer &#8220;what recipes can I make with this set of ingredients?&#8221; &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1072667 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1072667" class="post-1072667 software type-software status-publish hentry category-software tag-algorithms tag-data-structures"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Algorithm/data structure to answer &#8220;what recipes can I make with this set of ingredients?&#8221;</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">algorithms</span><span class="mr-2 badge badge-info">data structures</span></p><div class="entry-content"><p>Formally, let <em>s</em>(<em>U</em>, <em>Q</em>) = {<em>V</em> | <em>V</em> ∈ <em>U</em> and <em>V</em> ⊆ <em>Q</em>} where <em>U</em>, <em>Q</em>, and <em>V</em> all represent sets, and <em>U</em>, more specifically, represents a set of sets. For the sake of example, <em>U</em> might be a set of the (sets of) ingredients required for various recipes in a cookbook with <em>Q</em> representing the set of ingredients I have <em>V</em> representing a recipe I could make with those ingredients. The query <em>s</em>(<em>U</em>, <em>Q</em>) corresponds to the question &#34;What all can I make with these ingredients?&#34;</p><p>What I&#39;m looking for is a data representation that indexes <em>U</em> in such a way that it supports efficient queries of <em>s</em>(<em>U</em>, <em>Q</em>) where <em>Q</em> and all members of <em>U</em> will generally be small compared to the union of all the members of <em>U</em>. In addition, I&#39;d like it to be able to efficiently update <em>U</em> (e.g., add or remove a recipe).</p><p>I can&#39;t help but think that this problem must be well understood, but I haven&#39;t been able to find a name or reference for it. Does anyone know of a strategy for solving this efficiently or a place where I can read more about it?</p><p>As far as thinking about a solution, one thought I had was to build a decision tree for the set <em>U</em>. At each node in the tree, the question &#34;does your ingredient list contain <em>x</em>?&#34; would be asked with <em>x</em> chosen to maximize the number of members of <em>U</em> that get eliminated by the answer.  As <em>U</em> gets updated, this decision tree would need to be re-balanced to minimize the number of questions required to find the correct result. Another thought is to represent <em>U</em> with something like an <em>n</em>-dimensional boolean &#39;octree&#39; (where <em>n</em> is the number of unique ingredients).</p><p>I believe that &#34;What recipes can be made with these ingredients?&#34; can be answered by taking the cartesian product of the (sets of ingredients required for the) recipes in the cookbook with the powerset of the ingredients one has and filtering the resulting ordered pairs for pairs in which both elements are equal, but this is not an efficient solution, and what I&#39;m asking about is how to optimize this kind of operation; how would one compose this in SQL such that it would be efficient and what does SQL do that allows this to be efficient?</p><p>Although I use the illustration of a cookbook of recipes and a set of ingredients, I anticipate that the number of &#39;recipes&#39; and the number of &#39;ingredients&#39; will be very large (up to hundreds of thousands each), though the number of ingredients in a given recipe and the number of ingredients in a given ingredient set will be relatively small (probably around 10-50 for a typical &#39;recipe&#39; and around 100 for a typical &#39;ingredient set&#39;). Additionally, the most common operation will be the query <em>s</em>(<em>U</em>, <em>Q</em>), so it should be most optimal. This also means that a brute force algorithm that requires checking every recipe or operating over every ingredient would be undesirably slow on its own, however. With clever caching, I think this might not perform too badly, though.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>For the numbers you gave, just brute force it.</p><p>Here&#39;s a JavaScript program that brute forces it for 10 ingredients in the DB, 10 recipes in the DB, each recipe needs 2 ingredients, and I have 5 ingredients available:</p><pre><code>var i, j;
+var numIngredients = 10;
+var numRecipes = 10;
+var numIngredientsPerRecipe = 2;
+var numIngredientsInQuery = 5;
+
+function containsAll(needles, haystack){ 
+  var i, len;
+  for(i = 0 , len = needles.length; i &lt; len; i++){
+      if(haystack.indexOf(needles[i]) == -1) {
+          return false;
+      }
+  }
+  return true;
+}
+
+// Set up a fake DB of recipes
+var ingredients = [];
+for (i = 0; i &lt; numIngredients; i++) {
+    ingredients.push(i);
+}
+console.log(&#39;Here are the ingredients:&#39;, ingredients);
+
+var recipes = [];
+for (i = 0; i &lt; numRecipes; i++) {
+    var neededIngredients = [];
+    for (j = 0; j &lt; numIngredientsPerRecipe; j++) {
+        neededIngredients.push(Math.floor(Math.random() * numRecipes));
+    }
+    recipes.push({ recipeId: i, needed: neededIngredients});
+}
+console.log(&#39;Here are the recipes:&#39;, recipes);
+
+// Set up a fake query
+var ingredientsAvailable = [];
+for (i = 0; i &lt; numIngredientsInQuery; i++) {
+    ingredientsAvailable.push(Math.floor(Math.random() * numRecipes));
+}
+
+console.log(&#34;Here&#39;s a query:&#34;, ingredientsAvailable);
+
+//Time how long brute force takes
+var start = Date.now();
+var result = [];
+for (i = 0; i &lt; numRecipes; i++) {
+    var candidateRecipe = recipes[i];
+    if (containsAll(candidateRecipe.needed, ingredientsAvailable)) {
+        result.push(candidateRecipe);
+    }
+}
+var end = Date.now();
+console.log(&#39;Found &#39; + result.length + &#39; recipes in &#39; + (end - start) + &#39; milliseconds.&#39;);
+console.log(result);
+</code></pre><p>It runs in 0 milliseconds. I chose these small numbers so you could run it yourself a couple of times and convince yourself it does what you want and is relatively free of bugs.</p><p>Now change it so that we have 1&#39;000&#39;000 ingredients in the DB, 1&#39;000&#39;000 recipes in the DB, 50 ingredients per recipe and 100 ingredients available to me. I.e. values that are all equal or greater than the largest use case you gave.</p><p>It runs in 125 milliseconds under nodejs, and this is with the dumbest implementation with absolutely no effort to optimize.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../fast-set-indexing-data-structure-for-superset-retrieval/'>Fast set indexing data structure for superset retrieval</a></li><li class="list-group-item"><a href='../the-optimal-recipe-problem/'>The optimal recipe problem</a></li><li class="list-group-item"><a href='../database-an-algorithm-for-finding-subset-matching-criteria/'>Database &#8211; An algorithm for finding subset matching criteria</a></li><li class="list-group-item"><a href='../what-data-structure-would-you-use-to-represent-an-organic-compound/'>What data structure would you use to represent an organic compound</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

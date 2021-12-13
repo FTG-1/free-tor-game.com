@@ -1,0 +1,118 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>What&#8217;s the benefits to use an abstract factory when using interfaces is already suffice &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1075843 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1075843" class="post-1075843 software type-software status-publish hentry category-software tag-abstract-factory tag-design-patterns tag-factory"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">What&#8217;s the benefits to use an abstract factory when using interfaces is already suffice</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">abstract-factory</span><span class="mr-2 badge badge-info">design-patterns</span><span class="mr-2 badge badge-warning">factory</span></p><div class="entry-content"><p>I get the idea of the factory pattern, but I feel that it is really not necessary to use this pattern.</p><p>For example, below is some code I saw (C#) that use factory method:</p><pre class="lang-cs prettyprint-override"><code>public interface IAnimal
+{
+   void Speak();
+}
+
+public class Dog : IAnimal
+{
+   public void Speak()
+   {
+      Console.WriteLine(&#34;Dog says: Bow-Wow.&#34;);
+   }
+}
+
+public class Tiger : IAnimal
+{
+   public void Speak()
+   {
+      Console.WriteLine(&#34;Tiger says: Halum.&#34;);
+   }
+}
+
+public abstract class IAnimalFactory
+{
+   public abstract IAnimal CreateAnimal();
+}
+
+public class TigerFactory : IAnimalFactory
+{
+   public override IAnimal CreateAnimal()
+   {
+      return new Tiger();
+   }
+}
+
+public class DogFactory : IAnimalFactory
+{
+   public override IAnimal CreateAnimal()
+   {
+      return new Dog();
+   }
+}
+</code></pre><p>and client can invoke:</p><pre class="lang-cs prettyprint-override"><code>IAnimalFactory tigerFactory = new TigerFactory();
+IAnimal aTiger = tigerFactory.MakeAnimal();
+aTiger.Speak();  //3 lines of code, plus needing of extra factory classes
+</code></pre><p>but Client can also do like:</p><pre class="lang-cs prettyprint-override"><code>IAnimal aTiger = new Tiger();
+aTiger.Speak();  //only 2 lines of code
+</code></pre><p>we can see that only 2 lines of code is needed, and we don&#39;t need to define factory classes.<br /> so why takes extra steps to define and use factories?</p><p>Ant P replied that RandomNumberOfAnimalsGenerator needs a factory, but below is my version of the class, still doesn&#39;t need any factory.</p><pre class="lang-cs prettyprint-override"><code>public class RandomNumberOfAnimalsGenerator
+{
+    private readonly animal ;
+
+    public RandomNumberOfAnimalsGenerator(IAnimal animal)
+    {
+        this.animal = animal;
+    }
+
+    public List&lt;IAnimal&gt; GetAnimals()
+    {
+        var animals = new List&lt;IAnimal&gt;();
+        var n = RandomNumber();
+
+        for(int i=0; i&lt;n; i++)
+        {
+            animals.Add(animal);
+        }
+
+        return animals;
+    }
+}
+</code></pre><p>and client invokes:</p><pre class="lang-cs prettyprint-override"><code>var RandomNumberOfAnimalsGenerator = new RandomNumberOfAnimalsGenerator(new Tiger());
+</code></pre><p>still doesn&#39;t need a factory</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I&#39;m not sure yet another answer is needed here, but you asked for your code to be modified to explain the purpose of factories. So perhaps the following will help.</p><p>Firstly, I&#39;m going to change your <code>IAnimalFactory</code> to be an interface, rather than an abstract class. It serves no useful purpose being the latter. Also, we likely will have some criteria around what sort of animal we want for a specific circumstance. So let&#39;s have an <code>enum</code> that defines that criteria:</p><pre class="lang-cs prettyprint-override"><code>public enum AnimalType
+{
+    Pet,
+    Wild
+}
+</code></pre><p>Then we can create our factory interface:</p><pre class="lang-cs prettyprint-override"><code>public interface IAnimalFactory
+{
+    IAnimal CreateAnimal(AnimalType typeofAnimal);
+}
+</code></pre><p>So now we have a means of letting other parts of the code create an animal, without having to know anything about what animals exist. We simply get to specify whether we want a wild one or not:</p><pre class="lang-cs prettyprint-override"><code>public void CreateAWildAnimalAndMakeItTalk(IAnimalFactory factory)
+{
+    var animal = factory.CreateAnimal(AnimalType.Wild);
+    animal.Speak();
+}
+</code></pre><p>The only thing left to do is create an actual factory. Let&#39;s keep that simple:</p><pre class="lang-cs prettyprint-override"><code>internal class SimpleAnimalFactory : IAnimalFactory 
+{
+    public IAnimal CreateAnimal(AnimalType typeofAnimal)
+    {
+       return typeofAnimal == AnimalType.Wild ? new Tiger() : new Dog();
+    }
+}
+</code></pre><p>And then it gets used elsewhere in the code:</p><pre class="lang-cs prettyprint-override"><code>CreateAWildAnimalAndMakeItTalk(new SimpleAnimalFactory());
+</code></pre><p>But dogs can be wild too, so we might want to offer a different implementation of the factory:</p><pre class="lang-cs prettyprint-override"><code>internal class RandomWildAnimalFactory : IAnimalFactory 
+{
+    private Random _random = new Random();
+
+    public IAnimal CreateAnimal(AnimalType typeofAnimal)
+    {
+        if (typeofAnimal == AnimalType.Pet) return new Dog();
+
+        return _random.Next(2) == 0 ? new Tiger() : new Dog();
+    }
+}
+</code></pre><p>Then we can call our method with the new factory, without having to change any other code:</p><pre class="lang-cs prettyprint-override"><code>CreateAWildAnimalAndMakeItTalk(new RandomWildAnimalFactory());
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../object-oriented-using-a-simple-static-factory-vs-instantiating-directly-new-thing-vs-factory-creatething-whats-the-benefit/'>Object-oriented &#8211; Using a Simple/Static Factory vs. instantiating directly: new Thing() vs. factory.createThing() &#8211; what&#8217;s the benefit</a></li><li class="list-group-item"><a href='../object-oriented-what-are-the-benefits-of-using-a-decorator-factory-that-decorates-objects/'>Object-oriented &#8211; What are the benefits of using a &#8216;decorator factory&#8217; that decorates objects</a></li><li class="list-group-item"><a href='../when-to-use-factory-design-pattern-instead-of-dependency-injection/'>When to use Factory design pattern instead of Dependency Injection</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

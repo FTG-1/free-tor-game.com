@@ -1,0 +1,61 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Python &#8211; Changing large number of if-elif-else statements to use underlying structure &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1067826 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1067826" class="post-1067826 software type-software status-publish hentry category-software tag-clean-code tag-functions tag-if-statement tag-python"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Python &#8211; Changing large number of if-elif-else statements to use underlying structure</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">clean code</span><span class="mr-2 badge badge-info">functions</span><span class="mr-2 badge badge-warning">if statement</span><span class="mr-2 badge badge-primary">python</span></p><div class="entry-content"><p>I have a function that looks something like this:</p><pre><code>function_name(step, ... , typ):
+    if typ == &#39;some type of calc method&#39;:
+         if step == 1:
+             do_me_at_step_1(...)
+         elif step == 2:
+             do_me_at_step_2(...)
+         elif ...
+    elif typ == &#39;another calc method&#39;:
+         if step == 1:
+             do_me_at_step_1(...)
+         elif ...
+</code></pre><p>Hopefully the general structure is clear here. What are the differences between the different <code>typ</code>s and how they are handled? There is one instance of <code>typ</code> which changes one variable in a very different way from all the others. All instances of <code>typ</code> vary in the number of separate step instructions, ranging from an <code>if step == 1: ... else:</code> to <code>if step == 1 ... elif step == 5 ... else</code>. The last <code>elif</code> and the <code>else</code> statements are different, basically.</p><p>How can I better structure this function, because it currently looks horrific?</p><p>My thought was to pull out all the initial steps&#8230;but I have to have a way to associate each <code>typ</code> with the step which becomes &#34;key&#34;. So I thought somewhere along the lines of:</p><pre><code>function_name(step, ... , typ):
+    orders = {typ1:key_step, typ2:key_step, ...}
+    while key_step[&#39;typ1&#39;] != step:
+        if step == 1:
+            ...
+        step +=1
+</code></pre><p>But I noticed two problems: one, this doesn&#39;t really fully take advantage of the while loop. It would require me to add if statements up until the max step out of all the <code>typ</code>s that is not &#34;key&#34; in there, which doesn&#39;t seem to me to really take advantage of the information in <code>orders</code>.</p><p>The other problem is once you are <em>out</em> of the while loop. I suppose you could do something like</p><pre><code>if typ == &#39;something&#39;:
+    do_the_key_step_function_for_this_typ(...)
+</code></pre><p>but this really isn&#39;t doing anything new to clean up this function. How can I change the structure of this code so it is cleaner and shorter? There&#39;s an underlying structure, so I feel like there should be a better way to do this.</p><p>Feel free to ask me if you need any specifics about this function, but hopefully there are enough details provided here. Thanks!</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Your initial function executes one specific step for one specific type, both of them being provided as argument.  In the second case you iterate over steps trying to find the right one.</p><p><strong>Alternative 1: double dictionary</strong></p><p>Based on your alternative,  I propose you to consider a dictionary of dictionaries, using two indexes instead of just one.  Exemple:</p><pre><code># just some functions to be invoked
+def do_me_at_step_1():
+    return 1
+
+def do_me_at_step_2():
+    return 2
+
+def do_other_step_2():
+    return 102
+
+# Use a dictionary assigning one type to a second level dictionary   
+# In the second level dictionary, assign one step with a function 
+command = { &#39;A&#39;: { 1:do_me_at_step_1, 2:do_me_at_step_2 }, &#39;B&#39;: { 1:do_me_at_step_1, 2:do_other_step_2 } }
+
+# How you&#39;d invoke the right function in function_name()
+print (command[&#39;A&#39;][1]())
+print (command[&#39;A&#39;][2]())
+print (command[&#39;B&#39;][1]())
+print (command[&#39;B&#39;][2]())
+</code></pre><p>So in this case, your function_name() just finds the function to invoke using a dictionary of dictionaries, and then invokes them.</p><p><strong>Alternative 2: object oriented code ?</strong></p><p>You could also consider using an object oriented approach:</p><p>So in fact, you&#39;d create different classes, each corresponding to a different type.  And then you&#39;d invoke for an instantiation of one specific class the method corresponding to the step.</p><p>In fact, the implementation would be very close to the the <a href="https://sourcemaking.com/design_patterns/state/python/1" rel="noreferrer">state pattern</a></p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/python-if-foo-in-dict-vs-try-dictfoo/'>Python &#8211; &#8216;if foo in dict&#8217; vs &#8216;try: dict[foo]&#8217;</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/php-an-alternative-to-an-array-of-functions/'>Php &#8211; An alternative to an array of functions</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/python-should-i-use-nested-matrices-or-dictionaries/'>Python &#8211; Should I use nested matrices or dictionaries</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-correct-usage-of-property-vs-field-vs-function-in-c/'>C# &#8211; Correct usage of Property vs Field vs Function in C#</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/trouble-grasping-what-clean-code-looks-like-in-real-life/'>Trouble grasping what clean code looks like in real life</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/python-programming-cleanly-when-writing-scientific-code/'>Python &#8211; Programming cleanly when writing scientific code</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

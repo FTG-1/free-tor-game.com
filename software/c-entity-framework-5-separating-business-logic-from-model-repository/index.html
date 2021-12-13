@@ -1,0 +1,59 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Entity Framework 5, separating business logic from model &#8211; Repository &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1067350 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1067350" class="post-1067350 software type-software status-publish hentry category-software tag-asp-net tag-c tag-design-patterns tag-entity-framework tag-repository"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Entity Framework 5, separating business logic from model &#8211; Repository</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">asp.net</span><span class="mr-2 badge badge-info">c</span><span class="mr-2 badge badge-warning">design-patterns</span><span class="mr-2 badge badge-primary">entity-framework</span><span class="mr-2 badge badge-danger">repository</span></p><div class="entry-content"><p>I am working on my first public-facing web application and I’m using MVC 4 for the presentation layer and EF 5 for the DAL.  The database structure is locked, and there are moderate differences between how the user inputs data and how the database itself gets populated.  I have done a ton of reading on the repository pattern (which I have never used) but most of my research is pushing me away from using it since it supposedly creates an unnecessary level of abstraction for the latest versions of EF since repositories and unit-of-work are already built-in.</p><p>My initial approach is to simply create a separate set of classes for my business objects in the BLL that can act as an intermediary between my Controllers and the DAL.  Here’s an example class:</p><pre><code>public class MyBuilding
+{
+    public int Id { get; private set; }
+    public string Name { get; set; }
+    public string Notes { get; set; }
+
+    private readonly Entities _context = new Entities(); // Is this thread safe?
+    private static readonly int UserId = WebSecurity.GetCurrentUser().UserId;
+
+    public IEnumerable&lt;MyBuilding&gt; GetList()
+    {
+        IEnumerable&lt;MyBuilding&gt; buildingList = 
+            from p in _context.BuildingInfo
+            where p.Building.UserProfile.UserId == UserId
+            select new MyBuilding {Id = p.BuildingId, Name = p.BuildingName, Notes = p.Building.Notes};
+        return buildingList;
+    }
+
+    public void Create()
+    {
+        var b = new Building {UserId = UserId, Notes = this.Notes};
+        _context.Building.Add(b);
+        _context.SaveChanges();
+
+        // Set the building ID
+        this.Id = b.BuildingId;
+
+        // Seed 1-to-1 tables with reference the new building
+        _context.BuildingInfo.Add(new BuildingInfo {Building = b});
+        _context.GeneralInfo.Add(new GeneralInfo {Building = b});
+        _context.LocationInfo.Add(new LocationInfo {Building = b});
+        _context.SaveChanges();
+    }
+
+    public static MyBuilding Find(int id)
+    {
+        using (var context = new Entities())  // Is this OK to do in a static method?
+        {
+            var b = context.Building.FirstOrDefault(p =&gt; p.BuildingId == id &amp;&amp; p.UserId == UserId);
+            if (b == null) throw new Exception(&#34;Error: Building not found or user does not have access.&#34;);
+            return new MyBuilding {Id = b.BuildingId, Name = b.BuildingInfo.BuildingName, Notes = b.Notes};
+        }
+    }
+}
+</code></pre><p>My primary concern: Is the way I am instantiating my DbContext as a private property thread-safe, and is it safe to have a static method that instantiates a separate DbContext?  Or am I approaching this all wrong?  I am not opposed to learning up on the repository pattern if I am taking the total wrong approach here.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Because the database schema is both out of your scope and liable to change, it is extra important that you isolate it from your main code base. The mapping and table manipulation operations you are calling from your Create and GetList functions and should ideally live in your DAL. That way, your entities and business logic classes will be unaffected by unexpected changes to EF generated code. Even major changes to the database schema then become merely a matter of changing the mapping functions.</p><p>Other that that, I would avoid having business entity instances that have calls to load other instances of their own type - it smells of single responsibility principle violation, as your MyBuikding instances are both data finder objects and data entities. You could get your entities directly from calls to your DAL repositories, or via some intermediate service layer calls if you will require business logic.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../mvc-net-mvc-project-architecture-layering/'>Mvc &#8211; .NET MVC project architecture / layering</a></li><li class="list-group-item"><a href='../how-to-avoid-duplication-of-code-related-to-shared-entities-in-the-repository-pattern/'>How to avoid duplication of code related to shared entities in the repository pattern</a></li><li class="list-group-item"><a href='../design-repository-pattern-without-entity-framework/'>Design &#8211; Repository pattern without entity framework</a></li><li class="list-group-item"><a href='../c-entity-framework-domain-object-as-business-object/'>C# &#8211; Entity Framework Domain Object as Business Object</a></li><li class="list-group-item"><a href='../java-separating-business-logic-from-db-logic-with-transactions/'>Java &#8211; Separating Business logic from DB-logic with transactions</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

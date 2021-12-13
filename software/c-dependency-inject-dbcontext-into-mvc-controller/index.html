@@ -1,0 +1,68 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Dependency Inject DbContext into MVC Controller &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1067650 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1067650" class="post-1067650 software type-software status-publish hentry category-software tag-c tag-dependency-injection tag-entity-framework"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Dependency Inject DbContext into MVC Controller</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">dependency-injection</span><span class="mr-2 badge badge-warning">entity-framework</span></p><div class="entry-content"><p>I&#39;m having some concerns about injecting my Entity Framework DbContext into my MVC controller.</p><p>Below is a sample of my code. The way I designed this is so that I can better unit test my Controller code by injecting a real or mock DbContext.</p><p>What I&#39;m currently planning to do is using Unity and the IDbEntities interface to inject the DbContext into the controller. Every time a new action is called from this controller,<br /> Unity will call the controller constructor and make a new DbContext object which implements the IDbEntities interface.<br /> That way I have a fresh context object on each new request, which I think is pretty safe.</p><p>My concern is what happens next. In the Action, I can have multiple calls to the same or different Data Service using the same DbContext object. For example, in my Index() action I can have calls to<br /> UpdateEvent(dbContext) and then call SoftDeleteEvent(dbContext) using the same DbContext object, or even pass the same context to a different Data Service, for example UserService.LogoutUser(dbContext).</p><p>I&#39;m not sure if all this passing around of the same DbContext object is safe.</p><p><strong>Is it safe to pass the DbContext like this or is there a better way to extract the DbContext from the DataService into the Controller for unit testing purposes?</strong></p><p>Controller:</p><pre><code>public class EventsController : Controller
+{    
+    private IDbEntities _dbContext;
+
+    public EventsController(IDbEntities entities)
+    {
+        _dbContext = entities;
+    }
+
+    public ActionResult Index()
+    {
+        // Hypothetical operations. In reality update and delete of the same record rarely happen in the same code branch
+        var events = _eventService.AllEvents(_dbContext);
+        _eventService.UpdateEvent(id, &#34;NewName&#34;, _dbContext);
+        _eventService.SoftDeleteEvent(id, _dbContext);
+
+        return View(events);
+    }
+}
+</code></pre><p>Data Service:</p><pre><code>public class EventService : IEventService
+{
+    public IEnumerable&lt;Event&gt; AllEvents(IDbEntities entities)
+    {
+        return entities.Events.ToList();
+    }
+
+    public void UpdateEvent(Guid id, string name, IDbEntities entities)
+    {
+        var item = entities.Events.Find(id);
+        if (item != null)
+        {
+            item.Name = name;
+            entities.SaveChanges();
+        }
+    }
+
+    public bool SoftDeleteEvent(Guid id, IDbEntities entities)
+    {
+        var item = entities.Events.Find(id);
+        if (item != null)
+        {
+            item.Purged = true;
+            entities.SaveChanges();
+        }
+
+        return true;
+    }
+}
+</code></pre><p>DbContext Interface:</p><pre><code>// This is an interface that my Entity Framework DbContext implements for Dependency Injection purposes
+public interface IDbEntities
+{
+    DbSet&lt;Event&gt; Events { get; set; }
+}
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>You should inject a fresh <code>DbContext</code> into your <code>EventService</code> constructor, just like you did with your <code>EventController</code>.</p><p><code>DbContext</code> objects are lightweight, short-lived objects.  Passing the <code>DbContext</code> from your EventController into your <code>EventService</code> methods creates unnecessary coupling between the classes without providing any additional benefits, and managing a <code>DbContext</code>&#39;s lifetime isn&#39;t the responsibility of a controller anyway.</p><p>If you don&#39;t need the <code>DbContext</code> in your controller (as your Controller code seems to suggest), then you don&#39;t need to inject it into the controller at all.</p><p>Class boundaries are the appropriate level of abstraction for a <code>DbContext</code>.  In general, you shouldn&#39;t share a <code>DbContext</code> with other classes; just make a new one for each class instance.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../how-to-design-a-domain-entity-that-uses-a-dependency-to-manage-a-state-field/'>How to design a domain entity that uses a dependency to manage a state field</a></li><li class="list-group-item"><a href='../architecture-how-to-avoid-tight-coupling-when-practically-every-decision-logic-has-to-check-lots-of-distributed-state/'>Architecture &#8211; How to avoid tight coupling when practically every decision-logic has to check lots of distributed state</a></li><li class="list-group-item"><a href='../c-is-it-okay-to-have-multiple-get-action-methods-in-asp-net-web-api-controller-according-to-restful-api-constraints/'>C# &#8211; Is it okay to have multiple get action methods in ASP .Net Web API controller according to RESTful API constraints</a></li><li class="list-group-item"><a href='../c-dependency-injection-for-a-library-with-internal-dependencies/'>C# &#8211; Dependency injection for a library with internal dependencies</a></li><li class="list-group-item"><a href='../handling-disposables-with-dependency-injection/'>Handling disposables with dependency injection</a></li><li class="list-group-item"><a href='../c-unity-injection-with-too-many-constructor-parameters/'>C# &#8211; Unity injection with too many constructor parameters</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

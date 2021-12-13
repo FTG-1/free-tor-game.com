@@ -1,0 +1,195 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Nesting Linq-to-Objects query within Linq-to-Entities query –what is happening under the covers &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1071695 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1071695" class="post-1071695 software type-software status-publish hentry category-software tag-entity-framework tag-linq"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Nesting Linq-to-Objects query within Linq-to-Entities query –what is happening under the covers</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">entity-framework</span><span class="mr-2 badge badge-info">linq</span></p><div class="entry-content"><pre><code>   var numbers = new int[] { 1, 2, 3, 4, 5 };
+
+   var contacts = from c in context.Contacts
+                  where c.ContactID == numbers.Max() | c.ContactID == numbers.FirstOrDefault()
+                  select c;
+
+    foreach (var item in contacts) Console.WriteLine(item.ContactID); 
+</code></pre><p>Linq-to-Entities query is first translated into Linq <em>expression tree</em>, which is then converted by Object Services into <em>command tree</em>. And if Linq-to-Entities query nests Linq-to-Objects query, then this nested query also gets translated into an <em>expression tree</em>.</p><p>a) I assume none of the operators of the nested Linq-to-Objects query actually get executed, but instead <em>data provider</em> for particular DB (or perhaps Object Services) knows how to transform the logic of Linq-to-Objects operators into appropriate SQL statements?</p><p>b) <em>Data provider</em> knows how to create equivalent SQL statements only for some of the Linq-to-Objects operators?</p><p>c) Similarly, <em>data provider</em> knows how to create equivalent SQL statements only for some of the non-Linq methods in the Net Framework class library?</p><p><strong>EDIT:</strong></p><p>I know only some Sql so I can&#39;t be completely sure, but reading Sql query generated for the above code  it seems data provider didn&#39;t actually execute <code>numbers.Max</code> method, but instead just somehow figured out that <code>numbers.Max</code> should return the maximum value and then proceed to include in generated Sql query a call to <strong>TSQL&#39;s build-in MAX function</strong>. It also put all the values held by <code>numbers</code> array into a Sql query.</p><pre><code> SELECT CASE
+         WHEN (([Project1].[C1] = 1)
+               AND ([Project1].[C1] IS NOT NULL)) THEN &#39;0X0X&#39;
+         ELSE &#39;0X1X&#39;
+       END                      AS [C1],
+       [Extent1].[ContactID]    AS [ContactID],
+       [Extent1].[FirstName]    AS [FirstName],
+       [Extent1].[LastName]     AS [LastName],
+       [Extent1].[Title]        AS [Title],
+       [Extent1].[AddDate]      AS [AddDate],
+       [Extent1].[ModifiedDate] AS [ModifiedDate],
+       [Extent1].[RowVersion]   AS [RowVersion],
+       CASE
+         WHEN (([Project1].[C1] = 1)
+               AND ([Project1].[C1] IS NOT NULL)) THEN [Project1].[CustomerTypeID]
+       END                      AS [C2],
+       CASE
+         WHEN (([Project1].[C1] = 1)
+               AND ([Project1].[C1] IS NOT NULL)) THEN [Project1].[InitialDate]
+       END                      AS [C3],
+       CASE
+         WHEN (([Project1].[C1] = 1)
+               AND ([Project1].[C1] IS NOT NULL)) THEN [Project1].[PrimaryDesintation]
+       END                      AS [C4],
+       CASE
+         WHEN (([Project1].[C1] = 1)
+               AND ([Project1].[C1] IS NOT NULL)) THEN [Project1].[SecondaryDestination]
+       END                      AS [C5],
+       CASE
+         WHEN (([Project1].[C1] = 1)
+               AND ([Project1].[C1] IS NOT NULL)) THEN [Project1].[PrimaryActivity]
+       END                      AS [C6],
+       CASE
+         WHEN (([Project1].[C1] = 1)
+               AND ([Project1].[C1] IS NOT NULL)) THEN [Project1].[SecondaryActivity]
+       END                      AS [C7],
+       CASE
+         WHEN (([Project1].[C1] = 1)
+               AND ([Project1].[C1] IS NOT NULL)) THEN [Project1].[Notes]
+       END                      AS [C8],
+       CASE
+         WHEN (([Project1].[C1] = 1)
+               AND ([Project1].[C1] IS NOT NULL)) THEN [Project1].[RowVersion]
+       END                      AS [C9],
+       CASE
+         WHEN (([Project1].[C1] = 1)
+               AND ([Project1].[C1] IS NOT NULL)) THEN [Project1].[BirthDate]
+       END                      AS [C10],
+       CASE
+         WHEN (([Project1].[C1] = 1)
+               AND ([Project1].[C1] IS NOT NULL)) THEN [Project1].[HeightInches]
+       END                      AS [C11],
+       CASE
+         WHEN (([Project1].[C1] = 1)
+               AND ([Project1].[C1] IS NOT NULL)) THEN [Project1].[WeightPounds]
+       END                      AS [C12],
+       CASE
+         WHEN (([Project1].[C1] = 1)
+               AND ([Project1].[C1] IS NOT NULL)) THEN [Project1].[DietaryRestrictions]
+       END                      AS [C13]
+FROM   [dbo].[Contact] AS [Extent1]
+       LEFT OUTER JOIN (SELECT [Extent2].[ContactID]            AS [ContactID],
+                               [Extent2].[BirthDate]            AS [BirthDate],
+                               [Extent2].[HeightInches]         AS [HeightInches],
+                               [Extent2].[WeightPounds]         AS [WeightPounds],
+                               [Extent2].[DietaryRestrictions]  AS [DietaryRestrictions],
+                               [Extent3].[CustomerTypeID]       AS [CustomerTypeID],
+                               [Extent3].[InitialDate]          AS [InitialDate],
+                               [Extent3].[PrimaryDesintation]   AS [PrimaryDesintation],
+                               [Extent3].[SecondaryDestination] AS [SecondaryDestination],
+                               [Extent3].[PrimaryActivity]      AS [PrimaryActivity],
+                               [Extent3].[SecondaryActivity]    AS [SecondaryActivity],
+                               [Extent3].[Notes]                AS [Notes],
+                               [Extent3].[RowVersion]           AS [RowVersion],
+                               cast(1 as bit)                   AS [C1]
+                        FROM   [dbo].[ContactPersonalInfo] AS [Extent2]
+                               INNER JOIN [dbo].[Customers] AS [Extent3]
+                                 ON [Extent2].[ContactID] = [Extent3].[ContactID]) AS [Project1]
+         ON [Extent1].[ContactID] = [Project1].[ContactID]
+       LEFT OUTER JOIN (SELECT TOP (1) [c].[C1] AS [C1]
+                        FROM   (SELECT [UnionAll3].[C1] AS [C1]
+                                FROM   (SELECT [UnionAll2].[C1] AS [C1]
+                                        FROM   (SELECT [UnionAll1].[C1] AS [C1]
+                                                FROM   (SELECT 1 AS [C1]
+                                                        FROM   (SELECT 1 AS X) AS [SingleRowTable1]
+                                                        UNION ALL
+
+
+                                                        SELECT 2 AS [C1]
+                                                        FROM   (SELECT 1 AS X) AS [SingleRowTable2]) AS [UnionAll1]
+                                                UNION ALL
+
+
+                                                SELECT 3 AS [C1]
+                                                FROM   (SELECT 1 AS X) AS [SingleRowTable3]) AS [UnionAll2]
+                                        UNION ALL
+
+
+                                        SELECT 4 AS [C1]
+                                        FROM   (SELECT 1 AS X) AS [SingleRowTable4]) AS [UnionAll3]
+                                UNION ALL
+
+
+                                SELECT 5 AS [C1]
+                                FROM   (SELECT 1 AS X) AS [SingleRowTable5]) AS [c]) AS [Limit1]
+         ON 1 = 1
+       LEFT OUTER JOIN (SELECT TOP (1) [c].[C1] AS [C1]
+                        FROM   (SELECT [UnionAll7].[C1] AS [C1]
+                                FROM   (SELECT [UnionAll6].[C1] AS [C1]
+                                        FROM   (SELECT [UnionAll5].[C1] AS [C1]
+                                                FROM   (SELECT 1 AS [C1]
+                                                        FROM   (SELECT 1 AS X) AS [SingleRowTable6]
+                                                        UNION ALL
+
+
+                                                        SELECT 2 AS [C1]
+                                                        FROM   (SELECT 1 AS X) AS [SingleRowTable7]) AS [UnionAll5]
+                                                UNION ALL
+
+
+                                                SELECT 3 AS [C1]
+                                                FROM   (SELECT 1 AS X) AS [SingleRowTable8]) AS [UnionAll6]
+                                        UNION ALL
+
+
+                                        SELECT 4 AS [C1]
+                                        FROM   (SELECT 1 AS X) AS [SingleRowTable9]) AS [UnionAll7]
+                                UNION ALL
+
+
+                                SELECT 5 AS [C1]
+                                FROM   (SELECT 1 AS X) AS [SingleRowTable10]) AS [c]) AS [Limit2]
+         ON 1 = 1
+       CROSS JOIN (SELECT MAX([UnionAll12].[C1]) AS [A1]
+                   FROM   (SELECT [UnionAll11].[C1] AS [C1]
+                           FROM   (SELECT [UnionAll10].[C1] AS [C1]
+                                   FROM   (SELECT [UnionAll9].[C1] AS [C1]
+                                           FROM   (SELECT 1 AS [C1]
+                                                   FROM   (SELECT 1 AS X) AS [SingleRowTable11]
+                                                   UNION ALL
+
+
+                                                   SELECT 2 AS [C1]
+                                                   FROM   (SELECT 1 AS X) AS [SingleRowTable12]) AS [UnionAll9]
+                                           UNION ALL
+
+
+                                           SELECT 3 AS [C1]
+                                           FROM   (SELECT 1 AS X) AS [SingleRowTable13]) AS [UnionAll10]
+                                   UNION ALL
+
+
+                                   SELECT 4 AS [C1]
+                                   FROM   (SELECT 1 AS X) AS [SingleRowTable14]) AS [UnionAll11]
+                           UNION ALL
+
+
+                           SELECT 5 AS [C1]
+                           FROM   (SELECT 1 AS X) AS [SingleRowTable15]) AS [UnionAll12]) AS [GroupBy1]
+WHERE  [Extent1].[ContactID] IN ([GroupBy1].[A1], (CASE
+                                                     WHEN ([Limit1].[C1] IS NULL) THEN 0
+                                                     ELSE [Limit2].[C1]
+                                                   END))
+</code></pre><p>Based on this, is it possible that Linq2Entities provider indeed doesn&#39;t execute non-Linq and Linq-to-Object methods, but instead creates equivalent SQL statements for some of them ( and for others it throws an exception )?</p><p>Thank you in advance</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Presumably the data provider looks at each sub-expression and if it can be computed it just does a compile and execute while it&#39;s constructing the query.  This would be no different than saying:</p><pre><code>where c.ContactID == (4 + 5)
+</code></pre><p>That&#39;s because <code>numbers</code> in your example is an <code>int[]</code> type.</p><p>Interestingly this is only evaluated once before the query is generated, so it&#39;s only calculated once.  If you did something like this:</p><pre><code>where c.ContactID == myObject.NextID()
+</code></pre><p>...then it evaluates <code>myObject.NextID()</code> during the construction of the query, so it only calls it once.  I have witnessed, in Linq2NHibernate, that not only does it only call it once during the creating of the query, but the data provider has built-in query caching, and <em>it won&#39;t re-evaluate it the next time you execute the same query</em>.  YMMV.</p><p>Also remember it&#39;s lazy evaluated, so if you never execute the query, the subexpression is never compiled and executed.  Also, if you modify <code>numbers</code> after your statement but before executing the <code>foreach</code> then the query will be built using your modified value.</p><hr/><p><strong>Edit:</strong></p><p>Here&#39;s an article called <a href="http://msdn.microsoft.com/en-us/library/bb546158.aspx" rel="nofollow">Walkthrough: Creating an IQueryable LINQ Provider</a>.  Check the section on &#34;Adding the Expression Evaluator&#34;.  Specifically the <code>Nominator</code> class:</p><pre><code>/// &lt;summary&gt; 
+/// Performs bottom-up analysis to determine which nodes can possibly 
+/// be part of an evaluated sub-tree. 
+/// &lt;/summary&gt; 
+</code></pre><p>Basically it&#39;s searching the expression tree for anything that can be evaluated, and compiling and executing it, then replacing that sub-expression with a constant expression.</p><p>Here&#39;s the function that determines if an expression can be evaluated:</p><pre><code>private static bool CanBeEvaluatedLocally(Expression expression)
+{
+    return expression.NodeType != ExpressionType.Parameter;
+}
+</code></pre><p>So as long as no sub-expression contains a parameter of the expression, then it can be evaluated.</p><hr/><p><strong>Edit 2:</strong></p><p>Based on your edit, it <em>does</em> look like it&#39;s putting the values from the array into a table in SQL and selecting <code>MAX</code> from that.  I honestly have no idea why it would bother doing that when none of the elements of the sub-expression <code>numbers.Max()</code> are parameters.  I certainly know that you can write an expression like <code>numbers.Contains(c.ID)</code> and that will actually create an <code>IN</code> clause such as <code>c.ID IN (@p0, @p1, @p2, @p3, @p4)</code> where <code>@p0 = 1</code>, <code>@p1 = 2</code>, etc.</p><p>So, to answer your question: &#34;is it possible that Linq2Entities provider indeed doesn&#39;t execute non-Linq and Linq-to-Object methods, but instead creates equivalent SQL statements for some of them&#34;</p><p>Yes, it&#39;s possible.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-is-it-possible-to-implement-an-infinite-ienumerable-without-using-yield-with-only-c-code/'>C# &#8211; Is it possible to implement an infinite IEnumerable without using yield with only C# code</a></li><li class="list-group-item"><a href='../is-it-faster-to-query-using-linq-to-entities-or-a-data-adapter/'>Is it faster to query using linq-to-entities or a data adapter</a></li><li class="list-group-item"><a href='../c-null-or-empty-object-when-linq-to-entities-query-returns-nothing/'>C# &#8211; Null or empty object when LINQ to Entities query returns nothing</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

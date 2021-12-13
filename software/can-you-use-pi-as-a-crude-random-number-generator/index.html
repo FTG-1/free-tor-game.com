@@ -1,0 +1,61 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Can you use Pi as a crude random number generator &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1071086 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1071086" class="post-1071086 software type-software status-publish hentry category-software tag-algorithms tag-language-agnostic tag-math tag-random"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Can you use Pi as a crude random number generator</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">algorithms</span><span class="mr-2 badge badge-info">language-agnostic</span><span class="mr-2 badge badge-warning">math</span><span class="mr-2 badge badge-primary">random</span></p><div class="entry-content"><p>I recently saw <a href="https://math.stackexchange.com/questions/216343/does-pi-contain-all-possible-number-combinations">this</a> question over at math.SE. It got me thinking. Could Pi be used as a crude random number generator? I mean the results are well known(how long has pi been computed to now?) but, Pi does seem to be quite random when taken 1 digit at a time.</p><p>Does this make any sense at all?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Digging from <a href="http://www.befria.nu/elias/pi/binpi.html">http://www.befria.nu/elias/pi/binpi.html</a> to get the binary value of pi (so that it was easier to convert into bytes rather than trying to use decimal digits) and then running it through <a href="http://www.fourmilab.ch/random/">ent</a> I get the following for an analysis of the random distribution of the bytes:</p><blockquote><p>Entropy = 7.954093 bits per byte.</p><p>Optimum compression would reduce the size of this 4096 byte file by 0
+ percent.</p><p>Chi square distribution for 4096 samples is 253.00, and randomly would
+ exceed this value 52.36 percent of the times.</p><p>Arithmetic mean value of data bytes is 126.6736 (127.5 = random).</p><p>Monte Carlo value for Pi is 3.120234604 (error 0.68 percent).</p><p>Serial
+ correlation coefficient is 0.028195 (totally uncorrelated = 0.0).</p></blockquote><p>So yes, using pi for random data would give you fairly random data... realizing that it is well known random data.</p><hr/><p>From a comment above...</p><blockquote><p>Depending on what you are doing, but I think you can use the decimals
+ of the square root of any prime number as a random number generator.
+ These should at least have evenly distributed digits. – Paxinum</p></blockquote><p>So, I computed the square root of 2 in binary to undetake the same set of problems.  Using <a href="http://mathworld.wolfram.com/WolframsIteration.html">Wolfram&#39;s Iteration</a> I wrote a simple perl script</p><pre><code>#!/usr/bin/perl
+use strict;
+use Math::BigInt;
+
+my $u = Math::BigInt-&gt;new(&#34;2&#34;);
+my $v = Math::BigInt-&gt;new(&#34;0&#34;);
+my $i = 0;
+
+while(1) {
+    my $unew;
+    my $vnew;
+
+    if($u-&gt;bcmp($v) != 1) { # $u &lt;= $v
+        $unew = $u-&gt;bmul(4);
+        $vnew = $v-&gt;bmul(2);
+    } else {
+        $unew = ($u-&gt;bsub($v)-&gt;bsub(1))-&gt;bmul(4);
+        $vnew = ($v-&gt;badd(2))-&gt;bmul(2);
+    }   
+
+    $v = $vnew;
+    $u = $unew;
+
+    #print $i,&#34;  &#34;,$v,&#34;\n&#34;;
+    if($i++ &gt; 10000) { last; }
+}
+
+open (BITS,&#34;&gt; bits.txt&#34;);
+print BITS $v-&gt;as_bin();
+close(BITS);
+</code></pre><p>Running this for the first 10 matched <a href="http://oeis.org/A095804">A095804</a> so I was confident I had the sequence.  The value v<sub>n</sub> as when written in binary with the binary point placed after the first digit gives an approximation of the square root of 2.</p><p>Using ent against this binary data produces:</p><pre><code>Entropy = 7.840501 bits per byte.
+
+Optimum compression would reduce the size
+of this 1251 byte file by 1 percent.
+
+Chi square distribution for 1251 samples is 277.84, and randomly
+would exceed this value 15.58 percent of the times.
+
+Arithmetic mean value of data bytes is 130.0616 (127.5 = random).
+Monte Carlo value for Pi is 3.153846154 (error 0.39 percent).
+Serial correlation coefficient is -0.045767 (totally uncorrelated = 0.0).
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../unit-testing-of-inherently-random-non-deterministic-algorithms/'>Unit-testing of inherently random/non-deterministic algorithms</a></li><li class="list-group-item"><a href='../this-algorithm-for-converting-strings-into-numbers-called/'>This algorithm for converting strings into numbers called</a></li><li class="list-group-item"><a href='../can-a-random-number-generator-ever-produce-different-output-given-identical-seeds/'>Can a random number generator ever produce different output given identical seeds</a></li><li class="list-group-item"><a href='../algorithms-for-making-image-mosaics-is-there-a-quicker-way-than-this/'>Algorithms for making image mosaics &#8211; is there a quicker way than this</a></li><li class="list-group-item"><a href='../why-is-the-period-of-a-pseudorandom-number-generator-important/'>Why is the &#8220;period of a (pseudo)random number generator&#8221; important</a></li><li class="list-group-item"><a href='../java-testing-a-function-that-uses-random-number-generator/'>Java &#8211; Testing a function that uses random number generator</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

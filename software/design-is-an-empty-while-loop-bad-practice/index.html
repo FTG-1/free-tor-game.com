@@ -1,0 +1,78 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Design &#8211; Is an empty &#8216;while&#8217; loop bad practice &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1067870 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1067870" class="post-1067870 software type-software status-publish hentry category-software tag-clean-code tag-design tag-programming-practices"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Design &#8211; Is an empty &#8216;while&#8217; loop bad practice</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">clean code</span><span class="mr-2 badge badge-info">design</span><span class="mr-2 badge badge-warning">programming practices</span></p><div class="entry-content"><p>Consider the following:</p><pre class="lang-java prettyprint-override"><code>public boolean maybeUpdateTime() {
+    if (this.timeReference.isAfter(lastInterval.getBeginning()) {
+        this.timeReference = lastInterval.getEnd();
+        lastInterval = intervalIterator.next();
+        return true;
+    }
+    return false;
+}
+
+public void updateState() {
+
+    // do some stuff before
+
+    while (maybeUpdateTime());
+
+    // do more stuff afeter
+
+}
+</code></pre><p>Which roughly translates to: <i>while it needs to be updated &#8211; update it</i>.</p><p><strong>Considering that <code>maybeUpdateTime</code> is a function/method that can be called independently, would it still be considered a bad practice to write such an empty while?</strong></p><p>Otherwise I would have to create two functions, <code>isTimeAfterInterval</code> and <code>updateTime</code>, and call both every time.</p><p><sub>I used this time and interval-based example just to illustrate, but the specifics don&#39;t matter to my question.</sub></p><hr/><p>Note that <code>maybeUpdateTime</code> is a &#34;public&#34; function that can be called independently of <code>updateState</code> and not always inside a loop until it returns false like there.</p><p>Therefore, it is important to wrap it inside a function of its own. This code is an example and thus I kept it simple, but it could be a much bigger computation.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p><strong>From a code-review perspective - the intuitive process</strong></p><p>The function <code>maybeUpdateTime</code> does not seem to be problematic. However, it definitely needs a better name, one that conveys information to a programmer succinctly.</p><p>The while loop inside the <code>updateState</code> function may trigger a false-alarm for a programmer who is reading the code. That is, it makes the reader feel scary, and compels the reader to fetch more information to assure that it is not a bug.</p><p>When a programmer reads a <code>while</code> loop and tries to understand what it does, there are several pieces of information that the programmer needs to grasp (or guess):</p><ul><li>Is this loop going to execute at least once?<ul><li>Why does this question matter? If the loop isn&#39;t going to execute at all, I&#39;m not too concerned about the correctness or applicability of the code inside the loop.</li></ul></li><li>Is it going to execute a fixed number of times?<ul><li>If the loop count is determined beforehand, I can glean more information by finding out where that loop count is derived from.</li><li>If there is no pre-determined loop count, I will need to find out the dynamic conditions - what is the loop termination condition?</li></ul></li><li>If the loop termination condition is computed in another function,<ul><li>Am I able to guess what that condition is, just by seeing the other function&#39;s name?</li><li>If the other function&#39;s name didn&#39;t provide adequate information (about what that loop-termination condition is), I will have to go to that function and read about it.</li></ul></li></ul><p>Altogether, these thought processes increased the <strong>cognitive load</strong> of the person reading the code (especially the <code>while</code> loop). If one or more issues are fixed, the cognitive load will decrease, and the <code>while</code> loop will become less scary to the other programmer.</p><hr/><p><strong>From a code-review perspective - objections that may be raised</strong></p><p><em>Note: this section dissects into the code example provided by OP. As OP explains, such detail is <strong>not</strong> the main focus of this question.</em></p><pre class="lang-java prettyprint-override"><code>public boolean maybeUpdateTime() 
+{
+    if (this.timeReference.isAfter(lastInterval.getBeggining()) 
+    {
+        this.timeReference = lastInterval.getEnd();   // mutation
+        lastInterval = intervalIterator.next();   // mutation
+        return true;
+    }
+    return false;
+}
+</code></pre><p>In the code sample above, changes are made to <strong>two</strong> instance fields (of the <code>this</code> object). The function&#39;s name will need to communicate either the <strong>how</strong> or the <strong>why</strong> these field changes are made.</p><p>But how do we explain the <strong>why</strong>?</p><p>We can only explain in a manner that makes sense to fellow humans. For this reason, we (humans) create idioms and analogies, drawing from experience from our everyday, non-software-related lives.</p><p>We also try to separate a complex process into orthogonal, composable concerns.</p><p>It should be obvious that the code sample above is taken from a class that has certain iterator-like behavior. It is also obvious that the class has other responsibilities as well.</p><p>Thus, the first change we&#39;d make is to isolate the iterator-like behavior - to make it an iterator that is extensible, without bundling with the additional responsibility. This is called the <strong>Single Responsibility Principle (SRP)</strong>.</p><p>The sample code may have more than one use cases. Some examples are:</p><ul><li>To iterate through the entire collection, one at a time, and perform a bit of work on each item (via the extensibility of an iterator)</li><li>To search for something (i.e. to iterate through the collection until a condition is met), without modifying the collection.</li><li>To execute an algorithm that examines the inter-relationship between adjacent items in the collection, e.g. to find consecutive items that represent time ranges that touch or overlap.</li></ul><p>In each of the use case, it would help if the code is refactored (restructured) so that the <strong>what is being computed</strong> is made obvious, and <strong>separate</strong> from the act of iterating through.</p><hr/><p><strong>From a coding style perspective</strong></p><p>Given OP&#39;s desire to focus on the tension between:</p><ul><li>There is already a public function; its name is NOT going to be changed;</li><li>There is another function that calls that public function; however, the way it is called may look scary to a fellow programmer.</li></ul><p>In this case, the advise is to <strong>wrap</strong> that function so that the <strong>wrapper</strong>&#39;s name conveys the missing context.</p><p>Illustrated solution:</p><pre class="lang-java prettyprint-override"><code>// Function name is part of public API
+// Function name cannot be changed
+// Function name is meaningful when seen from the API&#39;s context
+// Suggestion to change this function name cannot be fulfilled
+public boolean somePublicFunction()
+{
+    ...
+}
+
+// Because this is a thin wrapper, 
+// you can change its name to give more context.
+private boolean advanceIteratorOnce()
+{
+    somePublicFunction();
+}
+
+// If it is necessary to provide more context to the fellow programmer
+// reading your code, consider making it obvious what is the stopping 
+// condition for the while loop.
+private void keepDoingUntilSomethingHappens()
+{
+    while (advanceIteratorOnce());
+}
+
+public void doMultipleThings() 
+{
+    // do some stuff before
+
+    // You may use option 1, option 2, or both.
+    // What is important is that the fellow programmer will not feel scared
+    // because the important information about the loop has been made obvious.
+    keepDoingUntilSomethingHappens();
+
+    // do more stuff afeter
+}
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../whiletrue-and-loop-breaking-anti-pattern/'>While(true) and loop-breaking &#8211; anti-pattern</a></li><li class="list-group-item"><a href='../unit-testing-best-practice-for-code-coverage-of-empty-interface-methods/'>Unit-testing &#8211; Best practice for code coverage of empty interface methods</a></li><li class="list-group-item"><a href='../design-is-an-event-loop-just-a-for-while-loop-with-optimized-polling/'>Design &#8211; Is an event loop just a for/while loop with optimized polling</a></li><li class="list-group-item"><a href='../is-using-a-function-inside-a-for-loop-bad-practice/'>Is using a function inside a for loop bad practice</a></li><li class="list-group-item"><a href='../design-is-it-bad-practice-to-reuse-method-parameters/'>Design &#8211; Is it bad practice to reuse method parameters</a></li><li class="list-group-item"><a href='../javascript-is-it-good-practice-to-use-array-pop-assignment-in-a-while-loop-condition/'>Javascript &#8211; Is it good practice to use array.pop() assignment in a while loop condition</a></li><li class="list-group-item"><a href='../design-refactoring-replacing-a-temporary-variable-with-a-query-is-this-code-example-bad-practice/'>Design &#8211; Refactoring: Replacing a temporary variable with a query. Is this code example bad practice</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

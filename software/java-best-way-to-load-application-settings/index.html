@@ -1,0 +1,76 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; Best way to load application settings &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1063325 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1063325" class="post-1063325 software type-software status-publish hentry category-software tag-c tag-design-patterns tag-java tag-object-oriented"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; Best way to load application settings</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">design-patterns</span><span class="mr-2 badge badge-warning">java</span><span class="mr-2 badge badge-primary">object-oriented</span></p><div class="entry-content"><p>A simple way to keep the settings of a Java application is represented by a text file with &#34;.properties&#34; extension containing the identifier of each setting associated with a specific value (this value may be a number, string, date, etc..). C# uses a similar approach, but the text file must be named &#34;App.config&#34;. In both cases, in source code you must initialize a specific class for reading settings: this class has a method that returns the value (as string) associated with the specified setting identifier.</p><pre><code>// Java example
+Properties config = new Properties();
+config.load(...);
+String valueStr = config.getProperty(&#34;listening-port&#34;);
+// ...
+
+// C# example
+NameValueCollection setting = ConfigurationManager.AppSettings;
+string valueStr = setting[&#34;listening-port&#34;];
+// ...
+</code></pre><p>In both cases we should parse strings loaded from the configuration file and assign the ​​converted values to the related typed objects (parsing errors could occur during this phase). After the parsing step, we must check that the setting values ​​belong to a specific domain of validity: for example, the maximum size of a queue should be a positive value, some values ​​may be related (example: min &lt; max), and so on.</p><p>Suppose that the application should load the settings as soon as it starts: in other words, the first operation performed by the application is to load the settings. Any invalid values for the settings ​​must be replaced automatically with default values​​: if this happens to a group of related settings, those settings are all set with default values.</p><p>The easiest way to perform these operations is to create a method that first parses all the settings, then checks the loaded values ​​and finally sets any default values​​. However maintenance is difficult if you use this approach: as the number of settings increases while developing the application, it becomes increasingly difficult to update the code.</p><p>In order to solve this problem, I had thought of using the <em>Template Method</em> pattern, as follows.</p><pre><code>public abstract class Setting
+{
+    protected abstract bool TryParseValues();
+
+    protected abstract bool CheckValues();
+
+    public abstract void SetDefaultValues();
+
+    /// &lt;summary&gt;
+    /// Template Method
+    /// &lt;/summary&gt;
+    public bool TrySetValuesOrDefault()
+    {
+        if (!TryParseValues() || !CheckValues())
+        {
+            // parsing error or domain error
+            SetDefaultValues();
+            return false;
+        }
+        return true;
+    }
+}
+
+public class RangeSetting : Setting
+{
+    private string minStr, maxStr;
+    private byte min, max;
+
+    public RangeSetting(string minStr, maxStr)
+    {
+        this.minStr = minStr;
+        this.maxStr = maxStr;
+    }
+
+    protected override bool TryParseValues()
+    {
+        return (byte.TryParse(minStr, out min)
+            &amp;&amp; byte.TryParse(maxStr, out max));
+    }
+
+    protected override bool CheckValues()
+    {
+        return (0 &lt; min &amp;&amp; min &lt; max);
+    }
+
+    public override void SetDefaultValues()
+    {
+        min = 5;
+        max = 10;
+    }
+}
+</code></pre><p>The problem is that in this way we need to create a new class for each setting, even for a single value.<br /> Are there other solutions to this kind of problem?</p><p>In summary:</p><ol><li>Easy maintenance: for example, the addition of one or more parameters.</li><li>Extensibility: a first version of the application could read a single configuration file, but later versions may give the possibility of a multi-user setup (admin sets up a basic configuration, users can set only certain settings, etc..).</li><li>Object oriented design.</li></ol></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Essentially the external configuration file is encoded as a YAML document. This is then parsed during application start up and mapped to a configuration object.</p><p>The final result is robust and above all simple to manage.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-need-to-test-properties-one-by-one-in-every-possibility/'>Java &#8211; Need to test .properties one by one in every possibility</a></li><li class="list-group-item"><a href='../object-oriented-patterns-about-hierarchical-settings-overwriting/'>Object-oriented &#8211; Pattern(s) about hierarchical settings overwriting</a></li><li class="list-group-item"><a href='../c-multi-user-configuration-settings-design/'>C# &#8211; Multi-user Configuration Settings design</a></li><li class="list-group-item"><a href='../c-best-way-of-validating-class-properties/'>C# &#8211; Best way of validating Class properties</a></li><li class="list-group-item"><a href='../c-whats-the-best-way-to-handle-updates-only-when-a-value-has-changed/'>C# &#8211; What&#8217;s the best way to handle updates only when a value has changed</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

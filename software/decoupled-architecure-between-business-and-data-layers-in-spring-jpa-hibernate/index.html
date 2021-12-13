@@ -1,0 +1,76 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Decoupled architecure between business and data layers in Spring JPA / Hibernate &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1082229 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1082229" class="post-1082229 software type-software status-publish hentry category-software tag-business-logic tag-data tag-hibernate tag-jpa tag-spring"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Decoupled architecure between business and data layers in Spring JPA / Hibernate</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">business-logic</span><span class="mr-2 badge badge-info">data</span><span class="mr-2 badge badge-warning">hibernate</span><span class="mr-2 badge badge-primary">jpa</span><span class="mr-2 badge badge-danger">spring</span></p><div class="entry-content"><p>I&#39;m using Spring Boot with JPA / Hibernate and I&#39;m trying to decouple the business layer from the data layer. I would like to be able to (relatively easily) switch from a relational database to a rdf triple store.</p><p>Here is a partial simplified description of my current try. I have entities such as:</p><pre><code>@Entity(name=&#34;Drawer&#34;)
+public class DrawerEntity {
+    @Id
+    private int id;
+    private String label;
+
+    public int getId(){return id;}
+    public void setId(int id){this.id=id;}
+
+    public String getLabel(){return label;}
+    public void setLabel(String label){this.label=label;}
+
+}
+</code></pre><p>I have business objects wich are acting as proxy to entities such as:</p><pre><code>public class Drawer{
+    @Autowired
+    private CardRepository cardRepository;
+    private DrawerEntity drawerEntity;
+
+    public Drawer(){this.drawerEntity = new DrawerEntity();}
+    public Drawer(DrawerEntity drawerEntity){this.drawerEntity = drawerEntity;}
+
+    public int getId(){return drawerEntity.getId();}
+    public void setId(int id){drawerEntity.setId(id);}
+
+    public String getLabel(){return drawerEntity.getLabel();}
+    public void setLabel(String label){drawerEntity.setLabel(label);}
+
+    public int getNumberOfCards(){return cardRepository.countByDrawerId(this.getId());}
+}
+</code></pre><p>I&#39;ve also a service layer :</p><pre><code>public interface DrawerService {
+    Collection&lt;Drawer&gt; findAll();
+    Drawer findOne(int id);
+    Drawer create(Drawer drawer);
+    void delete(int id);   
+}
+</code></pre><p>Implemented by a <code>DrawerServiceBean</code></p><pre><code>@Service
+public class DrawerServiceBean implements DrawerService {
+
+    @Autowired
+    private DrawerRepository drawerRepository;
+
+    @Override
+    public Collection&lt;Drawer&gt; findAll() {
+        Collection&lt;Drawer&gt; allCard = new ArrayList&lt;&gt;();
+        for(DrawerEntity drawerEntity : drawerRepository.findAll()){
+           allCard.add(new Drawer(drawerEntity)); 
+        }
+        return allCard;
+    }
+
+    @Override
+    public Drawer findOne(int id) {return new Drawer(drawerRepository.findOne(id));}
+
+    @Override
+    public Drawer create(Drawer drawer) {return new Drawer(drawerRepository.save(drawer.getDrawerEntity()));}
+
+    @Override
+    public void delete(int id) {drawerRepository.delete(id);}
+}
+</code></pre><p>Which is linked to a JPA repository</p><pre><code>@Repository
+public interface DrawerRepository extends JpaRepository&lt;DrawerEntity, Integer&gt; {}
+</code></pre><p>Following the advices given in this <a href="https://stackoverflow.com/a/17688178/1807667">answer</a>, I&#39;m not injecting anything into the entities and I&#39;m using business proxy objects. But then, it seems that, <a href="https://stackoverflow.com/a/25284157/1807667">I have to use <code>@Configurable</code></a> and <a href="http://docs.spring.io/autorepo/docs/spring/4.3.x/spring-framework-reference/html/aop.html#aop-aj-ltw" rel="nofollow noreferrer">AspectJ LTW</a> for injecting the repositories into the business objects because &#34;<a href="http://docs.spring.io/autorepo/docs/spring/4.3.x/spring-framework-reference/html/aop.html#aop-pointcuts" rel="nofollow noreferrer">Spring AOP only supports method execution join points for Spring beans</a>&#34;.</p><p>The goal of this architecture was to be able to define methods such as <code>getNumberOfCards</code> in business objects that use different types of repositories (<code>CardRepository</code>, <code>DrawerRepository</code>). But the result seems complex with a lot of boilerplate code. I wonder how I can simplify this? Is Aspect Oriented Programming necessary? Can I reduce the size of the boilerplate code? Is there some solutions provided by Spring Data?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Sometime ago, i asked on SO a question that include <a href="https://stackoverflow.com/questions/37811139/good-usage-of-managed-entities-proxies-with-orm">if i have to implements my service as they&#39;re using JPA managed entities ?</a> Here are the two points of my own answer that should interest you :</p><blockquote><ul><li><p>I don&#39;t have to abstract the fact that i use managed entities, this will lead to complex and unefficient code</p></li><li><p>I choosed JPA, i won&#39;t switch for it which is true unless rewriting the full model to stand for something based on non relationnal database.</p></li></ul></blockquote><p>If you try to abstract the fact that you&#39;re using lazy-loading/managed entities, you will just have troubles. For instance, i saw a project where there was DAO Pojo and business POJO, they were always converting the DAO to business POJO using adapter, and thus always triggering loading lazy list in the N+1 select way.</p><p>So if I adapt what i was told in that question, at the very least, your should have 2 differents business implementations, one relying on the strength of JPA, and the other, either one that don&#39;t care about JPA/RDF, either one that will get the best of RDF DAO  layer.</p><p>I know that doesn&#39;t seems to follow the rule of POO about totally encapsulating behaviour in each layer, but really, try to abstract complex JPA model without triggering cascading N+1 select on every relations or manually fetching each relations when you shouldn&#39;t need to with JPA. It just can&#39;t work. JPA is really invasive, but really powerful too, as you have very few code to write (and maintain!) to use it.</p><p>Of course if you&#39;re just doing something really simple having quite few data, a demo, ... you can stick to one business layer that is not using JPA at his best.</p><p>But if you need some basic performance, like loading all your database line-by-line in the ORM is not an option, you will probably end up stuck with one implementations that don&#39;t use JPA right.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-best-practice-for-creating-views-in-spring-and-hibernate-web-application/'>Java &#8211; Best practice for creating views in spring and hibernate web application</a></li><li class="list-group-item"><a href='../why-were-annotations-introduced-in-spring-and-hibernate/'>Why were annotations introduced in Spring and Hibernate</a></li><li class="list-group-item"><a href='../c-separation-of-retrieving-data-and-business-objects-between-dal-and-bll-layers/'>C# &#8211; Separation of retrieving data and business objects between DAL and BLL Layers</a></li><li class="list-group-item"><a href='../java-using-prototype-non-spring-managed-beans-in-spring-web-application/'>Java &#8211; Using prototype/non-Spring managed beans in Spring Web application</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

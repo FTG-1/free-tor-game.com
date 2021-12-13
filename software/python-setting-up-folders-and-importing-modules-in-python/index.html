@@ -1,0 +1,92 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Python &#8211; Setting up folders and importing modules in Python &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1083731 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1083731" class="post-1083731 software type-software status-publish hentry category-software tag-class tag-file-structure tag-functions tag-modules tag-python"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Python &#8211; Setting up folders and importing modules in Python</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">class</span><span class="mr-2 badge badge-info">file structure</span><span class="mr-2 badge badge-warning">functions</span><span class="mr-2 badge badge-primary">modules</span><span class="mr-2 badge badge-danger">python</span></p><div class="entry-content"><p>I&#39;m building an app to automate some processes that are annoying to do by hand (looking in a file, taking certain information out of a file, building another file with that information).</p><p>My project has three main pieces: app.py, which talks to the user and uses webpy to build a simple interface; maker.py, which contains a set of functions that do the heavy lifting; and a folder of html templates. There is also a static folder, which is where the app puts the results of its hard work.</p><p>The only way I can get this mess to work is if app.py and maker.py are in the same folder. That doesn&#39;t jive with the way various tutorials have told me to set up my folders, though. If they aren&#39;t in the same folder, I get errors like &#34;no module named maker&#34;. Another problem is that I can&#39;t see any good reason for the FragmentMaker class to exist at all. Why can&#39;t I have a file full of functions and just import the whole thing as it stands?</p><p>What is the best way to set up the folders for this kind of project? Are maker.py and app.py supposed to be in different folders? If so, how do I import maker.py so I can use the code I&#39;ve put in it?</p><p>The web side, app.py :</p><pre><code>import web
+from maker import FragmentMaker #can&#39;t make this work
+
+urls = (&#39;/upload&#39;, &#39;Upload&#39;,
+        &#39;/make_link&#39;, &#39;Make_Link&#39;
+)
+
+app = web.application(urls, globals())
+render = web.template.render(&#39;templates/&#39;)
+
+maker = FragmentMaker() #this doesn&#39;t work either
+
+
+class Upload:
+    def GET(self):
+        return render.upload_form()
+
+
+    def POST(self):
+        x = web.input(myfile={})
+        filename = x[&#39;myfile&#39;].filename
+        input_file = x[&#39;myfile&#39;].file # returns a file-like object
+        if &#39;.docx&#39; in filename: #Runs the docx side of fragment maker
+            E_supinfo = maker.makeList(input_file)
+            maker.WriteFrag(E_supinfo)
+        elif &#39;.csv&#39; in filename: #Runs for everything else
+            Other_supinfo = maker.ProcessCSV(input_file)
+            maker.WriteFrag(Other_supinfo)
+        else: #For unsupported file types
+            return render.error_page(filename)
+        return render.upload_confirm(filename)
+
+class Make_Link:
+    def GET(self):
+        return render.make_link(&#39;NONE&#39;)
+    def POST(self):
+        instring = web.input(accession = &#39;NONE&#39;)
+        E_Link = maker.makeLink(instring.accession)
+        return render.make_link(E_Link)
+
+if __name__ == &#34;__main__&#34;:
+app.run()
+</code></pre><p>And this is maker.py, more or less:</p><pre><code>import a bunch of useful things other people have built
+
+class FragmentMaker: #does &#39;(object)&#39; need to be in here?
+    def __init__(self):
+        self.joy = &#34;service is my only joy&#34; #do I need a variable here? Nothing uses this.
+
+    def Thing1(self, stuff_for_thing1):
+        useful code here.
+
+    def ProcessCSV(self, other): 
+        more code that works
+
+    def makeLink(self, acnum): 
+        code here
+
+    def makeList(docname): # does &#39;self&#39; have to be in these?
+
+        E_List = Thing1(docname) #calling a function from inside another function is ok, right?
+
+        code: then a miracle happens.
+</code></pre><p>&#8230; and so on.</p><p>my file structure:</p><pre><code>makefrag
+|-bin
+    app.py
+|-docs
+    empty for now
+|-Fragment_Maker
+    __init__.py
+    maker.py
+|-static
+    results go here
+|-templates
+    html files here
+|-tests
+    all sorts of random test files and code in here
+__init__.py
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I cannot comment so instead I&#39;ll answer or lead you there with rhetorical questions:</p><p>First, how are you intending on launching as well as using this program? You are building a python package by using __init__.py&#39;s but you are executing a module (bin/app.py) within the package as __main__. This is not a typical setup.</p><p>Do you plan on importing this package of yours into some other python script? Maybe you don&#39;t need a package at all and can use a few scripts. Generally all python files related to some function would be in one cohesive package (perhaps you don&#39;t need that top-level __init__.py).</p><p>Did you mean for bin/app.py to be executable since it appears that&#39;s your only use of it? Add a <code>#!/usr/bin/env python</code> run command to the top of the file, and IMO make the file called <code>app</code> and executable <code>$ chmod +x bin/app</code>.</p><p>It would be good to google how python finds modules, how to construct a package, and how env&#39;s PYTHONPATH and sys.path work. If your module name doesn&#39;t make it to sys.path or is relative to your current directory python won&#39;t find it. I added some links below.</p><p><em>If you don&#39;t intend on using a python package mechanics</em> you could simply (<strong>answer</strong>) perform a <code>sys.path.append(os.path.join(os.getcwd(), &#39;Fragment_Maker&#39;))</code> or <code>sys.path.append(os.path.join(os.dirname(__file__), &#39;..&#39;, &#39;Fragment_Maker&#39;))</code> before your <code>import maker</code>, depending on how you intend on launching your application. <em>Otherwise</em> your question cannot be answered without assumptions from above (e.g. maybe you&#39;ll want to put your python script app at top level, keep Fragment_Maker a package, perform a <code>from Fragment_Maker import maker</code>), but assuredly you can now figure it out with these resources:</p><ul><li><a href="https://docs.python.org/2/tutorial/modules.html#packages" rel="nofollow noreferrer">https://docs.python.org/2/tutorial/modules.html#packages</a></li><li><a href="https://docs.python.org/2/using/cmdline.html#envvar-PYTHONPATH" rel="nofollow noreferrer">https://docs.python.org/2/using/cmdline.html#envvar-PYTHONPATH</a></li><li><a href="https://stackoverflow.com/questions/72852/how-to-do-relative-imports-in-python">https://stackoverflow.com/questions/72852/how-to-do-relative-imports-in-python</a></li><li><a href="https://stackoverflow.com/questions/50499/in-python-how-do-i-get-the-path-and-name-of-the-file-that-is-currently-executin">https://stackoverflow.com/questions/50499/in-python-how-do-i-get-the-path-and-name-of-the-file-that-is-currently-executin</a></li><li><a href="https://stackoverflow.com/questions/11536764/attempted-relative-import-in-non-package-even-with-init-py">https://stackoverflow.com/questions/11536764/attempted-relative-import-in-non-package-even-with-init-py</a></li></ul></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../python-what-is-the-point-of-using-import/'>Python: What is the point of using &#8220;import&#8221;</a></li><li class="list-group-item"><a href='../python-where-should-i-store-the-files-for-python-modules-i-install/'>Python &#8211; Where should I store the files for python modules I install</a></li><li class="list-group-item"><a href='../python-defining-exit-method-before-importing/'>Python &#8211; defining exit method before importing</a></li><li class="list-group-item"><a href='../python-classes-vs-modules-in-python/'>Python &#8211; Classes vs. modules in Python</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

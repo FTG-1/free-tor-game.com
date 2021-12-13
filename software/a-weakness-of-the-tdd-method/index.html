@@ -1,0 +1,63 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>A weakness of the TDD method &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1082335 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1082335" class="post-1082335 software type-software status-publish hentry category-software tag-tdd"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">A weakness of the TDD method</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">tdd</span></p><div class="entry-content"><p>This is in summary the TDD method:</p><ol><li>Write a test</li><li>check if thes test fails</li><li>write production code</li><li>run test</li></ol><p>I think that TDD as presented  works only in ideal circumstances. I&#39;ll take a simple example:</p><p><strong>Specification</strong>:<br /> Write a program that calculates the square root of a number, the user must enter a number. If the number is negative, the program should display an error, and if the number is positive or zero the program should display the number whose square is the number entered, or for decimal number whose square is closest to the number entered.</p><p><strong>Writing test</strong></p><pre><code>class SquareRootTest {
+
+   private SquareRoot squareRoot;
+
+   public void testNegativeNumber() {    
+      assertException(squareRoot.execute(-5);   
+   }
+
+   public void testIntegerSquareRoot() {
+      assertEqual(squareRoot.execute(9),3);
+   }
+
+   public void testDecimalSquareRoot() {
+     assertEqual(squareRoot.execute(3),1.732);
+   }
+}
+</code></pre><p><strong>run failed test</strong></p><p><strong>writing production code:</strong></p><pre><code>class SquareRoot {
+
+ public double execute(Number number) {
+     if(number &lt; 0) 
+         throw exception;
+     if(number &lt; 1)
+         return squareRootLessThanOne(number);
+      else
+         return squareRootGreaterThanOne(numner);
+   }
+
+//private methods....
+
+}
+</code></pre><p>this is when writing production code, I find that I have to deal with the numbers lower than one differently from those numbers greater than 1. So I need to update my tests to reflect this.</p><p><strong>Updating test</strong></p><pre><code>class SquareRootTest {
+
+   public void testNegativeNumber() {    
+       assertException(squareRoot.execute(-5));   
+   }
+
+   public void testIntegerSquareRoot() {
+       assertEqual(squareRoot.execute(9),3);
+   }
+
+   public void testDecimalSquareRoot() {
+      assertEqual(squareRoot.execute(3),1.732);
+   }
+
+   public void testNumberLowerThanOne() {
+      assertEqual(squareRoot.execute(0.04),0.200);
+   }
+}
+</code></pre><p>If I had found a single algorithm to calculate the square root, I would not change my tests.</p><p>The TDD method focuses solely on tests from specifications, yet there are tests that are derived from the implementation, particularly all conditional instructions and all instructions controlled by loops should normally be tested. These tests case can not be detected at the time of specification.</p><p>My question: How does TDD will deal with this situation? or is effectivelly a weakness of the TDD?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><blockquote><p>The TDD method focuses solely on tests from specifications</p></blockquote><p>No. It doesn&#39;t. TDD encourages adding tests based on your implementation. At each stage of your implementation you are looking for a test that will fail. You add that test, and then make it pass.</p><p>So in your case, when you found that numbers less than one have to be deal with differently, you&#39;d start by adding a test for those numbers which failed your implementation. Then you&#39;d add the less than one version.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../unit-testing-does-a-project-using-proper-tdd-have-a-lot-of-code-without-tests/'>Unit-testing &#8211; Does a project using proper TDD have a lot of code without tests</a></li><li class="list-group-item"><a href='../how-to-get-initial-api-right-using-tdd/'>How to get initial API right using TDD</a></li><li class="list-group-item"><a href='../tdd-red-green-refactor-and-if-how-to-test-methods-that-become-private/'>TDD Red-Green-Refactor and if/how to test methods that become private</a></li><li class="list-group-item"><a href='../unit-testing-tdd-decouple-test-code-from-production-code-avoiding-one-to-tone-correspondence-explanation-and-code-examples/'>Unit-testing &#8211; TDD: Decouple test code from production code, avoiding one-to-tone correspondence. Explanation and code examples</a></li><li class="list-group-item"><a href='../object-oriented-does-tdd-contradict-the-open-closed-principle/'>Object-oriented &#8211; Does TDD contradict the open-closed principle</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

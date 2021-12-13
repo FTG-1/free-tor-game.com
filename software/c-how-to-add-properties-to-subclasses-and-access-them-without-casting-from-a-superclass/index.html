@@ -1,0 +1,118 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; How to add properties to subclasses and access them without casting from a superclass &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1069239 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1069239" class="post-1069239 software type-software status-publish hentry category-software tag-c tag-design tag-inheritance tag-object-oriented tag-object-oriented-design"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; How to add properties to subclasses and access them without casting from a superclass</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">design</span><span class="mr-2 badge badge-warning">inheritance</span><span class="mr-2 badge badge-primary">object-oriented</span><span class="mr-2 badge badge-danger">object-oriented-design</span></p><div class="entry-content"><p>I&#39;m trying to model a multi-dimensional point class in C#. I have about eight different types of points, and there may be more in the future. Right now, I have a superclass (<code>PointBase</code>) that holds all the common behaviors and data. This data includes only simple properties like doubles, strings, enums, and DateTimes (these are the dimensions). The subclasses (let&#39;s say <code>1Point</code>, <code>2Point</code>, etc.) all override at least things: the methods that have behavior for calculating two of these dimensions. If this behavior were the only changing thing, I could just use the Strategy + Factory pattern and be done with it (and honestly, I probably will refactor those two simple common behaviors out later).</p><p>Unfortunately, I&#39;m stuck because some points add a property or two based on their type, or based on values of other properties in the superclass. For example, for point types 1-7, I don&#39;t need an additional <code>Breakeven</code> property, but for type 8, I do (this is problem #1).</p><p>In addition (this is problem #2), depending on the <code>Product</code> property (which exists and is set in the superclass, and is an enum), I may need to add a <code>Term</code> enum property that would apply to all subclass points. However, only one of my <code>Product</code> enum values needs a term. The others don&#39;t.</p><p>This situation is complicated by needing to store lists of these points in a <code>List&lt;PointBase&gt;</code> data structure that hides additional public properties. I&#39;d have to cast each <code>PointBase</code> to a <code>1Point</code> or <code>2Point</code> or whatever when I took it out, and this (of course) breaks some design principles (separation, at the very least, I think).</p><p>Unfortunately, I&#39;m also trying to display these different points on the same WPF DataGrid (in a scheme where the user can select <code>1Point</code> or <code>2Point</code> or whatever, and get the points&#39; public properties displayed in the DataGrid). Although all of this code so far is contained within my model  (in a separate DLL), I&#39;m also unsure of how to represent this polymorphism in my view in a DataGrid. I&#39;m totally fine with allowing the DataGrid to just autogenerate columns based on the points&#39; public properties, but again, passing these points around in a <code>List&lt;PointBase&gt;</code> means that there&#39;s no way to get at those additional properties I need to add. I thought of instead adding a virtual Dictionary to the superclass called CustomAttributes to which I would add a string key and string value every time I needed to include some additional properties. But this is very annoying, because flattening a Dictionary for a DataGrid is really hard. I&#39;m worried that this is the only way though&#8230;</p><p>From what I know (which is limited w.r.t. software engineering), I need something like an abstract factory to capture all this polymorpism. But I&#39;m not exactly sure. To recap, I need:</p><ol><li>The ability to add public properties to certain subclasses based on their type. For example, for the <code>8Point</code> subclass, I need to add a <code>Breakeven</code> property, but this property doesn&#39;t make sense for other subclasses.</li><li>The ability to add public properties to all subclasses based on values of properties in the superclass. For example, if the <code>Product</code> (set in the superclass) is <code>A</code>, I need an additional property added to all subclasses called <code>Term</code>. This property does not apply or make sense for any other products.</li></ol><p>I&#39;m not married to inheritance here (in fact, I&#39;d like to do something more elegant/simpler if possible, such as delegation + interfaces), so I&#39;m open to any solutions. Thank you in advance!</p><p>EDIT: To give some more context, here is what my setup looks like right now:</p><pre><code>public abstract class StatisticPointBase 
+{
+    public DateTime EventTime;
+    public Product Product; // an enum
+    protected double _delta;
+    public string Name;
+    public double FooSensitivity;
+    public double BarSensitivity;
+    public double BazSensitivity;
+    public double FlopRatio;
+    public double FlapCoefficient;
+    ...
+    public double Value;     // set by overridden CalculateValue
+    public double Velocity;  // set by overridden CalculateVelocity        
+
+    public PointBase(IDataRepository d, string name, double delta, Product p) 
+    { 
+        Name = name;   // just the name, like &#34;Alpha&#34; or &#34;Beta&#34;
+        _delta = delta; // follows name, e.g. for Alpha it&#39;s always 0.63
+        Product = p;
+        FooSensitivity = d.GetFooSensitivity(p);
+        ... // other setup
+    }
+
+    public abstract double CalculateValue();
+    public abstract double CalculateVelocity();
+}
+
+public class AlphaStatisticPoint 
+{
+    public SimpleStatisticPoint()
+    {
+        Value = CalculateValue();
+        Velocity = CalculateVelocity();
+    }
+
+    override double CalculateValue()
+    {
+        return (fooSensitivity + barSensitivity + bazSensitivity) * Velocity / 2;
+    }
+
+    override double CalculateVelocity()
+    {
+        return FlopRatio * (_delta / FlapCoefficient);
+    }
+}
+
+public class BetaStatisticPoint 
+{
+    public SimpleStatisticPoint()
+    {
+        Value = CalculateValue();
+        Velocity = CalculateVelocity();
+    }
+
+    override double CalculateVelocity()
+    {
+        return (FlopRatio * 100) * (_delta);
+    }
+
+    override double CalculateValue()
+    {
+        return fooSensitivity * Velocity;
+    }
+}
+
+// other points...
+
+public class ZetaStatisticPoint 
+{
+    public double Breakeven;
+
+    public SimpleStatisticPoint()
+    {
+        Value = CalculateValue();
+        Velocity = CalculateVelocity();
+        Breakeven = CalculateBreakeven();
+    }
+
+    override double CalculateVelocity()
+    {
+        return (FlopRatio * 100) * (_delta);
+    }
+
+    override double CalculateValue()
+    {
+        return fooSensitivity * Velocity;
+    }
+
+    override double CalculateBreakeven()
+    {
+        return 2 * Math.sqrt(fooSensitivity / barSensitivity);
+        // This is not defined for other types of statistics, and is only relevant for Zeta-type statistics. 
+        // For other statistics, we can&#39;t even calculate the breakeven; there&#39;s no formula for it.
+    }
+}
+
+public enum Product 
+{ 
+    Widget, 
+    Watchet, 
+    /* Woffet will be added in future, and needs a Term */
+}
+</code></pre><p>Stuff like <code>Name</code> and <code>Delta</code> should probably be set in the subclasses, since each subclass has one, and each value is unique to each subclass. For example, Alpha&#39;s delta value is always 0.63, Zeta&#39;s is always 0.21, etc. I&#39;m trying to get away from inheritance though, and the real problem is that <code>Breakeven</code> exists only for Zeta (this is problem #1).</p><p>Furthermore (and this is problem #2), I may need to create and set a <code>Term</code> property, but only for Points that have a <code>Product</code> value of <code>Woffet</code>. It doesn&#39;t make sense for other products. This property, <code>Term</code>, would be added to all points, so if we&#39;re going with inheritance, I&#39;d put it in the superclass. Although I&#39;m starting to think I should just expand <code>Product</code> into a class, and then give it a <code>Term</code> property. But we run into the same problem for the new <code>Product</code> class then: <code>Term</code> only applies to the Woffet product, just like how <code>Breakeven</code> only applies to the Zeta statistic.</p><p>I realize that when one comes upon this behavior, it&#39;s usually the case the inheritance is not the answer (or so I&#39;ve gathered?). So, I&#39;m looking for a better way to model this. I was thinking of getting rid of all the subclasses but Zeta, and just giving the superclass a ValueCalculationStrategy and VelocityCalculationStrategy in the constructor (these would calculate Value and Velocity). But in this case, I&#39;m still referring to Zeta as a StatisticPointBase, and the client doesn&#39;t know it&#39;s a ZetaStatisticPoint. So I&#39;m still stuck. Maybe the problem is that I&#39;m conceptually mixing statistics and points? I could make a separate ZetaStatistic class, and a ZetaBreakeven class, and then use these to compose a ZetaPoint class, but I don&#39;t know if this is the right thing to do.</p><p>Hopefully I&#39;ve explained this adequately. If you have any questions, please ask in the comments and I&#39;ll do my best to expound on things.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Using strategy objects in the described way is a good start to simplify your <code>PointBase</code> class, I would not hesitate to introduce them even if they do not solve your problem with the <code>BreakEven</code> property.</p><p>For allowing custom properties, you could provide some kind &#34;extension mechanism&#34; in your <code>PointBase</code> class (which I would rename to <code>Point</code> after the redesign). In the most simple form, this could be just a list of custom properties for each <code>Point</code> object, together with a list of their values (and the list is empty by default). This might boil down to some kind of <a href="https://en.wikipedia.org/wiki/Entity–attribute–value_model" rel="nofollow noreferrer">EAV model</a>. EAV is sometimes seen as an anti-pattern, but for this specific case its usage is fine as long as you do not use it for the majority of properties, only for your &#34;special custom properties&#34;.</p><p>See also <a href="https://softwareengineering.stackexchange.com/questions/148551/design-patterns-strategies-for-custom-fields-data-types">this former question on &#34;Programmers&#34; about custom fields</a>. In my answer there, I mentioned <a href="http://martinfowler.com/books/ap.html" rel="nofollow noreferrer">Martin Fowler&#39;s book &#34;Analysis Patterns&#34;</a> - I am pretty sure it will help you for your problem, since it contains a very extensive discussion how to model measurements and observations, including (custom) properties and similar things.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../are-trivial-protected-getters-blatant-overkill/'>Are trivial protected getters blatant overkill</a></li><li class="list-group-item"><a href='../design-using-abstract-methods-to-force-subclasses-to-define-values-for-member-fields/'>Design &#8211; Using abstract methods to force subclasses to define values for member fields</a></li><li class="list-group-item"><a href='../c-design-pattern-to-force-client-of-a-class-to-call-a-method/'>C# &#8211; Design pattern to force client of a class to call a method</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

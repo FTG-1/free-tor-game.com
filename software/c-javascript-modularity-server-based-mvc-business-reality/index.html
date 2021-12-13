@@ -1,0 +1,180 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Javascript modularity, server based MVC &#038; business reality &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1076054 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1076054" class="post-1076054 software type-software status-publish hentry category-software tag-asp-net-mvc-3 tag-c tag-javascript tag-jquery"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Javascript modularity, server based MVC &#038; business reality</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">asp.net-mvc-3</span><span class="mr-2 badge badge-info">c</span><span class="mr-2 badge badge-warning">javascript</span><span class="mr-2 badge badge-primary">jquery</span></p><div class="entry-content"><p>I understand this is a <em>very</em> broad question, but I have worked with various aspects of this problem individually and am struggling to bring all the concepts and technologies together.</p><p>I&#39;d like to specify that answers should include these technologies:</p><ul><li>C#</li><li>MVC 3 w/ Razor</li><li>Javascript w/jQuery</li></ul><p>Anything above and beyond those (such as <a href="http://documentcloud.github.com/backbone/" rel="nofollow noreferrer">Backbone.js</a>, <a href="http://weblogs.asp.net/scottgu/archive/2010/07/16/code-first-development-with-entity-framework-4.aspx" rel="nofollow noreferrer">Entity Framework</a>, etc) are welcome as suggestions if they help answer the question which is:</p><blockquote><p><strong>Using the above listed technologies, what is an <em>optimal</em> strategy for organizing code and logic while maintaining scalability and the ability to create a rich, fast, clean UI?</strong></p></blockquote><p>Ideally the focus should be put on a solution being deployed in a business/corporate environment.  On that note, the technologies list above <strong>will not be changed</strong> so please don&#39;t offer solutions with &#34;you should be using <em>xxx</em> instead of <em>yyy</em> that you are using now&#34;.</p><p><strong>Background</strong></p><p>I work with jQuery everyday, have adopted ASP.NET&#39;s MVC and have been working with C# for a long time.  So you can present solutions assuming intermediate-to-advanced knowledge of those technologies.</p><p>I&#39;ll organize the question into <strong>smaller parts</strong> to make it simpler to respond to:</p><p><strong>1. Project structure</strong></p><p>Given I am working with ASP.NET MVC (in <strong>Visual Studio 2010</strong>) I would like a directory structure solution that offers some acceptance of the main layout this type of application.  Something like <a href="http://brunch.io/" rel="nofollow noreferrer">Brunch</a> I suppose, but with a little more detail of what each folder would contain and how it works with other areas of the app.</p><p><strong>2. Data access</strong></p><p>I&#39;d like to modularize my data access as much as I can, with an API-type structure.  You can assume lots of POCO objects (<code>User</code>, <code>UserGroup</code>, <code>Customer</code>, <code>OrderHeader</code>, <code>OrderDetails</code>, etc), but there will also be some complex reports that require data intensive SQL and careful UI rendering. <strong>EF + LINQ</strong> are fantastic for the former but not so much for the latter.  I can&#39;t find something that seems to fit both scenarios without being overly complicated or overly simple.</p><p><strong>3. Client-Side Code Organization and UI Rendering</strong></p><p>Like most developers first picking up jQuery, I fell into the trap of mashing together code wherever it needed to go but quickly found it piling up and turning ugly.  Although I&#39;ve come leaps and bounds since then, I still struggle with modularizing my code and working with various parts of the UI without repeating code.</p><p>As an example, a typical piece of code I might write would look like this, I have commented the stuff that bothers me (<em>note that I&#39;ve since changed to using deferred AJAX calls and separated the actual data requests from the DOM manipulation</em>):</p><pre><code>$(&#39;#doSomethingDangerous&#39;).click(function () {
+    // maybe confirm something first
+    if (confirm(&#39;Are you sure you want to do this?&#39;)) {   
+
+        // show a spinner?  something global would be preferred so I don&#39;t have to repeat this on every page 
+        $(&#39;#loading&#39;).show();  
+
+        // maybe the page should notify the user of what&#39;s going on in addition to the dialog?
+        $(&#39;#results&#39;).show().html(&#39;&lt;h2&gt;Please wait, this may take a while...&lt;/h2&gt;&#39;);  
+
+        $.ajax({
+            url: &#39;blah/DoDangerousThing&#39;,
+            success: function (data) {                     
+                // The results will be loaded to the DOM obviously, is there a better way to pull this type of specific code out of the data access calls?
+                $(&#39;#results&#39;).empty();
+                $(&#39;#results&#39;).append(&#39;&lt;b&gt;&#39; + data.length + &#39;&lt;/b&gt; users were affected by this dangerous activity&#39;);
+                $(&#39;#results&#39;).append(&#39;&lt;ul&gt;&#39;);
+
+                // I&#39;ve recently started to use jQuery templates for this sort of logic, is that the way to go?
+                $(data).each(function (i, user) {
+                    $(&#39;#results&#39;).append(&#39;&lt;li&gt;&#39; + user.Username + &#39;&lt;/li&gt;&#39;);
+                });                    
+                $(&#39;#results&#39;).append(&#39;&lt;/ul&gt;&#39;);
+
+                // Need to hide the spinner, again would prefer to have this done elsewhere
+                $(&#39;#loading&#39;).hide();
+            }
+        });
+    }
+});
+</code></pre><p><strong>General Questions</strong></p><ul><li>Client MVC vs. server MVC?  My project is already a server-side MVC structure, so is there still a need for client MVC like Backbone.js provides?</li><li>Should Javascript files get created for each object (like an <code>OrderHeader.js</code>) and then minified/merged during the build?  Or should there just be an <code>Order.js</code> which has logic for <code>OrderHeader, OrderDetails, Reports</code> etc?</li><li>How should complex queries be handled?  Right now my leading theory is <code>/Reports/Orders-By-Date/</code> or something along those lines and I use a custom SQL query that renders a custom dataset (or <code>ViewModel</code>) to the Razor View.  But what about paging, sorting, etc?  Is this better to be done client or server side?  (assume larger dataset &#8211; 2 to 3 second SQL query)</li><li>I&#39;ve read through Microsoft&#39;s <a href="http://msdn.microsoft.com/en-us/library/hh396380.aspx" rel="nofollow noreferrer">Project Silk</a>.  Is this a good way to go?  How does it compare to Backbone.js or others?</li><li>I&#39;m very accustomed to an N-tiered architecture, do these concepts somewhat throw that out the window?  It seems MVC is like a bunch of mini N-tiered sections within what would have been the front-end or top tier in the past.</li></ul><p>Again the more <em>specific</em> your answers are the better they will be. <strong>I&#39;ve read a lot of high level documentation and examples</strong>, I&#39;m trying to <strong>better understand translating it into real world examples</strong>.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>TerryR my friend, you and I should have a drink. We have some similar problems.</p><p><strong>1. Project Structure:</strong> I agree with Eduardo that the folder structure in an MVC app leaves something to be desired. You have your standard Controllers, Models, and Views folders. But then the Views folder gets broken down into a different folder for each Controller, plus a Shared folder. And each Views/ControllerName or Views/Shared can be broken down into EditorTemplates and DisplayTemplates. But it lets you decide how to organize your Models folder (you can do with or without subfolders &amp; additional namespace declarations).</p><p>God forbid you are using Areas, which duplicate the Controllers, Models, and Views folder structure for each area.</p><pre><code>/Areas
+    /Area1Name
+        /Controllers
+            FirstController.cs
+            SecondController.cs
+            ThirdController.cs
+        /Models
+            (can organize all in here or in separate folders / namespaces)
+        /Views
+            /First
+                /DisplayTemplates
+                    WidgetAbc.cshtml &lt;-- to be used by views in Views/First
+                /EditorTemplates
+                    WidgetAbc.cshtml &lt;-- to be used by views in Views/First
+                PartialViewAbc.cshtml &lt;-- to be used by FirstController
+            /Second
+                PartialViewDef.cshtml &lt;-- to be used by SecondController
+            /Third
+                PartialViewMno.cshtml &lt;-- to be used by ThirdController
+            /Shared
+                /DisplayTemplates
+                    WidgetXyz.cshtml &lt;-- to be used by any view in Area1
+                /EditorTemplates
+                    WidgetXyz.cshtml &lt;-- to be used by any view in Area1
+                PartialViewXyz.cshtml &lt;-- to be used anywhere in Area1
+            _ViewStart.cshtml &lt;-- area needs its own _ViewStart.cshtml
+            Web.config &lt;-- put custom HTML Helper namespaces in here
+        Area1NameRegistration.cs &lt;-- define routes for area1 here
+    /Area2Name
+        /Controllers
+        /Models
+        /Views
+        Area2NameRegistration.cs &lt;-- define routes for area2 here
+
+/Controllers
+    AccountController.cs
+    HomeController.cs
+/Models
+/Views
+    /Account
+        /DisplayTemplates
+            WidgetGhi.cshtml &lt;-- to be used views in Views/Account
+        /EditorTemplates
+            WidgetGhi.cshtml &lt;-- to be used views in Views/Account
+        PartialViewGhi.cshtml &lt;-- to be used by AccountController
+    /Home
+        (same pattern as Account, views &amp; templates are controller-specific)
+    /Shared
+        /DisplayTemplates 
+            EmailAddress.cshtml &lt;-- to be used by any view in any area
+            Time.cshtml &lt;-- to be used by any view in any area
+            Url.cshtml &lt;-- to be used by any view in any area
+        /EditorTemplates
+            EmailAddress.cshtml &lt;-- to be used by any view in any area
+            Time.cshtml &lt;-- to be used by any view in any area
+            Url.cshtml &lt;-- to be used by any view in any area
+        _Layout.cshtml &lt;-- master layout page with sections
+        Error.cshtml &lt;-- custom page to show if unhandled exception occurs
+    _ViewStart.cshtml &lt;-- won&#39;t be used automatically in an area
+    Web.config &lt;-- put custom HTML Helper namespaces in here
+</code></pre><p>This means if you are working with something like a WidgetController, you have to look in other folders to find the related WidgetViewModels, WidgetViews, WidgetEditorTemplates, WidgetDisplayTemplates, etc. As cumbersome as this may be, I stick to it and don&#39;t deviate from these MVC conventions. As far as putting a model, controller, and view in the same folder but with different namespaces, I avoid this because I use ReSharper. It will squiggly underline a namespace that doesn&#39;t match the folder where the class is located. I know I could turn this R# feature off, but it helps in other parts of the project.</p><p>For non-class files, MVC gives you Content and Scripts out of the box. We try to keep all of our static / non-compiled files in these places, again, to follow convention. Any time we incorporate a js library that uses themes (images and or css), the theme files all go somewhere under /content. For script, we just put all of them directly into /scripts. Originally this was to get JS intellisense from VS, but now that we get JS intellisense from R# regardless of placement in /scripts, I suppose we could deviate from that and divide scripts by folder to better organize. Are you using ReSharper? It is pure gold IMO.</p><p>Another little piece of gold that helps a lot with refactoring is T4MVC. Using this, we don&#39;t need to type in string paths for area names, controller names, action names, even files in content &amp; scripts. T4MVC strongly types all of the magic strings for you. Here&#39;s a small sample of how your project structure doesn&#39;t matter as much if you&#39;re using T4MVC:</p><pre><code>// no more magic strings in route definitions
+context.MapRoutes(null,
+    new[] { string.Empty, &#34;features&#34;, &#34;features/{version}&#34; },
+    new
+    {
+        area = MVC.PreviewArea.Name,
+        controller = MVC.PreviewArea.Features.Name,
+        action = MVC.PreviewArea.Features.ActionNames.ForPreview,
+        version = &#34;december-2011-preview-1&#34;,
+    },
+    new { httpMethod = new HttpMethodConstraint(&#34;GET&#34;) }
+);
+
+@* T4MVC renders .min.js script versions when project is targeted for release *@
+&lt;link href=&#34;@Url.Content(Links.content.Site_css)?r=201112B&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;@Url.Content(Links.scripts.jquery_1_7_1_js)&#34; type=&#34;text/javascript&#34;&gt;
+&lt;/script&gt;
+
+@* render a route URL as if you were calling an action method directly *@
+&lt;a href=&#34;@Url.Action(MVC.MyAreaName.MyControllerName.MyActionName
+    (Model.SomeId))&#34;&gt;@Html.DisplayFor(m =&gt; m.SomeText)&lt;/a&gt;
+
+// call action redirects as if you were executing an action method
+return RedirectToAction(MVC.Area.MyController.DoSomething(obj1.Prop, null));
+</code></pre><p><strong>2. Data access:</strong> I have no experience with PetaPoco, but I&#39;m sure it&#39;s worth checking out. For your complex reports, have you considered SQL Server Reporting services? Or, are you running on a different db? Sorry I&#39;m not clear on what exactly you are asking for. We use EF + LINQ, but we also put certain knowledge about how to generate reports in domain classes. Thus, we have controller call domain service call repository, instead of having controller call repository directly. For ad-hoc reports we use SQL Reporting Services, which again isn&#39;t perfect, but our users like to be able to bring data into Excel easily, and SSRS makes that easy on us.</p><p><strong>3.  Client-Side Code Organization and UI Rendering:</strong> This is where I think I may be able to offer some help. Take a page from the book of MVC unobtrusive validation and unobtrusive AJAX. Consider this:</p><pre><code>&lt;img id=&#34;loading_spinner&#34; src=&#34;/path/to/img&#34; style=&#34;display:none;&#34; /&gt;
+&lt;h2 id=&#34;loading_results&#34; style=&#34;display:none;&#34;&gt;
+    Please wait, this may take a while...
+&lt;/h2&gt;
+&lt;div id=&#34;results&#34;&gt;
+&lt;/div&gt;
+&lt;input id=&#34;doSomethingDangerous&#34; class=&#34;u-std-ajax&#34; 
+    type=&#34;button&#34; value=&#34;I&#39;m feeling lucky&#34; 
+    data-myapp-confirm=&#34;Are you sure you want to do this?&#34;
+    data-myapp-show=&#34;loading_spinner,loading_results&#34; 
+    data-myapp-href=&#34;blah/DoDangerousThing&#34; /&gt;
+</code></pre><p>Ignore the ajax success function for now (more on this later). You can get away with a single script for some of your actions:</p><pre><code>$(&#39;.u-std-ajax&#39;).click(function () {
+    // maybe confirm something first
+    var clicked = this;
+    var confirmMessage = $(clicked).data(&#39;myapp-confirm&#39;);
+    if (confirmMessage &amp;&amp; !confirm(confirmMessage )) { return; } 
+
+    // show a spinner?  something global would be preferred so 
+    // I dont have to repeat this on every page 
+    // maybe the page should notify the user of what&#39;s going on 
+    // in addition to the dialog?
+    var show = $(clicked).data(&#39;myapp-show&#39;);
+    if (show) {
+        var i, showIds = show.split(&#39;,&#39;);
+        for (i = 0; i &lt; showIds.length; i++) {
+            $(&#39;#&#39; + showIds[i]).show();
+        }
+    }
+
+    var url = $(clicked).data(&#39;myapp-href&#39;);
+    if (url) {
+        $.ajax({
+            url: url,
+            complete: function () {                     
+                // Need to hide the spinner, again would prefer to 
+                // have this done elsewhere
+                if (show) {
+                    for (i = 0; i &lt; showIds.length; i++) {
+                        $(&#39;#&#39; + showIds[i]).hide();
+                    }
+                }
+            }
+        });
+    }
+});
+</code></pre><p>The above code will take care of the confirmation, showing the spinner, showing the wait message, and hiding the spinner / wait message after the ajax call is complete. You configure the behaviors using data-* attributes, like the unobtrusive libraries.</p><p><strong>General Questions</strong></p><p><strong>- Client MVC vs. server MVC?</strong> I didn&#39;t try to librarify the actions you took in the success function because it looks like your controller is returning JSON. If your controllers are returning JSON, you might want to look at KnockoutJS. <a href="http://blog.stevensanderson.com/2011/12/21/knockout-2-0-0-released/">Knockout JS version 2.0 was released today</a>. It can plug right into your JSON, so that an observable click can automatically bind data to your javascript templates. On the other hand if you don&#39;t mind having your ajax action methods return HTML instead of JSON, they can return the already-constructed UL with its LI children, and you can append that to an element by using data-myapp-response=&#34;results&#34;. Your success function would then just look like this:</p><pre><code>success: function(html) {
+    var responseId = $(clicked).data(&#39;myapp-response&#39;);
+    if (responseId) {
+        $(&#39;#&#39; + responseId).empty().html(html);
+    }
+}
+</code></pre><p>To sum up my best answer for this, if you must return JSON from your action methods, you are skipping the server-side View, so this really isn&#39;t server MVC -- it&#39;s just MC. If you return PartialViewResult with html to ajax calls, this is server MVC. So if your app must return JSON data for ajax calls, use client MVVM like KnockoutJS.</p><p>Either way, I don&#39;t like the JS you posted because it mixes your layout (html tags) with behavior (asynchronous data load). Choosing either server MVC with partial html views or client MVVM with pure JSON viewmodel data will solve this problem for you, but manually constructing DOM/HTML in javascript violates separation of concerns.</p><p><strong>- Javascript file creation</strong> Apparently <a href="http://weblogs.asp.net/scottgu/archive/2011/11/27/new-bundling-and-minification-support-asp-net-4-5-series.aspx">minification features are coming in .NET 4.5</a>. If you go the unobtrusive route, there shouldn&#39;t be anything stopping you from loading all of your JS in 1 script file. I would be careful about creating different JS files for each entity type, you will end up with JS file explosion. Remember, once your script file is loaded, the browser should cache it for future requests.</p><p><strong>- Complex queries</strong> I don&#39;t consider having feature like pagination, sorting, etc, as being complex. My preference is to handle this with URL&#39;s and server-side logic, to make the db queries as limited as needed. However we are deployed to Azure, so query optimization is important to us. For example: <code>/widgets/show-{pageSize}-per-page/page-{pageNumber}/sort-by-{sortColumn}-{sortDirection}/{keyword}</code>. EF and LINQ to Entities can handle pagination and sorting with methods like .Take(), .Skip(), .OrderBy(), and .OrderByDescending(), so you get what you need during the db trip. I haven&#39;t found the need for a clientlib yet, so I honestly don&#39;t know much about them. Look to other answers for more advice on that.</p><p><strong>- Project silk</strong> Never heard of this one, will have to check it out. I am a big fan of Steve Sanderson, his books, his BeginCollectionItem HtmlHelper, and his blog. That said, I don&#39;t have any experience with KnockoutJS <em>in production</em>. I have checked out its tutorials, but I try not to commit to something until it&#39;s at least version 2.0. Like I mentioned, KnockoutJS 2.0 was just released.</p><p><strong>- N-tier</strong> If by tier you mean different physical machine, then no, I don&#39;t think anything goes out any windows. Generally 3-tier means you have 3 machines. So you might have a fat client as your presentation tier, that runs on a user&#39;s machine. The fat client might access a service tier, that runs on an application server and returns XML or whatever to the fat client. And the service tier might get its data from a SQL server on a 3rd machine.</p><p>MVC is one layer, on 1 tier. Your controllers, models, and views are all part of your Presentation Layer, which is 1 tier in the physical architecture. MVC implements the Model-View-Controller pattern, which is where you might be seeing additional layers. However, try not to think of these 3 aspects as tiers or layers. Try to think of all 3 of them as Presentation Layer Concerns.</p><p><strong>Update after pres/bus/data comment</strong></p><p>Okay, so you are using tier and layer interchangably. I usually use the term &#34;layer&#34; for logical / project / assembly divisions, and tier for physical network separation. Sorry for the confusion.</p><p>You will find quite a few people in the MVC camp who say you should not use the &#34;Models&#34; in MVC for your entity data model, nor should you use your Controllers for business logic. Ideally your models should be view-specific ViewModels. Using something like Automapper, you take your entities from your domain model and DTO them into ViewModels, sculpted specifically for use by the view.</p><p>Any business rules should also be part of your domain, and you can implement them using domain services / factory pattern / whatever is appropriate in your domain layer, not in the MVC presentation layer. Controllers should be dumb, though not quite as dumb as models, and should give responsibility to the domain for anything that requires business knowledge. Controllers manage the flow of HTTP requests and responses, but anything with real business value should be above the controller&#39;s pay grade.</p><p>So, you can still have a layered architecture, with MVC as the presentation layer. It is a client of your application layer, service layer, or domain layer, depending on how you architect it. But ultimately your entity model should be part of the domain, not models in MVC.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../javascript-are-javascript-mvc-frameworks-only-for-single-page-apps/'>Javascript &#8211; Are JavaScript MVC Frameworks only for &#8216;single-page&#8217; apps</a></li><li class="list-group-item"><a href='../javascript-backbone-js-app-pulling-large-data-sets-with-fetch/'>Javascript &#8211; Backbone.js app pulling large data sets with fetch()</a></li><li class="list-group-item"><a href='../c-in-asp-net-mvc-razor-how-to-add-initializer-javascript-to-a-control/'>C# &#8211; In ASP.NET MVC/Razor, how to add initializer JavaScript to a &#8220;control&#8221;</a></li><li class="list-group-item"><a href='../javascript-to-mvc-or-not-mvc-that-is-the-question/'>Javascript &#8211; To MVC or not MVC, that is the question</a></li><li class="list-group-item"><a href='../c-client-side-javascript-business-logic-in-net-solution-stack/'>C# &#8211; Client-Side JavaScript Business Logic in .Net Solution Stack</a></li><li class="list-group-item"><a href='../c-migrating-large-silverlight-business-application-to-mvc/'>C# &#8211; Migrating large silverlight business application to MVC</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

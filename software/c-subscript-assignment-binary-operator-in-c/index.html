@@ -1,0 +1,96 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C++ &#8211; Subscript/assignment binary operator in C++ &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1086685 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1086685" class="post-1086685 software type-software status-publish hentry category-software tag-c tag-standards"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C++ &#8211; Subscript/assignment binary operator in C++</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">standards</span></p><div class="entry-content"><p>I was designing a kind of a parser when I thought that it would be nice to have an operator overload like this: <code>operator[]=(subscipt_type s, rvalue_type val)</code>. For example we have a class:</p><pre class="lang-cpp prettyprint-override"><code>//collection of Foos
+class FooCollection
+{
+public:
+
+    //assume class Foo is defined
+    Foo&amp; operator[]=(int i, const Foo&amp; val);
+    //.....
+};
+</code></pre><p>And we need to assign a subscripted value:</p><pre class="lang-cpp prettyprint-override"><code>Foo value;
+FooCollection c;
+c[42] = value;
+</code></pre><p>then the last line of this code will resolve into</p><pre class="lang-cpp prettyprint-override"><code>c.operator[]=(42,value);
+</code></pre><p>The advantage of this operator in comparison to existing <code>Foo&amp; operator[](int i)</code> is that we know the rvalue of assignment during the subscripting, so we can do something that could be unwished in ordinary <code>operator=</code>.</p><p>For example, I tried to design a parse tree consisting of polymorphic nodes with minimal interface. This is the basic node class, all other node types are inherited from it:</p><pre class="lang-cpp prettyprint-override"><code>class AnyNode
+{
+public:
+    virtual AnyNode&amp; operator=(const AnyNode&amp; op)
+    {
+        //Takes almost no actions here.
+        //Overloaded in each subclass to take some sensible actions
+    }
+
+    virtual AnyNode&amp; operator[](int i)
+    {
+        //Returns special null value of AnyNode type.
+    }
+};
+</code></pre><p>The AnyNode class is not pure virtual, so it&#39;s possible to construct <code>AnyNode</code> objects. One of the syntax elements that I try to parse is a python-like list, which may contain heterogenous values and may be subscripted with an integer. A class for it:</p><pre class="lang-cpp prettyprint-override"><code>class ArrayNode : public AnyNode
+{
+public:
+     AnyNode&amp; operator[](int i)
+    {
+        //Returns a reference to i-th element
+    }
+};
+</code></pre><p>So what will happen when we try to assign something to the array cell, which was not assigned before and it&#39;s concrete type was not defined? <code>AnyNode&amp; operator=(const AnyNode&amp; op)</code> from <code>class AnyNode</code> will be called and no actions will be taken. But I want to know the <code>AnyNode&amp;</code> rvalue just after subscripting, so that it could be possible to deduce it&#39;s concrete type with RTTI and take some sensible actions. Subscript/assignment operator could look like this:</p><pre class="lang-cpp prettyprint-override"><code>AnyNode&amp; operator[]=(int i, const AnyNode&amp; val)
+{
+    //AnyNode::getType() is provided and it returns a value of the predefined enum.
+    //stor is an underlying container that holds pointers to AnyNode, 
+    //assume it&#39;s possible to reference stor[i].
+    //NodeNumber is another subclass of AnyNode.
+    switch(val-&gt;getType())
+    {
+    case nodetypeNumber:
+        stor[i] = new NodeNumber();//Also we may need to delete stor[i] before new allocation.
+        //Process further specific initialization of stor[i].
+        break;
+    //................
+    }
+    //Or we could use dynamic_cast instead of switch(val-&gt;getType())
+}
+</code></pre><p>I suppose, such kind of subscipt/assignment operator can be easily and consistently built into language. Moreover, it delimits the pieces of code which execute when the subscripted expression is an lvalue and when it&#39;s an rvalue: with it the usual subscript operator should be called only when the subscription is rvalue. Of course, if the proposed operator is not defined, but a <code>operator[]</code> is defined, the code should execute in a usual way.</p><p>So my questions  are: what pitfalls could I miss about this operator and why does it not included into the language?<br /> Can it break language consistency in any way or can it bring up any ambiguity into the language?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>This composite operator isn&#39;t part of the C++ language because nobody has ever made a proper case for including it.</p><p>The set of operators supported by C++ is very strongly influenced by the set of operations that you can do on the basic types. It goes so far that all operator symbols in C++ have a meaning for at least some of the primitive types.<br/> The problem with your proposed <code>operator[]=</code> is that, for the primitive types, it doesn&#39;t have a more specific meaning than a simple contraction of the already existing <code>operator[]</code> and <code>operator=</code>.</p><p>When adding anything to C++, a careful balance must be made between the costs of adding the feature (in compiler complexity) and the benefits of it. In particular, a feature will only be added if it makes something possible that wasn&#39;t previously possible, or if it makes it vastly easier to do something, and there is a large demand for that feature.<br/> To be honest, I don&#39;t see new operators, or a mechanism to provide overloads for compositions of operators, being added to C++ anytime soon.</p><hr/><p>The effects of your <code>operator[]=</code> can be obtained as well by using a proxy class, like this:</p><pre><code>class ArrayNode : public AnyNode
+{
+    class Proxy 
+    {
+        SomeArrayLikeType&amp; stor;
+        int i;
+    public:
+        Proxy&amp; operator=(const AnyNode&amp; val)
+        {
+            switch(val-&gt;getType())
+            {
+            case nodetypeNumber:
+                stor[i] = new NodeNumber();//Also we may need to delete stor[i] before new allocation.
+                //Process further specific initialization of stor[i].
+                break;
+            //................
+            }
+            return *this;
+        }
+
+        const AnyNode&amp; operator AnyNode() {
+            return stor[i];
+        }
+    };
+
+public:
+    Proxy operator[](int i) {
+        return Proxy(stor, i);
+    }
+};
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-recompiling-dlls-and-adding-more-during-run-time-what-are-the-options/'>C++ &#8211; Recompiling dll&#8217;s and adding more during run time &#8211; what are the options</a></li><li class="list-group-item"><a href='../c-the-pattern-for-a-safe-interface-in-c/'>C++ &#8211;  the pattern for a safe interface in C++</a></li><li class="list-group-item"><a href='../c-how-to-do-in-c-when-implementing-a-container-class-storing-objects-by-value-or-by-reference/'>C++ &#8211; How to do in C++ when implementing a container class: storing objects by value or by reference</a></li><li class="list-group-item"><a href='../c-why-is-accessing-virtual-protected-functions-of-a-base-class-not-allowed-through-a-pointer-of-the-base-class-type-inside-a-derived-class/'>C++ &#8211; Why is accessing virtual protected functions of a base class not allowed through a pointer of the base class type inside a derived class</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

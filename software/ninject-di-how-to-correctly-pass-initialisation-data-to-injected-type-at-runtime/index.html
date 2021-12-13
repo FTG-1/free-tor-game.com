@@ -1,0 +1,58 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Ninject/DI: How to correctly pass initialisation data to injected type at runtime &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1073424 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1073424" class="post-1073424 software type-software status-publish hentry category-software tag-dependency-injection tag-ninject"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Ninject/DI: How to correctly pass initialisation data to injected type at runtime</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">dependency-injection</span><span class="mr-2 badge badge-info">ninject</span></p><div class="entry-content"><p>I have the following two classes:</p><pre><code>public class StoreService : IStoreService
+{
+    private IEmailService _emailService;
+
+    public StoreService(IEmailService emailService)
+    {
+        _emailService = emailService;
+    }
+}
+
+public class EmailService : IEmailService
+{
+}
+</code></pre><p>Using Ninject I can set up bindings no problem to get it to inject a concrete implementation of IEmailService into the StoreService constructor. StoreService is actually injected into the code behind of an ASP.NET WebForm as so:</p><pre><code>[Ninject.Inject]
+public IStoreService StoreService { get; set; }
+</code></pre><p>But now I need to change EmailService to accept an object that contains SMTP related settings (that are pulled from the ApplicationSettings of the Web.config). So I changed EmailService to now look like this:</p><pre><code>public class EmailService : IEmailService
+{
+    private SMTPSettings _smtpSettings;
+
+    public void SetSMTPSettings(SMTPSettings smtpSettings)
+    {
+        _smtpSettings = smtpSettings;
+    }
+}
+</code></pre><p>Setting SMTPSettings in this way also requires it to be passed into StoreService (via another public method). This has to be done in the Page_Load method in the WebForms code behind (I only have access to the Settings class in the UI layer).</p><p>With manual/poor mans DI I could pass SMTPSettings directly into the constructor of EmailService and then inject EmailService into the StoreService constructor. With Ninject I don&#39;t have access to the instances of injected types outside of the objects they are injected to, so I have to set their data AFTER Ninject has already injected them via a separate public setter method. This to me seems wrong.</p><p>How should I really be solving this scenario?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><blockquote><p>With manual/poor mans DI I could pass SMTPSettings directly into the
+ constructor  of EmailService and then inject EmailService into the
+ StoreService constructor.</p></blockquote><p>This is also what needs to happen when using Ninject, except that <em>you</em> don&#39;t need to inject these values into the constructors, Ninject will do it for you - it recursively resolves all dependencies you need to obtain a StoreService.</p><p>If you declare your EmailService just as you would have when using poor man&#39;s DI, like this:</p><pre><code>public class EmailService : IEmailService
+{
+    private SMTPSettings _smtpSettings;
+
+    public EmailService(SMTPSettings smtpSettings)
+    {
+        _smtpSettings = smtpSettings;
+    }
+}
+</code></pre><p>Now, when asking Ninject for a IStoreService, it will want to instantiate a StoreService.
+A StoreService requires an IEmailService, so it will want to instantiate an EmailService.
+An EmailService requires an SMTPSettings instance... if Ninject could be told how to obtain such an instance Ninject is able to produce a fully initialized StoreService instance.</p><p>I&#39;ve never used Ninject (but I have used other .NET DI frameworks), but from what I can gather from the Ninject docs 
+one way to do this is to register a factory method that will produce an SMTPSettings instance (<a href="https://github.com/ninject/ninject/wiki/Providers%2C-Factory-Methods-and-the-Activation-Context" rel="nofollow">https://github.com/ninject/ninject/wiki/Providers%2C-Factory-Methods-and-the-Activation-Context</a>):</p><pre><code>using (IKernel kernel = new StandardKernel())
+{
+    kernel.Bind&lt;SMTPSettings&gt;()
+          .ToMethod(context =&gt; new SMTPSettings() /* or any other expression that returns an SMTPSettings instance */);           
+}
+</code></pre><p>With this binding in place, Ninject should be able to produce a fully initialized StoreService instance.</p><p>N.B. I used <a href="http://stefanoricciardi.com/2011/01/21/ninject-mini-tutorial-part-1/" rel="nofollow">http://stefanoricciardi.com/2011/01/21/ninject-mini-tutorial-part-1/</a> to see Ninject in action, maybe it contains some useful information for you as well.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../simple-injector-in-onion-layer-architecture/'>Simple Injector in Onion Layer Architecture</a></li><li class="list-group-item"><a href='../python-is-circular-dependency-injection-a-good-practice/'>Python &#8211; Is circular Dependency Injection a good practice</a></li><li class="list-group-item"><a href='../c-dependency-injection-multiple-instances-or-only-one-inrequestscope/'>C# &#8211; Dependency injection multiple instances or only one InrequestScope</a></li><li class="list-group-item"><a href='../c-unity-dependency-injection-and-helper-functions/'>C# &#8211; Unity Dependency Injection and Helper functions</a></li><li class="list-group-item"><a href='../unit-of-work-repository-pattern-dependency-injection/'>Unit of work + repository pattern + dependency injection</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

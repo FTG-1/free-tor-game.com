@@ -1,0 +1,60 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C++ &#8211; Initializing derived classes in the same way &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1082845 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1082845" class="post-1082845 software type-software status-publish hentry category-software tag-c tag-inheritance tag-initialization tag-unit-testing"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C++ &#8211; Initializing derived classes in the same way</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">inheritance</span><span class="mr-2 badge badge-warning">initialization</span><span class="mr-2 badge badge-primary">unit testing</span></p><div class="entry-content"><p>I have a class Base that has several children, say A, B, C. For testing purposes I&#39;d like to mock those derived classes by deriving from them. So MockA derives from A, MockB derives from B and so on.</p><p>The problem is, that MockA, MockB, &#8230; all inherit protected members from Base that have to be set in the same way in each mock class. The code looks like this:</p><pre><code>MockA::init()
+{
+    x = 1;     // inherited from Base
+    y = &#34;abc&#34;; // inherited from Base
+    z = 0.5;   // inherited from Base
+}
+
+MockB::init()
+{
+    x = 1;     // inherited from Base
+    y = &#34;abc&#34;; // inherited from Base
+    z = 0.5;   // inherited from Base
+}
+</code></pre><p>and so on.</p><p>So my question is, how can I avoid this cut&amp;paste initialization? Can I achieve it without touching Base, A, B, C, &#8230;?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>You want a &#34;mixin&#34;. In C++ they are usually implemented with templates and specifically using CRTP, the <a href="http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern" rel="nofollow">&#34;curiously recurring template pattern&#34;</a>. It might be an overkill if it&#39;s just a bit of common code, than Pierre&#39;s answer seems most appropriate. But as the amount of common code for the mock classes grows, so will value of template.</p><p>Basic CRTP would go like this:</p><pre><code>template &lt;typename ConcreteT&gt; class Mock {
+    initMock() {
+        static_cast&lt;ConcreteT *&gt;(this)-&gt;x = 1;
+        static_cast&lt;ConcreteT *&gt;(this)-&gt;y = &#34;abc&#34;;
+        static_cast&lt;ConcreteT *&gt;(this)-&gt;z = 0.5;
+    }
+};
+
+class MockA : A, Mock&lt;MockA&gt; { ... };
+//                    ^^^^^ specialized on the type that inherits it, that&#39;s the point
+</code></pre><p>Here it would make things simple to inherit A <em>through</em> the Mock class though, so</p><pre><code>template &lt;typename BaseT&gt; class Mock : public BaseT {
+    initMock() {
+        x = 1;
+        y = &#34;abc&#34;;
+        z = 0.5;
+    }
+};
+
+class MockA : Mock&lt;A&gt; { ... };
+//                 ^ just the base class
+</code></pre><p>That does away with the ugly static_casts, but does not allow you to provide methods in <code>MockA</code> that will be called by <code>Mock</code>. But you can have both...</p><pre><code>template&lt;typename ConcreteT, typename BaseT&gt;
+class Mock : public BaseT { ... };
+
+class MockA : Mock&lt;MockA, A&gt; { ... };
+</code></pre><p>Now <code>Mock</code> can call methods of <code>MockA</code> on itself via static cast and call methods of <code>A</code> (or rather the ultimate base) directly.</p><hr/><p>Note: The mixin templates are basically the same thing as mixins in Ruby or interfaces with method implementations introduced in Java 8. Those languages it is a special construct, because they don&#39;t have anything of the power of C++ templates, but the implementation is similar—an intermediate class is constructed by compiler and injected in the hierarchy.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/derived-classes-and-namespaces/'>Derived Classes and namespaces</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-is-using-protected-inheritance-to-hide-but-exploit-implemented-interface-from-the-public-ok/'>C++ &#8211; Is using protected inheritance to hide (but exploit) implemented interface from the public ok</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/a-vector-of-pointers-to-different-derived-classes-of-the-same-base-class/'>A vector of pointers to different derived classes of the same base class</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-a-few-questions-about-initializing-variables/'>C++ &#8211; A few questions about initializing variables</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/coding-to-interfaces-vs-abstract-inheritance/'>Coding to Interfaces vs Abstract Inheritance</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

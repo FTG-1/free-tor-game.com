@@ -1,0 +1,76 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; A DTO class having an ArrayList of its own type &#8211; is this considered a good design &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1064614 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1064614" class="post-1064614 software type-software status-publish hentry category-software tag-class-design tag-code-quality tag-java tag-object-oriented-design tag-programming-practices"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; A DTO class having an ArrayList of its own type &#8211; is this considered a good design</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">class-design</span><span class="mr-2 badge badge-info">code-quality</span><span class="mr-2 badge badge-warning">java</span><span class="mr-2 badge badge-primary">object-oriented-design</span><span class="mr-2 badge badge-danger">programming practices</span></p><div class="entry-content"><p>I came across a DTO class like the below one.</p><pre><code>class PersonDTO {
+   private String firstName;
+   private String middleName;
+   private String lastName;
+   private String dob;
+
+   // some 50 fields more
+   private List&lt;PersonDTO&gt; persons;
+
+   //getters and setter
+}
+</code></pre><p>Question 1: Is it a good practice to have such huge DTO classes with so many properties?</p><p>Question 2: Is it a good practice to have a DTO class having an ArrayList of its own type? Wouldn&#39;t it cause a circular reference?</p><p>Update:</p><p>I work for a product in Healthcare domain. The use case is to generate a report of all the users in the system. Along with the list of users, the report also needs to show the summary information. The data need to be serialized, because the UI is expecting a JSON response.</p><p>Below is the actual DTO I was taking about.</p><p>A method was written in DAO class, which returns a UserDTO object.<br /> This UserDTO object that is being returned.. consists of a List of all users, and some summary information like: total doctors, total nurses etc.</p><pre><code>class UserDTO{
+    private String userID; //This is unique
+
+    private String firstName;
+    private String middleName;
+    private String lastName;
+    private String dob;
+
+    private String userType; // value can be DT(for doctor), ST(for nurse), 
+
+    private int totalDoctorCount; //Holds the total number of UserDTOs with userType value set to DT in the ArrayList of users.
+
+    private int totalNurseCount; //Holds the total number of UserDTOs with userType value set to ST in the ArrayList of users.
+
+
+    // there are some 40 more properties.
+
+    private List&lt;UserDTO&gt; users;
+
+        //In this class there are also properties like below... 
+
+        private String primaryAddrStreetName;
+        private String primaryAddrCity;
+        private String primaryAddrState;
+        private String primaryAddrCountry;
+        private String primaryAddrZipcode;
+
+        private String billingAddrStreetName;
+        private String billingAddrCity;
+        private String billingAddrState;
+        private String billingAddrCountry;
+        private String billingAddrZipcode;
+
+        private String shippingAddrStreetName;
+        private String shippingAddrCity;
+        private String shippingAddrState;
+        private String shippingAddrCountry;
+        private String shippingAddrZipcode;
+}
+</code></pre><p>Question 3: Is this DTO design apt for that use case? if not, then what would you suggest?</p><p>Question 4: The user has multiple addresses. But, Shouldn&#39;t the address details be in its own class (something like UserAddressDTO) and then we should add an array/ArrayList of UserAddressDTO in UserDTO??</p><p>Question 5: Also please give some insight about how would such kind of DTOs effect the JVM memory. The report would fetch thousands of records.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><h3>Question 1: Huge DTO</h3><p>The <a href="https://martinfowler.com/eaaCatalog/dataTransferObject.html" rel="nofollow noreferrer">goal of a DTO</a> is to transfer data between processes or layers so to reduce the number of method calls.</p><p>It is hence not shocking to have a huge list of fields in such a structure.  The alternative is to implement the DTO with some more complex structure, such as for example a <a href="https://docs.oracle.com/javase/7/docs/api/java/sql/ResultSet.html" rel="nofollow noreferrer"><code>ResultSet</code></a> (or a <a href="https://msdn.microsoft.com/en-us/library/ff649325.aspx" rel="nofollow noreferrer">dataset</a> in a non-jaa context), that groups together different entities into one object.  The inconvenience is then that the building of such object and the accessing of its elements is more time consuming, that with your flat (and ugly, but efficient) structure.</p><p>FYI, <a href="https://msdn.microsoft.com/en-us/library/ff649585.aspx" rel="nofollow noreferrer">here</a> you&#39;ll find some benefits and liabilities of the DTO.</p><h3>Question 2 (updated after your edit)**</h3><p>Having a list of <code>PersonDTO</code> in the <code>PersonDTO</code> means that the DTO has a recursive structure (e.g. like a tree).  So it&#39;s not just flat data of one <code>Person</code>, but in fact one <code>Person</code> and a group of related <code>Persons</code>. The data structure is recursive.</p><p>This doesn&#39;t imply a circular reference, but you are right, some extra care is needed.  It all depends on the original data structure:</p><ol><li>If the original objects form a hierarchy (for example, a manager and his employees, some of them themselves managers having their own employees), there is no issue to create the DTO.  Same if it&#39;s another form of acyclic graph.</li><li>If the original objects form a graph with possible cycles (for example, a person and her friends), there is a risk of cycling for ever when building the DTO. You can use a cycle detection to prevent transfering several time the same object. However, doing so would mean losing some relations in the transfer. In this case this DTO would be a bad design.</li></ol><p>Note also that a same Person could appears several time in the DTO, in different lists (e.g. a part-time employee working for two departments). Unfortunately, during the data transfer, if the objects get deserialized to be transferred over the net and then serialized again, the object&#39;s identity (that you have in java with the same reference) might get lost, and you&#39;ll end up with two different objects replicating the same data.  On the reception side, you&#39;d therefore need to take some extra care as well : you have to decide if you&#39;d detect such identity of objects or if you assume that all persons will always be different.</p><p>Conclusion: this structure could be ok, but it requires some information about the original domain objects to confirm.</p><p><strong>Alternative:</strong> A much safer DTO structure would be to give each person an id, and organise the DTO as a collection of persons with their id.  The list of <code>PersonDTO</code> could then be replaced with a list of ids.  This is much more flexible, because it would work for all the types of person graphs and without need for any identity detection.</p><h3>Question 3 and your last edit</h3><p>If the goal of this DTO structure is only to provide a list of <strong>unrelated</strong> users, it should have the structure:</p><pre><code>class UserDTO {             // Only properties of a single user
+    private String userID; 
+    private String firstName;
+    ...
+    private String userType;  
+};
+class UserListDTO {         // Only properties of the list as a whole
+    private int totalDoctorCount; 
+    ...
+    private List&lt;UserDTO&gt; users;
+};
+</code></pre><p>As you see, a proper DTO design is often related to a multiplication of DTO classes.  This is a well known topic as you can verify in the drawbacks exposed in <a href="https://msdn.microsoft.com/en-us/library/ff649585.aspx" rel="nofollow noreferrer">this article here</a>.</p><p>Inflating a unique DTO to combine the two layers into a single class is a shortcut that does not comply with the <a href="https://en.wikipedia.org/wiki/Single_responsibility_principle" rel="nofollow noreferrer">principle of single responsibility</a>.  Its also ambiguous:  should the top user be added to the group or not ?  Is he then counted in the statistics ? Shall the users in the list always have an empty list ? Shall they they provide statistics on themselves ? What if one user in the list comes with unexpected users in his list ? All these questions and extra processing, just to avoid one additional class...</p><p>In this case, it is a bad design.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-best-way-to-load-application-settings/'>Java &#8211; Best way to load application settings</a></li><li class="list-group-item"><a href='../java-should-the-methods-of-a-class-call-its-own-getters-and-setters/'>Java &#8211; Should the methods of a class call its own getters and setters</a></li><li class="list-group-item"><a href='../can-a-class-contain-its-own-class/'>Can a class contain its own class</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

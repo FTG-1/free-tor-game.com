@@ -1,0 +1,91 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C++ &#8211; Factory pattern or builder pattern ? which one is suited for reading Finite Element Model data from a text file &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1082812 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1082812" class="post-1082812 software type-software status-publish hentry category-software tag-c tag-class tag-design tag-relationships"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C++ &#8211; Factory pattern or builder pattern ? which one is suited for reading Finite Element Model data from a text file</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">class</span><span class="mr-2 badge badge-warning">design</span><span class="mr-2 badge badge-primary">relationships</span></p><div class="entry-content"><p>A follow up to another question (<a href="https://softwareengineering.stackexchange.com/questions/381534/making-a-design-decision-about-reading-model-data-from-an-input-file/381557#381557">Making a design decision about reading model data from an input file</a>).</p><p>I wish to ask another question regarding builder or factory pattern. (I read that builder is more complex than factory, and I may not need to use builder for now). So here is the data I have to read:</p><pre><code>TABLE: &#34;DEGREES OF FREEDOM&#34;
+   X=Yes   Y=Yes   Z=Yes   R1=Yes   R2=Yes   R3=Yes
+
+TABLE:  &#34;ANALYSIS OPTIONS&#34;
+   Solver=Advanced   SolverProc=Advanced    
+
+TABLE:  &#34;COORDINATE SYSTEMS&#34;
+   Name=GLOBAL   Type=Cartesian   X=0   Y=0   Z=0   
+
+TABLE:  &#34;GRID LINES&#34;
+   CoordSys=GLOBAL   AxisDir=X   GridID=A   XRYZCoord=-720     LineColor=Gray8Dark   Visible=Yes    
+   CoordSys=GLOBAL   AxisDir=X   GridID=B   XRYZCoord=-432     LineColor=Gray8Dark   Visible=Yes   
+   CoordSys=GLOBAL   AxisDir=X   GridID=C   XRYZCoord=-144     LineColor=Gray8Dark   Visible=Yes   
+   CoordSys=GLOBAL   AxisDir=X   GridID=D   XRYZCoord=144      LineColor=Gray8Dark   Visible=Yes   
+   CoordSys=GLOBAL   AxisDir=X   GridID=E   XRYZCoord=432      LineColor=Gray8Dark   Visible=Yes   
+   CoordSys=GLOBAL   AxisDir=X   GridID=F   XRYZCoord=720      LineColor=Gray8Dark   Visible=Yes   
+   ...
+</code></pre><p>There are many more tables like these. Some tables have parent, child relationships (Each coordinate system has grid line of its own). I have made structures that represent each table, like this:</p><pre><code>struct ActiveDOF
+{
+  bool Ux;
+  bool Uy;
+  bool Uz;
+  bool Rx;
+  bool Ry;
+  bool Rz;
+};
+
+struct GridLine
+{
+  enum Direction{X, Y, Z};
+  enum Type{PRIMARY, SECONDARY};
+  enum Location{START, END};
+  std::string coodSystem;
+  Direction direction;
+  std::string gridID;
+  float XRYZ;
+  Type lineType;
+  QColor color;
+  bool visible;
+  Location bubleLoc;
+  bool allVisible;
+  float bubleSize;
+};
+
+struct CoordinateSystem
+{
+ std::string name;
+ std::string type;
+ QVector3D center; // center x, center y, cetner z
+ QVector3D about; // aboutx, about y, about z
+ std::vector&lt;GridLine&gt; gridLines;
+};
+</code></pre><p>these data structures are incorporated to the model class, which will make a huge class since there are 50 odd data structures like this:</p><pre><code>class Model
+{
+private:
+ActiveDOF activeDOF;
+CoordinateSystem coordinateSystem;
+....
+
+public:
+Model() {} ...
+
+}
+</code></pre><p>each table has to have its set method and get method. This design worries me because if I decide to change it, it is going to be very time consuming. I appreciate any suggestion. I think the information here also will put the earlier question in a better light.</p><p>Now, I don&#39;t know where the builder or factory method should go, given the situation. I looked at some code and UML charts but I was not able to understand how to implement the factory, or builder to make structures required for my design. I have to have access to each table by name, because they might be subject to change inside the model, so for the time being I am avoiding making each of them a subclass of a virtual base class, so that I can store them in a container.</p><p>Also, does it make sense  that instead of declaring an instance of the data struct, I should keep a pointer to them ?<br /> if all data structures are derived from a virtual base class called Record, then the model will be something like this:</p><pre><code>class Model
+{
+private:
+ActiveDOF* activeDOF;
+CoordinateSystem* coordinateSystem;
+....
+
+std::Vector&lt;Record*&gt; data;
+
+public:
+Model() {} ...
+
+}
+</code></pre><p>I think it is extra work to allocate, dislocate memory for them, but it can help in managing the data and keep extra typing ? am I right in assuming that ?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p><strong>You are trying to solve a data access problem, and it requires a data access solution.</strong></p><p>First, let&#39;s examine your proposed solutions, and why they don&#39;t solve the problems you have.</p><h2>The Factory Pattern</h2><p>The Factory Design Pattern (also called the Factory Method Pattern) is useful when you want to utilize polymorphism and you want to separate object construction completely from the implementing classes.</p><p><a href="https://en.wikipedia.org/wiki/Factory_method_pattern" rel="nofollow noreferrer">Wikipedia</a>:</p><blockquote><p>In class-based programming, <strong>the factory method pattern is a creational pattern</strong> that uses factory methods to deal with the problem of creating objects without having to specify the exact class of the object that will be created. This is done by <strong>creating objects by calling a factory method</strong>—either specified in an interface and implemented by child classes, or implemented in a base class and optionally overridden by derived classes—<strong>rather than by calling a constructor.</strong></p></blockquote><p>(emphasis, mine)</p><p>And further down it elaborates on the problems this pattern solves:</p><blockquote><p>The Factory Method design pattern solves problems like:</p><ul><li>How can an object be created so that <strong>sub classes</strong> can redefine which class to instantiate?</li><li>How can a class defer instantiation to <strong>sub classes?</strong></li></ul></blockquote><p>The problems you describe in your question are different from these. You aren&#39;t dealing with sub classes or polymorphism. The factory pattern isn&#39;t a solution.</p><h2>The Builder Pattern</h2><p>The Builder Pattern (from <a href="https://en.wikipedia.org/wiki/Builder_pattern" rel="nofollow noreferrer">Wikipedia</a>):</p><blockquote><p>The Builder is a design pattern designed to provide a flexible solution to various object creation problems in object-oriented programming. <strong>The intent of the Builder design pattern is to separate the construction of a complex object from its representation.</strong></p></blockquote><p>(emphasis, mine)</p><p>Here, again, we see a mismatch between the problem you are describing and the intended use of this pattern.</p><blockquote><p>The Builder design pattern solves problems like:</p><ul><li>How can a class (the same construction process) create different representations of a <strong>complex object</strong>?</li><li>How can a class that includes creating a <strong>complex object</strong> be simplified?</li></ul></blockquote><p>(emphasis, mine)</p><p>The key here is the construction of an object (an object = 1 object) is complex. This could be due to a large number of constructor arguments, or due to the complexity of assembling its dependencies.</p><p>Individually, each struct or class is pretty simple, so the builder pattern is not a good fit either.</p><h2>Data Access Patterns (The Solution)</h2><p>The problems you are <em>actually</em> trying to solve are how to perform data access, and you may be looking for a <a href="https://en.wikipedia.org/wiki/Data_access_object" rel="nofollow noreferrer">Data Access Object</a>.</p><blockquote><p>In computer software, a data access object (DAO) is an object that provides an abstract <strong>interface to some type of database or other persistence mechanism.</strong> By mapping application calls to the persistence layer, the DAO <strong>provides some specific data operations without exposing details of the database.</strong></p></blockquote><p>In your case, replace &#34;database&#34; with &#34;text file&#34;. A related design pattern is the <a href="https://code.tutsplus.com/tutorials/the-repository-design-pattern--net-35804" rel="nofollow noreferrer">Repository Design Pattern</a>, which breaks data access into 3 main solutions:</p><ul><li>Repository — the public interface for &#34;data access stuff&#34;</li><li>Gateway — knows how to talk to an Oracle database or read/write to a text file. This would include serializing objects and structs to SQL or the data format expected in the text file.</li><li>Factory — maps data returned by the Gateway to the objects and structs used by the rest of your application</li></ul><h3>Ownership of Memory</h3><p>Since you don&#39;t have the advantage/limitation of automatic management of memory, ownership of the memory allocated to these objects and structs is definitely a concern. Here you must make a decision:</p><ul><li>Is the data access object responsible for cleaning up this memory?</li><li>Does the data access object expect the caller (client code) to take responsibility for freeing this memory?</li></ul><p>If the data access object is created when the application starts, and lives until the application is shut down, the data access object could take ownership of this memory.</p><p>If the data access object is created on demand, and then disposed of, client code needs to make sure this memory is cleaned up.</p><p>Define this in the comments or documentation for the data access object, and enforce this in code review.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../database-when-should-use-of-database-be-preferred-over-parsing-data-from-a-text-file/'>Database &#8211; When should use of database be preferred over parsing data from a text file</a></li><li class="list-group-item"><a href='../c-how-to-add-properties-to-subclasses-and-access-them-without-casting-from-a-superclass/'>C# &#8211; How to add properties to subclasses and access them without casting from a superclass</a></li><li class="list-group-item"><a href='../design-build-an-object-from-two-data-sources-which-design-pattern-would-be-suitable/'>Design &#8211; Build an object from two data sources &#8211; Which design pattern would be suitable</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

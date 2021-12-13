@@ -1,0 +1,92 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Javascript &#8211; Where to declare a variable and define a function in Javascript &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1075187 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1075187" class="post-1075187 software type-software status-publish hentry category-software tag-coding-style tag-javascript tag-scope"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Javascript &#8211; Where to declare a variable and define a function in Javascript</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">coding-style</span><span class="mr-2 badge badge-info">javascript</span><span class="mr-2 badge badge-warning">scope</span></p><div class="entry-content"><p>I&#39;m reading the book <em>JavaScript: The Good Parts</em>.</p><p>On page 113 it recommends function expressions instead of function statements, because statements are subject to hoisting:</p><blockquote><p>The statement:</p><pre><code>function foo( ) {}
+</code></pre><p>means about the same thing as:</p><pre><code>var foo = function foo( ) {};
+</code></pre><p>Throughout this book, I have been using the second form because it<br /> makes it clear that <code>foo</code> is a variable containing a function value.</p></blockquote><p>Further JSHint warns against function statements defined in a block, e.g. (my example):</p><pre><code>if (foo) {
+    function baz() {}
+}
+</code></pre><p>&#8230; e.g. because support for this isn&#39;t consistent between javascript engines; it produces the following error message:</p><blockquote><p>Function declarations should not be placed in blocks. Use a function expression or move the statement to the top of the outer function.</p></blockquote><p>A recommended work-around is a function expression, e.g. (my example):</p><pre><code>if (foo) {
+    baz = function() {}
+}
+</code></pre><p>My question is, where do I declare the <code>baz</code> variable?</p><p>The end of page 36 (the Scope section of the Functions chapter) says,</p><blockquote><p>In many modern languages, it is recommended that variables be declared as late as<br /> possible, at the first point of use. That turns out to be bad advice for JavaScript<br /> because it lacks block scope. So instead, it is best to declare all of the variables used<br /> in a function at the top of the function body.</p></blockquote><p>Does that mean that it&#39;s best to declare the baz variable at the top of the function?</p><p>For example, like this:</p><pre><code>function(foo) {
+    // declare variables
+    var baz;
+    // implementation
+    if (foo) {
+        baz = function() {}
+    }
+}
+</code></pre><p>Is this a best practice, or am I misunderstanding something, reading too much into it? I fear it makes it harder to maintain: because it separates the declaration of baz (i.e. <code>var baz;</code>) from its initialization. If I rename or delete one but not the other then suddenly the variable would exist at global scope.</p><p>Isn&#39;t it safer to code as follows, where <code>var</code> is used where the variable is first used?</p><pre><code>function(foo) {
+    // implementation
+    if (foo) {
+        var baz = function() {}
+    }
+}
+</code></pre><p>I understand that the latter is functionality equivalent to the former. Is the latter contrary to a best-practice coding-style for Javascript?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><blockquote><p>My question is, where do I declare the <code>baz</code> variable?</p></blockquote><p>So the generic answer to this question is &#34;wherever you want&#34;, but of course that&#39;s not helpful and has pitfalls, so I&#39;m going to tell you where <em>I</em> recommend putting it, and attempt to defend my logic as best as possible.</p><hr/><p>No matter where you declare a function* or variable** in JavaScript, the function or variable will be <strong>hoisted</strong> to the top of its containing scope***. If there is no containing scope, it will be implicitly added to the global namespace (in browsers this is <code>window</code>, in NodeJS this is <code>global</code>).</p><p>When a variable or function is hoisted, it means that the JavaScript interpreter will pretend as though your variable declaration were written as the first line of the containing scope.</p><p>In practice what this means is that when you write:</p><pre><code>(function () {
+  ...a...
+  if (...b...) {
+    var example = ...c...;
+//  ^^^^^^^^^^^
+  }
+}());
+</code></pre><p>It&#39;s actually evaluated as:</p><pre><code>(function () {
+  var example;
+//^^^^^^^^^^^
+  ...a...
+  if (...b...) {
+    example = ...c...;
+  }
+}());
+</code></pre><p><sub>* I&#39;m referring to function declaration here. I.E. <code>function name(...) {...}</code></sub><br/> <sub>** I&#39;m referring to variable declaration with <code>var</code> here. I.E. <code>var name</code></sub><br/> <sub>*** Containing scope is typically the wrapping function, but sometimes for various reasons there is no wrapping function.</sub></p><hr/><blockquote><p>Isn&#39;t it safer to code as follows, where <code>var</code> is used where the variable is first used?</p></blockquote><p>Because of hoisting this classic best practice becomes susceptible to simple mistakes.</p><p>Consider the case where you write some code...</p><pre><code>(function () {
+  for (var i = 0; i &lt; x.length; i++) {
+    ...do stuff...
+    if (...something happens...) {
+      break;
+    }
+  }
+  ...more stuff...
+  ...even more stuff...
+  doSomethingWith(i);
+}());
+</code></pre><p>Then you come back later, and need to add some new functionality, so you add:</p><pre><code>...more stuff...
+for (var i = 0; i &lt; y.length; i++) {
+  ...do stuff...
+}
+...even more stuff...
+</code></pre><p>Now, if you combine the two it&#39;s easy to see in this contrived example that sloppiness has led to accidentally redeclaring and overriding the <code>i</code> variable.</p><p>This might seem silly, but it happens all the time. It&#39;s quite easy if you don&#39;t actively take steps to avoid it. This sort of an issue isn&#39;t a problem in languages with block scope, because <code>i</code> would be contained in each <code>for</code> loop&#39;s scope, and to use <code>doSomethingWith</code>, we would have had to expose the value of <code>i</code> to the parent scope.</p><hr/><p>With that all said, your question is really one of best practices. This is inherently subjective and will lead to disagreement. I&#39;m going to post my <em>opinion</em> and I will attempt to defend it, but it should be treated as an <em>opinion</em> and not dogma.</p><p>In my <strong>opinion</strong>, functions should have the following flow:</p><ol><li>Directives</li><li>Variable declaration</li><li>Function declaration</li><li>Variable instantiation</li><li>Other code</li></ol><p>(1) Directives are things like <code>&#34;use strict&#34;</code>. They come first by definition.</p><p>(2) Variable declaration using <code>var</code> comes second. They could come after function declaration, or even in between, but I&#39;ve found it makes them harder to find. I also recommend using <em>exactly one</em> <code>var</code> statement with each var placed on separate lines, organized alphabetically. This forces variables to be clustered together, and alphabetical ordering prevents accidental duplication.</p><p>(3) Function declaration comes next because functions are hoisted just like variables. Seeing what local APIs are available within a given scope is something I find useful.</p><p>(4) Variable instantiation comes after function declaration, and in my <strong>opinion</strong> should be separate from declaration. <em>Yes</em> there are circumstances where it&#39;s easier to just put them on the same line, but as a general rule, you can&#39;t go wrong with keeping them separate.</p><p>The reasoning for this one is two-fold.</p><p>First, the declaration will be interpreted to happen before the assignment, so writing code that reads the way the interpreter is going to interpret it will help with understanding.</p><p>Second, if the assignment is merged with the declaration, order suddenly starts to matter, and you lose the ability to consistently alphabetize your variables.</p><p>As an example:</p><pre><code>(function () {
+  var x = ...x...,
+      y = ...y...,
+      length = Math.sqrt(x * x + y * y);
+//    ^^^^^^ no longer alphabetical
+}());
+</code></pre><p>If you separate the declaration from assignment, you can get the benefits of both:</p><pre><code>(function () {
+  var length,
+      x,
+      y;
+
+  x = ...x...;
+  y = ...y...;
+  length = Math.sqrt(x * x + y * y);
+}());
+</code></pre><p>(5) Once you&#39;re done with all the setup for a function, you&#39;ll need to write the rest of the code. This step is the &#34;rest of the code&#34; step.</p><hr/><p>If you&#39;ve been paying attention to ECMAScript2015, then you should know that there are two new ways to declare variables: <code>let</code> and <code>const</code>.</p><p>These new variable declarations use block scope. If you&#39;re assigning a variable that will never be overwritten, use <code>const</code>, otherwise use <code>let</code>.</p><p>Going back to:</p><blockquote><p>Isn&#39;t it safer to code as follows, where <code>var</code> is used where the variable is first used?</p></blockquote><p><code>let</code> allows you to do this. If you <em>can</em> use <code>let</code>, stop using <code>var</code>; use <code>let</code> and <code>const</code> where the variables are first used; combine declaration with assignment:</p><p>ES5 way:</p><pre><code>(function () {
+  var example;
+  ...
+  example = ...;
+}());
+</code></pre><p>ES2015 way:</p><pre><code>(function () {
+  ...
+  let example = ...;
+}());
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../should-i-declare-variables-at-the-top-of-the-function-for-reasons-other-than-the-scope-rules/'>Should I declare variables at the top of the function for reasons other than the scope rules</a></li><li class="list-group-item"><a href='../c-block-scoped-and-function-scoped-languages/'>C++ &#8211; Block Scoped and Function Scoped Languages</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

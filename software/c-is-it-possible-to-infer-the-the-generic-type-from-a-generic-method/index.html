@@ -1,0 +1,83 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Is it possible to infer the the generic type from a generic method &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1067416 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1067416" class="post-1067416 software type-software status-publish hentry category-software tag-api tag-c tag-generics tag-net"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Is it possible to infer the the generic type from a generic method</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">api</span><span class="mr-2 badge badge-info">c</span><span class="mr-2 badge badge-warning">generics</span><span class="mr-2 badge badge-primary">net</span></p><div class="entry-content"><p>I&#39;m making an HTTP API client class.</p><p>I want a <code>Perform()</code> method which takes a <strong>request object</strong> and returns an obejct that is expected from the API.</p><p>So a <code>PostRequest</code> object will describe how to get a <code>Post</code>.</p><p>Ultimately what I&#39;m trying to do is the following:</p><pre><code>Post post = client.Perform&lt;PostRequest&gt;(x =&gt; x.Id = 1);
+</code></pre><p>I&#39;m trying to infer the return type based on the <code>Request</code> generic.</p><p>My PostRequest class looks like this:</p><pre><code>internal class PostRequest : Request&lt;Post&gt;
+{
+    internal int Id { get; set; }
+}
+</code></pre><p>The problem is I can&#39;t infer that the purpose of the <code>PostRequest</code> is to return a <code>Post</code>.</p><p>That is, I can only get this to work when my method looks like this, where <code>Post</code> is included in the generic method.</p><pre><code>public TModel Perform&lt;TRequest, TModel&gt;(Action&lt;TRequest&gt; action) where TRequest : Request&lt;TModel&gt; where TModel : class
+</code></pre><p>But I was hoping to simplify the method like this:</p><pre><code>public TModel Perform&lt;TRequest&gt;(Action&lt;TRequest&gt; action) where TRequest : Request&lt;TModel&gt;
+</code></pre><p>But I can&#39;t tell C# how to derive what a <code>TModel</code> is.</p><p>Is there any way to achieve what I want? Or will I always have to tell the generic method what return I&#39;m expecting? (even though this is included in the <code>PostRequest</code>)</p><p>I&#39;m open to suggestions of a better approach.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>First of all, you can not expect to get class which pass into Request as T type by using <code>PostRequest</code> because it could be implements more than one interface.</p><pre><code>public interface Request&lt;T&gt;
+{
+    //...
+}
+
+public class PostRequest : Request&lt;Post&gt;, Request&lt;AnotherPost&gt;
+{
+    //..
+}
+</code></pre><p>Beyond, you can use <code>Request&lt;T&gt;</code> instead of concrete class. It is totally same for this logic.</p><p>And, I think you try to predicate(not assign) by doing <code>(x =&gt; x.Id = 1)</code>. If so, I assume this code like <code>(x =&gt; x.Id == 1)</code>. It means you are trying to determine prediction by passing parameter to method.</p><p>If I get correctly, you have two option to achieve this by using <a href="https://docs.microsoft.com/en-us/dotnet/api/system.linq.expressions.expression?view=netframework-4.6.1" rel="nofollow noreferrer">System.Linq.Expressions</a>:</p><p><strong>1. As method parameter:</strong></p><pre><code>public T Perform&lt;T&gt;(Expression&lt;Func&lt;T, bool&gt;&gt; expression) where T : class
+{
+   // your logic here.
+}
+
+public void DoSomethingByParameter()
+{
+   // This is *Ultimately what you are trying to do*
+   Post post = Perform&lt;Post&gt;(x =&gt; x.Id == 1);
+   Photo photo = Perform&lt;Photo&gt;(x =&gt; x.Description.Contains(&#34;Something&#34;));
+}
+</code></pre><p>As you see, you don&#39;t need <code>PostRequest</code> or <code>PhotoRequest</code> classes for this usage.</p><p><strong>2. Store in class properties</strong></p><pre><code>public class Post
+{
+    public int Id { get; set; }
+}
+
+public class Photo
+{
+    public string Description { get; set; }
+}
+
+public interface Request&lt;T&gt;
+{
+    Expression&lt;Func&lt;T, bool&gt;&gt; Exp { get; }
+}
+
+public class PostRequest : Request&lt;Post&gt;
+{
+    public int Id { get; set; }
+    public Expression&lt;Func&lt;Post, bool&gt;&gt; Exp =&gt; (x) =&gt; x.Id == this.Id;
+}
+
+public class PhotoRequest : Request&lt;Photo&gt;
+{
+    public Expression&lt;Func&lt;Photo, bool&gt;&gt; Exp =&gt; (x) =&gt; x.Description.Contains(&#34;any description&#34;);
+}
+
+public T Perform&lt;T&gt;(Request&lt;T&gt; request) where T : class
+{
+   // your logic here.
+   //  something like
+   //context.Where(request.Exp);
+}
+</code></pre><p>And you can call <code>Perform</code> like :</p><pre><code>public void DoSomethingByProperty()
+{
+   PostRequest postRequest = new PostRequest();
+   PhotoRequest photoRequest = new PhotoRequest();
+
+   // This is also *Ultimately what you are trying to do*
+   Post post = Perform(postRequest);
+   Photo photo = Perform(photoRequest);
+}
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../a-good-generic-type-system/'>A good generic type system</a></li><li class="list-group-item"><a href='../api-key-in-content-or-header/'>API key &#8211; in content or header</a></li><li class="list-group-item"><a href='../c-converting-method-to-return-generic-type/'>C# &#8211; Converting Method to Return Generic Type</a></li><li class="list-group-item"><a href='../java-designing-generic-type-inheritance-hierarchy/'>Java &#8211; Designing generic type inheritance hierarchy</a></li><li class="list-group-item"><a href='../rest-api-initialize-method-post-or-get/'>Rest &#8211; API &#8220;initialize&#8221; method: POST or GET</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

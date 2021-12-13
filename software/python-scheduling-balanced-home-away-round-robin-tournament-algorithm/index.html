@@ -1,0 +1,76 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Python &#8211; Scheduling: balanced home/away round-robin tournament algorithm &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1074123 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1074123" class="post-1074123 software type-software status-publish hentry category-software tag-algorithms tag-combinatorics tag-python tag-scheduling"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Python &#8211; Scheduling: balanced home/away round-robin tournament algorithm</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">algorithms</span><span class="mr-2 badge badge-info">combinatorics</span><span class="mr-2 badge badge-warning">python</span><span class="mr-2 badge badge-primary">scheduling</span></p><div class="entry-content"><p>I am trying to achieve a round-robin algorithm for sports scheduling that also guarantees a fair or balanced home/away rotation.</p><p>I based my algorithm on the <a href="https://en.wikipedia.org/wiki/Round-robin_tournament#Scheduling_algorithm" rel="noreferrer">round-robin scheduling algorithm</a>:</p><pre><code>def round_robin(teams, rounds):
+    # bye
+    if len(teams) % 2:
+        teams.append(None)
+
+    schedule = []
+    for turn in range(rounds):
+        pairings = []
+        for i in range(len(teams) / 2):
+            pairings.append((teams[i], teams[len(teams) - i - 1]))
+        teams.insert(1, teams.pop())
+        schedule.append(pairings)
+
+    return schedule
+</code></pre><p>However, this algorithm does not address H/A balance. I am trying to satisfy these two objectives:</p><ul><li><p>H/A rotation: each team should play a home game and an away game every other round, i.e. in a tournament with 5 rounds, a given team should have the following rotation: <code>H-A-H-A-H</code>.</p></li><li><p>Number of H/A games: the number of home games and away games should be the same (or offset by one if the total is odd) number, so a tournament with 10 games per team should have 5 home games and 5 away games for each team.</p></li></ul><p>The previous algorithm does not satisfy any of these objectives:</p><ul><li><p>It does not alternate H/A games. For example, the first team only has home games, and the other teams get home games until they are rotated to the end of the list and then only away games (and the opposite: away games until reaching the beginning, then get home games only). See what I mean below (1).</p></li><li><p>It does guarantee a balanced number of H/A games but only if the number of rounds is a multiple of the number of games (or number of games minus one), otherwise we get a number of home or away games too many (the difference between the actual number of games and the next multiple).</p></li></ul><p>(1)</p><pre><code>[(1, 8), (2, 7), (3, 6), (4, 5)]
+[(1, 7), (8, 6), (2, 5), (3, 4)]
+[(1, 6), (7, 5), (8, 4), (2, 3)]
+[(1, 5), (6, 4), (7, 3), (8, 2)]
+[(1, 4), (5, 3), (6, 2), (7, 8)]
+[(1, 3), (4, 2), (5, 8), (6, 7)]
+[(1, 2), (3, 8), (4, 7), (5, 6)]
+</code></pre><p>I made several straight forward modifications to get a closer approach to a balanced rotation:</p><pre><code>def round_robin(teams, rounds):
+    # bye
+    if len(teams) % 2:
+        teams.append(None)
+
+    schedule = []
+    for turn in range(rounds):
+        pairings = []
+        for i in range(len(teams) / 2):
+            pairing = (teams[i], teams[len(teams) - i - 1])
+            # alternate first team
+            if i == 0 and turn % 2:
+                pairing = pairing[::-1]
+            # alternate based on the team&#39;s previous round appearance
+            if schedule and None not in pairing:
+                previous_round = list(sum(schedule[-1], ()))
+                for team in pairing:
+                    if team in previous_round and pairing[previous_round.index(team) % 2] == team:
+                        pairing = pairing[::-1]
+            pairings.append(pairing)
+        teams.insert(1, teams.pop())
+        schedule.append(pairings)
+
+    return schedule
+</code></pre><p>But of course this is not a smart algorithm. It helps, but it does not fully satisfy any of both objectives.</p><p>I have been trying to find an algorithm that addresses this issue, but I have not been able to find one, quite a surprise because tournament scheduling is a common problem.</p><p>I have thoght of using constraint programming to use this problem, but I am not entirely sure this would be the ultimate solution, maybe it is a bit of an overkill and another most classical approach is better. Also, formulating the problem as a constraint programming problem (or CSP) can turn out to be quite a challenge, at least for me.</p><p>Any kind of help, suggestion, insight will be most welcome.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I don&#39;t think it&#39;s possible to strictly satisfy this requirement in a round-robin system:</p><blockquote><p>H/A rotation: each team should play a home game and an away game every
+ other round, i.e. in a tournament with 5 rounds, a given team should
+ have the following rotation: H-A-H-A-H.</p></blockquote><p>Let&#39;s say you have a round-robin system where every team takes part in one match each round and every team has a perfectly alternating home-away-schedule. Let A and B be teams that both play at home in the first round. Then they&#39;ll be playing at home every odd round and playing away every even round. There will never be a round where A plays at home and B plays away or vice versa. Consequently, if A and B do not share the home location, then A and B will never face each other. The system is flawed.</p><p>I think assigning the team location (Home or Away) to the rows of the standard round robin algorithm and alternating them should work reasonably well.</p><p>So, for round one (and for each odd round) you would have home teams in the first row and away teams in the second row:</p><pre>Round 1. (1 plays 14, 2 plays 13, ... )
+1  2  3  4  5  6  7 (Home)
+14 13 12 11 10 9  8 (Away)
+</pre><p>For round two (and for each even round) you would have away teams in the first row and home teams in the second row:</p><pre>Round 2. (1 plays 13, 14 plays 12, ... )
+1  14 2  3  4  5  6 (Away)
+13 12 11 10 9  8  7 (Home)
+</pre><p>Alternating home and away could be implemented by taking the first algorithm and changing this line</p><pre><code>pairings.append((teams[i], teams[len(teams) - i - 1]))
+</code></pre><p>into something like this</p><pre><code>if turn % 2:
+    home = teams[i]
+    away = teams[len(teams) - i - 1])
+else:
+    home = teams[len(teams) - i - 1])
+    away = teams[i]
+pairings.append((home, away))
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../known-algorithm-for-scheduling-tournament-matchups/'>Known algorithm for scheduling tournament matchups</a></li><li class="list-group-item"><a href='../multilevel-queue-scheduling-mqs-with-round-robin/'>Multilevel Queue Scheduling (MQS) with Round Robin</a></li><li class="list-group-item"><a href='../guidance-on-excel-vba-resource-scheduling-algorithm/'>Guidance on Excel VBA resource scheduling algorithm</a></li><li class="list-group-item"><a href='../need-help-identifying-a-league-scheduling-algorithm/'>Need help identifying a league scheduling algorithm</a></li><li class="list-group-item"><a href='../weighted-round-robin-arbitration/'>Weighted Round Robin Arbitration</a></li><li class="list-group-item"><a href='../algorithm-for-a-round-robin-based-tournament-with-a-specific-amount-of-matches-per-round/'>Algorithm for a round robin based tournament with a specific amount of matches per round</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

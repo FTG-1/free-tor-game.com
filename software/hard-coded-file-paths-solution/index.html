@@ -1,0 +1,80 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Hard Coded File Paths &#8211; Solution &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1071859 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1071859" class="post-1071859 software type-software status-publish hentry category-software tag-database-design tag-file-handling tag-industry-standard tag-storage"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Hard Coded File Paths &#8211; Solution</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">database-design</span><span class="mr-2 badge badge-info">file handling</span><span class="mr-2 badge badge-warning">industry-standard</span><span class="mr-2 badge badge-primary">storage</span></p><div class="entry-content"><p>Say you have an application that saves image(.jpg, .png etc) and text(.txt, .xml) files, and the application has all of the files paths hard coded throughout code, per the example below.</p><p>Assuming the following file path structure exists:</p><ul><li>jpg &#8211; <code>\\MyFileServer\Media\jpg\</code></li><li>png &#8211; <code>\\MyFileServer\Media\png\</code></li><li>txt &#8211; <code>\\MyFileServer\Text\txt\</code></li><li>xml &#8211; <code>\\MyFileServer\Text\xml\</code></li></ul><p>The files in the destination file paths are referenced inside of a table, so in a VBA example the file path would be hard coded as:</p><pre><code>Dim myFilePath as String
+Dim myFileName as String
+myFileName = &#34;puppies.jpg&#34; &#39;This would be the result of a query in a real scenario
+myFilePath = &#34;\\MyFileServer\Media\jpeg\&#34; &amp; myFileName 
+</code></pre><p>Now say I have to split <code>\\MyFileServer</code> into <code>\\MyMediaFileServer</code> and <code>\\MyTextFileServer</code></p><p>What would have been ideal is if I had a central location that I could have just changed a table value or variable, rather than trudging through every single function in the application to update the hard coded path. Just to change it again in the future if the situation arises again. So, my goal is to make sure my puppies image can be shown with minimal effort.</p><p>Concerning industry standard, I was wondering what is the best option, be it my two options below or another separate option.</p><p>Option 1:</p><p><strong>Single Self Referential Table:</strong></p><p>Defined in Mike&#39;s answer at <a href="https://stackoverflow.com/a/6802879/1504882">hierarchical/tree database for directories in filesystem</a><br /> by a hierarchical structure like the following:</p><pre><code>        (ROOT)
+      /        \ 
+    Dir2        Dir3
+    /    \           \
+  Dir4   Dir5        Dir6
+  /          
+Dir7
+</code></pre><p>You simply have a table like the following:</p><pre><code>ID  ParentID     FilePath
+______________________________________________
+1   NULL         \\MyFileServer 
+2   1            \Images
+3   2            \jpg
+4   3            \10 MB Files
+</code></pre><p>OR Option 2:<br /> <strong>Self Referential Table With Master Roots:</strong></p><p>A slight deviation on option 1.</p><p>Perhaps a master file path would be clearer. Where there is a separate table.</p><pre><code>ID    Name               FilePath
+______________________________________________
+1     Image Root         \\MyMediaFileServer\Images
+2     Text Root          \\MyTextFileServer\Text
+</code></pre><p>Then in the structure mentioned in option 1.</p><pre><code>ID  ParentID    RootID   FilePath
+______________________________________________
+1   NULL        1        \jpg 
+2   1           NULL     \10 MB Files
+</code></pre><p>I feel that option 1 is overall more simple to change, but will become more confusing as a tree expands, and option 2 allows for an easier absolute file path change. IS Option 1 the best solution to storing file paths or is there another industry standard I am not aware of?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Both options are over-engineered, involving the database is inappropriate here, and the directory structure is too deep.</p><p>Instead, for administrator-friendly software, I see the following patterns emerging:</p><ol><li><p><strong>Paths are configured in config files, not database.</strong></p><p>Usually, you want to be able to copy
+the database dump to another system.
+Often, the database server is on another system.
+You simply don&#39;t expect the database content to be entangled
+with file system details,
+the only exception being strictly relative paths.
+Finally, having to make configuration changes in a database is a pain.</p></li><li><p><strong>There&#39;s just one data directory to configure, if any.</strong></p><p>This depends on the application, of course,
+but you almost always want to have everything in a single directory.
+Then the application, not the config file,
+takes care of its inner structure.
+In your case, all I want to configure is:</p><blockquote><p><code>\\MyFileServer</code></p></blockquote><p>Another common approach is not to configure it at all,
+but to a well defined sub directory.
+This is either within the user&#39;s HOME directory
+or within some generic application data directory
+(different conventions on different operating systems,
+but that&#39;s another topic).</p><p>If you want another place,
+you simply replace that directory with a symbolic link, such as:</p><blockquote><p><code>{...}\Data  -&gt;  \\MyFileServer</code></p></blockquote></li><li><p><strong>The inner structure of the data directory is managed by source.</strong></p><p>Good applications have internal functions or property table for
+all common directories,
+usually all combined in a single class or module.</p><p>The base is something like <code>getRootPath()</code> which reads the config file and returns something like <code>\\MyFileServer</code>.</p><p>Then, there functions like <code>getMediaPath()</code> or <code>getTextPath()</code> which internally just call <code>getRootPath()</code> (or each other) and append their relative path.</p><p>A common variation from the theme is to let those functions
+take a filename (or relative file path) as argument,
+and to return the full path to that file.
+For example, <code>getMediaPath(&#34;great.jpg&#34;)</code> would return <code>\\MyFileServer\Media\great.jpg</code>.</p><p>Ideally, these functions also create the directory if it doesn&#39;t exist yet.
+Another approach is to create each directory only when the first file
+is written to it.
+Either way, the point is not to expect a fully populated directory structure,
+which is one less thing the admin (or installer) might get wrong.</p><p>If a future version of the application needs some more subdirectories,
+it usually just creates those,
+without bothering the administrator to creative those,
+or to force them to add those paths to a config file,
+or any another stupid hassles.
+(see 2: There&#39;s just one data directory)</p></li><li><p><strong>Directories structures are not deeper than necessary.</strong></p><p>Your directory structure is essentially split by file extention.</p><ul><li><code>{YourRoot}\Media\jpg\great.jpg</code></li><li><code>{YourRoot}\Media\png\great.png</code></li><li><code>{YourRoot}\Text\txt\great.txt</code></li><li><code>{YourRoot}\Text\xml\great.xml</code></li></ul><p>Is that really necessary?
+The files are already uniquely determined by their extension,
+so why not skip those intermediate paths?</p><ul><li><code>{YourRoot}\great.jpg</code></li><li><code>{YourRoot}\great.png</code></li><li><code>{YourRoot}\great.txt</code></li><li><code>{YourRoot}\great.xml</code></li></ul><p>Of course, applications have good reasons for structuring
+the data directory.
+But that&#39;s usually a separation by usage (or purpose),
+not merely by file extension.</p></li><li><p><strong>If you must, split uniformly.</strong></p><p>The only reasons for further splitting the directories
+is if they get too large.
+In that case, you still don&#39;t split by file extension,
+but by something that provides a uniform partition.</p><p>Often, this is time based, e.g. daily or monthly:</p><ul><li><code>{YourRoot}\2015-01\great.jpg</code></li><li><code>{YourRoot}\2015-01\stuff.png</code></li><li>...</li><li><code>{YourRoot}\2015-02\others.jpg</code></li><li>...</li></ul><p>If you have uniform file names (e.g. hashes),
+their prefix is often chosen as subdirectory name
+(and cut from the original file name), such as:</p><ul><li><code>{YourRoot}\12\34567.jpg</code></li><li>...</li><li><code>{YourRoot}\13\43577.png</code></li><li>...</li></ul></li></ol></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../database-how-to-decide-between-storage-formats-and-what-are-example-use-cases-for-some-of-them/'>Database &#8211; How to decide between storage formats and what are example use cases for some of them</a></li><li class="list-group-item"><a href='../storing-credit-card-information-looking-for-a-creative-solution/'>Storing credit card information: Looking for a creative solution</a></li><li class="list-group-item"><a href='../database-creating-a-separate-table-for-images-or-adding-image-fields-to-many-tables/'>Database &#8211; Creating a separate table for images or adding &#8220;image fields&#8221; to many tables</a></li><li class="list-group-item"><a href='../calculating-disk-capacity-and-max-data-transfer-rate-of-a-hard-drive/'>Calculating disk capacity and max data transfer rate of a hard drive</a></li><li class="list-group-item"><a href='../database-storing-local-filesystem-paths-in-database/'>Database &#8211; Storing Local Filesystem Paths in Database</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

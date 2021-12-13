@@ -1,0 +1,149 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C#/.NET multithreaded application design &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1081684 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1081684" class="post-1081684 software type-software status-publish hentry category-software tag-asynchronous-programming tag-c tag-multithreading tag-net"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C#/.NET multithreaded application design</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">asynchronous-programming</span><span class="mr-2 badge badge-info">c</span><span class="mr-2 badge badge-warning">multithreading</span><span class="mr-2 badge badge-primary">net</span></p><div class="entry-content"><p>The application to be designed serves as a bridge between two different systems.<br /> One natively speaks TCP (RS232 actually, but there&#39;s a COM-&gt;ETH server in the line of communication) &#8211; the other one is an ERP system (able to talk through web services).</p><p>So in a picture it would look like that:</p><p>||<strong>device</strong>|| &lt;&#8212;-TCP&#8212;-&gt; ||<strong><em>my application</em></strong>|| &lt;&#8212;-WCF&#8212;-&gt; ||<strong>ERP</strong>||</p><p>Now as a web developer I never had much to do with threads (changed a bit with MVC and Tasks but still&#8230;).</p><p>Now I am challenged with a proper &#34;server&#34; design.</p><ol><li>I already realized <code>while(true)</code> with a <code>Sleep</code> inside is probably not the smartest choice. Been there, done that..</li><li>From what I have read so far I need something that blocks. Like Console.ReadKey() only that I don&#39;t want to run this as a console application. It should run as a service in the background (Windows Service for example).</li></ol><p>I had a look at the consumer/producer pattern using a <code>BlockingCollection</code> which is pretty neat. I now have my producer (WCF server) which triggers creation of consumers.</p><p>My question now is&#8230; how do I &#8211; from my WCF self host (=producer) &#8211; access my multiple consumer instances? I need to query their internal state and also I need to be able to destroy single consumer instances if they become stuck &#8211; it happens.</p><p><strong>OperationsManager:</strong></p><pre><code>using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using WindowsService2.Producer;
+
+namespace WindowsService2
+{
+    internal class OperationsManager
+    {
+        private CancellationTokenSource _cts;
+        private List&lt;Task&gt; _tasks;
+        private ILogger _logger;
+
+        internal OperationsManager()
+        {
+            _cts = new CancellationTokenSource();
+            _tasks = new List&lt;Task&gt;();
+            _logger = new Logger(&#34;OperationsManager&#34;);
+        }
+
+        //internal int ConsumerCount { get; set; }
+
+        internal void Start()
+        {
+            _logger.Log(&#34;Start() called.&#34;);
+
+            StartProducer();
+            StartConsumers();
+        }
+
+        private void StartConsumers()
+        {
+            // NOP.
+        }
+
+        private void StartProducer()
+        {
+            BlockingCollection&lt;ProducerMessage&gt; blockingCollection = new BlockingCollection&lt;ProducerMessage&gt;();
+
+            Task producerTask = Task.Factory.StartNew(() =&gt;
+            {
+                ManagementService managementService = new ManagementService(blockingCollection, _cts.Token);
+                managementService.Produce();
+            }, _cts.Token);
+
+            _tasks.Add(producerTask);
+        }
+
+        internal void Stop()
+        {
+            _logger.Log(&#34;Stop() called.&#34;);
+
+            _cts.Cancel();
+            Task.WaitAll(_tasks.ToArray(), Timeout.Infinite);
+
+            _cts.Dispose();
+        }
+    }
+}
+</code></pre><p><strong>Producer</strong></p><pre><code>using System;
+using System.Collections.Concurrent;
+using System.ServiceModel;
+using System.ServiceModel.Description;
+using System.Threading;
+using WindowsService2.Producer.WCF;
+
+namespace WindowsService2.Producer
+{
+    // this is my &#34;producer&#34;
+    internal class ManagementService : Producer
+    {
+        private Logger _logger;
+        private ServiceHost _serviceHost;
+
+        internal ManagementService(BlockingCollection&lt;ProducerMessage&gt; blockingCollection, CancellationToken cancellationToken) 
+            : base(blockingCollection, cancellationToken)
+        {
+            _logger = new Logger(&#34;ManagementService&#34;);
+            _cancellationToken.Register(ShutDownWcfEndpoint);
+        }
+
+        public override void Produce()
+        {
+            _logger.Log(&#34;Produce() called.&#34;);
+
+            StartWcfEndpoint();
+        }
+
+        private void StartWcfEndpoint()
+        {
+            // see https://msdn.microsoft.com/en-us/library/ms731758%28v=vs.110%29.aspx
+            Uri baseAddress = new Uri(&#34;http://localhost:8080/hello&#34;);
+
+            // Create the ServiceHost.
+            _serviceHost = new ServiceHost(typeof(HelloWorldService), baseAddress);
+
+            // Enable metadata publishing.
+            ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
+            smb.HttpGetEnabled = true;
+            smb.MetadataExporter.PolicyVersion = PolicyVersion.Policy15;
+            _serviceHost.Description.Behaviors.Add(smb);
+
+            // Open the ServiceHost to start listening for messages. Since
+            // no endpoints are explicitly configured, the runtime will create
+            // one endpoint per base address for each service contract implemented
+            // by the service.
+            _serviceHost.Open();
+        }
+
+        private void ShutDownWcfEndpoint()
+        {
+            _logger.Log(&#34;Shutting down WCF endpoint...&#34;);
+            _serviceHost.Close();
+
+            _logger.Log(&#34;Shutting down WCF endpoint... completed.&#34;);
+        }
+    }
+}
+</code></pre><p><strong>Consumer</strong></p><pre><code>public class Consumer
+{
+    // No code yet.
+    // It has an &#34;internal state&#34; and uses TcpListener to communicate with the device.
+    // It should be able to take commands from the management service (producer) 
+    // (like: destroy yourself, what&#39;s your status?, ...)
+}
+</code></pre><p>As you can see there are no consumers created yet. This is because I figured the design might not work after all.</p><ul><li>The management service (producer) needs to trigger new consumers.<br /> Therefore the management service needs to write into the BlockingCollection &#8211; but how? public static BlockingCollection?</li><li>The management service should provide a method which shows the &#34;internal state&#34; of each consumer =&gt; how many consumers even are there?</li></ul><p><strong>I think the producer/consumer pattern might be the wrong choice here.<br /> What I need is &#34;Hey I&#39;m the management service and I have x number of &#34;worker threads&#34; and their state is <code>collection[0].State.</code></strong></p><p><strong>How would you do that?</strong></p><p>Before this question is being closed as too broad &#8211; it usually happens with this kind of question &#8211; at least on SO &#8211; please give me any advice on how to break the requirements into smaller more manageable pieces.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I think you have a pretty good idea going here.</p><blockquote><p>I had a look at the consumer/producer pattern using a
+ BlockingCollection which is pretty neat. I now have my producer (WCF
+ server) which triggers creation of consumers.</p></blockquote><p>The backend Server equivalent of consumer/producer pattern is a Async communication model. That doesnt mean it needs to be slow or infrequent.
+But rather than sleep, block threads etc. when condition &#34;Full&#34; is met, you wait for the client to say, send again now.</p><blockquote><p>My question now is... how do I - from my WCF self host (=producer) -
+ access my multiple consumer instances? I need to query their internal
+ state and also I need to be able to destroy single consumer instances
+ if they become stuck - it happens.</p></blockquote><p>The async patterns is used in various models now.
+One interesting one that has some aspects you could use is registration.</p><p>If the producer is spawning clients, it should know all clients ids.
+I could then theoretically call , are you awake ? No response, kill it (using call to OS ?) and then respawn. At the risk of some data loss.</p><p>An example of how this kind of pattern works is SignalR  (minus the Kill part) <a href="http://en.wikipedia.org/wiki/SignalR" rel="nofollow">SignalR overview with Further reading</a></p><p>But I think it will provide enough example to model something similar to match your scenario.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../multithreaded-ui-desktop-application-issues/'>Multithreaded UI desktop application issues</a></li><li class="list-group-item"><a href='../c-the-point-of-properties/'>C# &#8211;  the point of properties</a></li><li class="list-group-item"><a href='../design-multithreaded-file-copy/'>Design &#8211; Multithreaded file copy</a></li><li class="list-group-item"><a href='../c-clients-with-multiple-proxy-and-multithreading-callbacks/'>C# &#8211; Clients with multiple proxy and multithreading callbacks</a></li><li class="list-group-item"><a href='../concurrency-pattern-of-logger-in-multithreaded-application/'>Concurrency pattern of logger in multithreaded application</a></li><li class="list-group-item"><a href='../rest-mixing-rest-and-websocket-in-the-same-api/'>Rest &#8211; Mixing REST and websocket in the same API</a></li><li class="list-group-item"><a href='../c-multithreaded-c-mvvm-application-architecture/'>C# &#8211; Multithreaded C# MVVM Application Architecture</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,88 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Javascript &#8211; Global vs Individual object event handlers &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1070601 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1070601" class="post-1070601 software type-software status-publish hentry category-software tag-event-programming tag-javascript"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Javascript &#8211; Global vs Individual object event handlers</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">event-programming</span><span class="mr-2 badge badge-info">javascript</span></p><div class="entry-content"><p>Lately I&#39;ve been studying a lot of javascript samples, both with/without libraries, jQuery to mention one.</p><p>As an old JavaScript developer, I learned early to make use of unobtrusive javascript where one were adding mouse click events to a global handler using <code>document.onclick = mylib.document_onclick;</code></p><p>Then, by tagging any element with a custom attribute/property/expando, I been able to deal with all kinds of functions in a<br /> very simple way.</p><pre><code>//  HTML
+
+&lt;div class=&#39;menulink logout&#39; data-mc=&#39;logout&#39;&gt; Logout &lt;/div&gt;
+&lt;a class=&#39;menulink&#39; data-mc=&#39;ajax&#39; data-target=&#39;main-content-div&#39; href=&#39;page/&#39;&gt;Start page 1&lt;/a&gt;
+&lt;a class=&#39;menulink&#39; data-mc=&#39;ajax&#39; data-target=&#39;main-content-div&#39; href=&#39;page/&#39;&gt;Start page 2&lt;/a&gt;
+
+
+// JS
+
+document_onclick: function (e) {
+    e = getEvObj(e);                             // custom method to get event object
+    var evSrcTag = getSrcObj(e);                 // custom method to get source element
+
+    //mouseclick
+    if (evSrcTag.getAttribute(&#39;data-mc&#39;) != undefined) {
+        switch (evSrcTag.getAttribute(&#39;data-mc&#39;)) {
+
+            case &#39;logout&#39;:
+                if (!confirm(myconfig.msg[&#39;asklogout&#39;])) {
+                    return cancelEv(e);          // custom method to cancel the event
+                }
+                break;
+
+            case &#39;ajax&#39;:
+                //process ajax request as javascript is available, cancel default event (href)
+
+            //case ......
+        }
+    }
+},
+</code></pre><p>Today I see a lot solutions where the event is bound/attached straight to a specific element.</p><p>It appears to quikly become a long list of handlers to be added, together with individual functions and class names tied/added.</p><pre><code>//  HTML
+&lt;a id=&#34;anchor1&#34; href=&#34;#&#34;&gt;create link dynamically&lt;/a&gt;
+&lt;a id=&#34;anchor2&#34; href=&#34;#&#34;&gt;create link dynamically&lt;/a&gt;
+&lt;a id=&#34;anchor3&#34; href=&#34;#&#34;&gt;create link dynamically&lt;/a&gt;
+
+
+//  JS
+$(function(){
+
+    $(&#34;#anchor1&#34;).click( function() {
+        $(&#34;#anchor1&#34;).append(&#39;&lt;a class=&#34;myclass&#34; href=&#34;page/test1&#34;&gt;test1&lt;/a&gt;&#39;);
+    });
+
+    $(&#34;#anchor2&#34;).click( function() {
+        $(&#34;#anchor2&#34;).append(&#39;&lt;a class=&#34;myclass&#34; href=&#34;page/test2&#34;&gt;test2&lt;/a&gt;&#39;);
+    });
+
+    $(&#34;#anchor3&#34;).click( function() {
+        $(&#34;#anchor3&#34;).append(&#39;&lt;a class=&#34;myclass&#34; href=&#34;page/test3&#34;&gt;test3&lt;/a&gt;&#39;);
+    });
+
+});
+</code></pre><p>Referring to the way setting up handlers, is one approach better than the other, and if so, which one is and why?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>The problem with your approach is that you are replacing the browser&#39;s dispatching mechanism with your own dispatching mechanism. The browser&#39;s dispatching is not bad enough to be replaced, and is certainly better than yours:</p><ul><li><p>The browser&#39;s mechanism is native to the browser, and therefore faster than your implementation in interpreted language(JavaScript).</p></li><li><p>Your mechanism uses a big switch statement, which also makes it slower.</p></li><li><p>To add more handlers to your mechanism you need to edit the giant dispatching function. To add handlers to the browser&#39;s mechanism you simply need to set the elements&#39; attributes, which you can do from wherever appropriate - much better than a single gigantic function.</p></li></ul><p>The example you&#39;ve given, while seems to be very popular nowadays, is not good either since it creates massive amounts of boilerplate code duplication. I simply fail to see the benefit of searching for elements by their unique id to attach handlers to them over writing the handler directly in the element&#39;s HTML(the function call! not the implementation!).</p><p>Another popular approach is to use the <code>class</code> attribute instead of <code>id</code> - which I believe to be even worse. Why go through all the trouble of separating the logic(JS) from the document structure(HTML), just to couple it with the style(CSS)?</p><p>What I usually do is use JQuery&#39;s convenient syntax of searching-by-css-selector and attaching-anonymous-function-as-event-handler to &#34;extend HTML&#34; - similar to what you do but without a gloabl handler, but with separate handlers for each type of action:</p><pre><code>//  HTML
+
+&lt;div class=&#39;menulink logout&#39; data-mc=&#39;logout&#39;&gt; Logout &lt;/div&gt;
+&lt;a class=&#39;menulink&#39; data-mc=&#39;ajax&#39; data-target=&#39;main-content-div&#39; href=&#39;page/&#39;&gt;Start page 1&lt;/a&gt;
+&lt;a class=&#39;menulink&#39; data-mc=&#39;ajax&#39; data-target=&#39;main-content-div&#39; href=&#39;page/&#39;&gt;Start page 2&lt;/a&gt;
+
+
+// JS
+
+$(function(){
+        $(&#39;[data-mc=logout]&#39;).click(function(){
+                if (!confirm(myconfig.msg[&#39;asklogout&#39;])) {
+                    return false;
+                }
+        });
+
+        $(&#39;[data-mc=ajax]&#39;).click(function(){
+                var target=$(this).data(&#39;target&#39;); //retrieve data-target of the clicked tag
+                return false;
+        });
+});
+</code></pre><p>That way, I can create separate handlers instead of you giant <code>switch</code> statement, but just like you I can use the elements&#39; attribute to assign handlers to elements dynamically.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../in-general-how-do-event-handlers-work/'>In general how do Event Handlers work</a></li><li class="list-group-item"><a href='../javascript-should-i-be-using-a-javascript-spa-designed-when-security-is-important/'>Javascript &#8211; Should I be using a JavaScript SPA designed when security is important</a></li><li class="list-group-item"><a href='../javascript-how-does-jquerys-mechanism-of-event-handlers-work/'>Javascript &#8211; How does jQuery&#8217;s mechanism of event handlers work</a></li><li class="list-group-item"><a href='../javascript-alternatives-to-the-use-of-the-id-name-properties-with-non-inputs-elements-in-html/'>Javascript &#8211; Alternatives to the use of the Id/Name properties with non-inputs elements in HTML</a></li><li class="list-group-item"><a href='../javascript-when-to-use-prototypes-the-correct-usage-of-prototypes-javascript/'>Javascript &#8211; When to use Prototypes &#038; the correct usage of Prototypes ( Javascript )</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

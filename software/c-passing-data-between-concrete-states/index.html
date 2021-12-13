@@ -1,0 +1,208 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Passing data between concrete states &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1073066 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1073066" class="post-1073066 software type-software status-publish hentry category-software tag-c tag-finite-state-machine"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Passing data between concrete states</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">finite-state machine</span></p><div class="entry-content"><p>I have a state <strike>machine</strike> pattern implementation that&#39;s pretty straightforward, but I&#39;ve got a design problem I don&#39;t know an elegant solution to.<br /> Here&#39;s some partly pseudo code to illustrate.</p><pre><code>class MainRoomState:State
+
+    public override void HandleJoinSuccess(string gameName, List&lt;LobbyPlayer&gt; players)
+    {
+
+        Context.CurrentState = new LobbyState(Context);
+        //the players list needs to be in the LobbyState
+        //that data is specific to the LobbyState
+    }
+</code></pre><p>Basically, the event triggering the state change also is providing data that belongs in the new state, and I don&#39;t know if there&#39;s a nice way to do it besides a shared class in the  parent Context object, or by mangling the constructor for this special case.</p><p><strong>Edit</strong> &#8211; in more detail</p><p>I have my states setup to encapsulate state specific data as well as logic,  which includes, in this case, a GUI screen belonging to the current state.  This seems to be a more elegant way of handling not only separation of logic, but also state specific data.</p><p>Here&#39;s what my abstract state looks like,</p><pre><code>public abstract class GameState
+{
+
+    public GameState(Game context)
+    {
+        Context = context;
+        Net = context.Net;
+    }
+
+    //Incoming events
+    public abstract void HandleConnected();
+    public abstract void HandleDisconnected(string reason);
+    public abstract void HandleNetworkNotification(string msg);
+    public abstract void HandleGameStarting();
+    //there&#39;s about 20 more methods not shown here 
+</code></pre><p>Here&#39;s my Game class,  mainly functioning as a data holder, but it also controls the game loop timer, firing main events, etc.</p><pre><code>public class Game
+{
+    public Game()
+    {
+       //...bunch of init code here
+       CurrentState = new DisconnectedState(this);
+    }
+    public GameState CurrentState
+    {
+        get;
+        set;
+    }
+
+    //more methods, etc
+}
+</code></pre><p>You&#39;ll see that I opted for composite containment of the CurrentState rather than implementing pass-through methods. That was mostly because I disliked the messiness of passing through the calls when I really didn&#39;t need to.  Also, the whole state stores a reference to Context, rather than passing it per method.</p><p>I&#39;ve got two questions/problems with the pattern.</p><ol><li>Every concrete state MUST implement in some fashion, EVERY method in the abstract State.  This is ridiculous overkill, and currently most of my states only use 20-40% of the methods, leaving me with a couple pages of this:</li></ol><blockquote><p>public override void HandleGameStarting() { //not handled in this state }</p></blockquote><ol><li>My second issue is that each state has it&#39;s own data that only needs to exist while in that state.  I don&#39;t want to store a huge conglomeration of data in the Context object when a far more encapsulated way of handling it would be putting it in the state.</li></ol><p>Looking over your example,  I suppose one answer to my original question is that I could properly pass through the methods to the Current State,  and just do a kind of hack with the data,</p><p>class Game</p><pre><code>public override void HandleJoinSuccess(string gameName, List&lt;LobbyPlayer&gt; players)
+{
+
+    CurrentState = new LobbyState(this);
+    CurrentState.HandleData(gameName,players);
+    //the players list needs to be in the LobbyState
+    //that data is specific to the LobbyState
+}
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I think you may be getting a little bogged down in the English meaning of state, when compared to the State Pattern (or Finite-State Machine, which is really a diagrammatic representation of a State Pattern). Both are appropriate here, but they shouldn&#39;t be confused.</p><p>The State Pattern is something which should, given various common stimuli, operate on the game state differently at different times in the game. So, as you&#39;ve rightly concluded, the lobby stage (which I&#39;m assuming to be while people are joining a game) is a State in that context.</p><p>The game state is a list of players, pieces, cards, dice, whatever else, and all the information required to simulate them. You might want to call that the context.</p><p>Each State should receive a UserClicked message from the application which receives the context and coordinates or area clicked and should operate on those accordingly. The information that you are trying to give ownership of to the State object does not belong there, it belongs in the game itself, alongside the State.</p><p>The state may also have a UserPressedKey method, a TimerTicked method or any other kind of stimulus on which it should act. But each of these should act on the game state rather than being the game state.</p><p>One important method of the State will be ScreenRefresh, which will draw the context for the user.</p><p>Here is a very rough example:</p><pre><code>abstract class ApplicationState {
+
+    void Begin(GameContext context);
+    void UserClicked(GameContext context, int x, int y);
+    void UserPressedKey(GameContext context, char key);
+    void TimerTicked(GameContext context);
+    void ScreenRefresh(GameContext context);
+
+    protected void OnStateChanged(ApplicationState newState) {
+
+        // inform interested parties that state has changed,
+        // using the observer pattern
+
+    }
+
+}
+
+class LobbyState : ApplicationState
+{
+    void Begin(GameContext context) {
+
+        context.Players = new User[context.NoOfPlayers];
+
+    }
+
+    void UserClicked(GameContext context, int x, int y) {
+
+        // Find a displayed player box which contains click coords
+
+        int index = -1;
+        for (i=0; i &lt; context.Players.Length; i++) {
+            if (PlayerBox[i].Contains(x, y)) {
+                index = i;
+            }
+        }
+
+        if (index &gt; -1) {
+
+            if (context.Player[index] == null) {
+                context.Player[index] = context.ActivePlayer;
+            } else if (context.Player[index] == context.ActivePlayer()) {
+                context.Player[index] = null;
+            } else {
+                ErrorSound.Play();
+            }
+
+        } else if (CloseIcon.Contains(x, y)) {
+
+            OnStateChanged(new ExittingState());
+
+        } else {
+
+            ErrorSound.Play();
+
+        }
+
+    }
+
+    void UserPressedKey(GameContext context, char key) {
+
+         if (key = &#39;J&#39; or key = &#39;j&#39;) {
+
+             if (! context.AddPlayerRandomly(context.ActiveUser)) {
+                 ErrorSound.Play();
+             }
+
+             if (context.GameIsNowFull()) {
+                 OnStateChanged(new InitializingState());
+             }
+
+         } else if key = Esc {
+
+             if (!context.RemovePlayer(context.ActiveUser)) {
+                 ErrorSound.Play();
+             }
+
+         } else {
+
+             ErrorSound.Play();
+
+         }
+
+    }
+
+    void TimerTicked(GameContext context) {
+
+        // there is no use for a game timer while
+        // we&#39;re trying to fill the game, but you
+        // want one to tick anyway, because the
+        // application doesn&#39;t know which state
+        // it is in.
+
+    }
+
+    void ScreenRefresh(GameContext context) {
+
+       DrawPlayerBoxes(context.Screen, context.Players);
+       DrawExitIcon(context.Screen);
+
+    }
+
+}
+
+class InitializingState : ApplicationState {
+
+    private double waitSpinnerAngle = 0;
+
+    void Begin(GameContext context) {
+
+        context.RandomizePlayOrder();
+        context.ShuffleCards();
+
+        // all other game initialization rules here
+
+        OnContextChanged(new PlayerUpState(context.Players[0]));
+
+    }
+
+    void UserClicked(GameContext context, int x, int y) {
+
+        // Not responding to user input for a moment
+        ErrorSound.Play();
+
+    }
+
+    void UserPressedKey(GameContext context, char key) {
+
+        // Not responding to user input for a moment
+        ErrorSound.Play();
+
+    }
+
+    void TimerTicked(GameContext context) {
+
+        waitSpinnerAngle += 0.05;
+        if (waitSpinnerAngle &gt; 1) waitSpinnerAngle = 0;
+
+    }
+
+    void ScreenRefresh(GameContext context) {
+
+         DrawWaitSpinner(waitSpinnerAngle);
+
+    }
+
+}
+</code></pre><p>See where I&#39;m going with this? The Application itself is then as simple as setting the initial State, hooking a listener into the OnStateChanged event and calling Begin. When the listener hears that the event is called, unhook your old State, hook in the new one, and call Begin again.</p><p>Everything else is triggered by events from the mouse, keyboard or timer, passed directly to the current State without knowledge of which State the game is currently in. If you are running this game across a network then you will also need an event for changes of state received from other players.</p><p>Everything in your State and Context is now very unit-testable and separation of concerns are observed. Although, you may want to refactor that LobbyState#UserClicked method a bit, among other things.</p><p>Remember, this is just a free example and you get what you paid for it. Don&#39;t try to apply it directly to your game. Just use it to understand how the State Pattern should work in the context of a game.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-should-all-public-methods-in-an-abstract-class-be-marked-virtual/'>C# &#8211; Should all public methods in an abstract class be marked virtual</a></li><li class="list-group-item"><a href='../c-manager-container-class-vs-static-class-methods/'>C# &#8211; Manager/Container class vs static class methods</a></li><li class="list-group-item"><a href='../design-should-i-use-the-state-design-pattern-for-only-two-states-also-what-if-one-objects-state-is-affected-by-another-state/'>Design &#8211; Should I use the State Design pattern for only two states? Also, what if one object&#8217;s state is affected by another state</a></li><li class="list-group-item"><a href='../c-abstract-property-in-base-class-to-force-programmer-to-define-it/'>C# &#8211; Abstract Property In Base Class To Force Programmer To Define It</a></li><li class="list-group-item"><a href='../c-when-programming-in-functional-style-do-you-have-a-single-application-state-that-you-weave-through-the-application-logic/'>C# &#8211; When programming in Functional style, do you have a single application state that you weave through the application logic</a></li><li class="list-group-item"><a href='../state-machine-with-database-records/'>State machine with database records</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

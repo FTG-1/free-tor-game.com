@@ -1,0 +1,97 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; DI / IoC Abstract Factory Galore &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1074237 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1074237" class="post-1074237 software type-software status-publish hentry category-software tag-architecture tag-c tag-dependency-injection tag-design-patterns"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; DI / IoC Abstract Factory Galore</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">Architecture</span><span class="mr-2 badge badge-info">c</span><span class="mr-2 badge badge-warning">dependency-injection</span><span class="mr-2 badge badge-primary">design-patterns</span></p><div class="entry-content"><p>Given a project architecture as follows, where each box represents an assembly (all are class libraries), and each arrow stands for a dependency:</p><p><img src="../../../i.stack.imgur.com/IfvWU.png" alt="architecture"/></p><p>Might be worth nothing that this project is <strong>massive</strong> (well, it will become!), the complexity incurred by such decoupling is absolutely warranted.</p><p><strong>Business Logic Layer</strong></p><p>The BLL library defines and organizes various sets of POCO <strong>interfaces</strong> in its <code>Abstract</code> namespaces, and implements various functionality <em>logic</em> in its <code>Concrete</code> namespaces; the functionality logic refers to and uses the abstract POCO interfaces.</p><p><strong>Data Access Layer</strong></p><p>The DAL library implements the POCO interfaces from the BLL using <code>partial</code> classes that &#34;extend&#34; Linq to SQL (dbml) classes, so if there&#39;s a <code>Customer</code> L2S class, it implements the BLL <code>ICustomer</code> interface. Sometimes the L2S class has different types, or the BLL abstraction uses <code>enum</code> types, but most often the partial class code looks like this:</p><pre><code>public partial class SomeEntity : ISomeEntity { }
+</code></pre><p>This assembly provides the <em>Model</em>, by exposing classes named &#34;xxxxModel&#34;, which are constructor-injected with <em>repositories</em> regrouped into <em>services</em>, but there&#39;s a twist: the &#34;xxxxxModel&#34; classes implement an interface called <code>IUnitOfWork</code> which encapsulates a database transaction that <strong>must</strong> be able to operate on all repositories at its disposal&#8230; possibly with a dynamic (runtime-determined) connection string. To achieve this, I created &#34;model factories&#34; which create a single <code>DataContext</code> of the appropriate type, and inject the same instance in each repository.</p><p><strong>Presentation Logic Layer</strong></p><p>Some of the BLL POCO interfaces need a &#34;ViewModel&#34; implementation (e.g. to display as items in a list) &#8211; the PLL library defines them; however the goal of this library is more focused around, well, the actual presentation logic, <strong>although there is no reference to WPF whatsoever</strong> (other than a single reference to <em>WindowBase</em> but I&#39;ll get to that). So this assembly provides the <em>ViewModel</em>.</p><p>One thing to note is that the ViewModel here, completely <em>controls</em> the View &#8211; each ViewModel is injected with an implementation of <code>IViewFactory</code> that creates an <code>IView</code> implementation &#8211; technically the ViewModel is blissfully unaware of the implementations, so I&#39;m not sure how deeply it violates MVVM (to be honest I don&#39;t really care about that point &#8211; especially after reading a <a href="http://neverindoubtnet.blogspot.ca/2011/05/mvvm-backlash.html" rel="nofollow noreferrer">blog post like this one</a>), but the thing to point out is that it&#39;s the ViewModel that litterally <em>creates</em> the View and assigns the <code>DataContext</code>. This makes it very simple to deal with things that <em>should</em> be simple, such as showing and <a href="https://stackoverflow.com/questions/4376475/wpf-mvvm-how-to-close-a-window">closing a window</a>.</p><p>So all ViewModel classes inherit <code>ViewModelBase</code>, which is an abstract class that takes a <code>IViewFactory</code> in its protected constructor, effectively instantiating the View. Here&#39;s the offending code:</p><pre><code>/// &lt;summary&gt;
+/// An interface for a ViewModel.
+/// &lt;/summary&gt;
+public interface IViewModel : INotifyPropertyChanged
+{
+    /// &lt;summary&gt;
+    /// Notifies listener that the value of the specified property has changed.
+    /// &lt;/summary&gt;
+    void NotifyPropertyChanged&lt;TProperty&gt;(Expression&lt;Func&lt;TProperty&gt;&gt; property);
+
+    /// &lt;summary&gt;
+    /// Notifies listener that the value of the specified property has changed.
+    /// &lt;/summary&gt;
+    void NotifyPropertyChanged(string propertyName);
+
+    /// &lt;summary&gt;
+    /// Closes the view.
+    /// &lt;/summary&gt;
+    void Close();
+
+    /// &lt;summary&gt;
+    /// Displays the view.
+    /// &lt;/summary&gt;
+    void Show();
+
+    /// &lt;summary&gt;
+    /// Displays the view (modal) and returns a &lt;see cref=&#34;DialogResult&#34;/&gt; value indicating how the view was closed.
+    /// &lt;/summary&gt;
+    DialogResult ShowDialog();
+}
+</code></pre><p>So a ViewModel essentially <em>controls</em> a View up to the point of <em>encapsulating</em> it, which makes it easy to implement my own <code>DialogResult</code> enumeration (much closer to the way WinForms had it).</p><p><strong>Views Assembly</strong></p><p>Because this library references and consumes ViewModels from the PLL assembly which implement interfaces defined in the BLL assembly, an arrow is missing here &#8211; there&#39;s also a dependency upon the BLL, but it&#39;s only used indirectly. This library provides the <em>View</em>, by defining WPF/XAML windows and controls.</p><p>Apart from <code>IValueConverter</code> and other <code>MarkupExtension</code> implementations, there&#39;s not much C# code in this library, the hard references to ViewModel implementations are all in XAML <code>d:DataContext {d:DesignInstance...}</code> declarations.</p><p><strong>So, what&#39;s wrong?</strong></p><p>I definitely like the direction of the dependencies, including the PLL/Views one. The fact that the BLL has zero dependencies mean I can reuse that library and come up with a WebUI if I ever need one (and that WILL happen&#8230; eventually!), and the DAL/BLL decoupling means parts of the data model could be coming from Web services, some cloud, or whatever &#8211; business logic couldn&#39;t care less and that&#39;s good.</p><p>The main issue I&#39;m having, is that I find myself writing LOTS of abstract factories, and implementing even more of them, and I&#39;m not always reusing these abstractions (hence the smell), but it seems to me like whenever I ask myself how I can inject a &#34;dynamic&#34; dependency, the answer is almost automatically &#8211; &#34;an abstract factory will do!&#34;&#8230; which is probably right, it&#39;s just that I don&#39;t think it&#39;s right that pretty much everything is a &#34;dynamic&#34; dependency!</p><pre><code>public class SomeViewFactory : IViewFactory
+{
+    public IView Create(IViewModel viewModel)
+    {
+        return new SomeWindow {DataContext = viewModel};
+    }
+}
+
+public class SomeRepositoryFactory : DataRepositoryFactory&lt;SomeEntity&gt;
+{
+    public IRepository&lt;SomeEntity&gt; Create(DataContext context)
+    {
+        return new SomeRepository(context);
+    }
+}
+</code></pre><p>I even have an abstract <code>IFunctionalityFactory</code>:</p><pre><code>public interface IFunctionalityFactory
+{
+    IFunctionality Create();
+}
+
+public class SomeFunctionalityFactory : IFunctionalityFactory
+{
+    private readonly IFunctionalityAuth _auth;
+    private readonly ISomeBusinessLogic _logic;
+
+    public SomeFunctionalityFactory(IFunctionalityAuth auth, ISomeBusinessLogic logic)
+    {
+        _auth = auth;
+        _logic = logic;
+    }
+
+    public IFunctionality Create()
+    {
+        var canExecute = auth.IsCurrentUserAuthorised(typeof(SomeFunctionality).FullName);
+        return new SomeFunctionality(canExecute, _logic);
+    }
+}
+</code></pre><p>Is it normal to have factories for almost everything &#8211; from repositories to services and models in the DAL, to Views and ViewModels in the PLL/View library? For now the project is rather small and I&#39;m still the only programmer working on it; I&#39;d like to have an architecture as SOLID and simple as possible when it comes to implementing new functionalities.</p><p>This is only my 2nd project implementing DI/IoC, needless to say I&#39;m trying to run (and swim, and perhaps even fly) before I can walk&#8230;</p><p>Any tips or issues I&#39;m not seeing? Am I abusing <em>Abstract Factory</em>? How else could I instantiate a View? How else could I have a data model that could connect to any of a given set of [almost] identical databases, at the user&#39;s discretion? I know I&#39;m breaking MVVM, have I overlooked anything in the pattern that could simplify my existence?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>It seems you&#39;re struggling trying to create <em>objects that create objects</em>... wouldn&#39;t you be better off just creating objects ?</p><p>Ninject allows you to do so in a very simple way :</p><pre><code>// Ninject module
+Bind&lt;IRepository&lt;SomeEntity&gt;&gt;().To&lt;SomeEntityRepository&gt;();
+
+// injected class
+public class SomeService
+{
+  public SomeService(IRepository&lt;SomeEntity&gt; repository)
+  {
+    // ...
+  }
+}
+
+// get instance of injected class
+var someService = kernel.Get&lt;SomeService&gt;();
+</code></pre><p>I can&#39;t see the benefit of an abstract factory <strong>in addition to an IoC container</strong> when you&#39;re creating objects based on basic, compile-time-known constraints such as in your <code>SomeViewFactory</code> and <code>SomeRepositoryFactory</code> examples.</p><p>The dynamic nature of <code>SomeFunctionalityFactory</code> would be more debatable, but when you think of it, do you really need to instantiate an object with the <em>built-in notion</em> that it will never be able to be used by the current user ? Wouldn&#39;t it make more sense to have the object evaluate user authorization <em>when the functionality is called</em> ?</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-linq-to-sql-business-logic-in-another-assembly/'>C# &#8211; LINQ to SQL &#8211; Business logic in another assembly</a></li><li class="list-group-item"><a href='../c-abstract-dal-use-interface-with-internal-class/'>C# &#8211; Abstract DAL &#8211; Use Interface with Internal Class</a></li><li class="list-group-item"><a href='../c-layered-architecture-using-entity-framework-with-different-class-libraries/'>C# &#8211; Layered architecture using Entity Framework with different class libraries</a></li><li class="list-group-item"><a href='../c-configuring-di-in-a-decoupled-app/'>C# &#8211; Configuring DI in a decoupled app</a></li><li class="list-group-item"><a href='../c-mvc-3-tier-where-viewmodels-come-into-play/'>C# &#8211; MVC + 3 tier; where ViewModels come into play</a></li><li class="list-group-item"><a href='../c-relaxed-architecture-dal-or-anemic-bll/'>C# &#8211; Relaxed architecture DAL or anemic BLL</a></li><li class="list-group-item"><a href='../object-oriented-am-i-breaking-oop-practice-with-this-architecture/'>Object-oriented &#8211; Am I breaking OOP practice with this architecture</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,107 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; While loop without evaluating data twice &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1068686 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1068686" class="post-1068686 software type-software status-publish hentry category-software tag-c tag-loops"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; While loop without evaluating data twice</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">loops</span></p><div class="entry-content"><p>I often come across the following pattern.</p><pre><code>while(GetValue(i) != null)
+{
+    DoSomethingWith(GetValue(i++));
+}
+</code></pre><p>Here <code>GetValue</code> is executed twice. It would be much nicer to use a pattern where we can evaluate AND store the outcome of <code>GetValue</code>. In some case (streams) it is impossible to get the value twice (see alternatives below for workarounds). Is there any pattern or loop construct we can use?</p><p>Some alternatives that I thought of with their own drawbacks.</p><p><strong>Alternative 1</strong></p><pre><code>// Variable outside of loop scope, extra if
+var value = null;
+do
+{
+    value = GetValue(i++);
+    if(value != null) { DoSomethingWith(value); }
+} while(value != null);
+</code></pre><p><strong>Alternative 2</strong></p><pre><code>// Two get values, variable outside of loop
+var value = GetValue(i);
+while(value != null)
+{
+  DoSometingWith(value);
+  value = GetValue(++i);
+}
+</code></pre><p><strong>Alternative 3</strong></p><pre><code>// Out only works on reference types, most enumerables do not have
+// a TryGet like method so we need to create our own wrapper
+Object value;
+while(TryGetValue(i++, out value))
+{
+    DoSomethingWith(value);
+}
+</code></pre><p><strong>Ideal world scenario</strong> (not valid C#)</p><pre><code>while((var value = GetValue(i++)) != null)
+{
+    DoSomethingWith(value);
+}
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><h2>Near &#34;Ideal World&#34; Solution</h2><p>The following is valid C#</p><pre><code>public static void Main()
+{
+    var i = 0;
+    string value;
+    while ((value = GetValue(i++)) != null)
+    {
+        DoSomethingWith(value);
+    }
+}
+
+private static string GetValue(int input)
+{
+    if (input &gt; 20)
+    {
+        return null;
+    }
+    return input.ToString();
+}
+
+private static void DoSomethingWith(string value)
+{
+    Console.WriteLine(value);
+}
+</code></pre><p>Compare with your &#34;Ideal world scenario&#34;:</p><pre><code>var i = 0;
+while((var value = GetValue(i++)) != null)
+{
+    DoSomethingWith(value);
+}
+</code></pre><p>All I had to do was to pull <code>value</code> outside the loop. You seem willing to do this for all the presented alternatives. Thus, I don&#39;t think this is too much of a stretch.</p><hr/><h2>&#34;Infinite&#34; While alternative</h2><p>I have been playing around with the alternatives... here is another one:</p><pre><code>var i = 0;
+while (true)
+{
+    var value = GetValue(i++);
+    if (value == null)
+    {
+        break;
+    }
+    DoSomethingWith(value);
+}
+</code></pre><p>In this case you can declare <code>value</code> inside the loop (and using <code>var</code>), you don&#39;t need to check for <code>null</code> twice, you don&#39;t need to call <code>GetValue</code> twice with the same input, and you don&#39;t have to create a wrapper with an <code>out</code> parameter.</p><hr/><h2>Alternative using For</h2><p>We may try to express the same thing using a <code>for</code> loop. Although, the naive approach does not work:</p><pre><code>// I repeat, this does not work:
+var i = 0;
+for (string value = null; value != null; value = GetValue(i++))
+{
+    DoSomethingWith(value);
+}
+</code></pre><p>The problem with this version is that it starts with <code>value</code> being <code>null</code>, which meets the exit criterion, and thus you get no iterations.</p><hr/><p>As <a href="https://softwareengineering.stackexchange.com/questions/349907/while-loop-without-evaluating-data-twice#comment753330_349907">JimmyJames points out</a> you can write it like this:</p><pre><code>var i = 0;
+for(string value; (value = GetValue(i++)) != null;)
+{
+    DoSomethingWith(value);
+}
+</code></pre><p>The only drawback I see is that you need to write the type (you can&#39;t use <code>var</code>).</p><hr/><p><strong>Addendum</strong>: This is another variant <a href="https://softwareengineering.stackexchange.com/questions/349907/while-loop-without-evaluating-data-twice#comment755019_349911">suggested by Maliafo</a>:</p><pre><code>var i = 0;
+for (var value = GetValue(i); value != null; value = GetValue(++i))
+{
+    DoSomethingWith(value);
+}
+</code></pre><p>While this version requires to write <code>GetValue</code>, it doens&#39;t call it twice with the same value.</p><hr/><p>Do you want to declare <code>i</code> in the scope too? Have a look at this:</p><pre><code>for (var i = 0; ; i++)
+{
+    var value = GetValue(i);
+    if (value == null)
+    {
+        break;
+    }
+    DoSomethingWith(value);
+}
+</code></pre><p>This is the same loop that we see in the &#34;infinite&#34; while solution I posted above. Yet, since I had no condition on the while... why not use change it to a <code>for</code> to increment <code>i</code>?</p><hr/><p><strong>Addendum</strong>: Also see <a href="https://softwareengineering.stackexchange.com/a/350525/45814">NetMage&#39;s answer</a> for an interesting use of C# 7.0 features.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-decrementing-incrementing-loop-variable-inside-for-loop-is-this-code-smell/'>C# &#8211; Decrementing/Incrementing loop variable inside for loop. Is this code smell</a></li><li class="list-group-item"><a href='../what-are-the-differences-between-a-while-loop-and-a-for-loop/'>What are the differences between a while loop and a for loop</a></li><li class="list-group-item"><a href='../infinite-while-loop-cpu-usage/'>Infinite while loop CPU usage</a></li><li class="list-group-item"><a href='../how-to-prove-that-this-while-loop-calculates-n2/'>How to prove that this while loop calculates n^2</a></li><li class="list-group-item"><a href='../provability-of-while-loop-vs-for-loop/'>Provability of while loop vs for loop</a></li><li class="list-group-item"><a href='../is-a-while-loop-intrinsically-a-recursion/'>Is a while loop intrinsically a recursion</a></li><li class="list-group-item"><a href='../c-what-exactly-happens-when-a-thread-awaits-a-task-inside-a-while-loop/'>C# &#8211; What exactly happens when a thread awaits a task inside a while loop</a></li><li class="list-group-item"><a href='../c-the-benefits-of-a-foreach-loop-vs-a-body-less-for-loop/'>C# &#8211;  the benefits of a foreach-loop vs a body-less for-loop</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

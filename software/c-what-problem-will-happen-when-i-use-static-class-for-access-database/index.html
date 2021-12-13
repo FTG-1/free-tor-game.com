@@ -1,0 +1,77 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# What problem will happen when i use static class for access database &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1075607 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1075607" class="post-1075607 software type-software status-publish hentry category-software tag-c tag-dependency-injection tag-entity-framework tag-static-methods"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# What problem will happen when i use static class for access database</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">dependency-injection</span><span class="mr-2 badge badge-warning">entity-framework</span><span class="mr-2 badge badge-primary">static methods</span></p><div class="entry-content"><p>Many place that i have read about static method they said please shouldn&#39;t use static method for access to database and should use dependency injection for inject other service and use that service to write other logic.But problem it<br /> happen when i inject AService in BService and inject AService in CService many month pass business logic is grow it make i need to inject BService in CService ,It make problem cause AService it already inject in two place can&#39;t do it. I try something like this for fix that solution.</p><pre><code> public class InterlocutorFacade : GenericEFRepository&lt;MsSql1DbContext, GenericUser&gt;, IInterlocutorFacade
+ {
+    public InterlocutorFacade(MsSql1DbContext _msGenericDb) : base(_msGenericDb)
+    {
+
+    }
+
+    public async Task AddC()
+    {
+        await UserService.CreateLogs(_msGenericDb.Set&lt;Logs&gt;());
+        await _msGenericDb.SaveChangesAsync();
+    }
+
+
+    public async Task GetC()
+    {
+        var result = await UserService.GetFirstLogs(_msGenericDb.Set&lt;Logs&gt;());
+    }
+ }
+</code></pre><p>and this is service is i use</p><pre><code>public static class UserService
+{ 
+    internal static async Task&lt;Logs&gt; GetFirstLogs(DbSet&lt;Logs&gt; dbSet)
+    {
+        var result = await dbSet.FirstOrDefaultAsync();
+        return result;
+    }
+
+    internal static async Task CreateLogs(DbSet&lt;Logs&gt; dbSet)
+    {
+        var result = await dbSet.AddAsync(new Logs() { });
+    }
+
+}
+</code></pre><p>But i not sure what problem will happen if i do it, have someone can show me a problem (etc performance , data conflict ) it will happen when i use this?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>The problem with using a static over injecting a dependency is that you are unable to switch out the implementation. This is mainly done in your unit tests</p><p>eg</p><pre><code>public class Service
+{
+    public Service() {}
+    public AddData(Data data)
+    {
+        MyStaticDBClass.Add(data);
+    }
+}
+</code></pre><p>In the application this works fine, but in the unit test it will actual write to the database. Which you don&#39;t want it to do.</p><p>Compared to:</p><pre><code>public class Service
+{
+    private readonly IDataLayer dl;
+    public Service(IDataLayer dl) { this.dl = dl;}
+    public AddData(Data data)
+    {
+        dl.Add(data);
+    }
+}
+</code></pre><p>Now In the application I can pass in the real data layer object and in my test I pass in a mocked version.</p><p>You second problem. The cyclic dependency is basically saying that you can&#39;t compile dll A because it depends on dll B and you can&#39;t compile dll B because it depends on A.</p><p>In order to resolve it you will want to separate the interfaces from the implementations. Put them in different projects ie.</p><pre><code>IAService //no references
+    IAService.cs //interface for AService
+
+IBService //no references
+    IBService.cs //interface for BService
+
+AService // references IAService and IBService
+    Aservice.cs //implementation of IAService
+
+
+BService // references IAService and IBService
+    BService.cs //implementation of IBService
+</code></pre><p>Now I can compile the IAService project first as the IBService reference is only in the actual implementation project</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-static-variable-usage-and-implications-on-threading/'>C# &#8211; Static variable &#8211; Usage and Implications on Threading</a></li><li class="list-group-item"><a href='../java-how-to-use-guice-to-replace-code-dependent-on-service-locator-implementation/'>Java &#8211; How to use guice to replace code dependent on service locator implementation</a></li><li class="list-group-item"><a href='../object-oriented-static-services-and-testability/'>Object-oriented &#8211; Static services and testability</a></li><li class="list-group-item"><a href='../c-dependency-injection-for-a-library-with-internal-dependencies/'>C# &#8211; Dependency injection for a library with internal dependencies</a></li><li class="list-group-item"><a href='../c-design-pattern-how-to-inject-dependencies-into-a-command-pattern/'>C# &#8211; Design pattern: How to inject dependencies into a Command pattern</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

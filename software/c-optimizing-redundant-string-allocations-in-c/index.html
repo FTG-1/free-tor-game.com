@@ -1,0 +1,126 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C++ &#8211; Optimizing redundant string allocations in C++ &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1073039 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1073039" class="post-1073039 software type-software status-publish hentry category-software tag-c tag-optimization tag-strings"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C++ &#8211; Optimizing redundant string allocations in C++</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">optimization</span><span class="mr-2 badge badge-warning">strings</span></p><div class="entry-content"><p>I have a fairly complex C++ component whose performance has become a problem. Profiling shows that that most of the execution time is simply spent allocating memory for <code>std::string</code>s.</p><p>I know that there&#39;s a lot of redundancy among those strings. A handful of values repeat very frequently but there are also lots of unique values. The strings are typically fairly short.</p><p>I&#39;m now just thinking if it would make sense to somehow reuse those frequent allocations. Instead of 1000 pointers to 1000 distinct &#34;foobar&#34; values, I could have 1000 pointers to one &#34;foobar&#34; value. The fact that this would be more memory efficient is a nice bonus but I&#39;m mostly concerned about latency here.</p><p>I guess one option would be to maintain some kind of a registry of already allocated values but is it even possible to make the registry lookups faster than redundant memory allocations? Is this a viable approach?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I lean heavily on interned strings as Basile suggests, where a string lookup translates to a 32-bit index to store and compare. That&#39;s useful in my case since I sometimes have hundreds of thousands to millions of components with a property named &#34;x&#34;, e.g., which still needs to be a user-friendly string name since it&#39;s often accessed by scripters by name.</p><p>I use a trie for the lookup (experimented also with <code>unordered_map</code> but my tuned trie backed by memory pools at least started out performing better and was also easier to make thread-safe without just locking every time the structure was accessed) but it isn&#39;t as fast for construction as creating <code>std::string</code>. The point is more to speed up the subsequent operations like checking for string equality which, in my case, just boils down to checking two integers for equality and to drastically reduce memory usage.</p><blockquote><p>I guess one option would be to maintain some kind of a registry of
+ already allocated values but is it even possible to make the registry
+ lookups faster than redundant memory allocations?</p></blockquote><p>That&#39;s going to be tough to make a search through a data structure much faster than a single <code>malloc</code>, e.g. If you have a case where you are reading a boatload of strings from an external input like a file, for example, then my temptation would be to use a sequential allocator if possible. That comes with the downside that you can&#39;t free memory of an individual string. All the memory pooled by the allocator has to be freed at once or not at all. But a sequential allocator can be handy in cases where you just need to allocate a boatload of tiny variable-sized chunks of memory in a straight sequential fashion, only to then toss it all away later. I don&#39;t know if that applies in your case or not, but when applicable, it can be an easy way to fix a hotspot related to frequent teeny memory allocations (which might have more to do with cache misses and page faults than the underlying algorithm used by, say, <code>malloc</code>).</p><p>Fixed-sized allocations are easier to speed up without the sequential allocator constraints that prevent you from freeing specific chunks of memory to be reused later. But making variable-sized allocation faster than the default allocator is pretty tough. Basically making any kind of memory allocator that&#39;s faster than <code>malloc</code> is generally extremely tough if you don&#39;t apply constraints that narrow its applicability. One solution is to use a fixed-sized allocator for, say, all strings which are 8 bytes or less if you have a boatload of them and longer strings are a rare case (for which you can just use the default allocator). That does mean 7 bytes are wasted for 1-byte strings, but it should eliminate allocation-related hotspots, if, say, 95% of the time, your strings are very short.</p><p>Another solution that just occurred to me is to use unrolled linked lists which might sound crazy but hear me out.</p><p><a href="https://i.stack.imgur.com/xnId2.png" rel="nofollow noreferrer"><img src="https://i.stack.imgur.com/xnId2.png" alt="enter image description here"/></a></p><p>The idea here is to make each unrolled node a fixed-size instead of variable-sized. When you do that, you can use an extremely fast fixed-sized chunk allocator which pools memory, allocating fixed-sized chunks for variable-sized strings linked together. That won&#39;t reduce memory use, it&#39;ll tend to add to it because of the cost of the links, but you can play with the unrolled size to find a balance suitable for your needs. It&#39;s kind of a wacky idea but should eliminate memory-related hotspots since you can now effectively pool memory already-allocated in bulky contiguous blocks and still have the benefits of freeing strings individually. Here&#39;s a simple ol&#39; fixed allocator I wrote (illustratory one I made for someone else, devoid of production-related fluff) which you can freely use:</p><pre><code>#ifndef FIXED_ALLOCATOR_HPP
+#define FIXED_ALLOCATOR_HPP
+
+class FixedAllocator
+{
+public:
+    /// Creates a fixed allocator with the specified type and block size.
+    explicit FixedAllocator(int type_size, int block_size = 2048);
+
+    /// Destroys the allocator.
+    ~FixedAllocator();
+
+    /// @return A pointer to a newly allocated chunk.
+    void* allocate();
+
+    /// Frees the specified chunk.
+    void deallocate(void* mem);
+
+private:
+    struct Block;
+    struct FreeElement;
+
+    FreeElement* free_element;
+    Block* head;
+    int type_size;
+    int num_block_elements;
+};
+
+#endif
+
+#include &#34;FixedAllocator.hpp&#34;
+#include &lt;cstdlib&gt;
+
+struct FixedAllocator::FreeElement
+{
+    FreeElement* next_element;
+};
+
+struct FixedAllocator::Block
+{
+    Block* next;
+    char* mem;
+};
+
+FixedAllocator::FixedAllocator(int type_size, int block_size): free_element(0), head(0)
+{
+    type_size = type_size &gt; sizeof(FreeElement) ? type_size: sizeof(FreeElement);
+    num_block_elements = block_size / type_size;
+    if (num_block_elements == 0)
+        num_block_elements = 1;
+}
+
+FixedAllocator::~FixedAllocator()
+{
+    // Free each block in the list, popping a block until the stack is empty.
+    while (head)
+    {
+        Block* block = head;
+        head = head-&gt;next;
+        free(block-&gt;mem);
+        free(block);
+    }
+    free_element = 0;
+}
+
+void* FixedAllocator::allocate()
+{
+    // Common case: just pop free element and return.
+    if (free_element)
+    {
+        void* mem = free_element;
+        free_element = free_element-&gt;next_element;
+        return mem;
+    }
+
+    // Rare case when we&#39;re out of free elements.
+    // Create new block.
+    Block* new_block = static_cast&lt;Block*&gt;(malloc(sizeof(Block)));
+    new_block-&gt;mem = malloc(type_size * num_block_elements);
+    new_block-&gt;next = head;
+    head = new_block;
+
+    // Push all but one of the new block&#39;s elements to the free stack.
+    char* mem = new_block-&gt;mem;
+    for (int j=1; j &lt; num_block_elements; ++j)
+    {
+        void* ptr = mem + j*type_size;
+        FreeElement* element = static_cast&lt;FreeElement*&gt;(ptr);
+        element-&gt;next_element = free_element;
+        free_element = element;
+    }
+    return mem;
+}
+
+void FixedAllocator::deallocate(void* mem)
+{
+    // Just push a free element to the stack.
+    FreeElement* element = static_cast&lt;FreeElement*&gt;(mem);
+    element-&gt;next_element = free_element;
+    free_element = element;
+}
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/c-alternate-string-formatting-options-in-c/'>C++ &#8211; Alternate string formatting options in C++</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-which-string-search-algorithm-is-actually-the-fastest/'>C++ &#8211; Which string search algorithm is actually the fastest</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/optimizing-code-generation-for-expressions-in-a-compiler/'>Optimizing code generation for expressions in a compiler</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-compiling-for-string-and-wstring/'>C++ &#8211; Compiling for string and wstring</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

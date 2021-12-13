@@ -1,0 +1,121 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C++ serialization design review &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1079754 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1079754" class="post-1079754 software type-software status-publish hentry category-software tag-c tag-c11 tag-design"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C++ serialization design review</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">c++11</span><span class="mr-2 badge badge-warning">design</span></p><div class="entry-content"><p>I am writing a C++ application. Most applications read and write data <sup><a href="https://xkcd.com/285/" rel="nofollow noreferrer">citation needed</a></sup> and this one is no exception. I created a high level design for the data model and serialization logic. This question is requesting a <a href="https://softwareengineering.meta.stackexchange.com/q/6502/22815">review of my design</a> with these specific goals in mind:</p><ul><li><p>To have an easy and flexible way to read and write data models in arbitrary formats: raw binary, XML, JSON, et. al. The format of data should be decoupled from the data itself as well as the code that is requesting serialization.</p></li><li><p>To ensure that serialization is as error-free as reasonably possible. I/O is inherently risky for a variety of reasons: does my design introduce more ways for it to fail? If so, how could I refactor the design to mitigate those risks?</p></li><li><p>This project uses C++. Whether you love it or hate it, the language has its own way of doing things and the design aims to work with the language, <a href="http://images.fastcompany.com/upload/squarepegwrongrole.jpg" rel="nofollow noreferrer">not against it</a>.</p></li><li><p>Finally, the project is built on top of <a href="http://www.wxwidgets.org/" rel="nofollow noreferrer">wxWidgets</a>. While I am looking for a solution applicable to a more general case, this specific implementation should work nicely with that toolkit.</p></li></ul><p>What follows is a very simple set of classes written in C++ that illustrate the design. These are not the actual classes that I have partially written so far, this code simply illustrates the design I am using.</p><hr/><p>First, some sample DAOs:</p><pre class="lang-cpp prettyprint-override"><code>#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;memory&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+
+// One widget represents one record in the application.
+class Widget {
+public:
+  using id_type = int;
+private:
+  id_type id;
+};
+
+// Container for widgets. Much more than a dumb container,
+// it will also have indexes and other metadata. This represents
+// one data file the user may open in the application.
+class WidgetDatabase {
+  ::std::map&lt;Widget::id_type, ::std::shared_ptr&lt;Widget&gt;&gt; widgets;
+};
+</code></pre><p>Next, I define pure virtual classes (interfaces) for reading and writing DAOs. The idea is to abstract the serialization of data from the data itself (<a href="https://en.wikipedia.org/wiki/Single_responsibility_principle" rel="nofollow noreferrer">SRP</a>).</p><pre><code>class WidgetReader {
+public:
+  virtual Widget read(::std::istream &amp;in) const abstract;
+};
+
+class WidgetWriter {
+public:
+  virtual void write(::std::ostream &amp;out, const Widget &amp;widget) const abstract;
+};
+
+class WidgetDatabaseReader {
+public:
+  virtual WidgetDatabase read(::std::istream &amp;in) const abstract;
+};
+
+class WidgetDatabaseWriter {
+public:
+  virtual void write(::std::ostream &amp;out, const WidgetDatabase &amp;widgetDb) const abstract;
+};
+</code></pre><p>Finally, here is the code that gets the proper reader/writer for the desired I/O type. There would be subclasses of the readers/writers also defined, but these add nothing to the design review:</p><pre><code>enum class WidgetIoType {
+  BINARY,
+  JSON,
+  XML
+  // Other types TBD.
+};
+
+WidgetIoType forFilename(::std::string &amp;name) { return ...; }
+
+class WidgetIoFactory {
+public:
+  static ::std::unique_ptr&lt;WidgetReader&gt; getWidgetReader(const WidgetIoType &amp;type) {
+    return ::std::unique_ptr&lt;WidgetReader&gt;(/* TODO */);
+  }
+
+  static ::std::unique_ptr&lt;WidgetWriter&gt; getWidgetWriter(const WidgetIoType &amp;type) {
+    return ::std::unique_ptr&lt;WidgetWriter&gt;(/* TODO */);
+  }
+
+  static ::std::unique_ptr&lt;WidgetDatabaseReader&gt; getWidgetDatabaseReader(const WidgetIoType &amp;type) {
+    return ::std::unique_ptr&lt;WidgetDatabaseReader&gt;(/* TODO */);
+  }
+
+  static ::std::unique_ptr&lt;WidgetDatabaseWriter&gt; getWidgetDatabaseWriter(const WidgetIoType &amp;type) {
+    return ::std::unique_ptr&lt;WidgetDatabaseWriter&gt;(/* TODO */);
+  }
+};
+</code></pre><hr/><p>Per the stated goals of my design, I have one specific concern. C++ streams can be opened in text or binary mode, but there is no way to check an already-opened stream. It could be possible through programmer error to provide e.g. a binary stream to an XML or JSON reader/writer. This could cause subtle (or not so subtle) errors. I would prefer the code to fail fast, but I am not sure this design would do that.</p><p>One way around this could be to offload the responsibility of opening the stream to the reader or writer, but I believe that violates SRP and would make the code more complex. When writing a DAO, the writer should not care about where the stream is going: it could be a file, standard out, an HTTP response, a socket, anything. Once that concern is encapsulated in the serialization logic it becomes far more complex: it must know the specific type of stream and which constructor to call.</p><p>Aside from that option, I am not sure what would be a better way to model these objects that is simple, flexible, and helps to prevent logic errors in the code that uses it.</p><hr/><p>The use case with which the solution must be integrated is a simple <a href="http://docs.wxwidgets.org/3.0/classwx_file_dialog.html" rel="nofollow noreferrer">file selection dialog box</a>. The user selects &#34;Open&#8230;&#34; or &#34;Save As&#8230;&#34; from the File menu, and the program opens or saves the WidgetDatabase. There will also be &#34;Import&#8230;&#34; and &#34;Export&#8230;&#34; options for individual Widgets.</p><p>When the user selects a file to open or save, wxWidgets will return a file name. The handler that responds to that event must be general purpose code that takes the file name, acquires a serializer, and calls a function to do the heavy lifting. Ideally this design would also work if another piece of code is performing non-file I/O, such as sending a WidgetDatabase to a mobile device over a socket.</p><hr/><p>Does a widget save to its own format? Does it interoperate with existing formats? Yes! All of the above. Going back to the file dialog, think about Microsoft Word. Microsoft were free to develop the DOCX format however they wanted within certain constraints. At the same time, Word also reads or writes legacy and third-party formats (e.g. PDF). This program is no different: the &#34;binary&#34; format I talk about is a yet-to-be-defined internal format designed for speed. At the same time, it must be able to read and write open standard formats in its domain (irrelevant to the question) so it can be able to work with other software.</p><p>Finally, there is only one type of Widget. It will have child objects, but those will be handled by this serialization logic. The program will never load both Widgets <em>and</em> Sprockets. This design <em>only</em> needs to be concerned with Widgets and WidgetDatabases.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I may be wrong, but your design seems to be horribly overengineered. To serialize just one <code>Widget</code>, you want to define <code>WidgetReader</code>, <code>WidgetWriter</code>, <code>WidgetDatabaseReader</code>, <code>WidgetDatabaseWriter</code> interfaces which each have implementations for XML, JSON, and binary encodings, and a factory to tie all those classes together. This is problematic for the following reasons:</p><ul><li><p>If I want to serialize a non-<code>Widget</code> class, let&#39;s call it <code>Foo</code>, I have to reimplement this whole Zoo of classes, and create <code>FooReader</code>, <code>FooWriter</code>, <code>FooDatabaseReader</code>, <code>FooDatabaseWriter</code> interfaces, times three for each serialization format, plus a factory to make it even remotely usable. Don&#39;t tell me there won&#39;t be any copy&amp;paste going on there! This combinatorial explosion seems to be fairly unmaintainable, even if each of those classes essentially only contains a single method.</p></li><li><p><code>Widget</code> can&#39;t be reasonably encapsulated. Either you open up everything that should be serialized up to the open world with getter methods, or you have to <code>friend</code> each and every <code>WidgetWriter</code> (and probably also all <code>WidgetReader</code>) implementations. In either case, you will introduce considerable coupling between the serialization implementations and the <code>Widget</code>.</p></li><li><p>The reader/writer zoo invites inconsistencies. Whenever you add a member to <code>Widget</code>, you will have to update all related serialization classes to store/retrieve that member. This is something that can&#39;t be statically checked for correctness, so you will also have to write a separate test for each reader and writer. At your current design, that&#39;s 4*3=12 tests per class you want to serialize.</p><p>In the other direction, adding a new serialization format such as YAML is also problematic. For each class that you want to serialize, you will have to remember to add a YAML reader and writer, and add that case to the enum and to the factory. Again, this is something that can&#39;t be statically tested, unless you get (too) clever and draw up a templated interface for factories that&#39;s independent of <code>Widget</code> and makes sure an implementation for each serialization type for each in/out operation is provided.</p></li><li><p>Maybe the <code>Widget</code> now satisfies the SRP since it&#39;s not responsible for serialization. But the reader and writer implementations clearly don&#39;t, with the “SRP = each object has one reason to change” interpretation: the implementations must change when either the serialization format changes, or when the <code>Widget</code> changes.</p></li></ul><p>If you are able to invest a minimum of time beforehand, please try to draw up a more generic serialization framework than this ad-hoc tangle of classes. For example, you could define a common interchange representation, let&#39;s call it <code>SerializationInfo</code>, with a JavaScript-like object model: most objects can be seen as a <code>std::map&lt;std::string, SerializationInfo&gt;</code>, or as a <code>std::vector&lt;SerializationInfo&gt;</code>, or as a primitive such as <code>int</code>.</p><p>For each serialization format, you would then have one class that manages reading and writing a serialization representation from that stream. And for each class you want to serialize, you would have some mechanism that converts instances from/to the serialization representation.</p><p>I have experienced such a design with cxxtools (<a href="http://www.tntnet.org/cxxtools.html" rel="nofollow">homepage</a>, <a href="https://github.com/maekitalo/cxxtools" rel="nofollow">GitHub</a>, <a href="https://github.com/maekitalo/cxxtools/blob/master/demo/serialization.cpp" rel="nofollow">serialization demo</a>), and it is mostly extremely intuitive, broadly applicable, and satisfactory for my use cases – the only problems being the fairly weak object model of the serialization representation that requires you to know during deserialization precisely which kind of object you are expecting, and that deserialization implies default-constructible objects that can be initialized later. Here&#39;s a contrived usage example:</p><pre><code>class Point {
+  int _x;
+  int _y;
+public:
+  Point(x, y) : _x(x), _y(y) {}
+  int x() const { return _x; }
+  int y() const { return _y; }
+};
+
+void operator &lt;&lt;= (SerializationInfo&amp; si, const Point&amp; p) {
+  si.addMember(&#34;x&#34;) &lt;&lt;= p.x();
+  si.addMember(&#34;y&#34;) &lt;&lt;= p.y();
+}
+
+void operator &gt;&gt;= (const SerializationInfo&amp; si, Point&amp; p) {
+  int x;
+  si.getMember(&#34;x&#34;) &gt;&gt;= x;  // will throw if x entry not found
+  int y;
+  si.getMember(&#34;y&#34;) &gt;&gt;= y;
+  p = Point(x, y);
+}
+
+int main() {
+  // cxxtools::Json&lt;T&gt;(T&amp;) wrapper sets up a SerializationInfo and manages Json I/O
+  // wrappers for other formats also exist, e.g. cxxtools::Xml&lt;T&gt;(T&amp;)
+
+  Point a(42, -15);
+  std::cout &lt;&lt; cxxtools::Json(a);
+  ...
+  Point b(0, 0);
+  std::cin &gt;&gt; cxxtools::Json(p);
+}
+</code></pre><p>I am not saying that you should use cxxtools or exactly copy that design, but in my experience its design makes it trivial to add serialization even for small, one-off classes, provided that you don&#39;t care too closely about the serialization format (e.g. the default XML output will use member names as element names, and will never use attributes for your data).</p><p>The problem with binary/text mode for streams does not seem solvable, but that isn&#39;t so bad. For one thing, it only matters for binary formats, on platforms I don&#39;t tend to program for ;-) More seriously, it&#39;s a restriction of your serialization infrastructure you&#39;ll just have to document and hope everyone uses correctly. Opening the streams within your readers or writers is way too inflexible, and C++ does not have a built-in type-level mechanism to distinguish text from binary data.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/c-designing-interfaces-to-hardware/'>C++ &#8211; Designing interfaces to hardware</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-what-kind-of-base-for-decorator-interface-abstract-class-non-abstract/'>C++ &#8211; What kind of base for Decorator: interface, abstract class, non-abstract</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

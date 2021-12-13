@@ -1,0 +1,65 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Python &#8211; Better conditional debugging pattern &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1073689 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1073689" class="post-1073689 software type-software status-publish hentry category-software tag-debugging tag-design tag-design-patterns tag-logging tag-python"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Python &#8211; Better conditional debugging pattern</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">debugging</span><span class="mr-2 badge badge-info">design</span><span class="mr-2 badge badge-warning">design-patterns</span><span class="mr-2 badge badge-primary">logging</span><span class="mr-2 badge badge-danger">python</span></p><div class="entry-content"><p>Given the need to log only in debug mode the easiest way would be to use if conditions:</p><pre><code>def test(x, debug=False):
+    if debug:
+        print(x)
+
+    # ...Some more code
+
+    if debug:
+        print(&#34;Something else&#34;)
+
+    # ...More conditional logging
+
+    return x * 2
+</code></pre><p>This leads to the cluttering of the actual function logic. The best I could think of to improve this was to hide it behind a function to make it less cluttered:</p><pre><code>def _log_if_debug(info, debug):
+    if debug:
+        print(info)
+
+def test(x, debug=False):
+    _log_if_debug(x, debug)
+
+    # ...Some more code
+
+    _log_if_debug(&#34;Something else&#34;, debug)
+
+    # ...More conditional logging
+    return x * 2
+</code></pre><p>Is there a better pattern to do this?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p><strong>Use standard logging library</strong></p><p>In Python there is only one proper pattern: <strong>use <a href="https://docs.python.org/2/library/logging.html" rel="noreferrer">standard logging module</a></strong> according to <a href="https://docs.python.org/2/howto/logging.html" rel="noreferrer">official HowTo</a>. Or, for Python 3, this <a href="https://docs.python.org/3/library/logging.html" rel="noreferrer">standard logging module</a> and this <a href="https://docs.python.org/3/howto/logging.html" rel="noreferrer">HowTo</a>. There are no important differences between these versions¹.</p><p>If you have reasons to dislike the standard library, you can <strong>alternatively use one of the existing replacements</strong>. They have different configuration and some extensions, but the basic usage is similar or identical. I&#39;ll get to them later. It should be relatively easy to switch to them at any time, so <code>logging</code> is at least a good starting point.</p><p><strong>Usage in your module</strong></p><p>Your code looks like this:</p><pre><code>import logging
+
+logger = logging.getLogger(__name__)  # you can use other name
+
+logger.info(&#39;Loading my cool module with cool logging&#39;)
+
+    def coolFunction(x):
+        logger.debug(&#39;Most of the time this message is really irrelevant&#39;)
+        ...
+        if something_suspicious:
+            logger.warning(&#39;Something suspicious happened: nothing broken yet, but you probably want to know&#39;)
+        ...
+        if everything_is_wrong:
+            logger.error(&#39;Everything is broken and this program just went nuts&#39;)
+</code></pre><p>Or alternatively, you can use simpler:</p><pre><code>logging.info(...)
+logging.debug(...)
+</code></pre><p>instead of creating a logger, but it seems simple enough to add this single line everywhere.</p><p>If you are not sure what logging levels to use for different messages, you can refer to <a href="https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels">this SO question</a> with some decent answers.</p><p><strong>Configuration</strong></p><p>Then somewhere in your cofig you say:</p><pre><code>logging.basicConfig(filename=&#39;example.log&#39;, level=logging.INFO)
+</code></pre><p>or</p><pre><code>logging.basicConfig(filename=&#39;example.log&#39;, level=logging.DEBUG)
+</code></pre><p>to set the output and filter the errors appropriately. If you want to use stderr, say</p><pre><code>logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+</code></pre><p>instead.</p><p><strong>Alternative handlers, logging to external services</strong></p><p>There is also a number of libraries that you can but in place of basic logger, like <a href="https://github.com/getsentry/raven-python" rel="noreferrer">raven</a> for <a href="https://sentry.io/welcome/" rel="noreferrer">Sentry</a>. You don&#39;t need to change anything in your code to tap into such a service, you just change the configuration.</p><p><strong>Alternative libraries</strong></p><p>There are some libraries that that you may want to use to completely replace <code>logging</code>. They follow similar pattern, central logging configuration, then access a logger in each file and log using log levels. <a href="https://logbook.readthedocs.io/en/stable/" rel="noreferrer">Logbook</a> seems to be a mostly drop-in replacement for logging, with some nice features added. Some other are mentioned <a href="https://stackoverflow.com/questions/3878195/python-logging-alternatives">in this SO question</a>.</p><p><strong>Removing logging from optimized build</strong></p><p>For extreme cases where debug logging might significantly affect performance or leak sensitive data in production environment, built-in <a href="https://docs.python.org/2/library/constants.html#__debug__" rel="noreferrer"><code>__debug__</code></a> constant can be used:</p><pre><code>if __debug__:
+    debug_info = some_complex_computation()
+    logger.debug()
+</code></pre><p>In this case, the whole statement would be erased when compiling the code with <code>-o</code> option. However, this solution is ugly and somewhat brittle, it should be used with care and only where really necessary. For most applications that means &#34;nowhere, never&#34;.</p><p><strong>Other languages</strong></p><p>For other languages, it may look just the same (e.g. in Java) or slightly different, and vary somewhat (not every language has one standard way). But in general, you will find very similar patters, stuff like</p><pre><code>LOG(DEBUG, &#34;Your message&#34;)
+</code></pre><p>or</p><pre><code>LOG_ERROR(&#34;Error message&#34;)
+</code></pre><p>or</p><pre><code>LOG(INFO) &lt;&lt; &#34;Some people like C++ streams&#39; syntax&#34;
+</code></pre><hr/><p>¹ AFAIK the only difference worth knowing about is that Python 3 has a &#34;last resort&#34; logger logging to stderror, so if you omit config completely, you still get <em>something</em>. In Python 2 you get just a warning about misconfigured logging.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-rules-and-advice-for-logging/'>Java &#8211; Rules and advice for logging</a></li><li class="list-group-item"><a href='../is-printing-to-console-stdout-a-good-debugging-strategy/'>Is printing to console/stdout a good debugging strategy</a></li><li class="list-group-item"><a href='../java-adding-logging-to-a-pre-existing-program/'>Java &#8211; Adding Logging to a pre-existing Program</a></li><li class="list-group-item"><a href='../java-why-does-the-trace-level-exist-and-when-should-i-use-it-rather-than-debug/'>Java &#8211; Why does the TRACE level exist, and when should I use it rather than DEBUG</a></li><li class="list-group-item"><a href='../c-logging-paradigms-di-ioc-object-hierarchies/'>C# &#8211; Logging paradigms, DI/IoC, object hierarchies</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

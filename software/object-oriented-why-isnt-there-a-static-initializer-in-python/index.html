@@ -1,0 +1,74 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Object-oriented &#8211; Why isn&#8217;t there a static initializer in Python &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1071626 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1071626" class="post-1071626 software type-software status-publish hentry category-software tag-decorator tag-object-oriented tag-python tag-static-methods tag-static-access"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Object-oriented &#8211; Why isn&#8217;t there a static initializer in Python</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">decorator</span><span class="mr-2 badge badge-info">object-oriented</span><span class="mr-2 badge badge-warning">python</span><span class="mr-2 badge badge-primary">static methods</span><span class="mr-2 badge badge-danger">static-access</span></p><div class="entry-content"><p>The equivalent of</p><pre><code>static {
+    // Code here
+}
+</code></pre><p>does not exist in Python by default. The closest thing, while being &#34;Pythonic&#34;, seems to be to <a href="https://stackoverflow.com/a/13900861/3395831">create a decorator</a> and do the initialization there such as:</p><pre><code>def static_initialization_decorator_for_myclass(cls):
+    cls.initialize_static_stuff()
+    return cls
+
+@static_initialization_decorator_for_myclass
+class MyClass:
+    @classmethod
+    def initialize_static_stuff():
+        # Code here
+</code></pre><p>Creating a new decorator for each class to do the same thing does not make sense. So, I thought of creating a standard decorator (say &#34;initializestatic&#34;) and let that decorator call a given method name (say &#34;init_static&#34;) like:</p><pre><code>def initializestatic(cls):
+    cls.init_static()
+    return cls
+
+@initializestatic
+class MyClass:
+    @classmethod
+    def init_static():
+        # Code here
+</code></pre><p>This way, I can always use the same decorator and whenever I need a static initializer, I would put the following method in a class and would put <code>@initializestatic</code> decorator on top of the class:</p><pre><code>@classmethod
+def init_static():
+    # Code here
+</code></pre><p>Given it is that simple, why isn&#39;t there a built-in solution for static initialization in Python? I know that this sounds like a rant rather than a question but I am curious of the possible motives for excluding a static initializer from Python.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><blockquote><p>... why isn&#39;t there a built-in solution for static initialization in Python?</p></blockquote><p>There is, you just put static initialization stuff in the class definition, i.e.</p><pre><code>&gt;&gt;&gt; class myclass:
+...     print &#34;anything in the class definition will be executed once!&#34;
+...     val = 42
+...     def __init__(self,v):
+...             self.v = v
+...     def pr(self):
+...             print self.v, self.val, myclass.val
+...     def set(self,v):
+...             self.val = v
+...     def clsset(self, v):
+...             myclass.val = v
+...
+anything in the class definition will be executed once!
+&gt;&gt;&gt; m = myclass(1)
+&gt;&gt;&gt; m.pr()
+1 42 42
+&gt;&gt;&gt; m.set(2)
+&gt;&gt;&gt; m.clsset(24)
+&gt;&gt;&gt; m.pr()
+1 2 24
+&gt;&gt;&gt; mm = myclass(2)
+&gt;&gt;&gt; mm.pr()
+2 24 24
+&gt;&gt;&gt; mm.set(42)
+&gt;&gt;&gt; mm.pr()
+2 42 24
+</code></pre><p>Edit: I used print as an example of an arbitrary piece of code; here is another example:</p><pre><code>&gt;&gt;&gt; class myclass:
+...     val = 42
+...     dv = val * 1.2
+...     def pr(self):
+...             print self.dv
+...
+&gt;&gt;&gt; m = myclass()
+&gt;&gt;&gt; m.pr()
+50.4
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../python-whats-the-best-way-to-create-a-static-utility-class-in-python-is-using-metaclasses-code-smell/'>Python &#8211; What&#8217;s the best way to create a static utility class in python? Is using metaclasses code smell</a></li><li class="list-group-item"><a href='../python-using-a-closure-to-avoid-code-duplication-in-python/'>Python &#8211; Using a closure to avoid code duplication in Python</a></li><li class="list-group-item"><a href='../object-oriented-accessing-database-from-static-and-non-static-methods/'>Object-oriented &#8211; Accessing database from static and non-static methods</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

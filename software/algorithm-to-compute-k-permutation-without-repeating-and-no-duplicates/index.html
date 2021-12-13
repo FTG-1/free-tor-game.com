@@ -1,0 +1,65 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Algorithm to compute k-permutation without repeating and no duplicates &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1073175 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1073175" class="post-1073175 software type-software status-publish hentry category-software tag-algorithms tag-combinatorics"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Algorithm to compute k-permutation without repeating and no duplicates</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">algorithms</span><span class="mr-2 badge badge-info">combinatorics</span></p><div class="entry-content"><p>I have a set of integers, for example 1..20 and I want to get all possible combinations of that set drawing 5 numbers.</p><p>So each combination has 5 numbers from that set of integers. But I don&#39;t want the numbers in the combination to be duplicates and I want the unordered combination to be unique.</p><p>I guess it&#39;s not easy to understand, my english is not the best and I don&#39;t know all the mathematical terms. So here&#39;s an illustration.</p><p>My set is <code>1..20</code> and obviously has a length of <code>20</code>.</p><p>I want each possible combination to be like <code>[1, 2, 3, 4, 5]</code>, <code>[1, 2, 3, 4, 6]</code>, &#8230; , <code>[1, 4, 8, 14, 20]</code>, always a length of 5.</p><p>And this should be prohibited: <code>[1, 2, 3, 4, 5]</code>, <code>[3, 2, 1, 5, 4]</code> since those two contain the exact same numbers.</p><p>Also this is not allowed: <code>[1, 1, 2, 3, 4]</code> since this combination contains duplicate numbers itself.</p><p>So a naive approach would be to iterate via 5 <code>for</code> loops over 20, save all the previous combinations and check for duplicates through the combinations and within the newest combination. But this would result in 3,200,000 loops, which is not very efficient, since the final number of combinations is 1,860,480 (if I didn&#39;t calculate wrong, but it should be <code>n! / ((n -k)! * k!)</code> if I&#39;m not totally wrong, where <code>n = 20</code> and <code>k = 5</code>).</p><p>So how can I eliminate the duplicate loops in the first place?<br /> I need a algorithm that is fast and does not take unnecessary steps since I&#39;ll calculate stuff with this data that takes a while and so I want to reduce the amount of loops as far as possible.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Unless I&#39;m mistaken:</p><ul><li>There are <code>20^5 = 3,200,000</code> ways to pick 5 numbers out of 20 (with repeating, with duplicates)</li><li>If you don&#39;t allow for &#34;duplicates&#34; (picking the same number more than once), you&#39;re left with <code>n! / (n - k)!</code>, in this case <code>20! / (20 - 5)! = 1,860,480</code>. These are k-permutations.</li><li>If, then, you don&#39;t allow for &#34;repeating&#34; (having collections with the same elements only in a different order), you&#39;re left with <code>n! / ((n - k)! * k!)</code>, in this case <code>20! / ((20 - 5)! * 5!) = 15,504</code>. These are called k-combinations. These are what you seem to be looking for.</li></ul><p>If you are only looking for combinations of size 5 and want access to the entire set of combinations immediately, then I&#39;d say then 5 nested loop approach is fine, and I don&#39;t think you&#39;ll be able to do anything faster. You just need to modify your idea a bit so you wont need to check for uniqueness or duplicate numbers and don&#39;t do unnecessary iterations. You can produce (only) ordered combinations by doing something like:</p><pre class="lang-java prettyprint-override"><code>public Set&lt;Set&lt;Integer&gt;&gt; all5CombinationsOf20(){
+    Set&lt;Set&lt;Integer&gt;&gt; result = new HashSet&lt;Set&lt;Integer&gt;&gt;();
+    for(int i = 1; i &lt;= 16; i++){
+        for(int j = i+1; j &lt;= 17; j++){
+            for(int k = j+1; k &lt;= 18; k++){
+                for(int l = k+1; l &lt;= 19; l++){
+                    for(int m = l+1; m &lt;= 20; m++){
+                        result.add(new HashSet&lt;Integer&gt;(Arrays.asList(i,j,k,l,m)));
+                    }
+                }
+            }
+        }
+    }
+    return result;
+}
+</code></pre><p>Since this gives you the combinations in a ordered way [1, 2, 3, 4, 5] is produced, but [3, 2, 1, 5, 4] and [1, 1, 2, 3, 4] are not.</p><p>However this approach is not extendable to combinations of arbitrary size, then you would need recursion. I once wrote this:</p><pre class="lang-java prettyprint-override"><code>public static &lt;T&gt; Set&lt;Set&lt;T&gt;&gt; combinations(Set&lt;T&gt; alphabet, int k) {
+    if (alphabet.size() == 0) {
+        throw new IllegalArgumentException(&#34;alphabet.size must be &gt; 0&#34;);
+    }
+    if (k &lt; 0) {
+        throw new IllegalArgumentException(&#34;k must be &gt;= 0&#34;);
+    }
+    if (k == 0) {
+        Set&lt;Set&lt;T&gt;&gt; result = new HashSet&lt;Set&lt;T&gt;&gt;();
+        result.add(new HashSet&lt;T&gt;());
+        return result;
+    } else {
+        Set&lt;Set&lt;T&gt;&gt; result = new HashSet&lt;Set&lt;T&gt;&gt;();
+        for (T e : alphabet) {
+            Set&lt;T&gt; newAlphabet = new HashSet&lt;T&gt;(alphabet);
+            newAlphabet.remove(e);
+            Set&lt;Set&lt;T&gt;&gt; smallerCombinations = combinations(newAlphabet, k - 1);
+            for (Set&lt;T&gt; smallerCombination : smallerCombinations) {
+                Set&lt;T&gt; combination = new HashSet&lt;T&gt;(smallerCombination);
+                combination.add(e);
+                result.add(combination);
+            }
+        }
+
+        return result;
+    }
+}
+</code></pre><p>This is not necessarily fast since you are messing around the alphabet a lot, but the idea should be clear: to make a combination of size n over a certain alphabet (in your case 1..20), remove an element e from the alphabet, make a combination of size n-1 over the alphabet minus e and return the combination with e added. Reusing the same alphabet for smaller combinations an letting the HashSet get rid of duplicates would be faster.</p><p>Also these sets of combinations get large pretty fast, so you might want to be lazy and not hold them all in memory (depending one how you want to use them), if so, check <a href="https://stackoverflow.com/questions/127704/algorithm-to-return-all-combinations-of-k-elements-from-n">https://stackoverflow.com/questions/127704/algorithm-to-return-all-combinations-of-k-elements-from-n</a></p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/fast-indexing-of-k-combinations/'>Fast indexing of k-combinations</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/java-finding-the-best-combination-of-sets-that-gives-the-maximum-number-of-unique-items/'>Java &#8211; Finding the best combination of sets that gives the maximum number of unique items</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/java-algorithm-to-sort-ten-million-7-digit-integers-in-ascending-order-with-just-1-5mb-ram/'>Java &#8211; Algorithm to sort ten million 7-digit integers in ascending order with just 1.5Mb RAM</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

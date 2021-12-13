@@ -1,0 +1,118 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Service-locator anti-pattern alternative &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1072575 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1072575" class="post-1072575 software type-software status-publish hentry category-software tag-c tag-inversion-of-control tag-service-locator"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Service-locator anti-pattern alternative</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">inversion-of-control</span><span class="mr-2 badge badge-warning">service-locator</span></p><div class="entry-content"><p>I&#39;m using Unity as IoC with C#, but I guess the question really isn&#39;t really limited to Unity and C#, but IoC in general.</p><p>I try to follow the SOLID-principle, which means that I got very few dependencies between two concrete classes. But when I need to create new instances of a model, what&#39;s the best way to do it?</p><p>I usually use a factory create my instances, but there&#39;s a few alternatives and I wonder which is better, and why?</p><p>Simple Factory:</p><pre><code>public class FooFactory : IFooFactory
+{
+    public IFoo CreateModel()
+    {
+        return new Foo(); // references a concrete class.
+    }
+}
+</code></pre><p>Service-locator-factory</p><pre><code>public class FooFactory : IFooFactory
+{
+    private readonly IUnityContainer _container;
+
+    public FooFactory (IUnityContainer container)
+    {
+        _container = container;
+    }
+
+    public IFoo CreateModel()
+    {
+        return _container.Resolve&lt;IFoo&gt;(); // Service-locator anti-pattern?
+    }
+}
+</code></pre><p>Func-factory. No dependencies to other classes.</p><pre><code>public class FooFactory : IFooFactory
+{
+    private readonly Func&lt;IFoo&gt; _createFunc;
+
+    public FooFactory (Func&lt;IFoo&gt; createFunc)
+    {
+        _createFunc= createFunc;
+    }
+
+    public IFoo CreateModel()
+    {
+        return _createFunc(); // Is this really better than service-locator?
+    }
+}
+</code></pre><p>Which <code>IFooFactory</code> should I use, and why? Is there a better option?</p><p>The examples above are of a more conceptual level, where I try to find a balance between SOLID, maintainable code and service locator. Here&#39;s an actual example:</p><pre><code>public class ActionScopeFactory : IActionScopeFactory
+{
+    private readonly Func&lt;Action, IActionScope&gt; _createFunc;
+
+    public ActionScopeFactory(Func&lt;Action, IActionScope&gt; createFunc)
+    {
+        _createFunc = createFunc;
+    }
+
+    public IActionScope CreateScope(Action action)
+    {
+        return _createFunc(action);
+    }
+}
+
+public class ActionScope : IActionScope, IDisposable
+{
+    private readonly Action _action;
+
+    public ActionScope(Action action)
+    {
+        _action = action;
+    }
+
+    public void Dispose()
+    {
+        _action();
+    }
+}
+
+public class SomeManager
+{
+    public void DoStuff()
+    {
+        using(_actionFactory.CreateScope(() =&gt; AllDone())
+        {
+           // Do stuff. And when done call AllDone().
+           // Another way of actually writing try/finally.
+        }
+    }
+}
+</code></pre><hr/><p>Why do I use a Factory at all? Because I sometimes need to create new models. There are various scenarios when this is necessary. For eg. in a mapper and when the mapper has a longer lifetime than the object it should map. Example for factory usage:</p><pre><code>public class FooManager
+{
+    private IService _service;
+    private IFooFactory _factory;
+
+    public FooManager(IService service, IFooFactory factory)  
+    {
+        _service = service;
+        _factory = factory;
+    }
+
+    public void MarkTimestamp()
+    {
+        IFoo foo = _factory.CreateModel();
+        foo.Time = DateTime.Now;
+        foo.User = // current user
+        _service.DoStuff(foo);
+    }
+
+    public void DoStuffInScope()
+    {
+        using(var foo = _factoru.CreateModel())
+        {
+            // do stuff with foo...
+        }
+    }
+}
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>First things first, the mantra that service-locators are an anti-pattern is tiresome and counter productive. They have their downsides, but they&#39;re pretty much the same as conventional IoC containers except IoC containers are <em>good</em>.</p><p>That said, let&#39;s focus on your examples:</p><p>Simple factories are good. They are clear. They are easy to test. They are easy to extend.</p><p>Service locator factories are overkill for this scenario (and most scenarios, frankly). Service locators let you have a factory that can resolve from any arbitrary type to an instance of that type (or an exception). You don&#39;t need that here. You just need to be able to supply some <code>IFoo</code>.</p><p>The func-factory is weird here. You don&#39;t really need the interface, since <code>Func&lt;IFoo&gt;</code> <strong>is</strong> the interface (in the &#34;a point where two things interact&#34; definition). Sometimes you already have the interface and the func-factory isn&#39;t really a factory, but an adapter between the capital I interface and the func &#34;interface&#34;.</p><p>Which is <em>best</em> will vary on your needs. Personally, I like just having a <code>Func</code>. It provides the most flexibility in use, while not having the boilerplate overhead of the simple factory.</p><p>And as much as I defend service locators as not being an anti-pattern, they do have a <em>very</em> limited use case, and your examples do not even come close to it.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../ioc-containers-and-service-locator-pattern/'>IoC containers and service locator pattern</a></li><li class="list-group-item"><a href='../object-oriented-a-service-locator/'>Object-oriented &#8211;  a Service Locator</a></li><li class="list-group-item"><a href='../java-how-to-decouple-simple-factory-and-default-implementation/'>Java &#8211; How to decouple simple factory and default implementation</a></li><li class="list-group-item"><a href='../c-ioc-as-service-locator/'>C# &#8211; IoC as service locator</a></li><li class="list-group-item"><a href='../c-ambient-dependency-injection-through-static-service-locator/'>C# &#8211; Ambient dependency injection through static service locator</a></li><li class="list-group-item"><a href='../c-dependency-injection-for-a-library-with-internal-dependencies/'>C# &#8211; Dependency injection for a library with internal dependencies</a></li><li class="list-group-item"><a href='../service-locator-vs-dependency-injection/'>Service locator vs Dependency Injection</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

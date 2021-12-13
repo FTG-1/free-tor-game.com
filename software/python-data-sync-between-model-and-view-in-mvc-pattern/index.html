@@ -1,0 +1,58 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Python &#8211; Data sync between Model and View in MVC pattern &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1084262 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1084262" class="post-1084262 software type-software status-publish hentry category-software tag-gui tag-mvc tag-python"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Python &#8211; Data sync between Model and View in MVC pattern</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">gui</span><span class="mr-2 badge badge-info">mvc</span><span class="mr-2 badge badge-warning">python</span></p><div class="entry-content"><p>I have a question about MVC pattern, concerning the controller part.</p><p>Most of the program I happen to write are basically spreadsheet like. They are written in C/GTK+ and Python3/Qt5/Tkinter but share a common design : I separate the gui from the logic (data struct and heavy lifting methods) that seems to be the MVC pattern.</p><p><strong>Question</strong><br /> Do I really need to pass data from view to model each time I edit the GUI data and want to compute something ? Then pass the new data back from model to view ? Is that how it should be done ?<br /> I understand this is fine for a small GUI that does heavy computation in the model. But what about a big GUI, like a big table or a spreadsheet.</p><p><strong>Answer</strong><br /> Here are the elements that I took from the discussion with @dcorking:<br /> You have to update the data yourself. One shortcut is to update on a per-case basis, only what needs to be updated and don&#39;t touch the rest. Obviously, if you are sorting the collection after a single change, you may need to re-update the whole GUI eitherway.<br /> &#34;Observers&#34; have been mentionned that sounds like an automated way to do as above.</p><p><strong>Pseudo/Python Code</strong></p><p>Let&#39;s consider a basic <code>collection</code> of <code>items</code> (shopping list, book library, &#8230;).<br /> My main class <code>Collection</code> contains a list (dozens or hundreds) of <code>Item</code> and methods to be applied on the list.</p><pre><code>#The model package
+
+class Collection():
+    def __init__(self, name=&#34;&#34;):
+        self.name = name
+        self.items = []
+        self.itmesToUpdate = []
+
+    def sort(self):
+        self.items.sort(key=lambda x:float(x.price))
+        self.itemsToUpdate = []
+        self.itemsToUpdate = listItemsThatWereMovedAround()
+
+class Item():
+    def __init__(self, name=&#34;&#34;, price=0.):
+        self.name = name
+        self.price = price
+</code></pre><p>Now the Gui part:</p><pre><code>class Gui():
+    #The View part.
+    def __init__(self):
+        self.collection = model.Collection()
+        ...then fill the View with widgets (Menus, EditTexts, Buttons, ...)
+
+    #The Controller part starts here
+    def setViewFromModel(self):
+        for i in self.collection.itemsToUpdate:
+            self.editTextName[i].setText(self.container.items[i].name)
+            self.editTextPrice[i].setText(self.container.items[i].price)
+        self.collection.itemsToUpdate = []# reset the list
+
+    def setModelFromView(self):
+        for i in self.collection.itemsToUpdate:
+            self.container.items[i].name = self.editTextName[i].getText()
+            self.container.items[i].price = self.editTextPrice[i].getText()
+
+    #CALLBACKS
+    def onItemModified(self, index):
+        self.collection.itemsToUpdate.append(index)
+
+    def onClickSort(self):
+        self.setModelFromView()#Read the GUI data
+        self.collection.sort()#Compute in Model
+        self.setViewFromModel()#Update the View with new data
+</code></pre><p>Is this design fine ? For spreadsheet-like app ?<br /> Thank you.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>MVC does not tell you how small to make the models.</p><p>For a spreadsheet, when you find that passing the whole data structure between a View and a Model is too slow, or makes the code too complex, you could make an MVC triad to represent something as small as a single cell.</p><p>The model part of the cell could then connect in some appropriate way to a larger business object that represents the entire sheet.</p><p>Similarly, the cell views will be embedded in another view to represent a sheet, or a window onto a sheet.</p><p><strong>Update</strong></p><p>The main aim of MVC is not to improve performance, but to make the code more understandable, and therefore easier to maintain.</p><p>If you make an MVC triad for each individual cell, this should be easier to understand and modify than if the triad represents a whole column, or the entire sheet. However, performance may suffer for changes that affect the entire sheet, as you may end up with many small objects sending messages to each other.</p><p>One alternative to MVC that you might also want to consider if you want to avoid passing data between Views and Models is direct manipulation. In direct manipulation, the object the user interacts with is the object that stores the business data (the cell value) and the business rules (how the cell value can change.)</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-how-to-completely-decouple-model-from-view-controller-in-java-swing/'>Java &#8211; How to completely decouple Model from View/Controller in Java Swing</a></li><li class="list-group-item"><a href='../mvc-checking-data-in-the-model-or-the-controller/'>MVC &#8211; Checking data in the model or the controller</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

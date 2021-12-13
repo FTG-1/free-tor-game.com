@@ -1,0 +1,242 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Getting the relational table data into XML recursively &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1078131 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1078131" class="post-1078131 software type-software status-publish hentry category-software tag-c tag-pseudocode tag-recursion tag-xml"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Getting the relational table data into XML recursively</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">pseudocode</span><span class="mr-2 badge badge-warning">recursion</span><span class="mr-2 badge badge-primary">xml</span></p><div class="entry-content"><p>I have levels of tables (Level1, Level2, Level3, &#8230;) For simplicity, we&#39;ll say I have 3 levels.</p><p>The rows in the higher level tables are parents of lower level table rows. The relationship does not skip levels however. E.g. Row1Level1 is parent of Row3Level2, Row2Level2 is parent of Row4Level3. Level(n-1)&#39;s parent is always be in Level(n).</p><p>Given these tables with data, I need to come up with a recursive function that generates an XML file to represent the relationship and the data. E.g.</p><pre class="lang-xml prettyprint-override"><code>&lt;data&gt;
+  &lt;level levelid = 1 rowid=1&gt;
+    &lt;level levelid = 2 rowid=3 /&gt;
+  &lt;/level&gt;
+  &lt;level levelid = 2 rowid=2&gt;
+    &lt;level levelid = 3 rowid=4 /&gt;
+  &lt;/level&gt;
+&lt;/data&gt;  
+</code></pre><p>I would like help with coming up with a pseudo-code for this setup. This is what I have so far:</p><p>Edited/Updated code:</p><pre><code>XElement GetXML(ArrayList list, XElement xml)
+        {
+            XElement xElement = xml;
+            // Get the rows of the current list into xmlData format
+            ArrayList childList = GetChildList(list);
+
+            if (childList != null)
+            {
+                foreach (Row r in list)
+                {
+                    // Convert the rows to xml
+                    xElement = new XElement(xml);
+                    xElement.AddFirst(new XElement(&#34;Row&#34;));
+                    xElement.Add(new XAttribute(&#34;RowId&#34;, r.RowId));
+
+                    // Get the children as xml
+                    if (childList != null)
+                    {
+                        ArrayList childRows = GetChildRows(list);
+                        XElement childXml = GetXML(childRows, xElement);
+                        if (childXml != null)
+                        {
+                            xElement.Add(childXml);
+                        }
+                    }
+                }
+            }
+            return xElement;
+       }
+</code></pre><p>This is the main function. I can add the rest of the test program if needed. Thank you.</p><pre><code>static void Main(string[] args)
+        {
+            Program p = new Program();
+
+            // Initialize datasets
+            p.InitializeLists();
+
+            // Create xml map of the datasets
+            XElement x = p.GetXML(p.level1, new XElement(&#34;Row&#34;));
+
+            Console.WriteLine(x.ToString());
+            Console.ReadLine();
+        }
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>First and foremost, this should probably be moved to the <a href="http://codereview.stackexchange.com/">Code Review</a> site.</p><p>I would prefer to come at the problem from a different angle, using objects to handle the behavior rather than a recursive method which knows how to traverse everything.  Doing so seems to map your domain better, with a bonus that it eliminates the need for a ListID value stored on each row, making it scale better.</p><pre><code>public class Row
+{
+   public ICollection&lt;Row&gt; ChildRows { get; private set; }
+   public int RowId { get; private set; }
+   public int ParentRowId { get; private set; }
+
+   public Row(int rowId, int parentRowId)
+   {
+      RowId = rowId;
+      ParentRowId = parentRowId;
+      ChildRows = new List&lt;Row&gt; ();
+   }
+
+   public XElement BuildXML(int level)
+   {
+      var element = new XElement(&#34;level&#34;,
+                                 new XAttribute(&#34;levelid&#34;, level),
+                                 new XAttribute(&#34;rowid&#34;, RowId));
+      if (ChildRows.Any())
+         element.Add(ChildRows.Select(r =&gt; r.BuildXML(level + 1)));
+
+      return element;
+   }
+}
+</code></pre><p>I would then build my object hierarchy as a tree structure.  To do so easily, I would initialize with two collections - one a list of the top-level items, and the other a dictionary of all items:</p><pre><code>void InitializeLists()
+{
+   var allRows = new List&lt;Row&gt;
+                 {
+                    new Row(1, 0),
+                    new Row(2, 0),
+                    new Row(3, 0),
+                    new Row(1, 1),
+                    new Row(2, 2),
+                    new Row(3, 2),
+                    new Row(4, 3),
+                    new Row(5, 1),
+                    new Row(6, 1),
+                    new Row(1, 3),
+                    new Row(2, 3),
+                    new Row(3, 4),
+                    new Row(4, 6),
+                    new Row(5, 6),
+                    new Row(6, 6),
+                 }; 
+   var rowTable = allRows.ToDictionary(r =&gt; r.RowId);
+
+   var rootRows = new List&lt;Row&gt;();
+   foreach(var row in allRows)
+   {
+      if(row.RowId == 0)
+         rootRows.Add(row);
+      else
+      {
+         Row parentRow;
+
+         if(rowTable.TryGetValue(row.ParentRowId, out parentRow))
+         {
+            parentRow.ChildRows.Add(row);
+         }
+         else
+         {
+            // throw or log an appropriate error
+         }
+      }
+   }
+
+   _rootRows = rootRows;
+}
+</code></pre><p>With that done, your XML building becomes rather trivial:</p><pre><code>public static void Main(string[] args)
+{
+   var p = new Program();
+
+   // Initialize datasets
+   p.InitializeLists();
+
+   // Create xml map of the datasets
+   XElement x = p.GetXML();
+
+   Console.WriteLine(x.ToString());
+   Console.ReadLine();
+}
+
+public XElement GetXML()
+{
+   var xElement = new XElement(&#34;Rows&#34;);
+   foreach(var row in _rootRows)
+      xElement.Add(row.BuildXML(1));
+
+   return xElement;
+}
+</code></pre><p><strong>Update</strong></p><p>I failed to notice on my first attempt that the row IDs were non-unique.  There are two basic options to address this:</p><ul><li>Make the IDs unique</li><li>Make a composite key for lookup which will be unique.  The easiest option here is to re-introduce the list IDs and build a key as a combination of ID and list ID.</li></ul><p>Since the above examples handle cases with unique row IDs, I will add some tweaks for the second option.  First, we re-introduce ListId to the Row.  This lets us remove the parameter from BuildXML:</p><pre><code>public class Row
+{
+   public ICollection&lt;Row&gt; ChildRows { get; private set; }
+   public int RowId { get; private set; }
+   public int ListId { get; private set; }
+   public int ParentRowId { get; private set; }
+
+   public Row(int rowId, int listId, int parentRowId)
+   {
+      RowId = rowId;
+      ListId = listId;
+      ParentRowId = parentRowId;
+      ChildRows = new List&lt;Row&gt; ();
+   }
+
+   public XElement BuildXML()
+   {
+      var element = new XElement(&#34;level&#34;,
+                                 new XAttribute(&#34;levelid&#34;, ListId),
+                                 new XAttribute(&#34;rowid&#34;, RowId));
+      if (ChildRows.Any())
+         element.Add(ChildRows.Select(r =&gt; r.BuildXML()));
+
+      return element;
+   }
+}
+</code></pre><p>Then, we re-do how we initialize:</p><pre><code>void InitializeLists()
+{
+   var allRows = new List&lt;Row&gt;
+                 {
+                    new Row(1, 1, 0),
+                    new Row(2, 1, 0),
+                    new Row(3, 1, 0),
+                    new Row(1, 2, 1),
+                    new Row(2, 2, 2),
+                    new Row(3, 2, 2),
+                    new Row(4, 2, 3),
+                    new Row(5, 2, 1),
+                    new Row(6, 2, 1),
+                    new Row(1, 3, 3),
+                    new Row(2, 3, 3),
+                    new Row(3, 3, 4),
+                    new Row(4, 3, 6),
+                    new Row(5, 3, 6),
+                    new Row(6, 3, 6),
+                 };
+
+   const string FMT = &#34;{0}:{1}&#34;;
+
+   var rowTable = allRows.ToDictionary(r =&gt; string.Format(FMT, r.ListId, r.RowId));
+
+   var rootRows = new List&lt;Row&gt;();
+   foreach(var row in allRows)
+   {
+      if(row.ListId == 1)
+         rootRows.Add(row);
+      else
+      {
+         Row parentRow;
+
+         var parentKey = string.Format(FMT, row.ListId-1, row.ParentRowId);
+
+         if(rowTable.TryGetValue(parentKey, out parentRow))
+         {
+            parentRow.ChildRows.Add(row);
+         }
+      }
+   }
+
+   _rootRows = rootRows;
+}
+</code></pre><p>Finally, we fix the GetXML function so it does not pass in a starting level:</p><pre><code>XElement GetXML()
+{
+   XElement xElement = new XElement(&#34;Rows&#34;);
+   foreach(var row in _rootRows)
+      xElement.Add(row.BuildXML());
+
+   return xElement;
+}
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/c-xml-parsing-suggestions-on-approach-for-parsing-and-storing-data/'>C++ XML Parsing: Suggestions on Approach for Parsing and Storing data</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-design-pattern-for-logging-changes-in-parent-child-objects-saved-to-database/'>C# &#8211; Design pattern for logging changes in parent/child objects saved to database</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/a-good-design-pattern-for-generating-an-excel-xlsx-file-in-code/'>A good design pattern for generating an Excel (xlsx) file in code</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-would-this-be-a-proper-use-of-threading/'>C# &#8211; Would this be a proper use of threading</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

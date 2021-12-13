@@ -1,0 +1,116 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>An elegant way to split text into words combined with adjacent punctuation and determine which punctuation mark it is &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1086691 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1086691" class="post-1086691 software type-software status-publish hentry category-software tag-parsing tag-text-processing"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">An elegant way to split text into words combined with adjacent punctuation and determine which punctuation mark it is</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">parsing</span><span class="mr-2 badge badge-info">text processing</span></p><div class="entry-content"><p>Firstly, I realize that question title is about as terrible as the sample code I&#39;ll post below, so please bear with me while I explain the problem more clearly, and if you have a better idea for the title &#8211; be my guest and edit it.</p><p>Imagine a long plain text. It consists of words separated by punctuation marks and/or spaces. What I need to do is convert it to a list of words+punctuation marks that separate this word from the next one. And the twist is I also need to determine which punctuation mark it is (or what&#39;s the last one if there&#39;s more than one in a row). So, I need to turn the text into a collection of structures:</p><pre><code>{
+   wordFollowedByPunctuation: String;
+   punctuationMark: PunctuationType; // E. g. {Point, Comma, Colon, Space, ...}
+}
+</code></pre><p>If all the punctuation marks were single characters, it would be easy since we could use single-pass character-wise parsing. I have a working, albeit awful, C++ prototype (using <code>Qt</code> &#8211; <code>QString</code> and <code>QChar</code> &#8211; for Unicode support).</p><p>Here&#39;s the <code>TextFragment</code> structure &#8211; I&#39;ll be converting the text into a collection of these:</p><pre><code>struct TextFragment
+{
+    enum Delimiter {
+        Space,
+        Comma,
+        Point,
+        ExclamationMark,
+        QuestionMark,
+        Dash,
+        Colon,
+        Semicolon,
+        Ellipsis,
+        Bracket,
+        Newline
+    };
+
+    inline TextFragment(const QString&amp; text, Delimiter delimiter) : _text(text), _delimitier(delimiter) {}
+
+    const QString _text;
+    const Delimiter _delimitier;
+};
+</code></pre><p>And here&#39;s the actual parsing:</p><pre><code>const QString text = readText(device);
+
+    struct Delimiter {
+        QChar delimiterCharacter;
+        TextFragment::Delimiter delimiterType;
+
+        inline bool operator&lt; (const Delimiter&amp; other) const {
+            return delimiterCharacter &lt; other.delimiterCharacter;
+        }
+    };
+
+    static const std::set&lt;Delimiter&gt; delimiters {
+        {&#39; &#39;, TextFragment::Space},
+        {&#39;.&#39;, TextFragment::Point},
+        {&#39;:&#39;, TextFragment::Colon},
+        {&#39;;&#39;, TextFragment::Semicolon},
+        {&#39;,&#39;, TextFragment::Comma},
+        // TODO: dash should be ignored unless it has an adjacent space!
+        {&#39;-&#39;, TextFragment::Dash},
+        // TODO:
+        // {&#34;...&#34;, TextFragment::Ellipsis},
+        {&#39;⋯&#39;, TextFragment::Ellipsis},
+        {&#39;…&#39;, TextFragment::Ellipsis},
+        {&#39;!&#39;, TextFragment::ExclamationMark},
+        {&#39;\n&#39;, TextFragment::Newline},
+        {&#39;?&#39;, TextFragment::QuestionMark},
+
+        {&#39;)&#39;, TextFragment::Bracket},
+        {&#39;(&#39;, TextFragment::Bracket},
+        {&#39;[&#39;, TextFragment::Bracket},
+        {&#39;]&#39;, TextFragment::Bracket},
+        {&#39;{&#39;, TextFragment::Bracket},
+        {&#39;}&#39;, TextFragment::Bracket}
+    };
+
+    std::vector&lt;TextFragment&gt; fragments;
+
+    QString buffer;
+    bool wordEnded = false;
+    TextFragment::Delimiter lastDelimiter = TextFragment::Space;
+    for (QChar ch: text)
+    {
+        if (ch == &#39;\r&#39;)
+            continue;
+
+        const auto it = delimiters.find({ch, TextFragment::Space});
+        if (it == delimiters.end()) // Not a delimiter
+        {
+            if (wordEnded) // This is the first letter of a new word
+            {
+                fragments.emplace_back(buffer, lastDelimiter);
+                wordEnded = false;
+                buffer = ch;
+            }
+            else
+                buffer += ch;
+        }
+        else // This is a delimiter. Append it to the current word.
+        {
+            lastDelimiter = it-&gt;delimiterType;
+            wordEnded = true;
+            buffer += ch;
+        }
+    }
+
+    return fragments;
+</code></pre><p>Here we have a state machine that tries hard not to look like one, and is worse for that. It works. But it has a bigger problem than coding style: <em>some</em> delimiters are multi-character, and it just can&#39;t handle them. One example is ellipsis consisting of 3 dots: &#34;&#8230;&#34; I want to tell it apart from a single dot. Another example is I want to distinguish between a hyphen and a dash. A hyphen separates parts of a compound word, e. g. &#34;up-to-date&#34;, and as far as I&#39;m concerned it&#39;s not a punctuation mark. A dash, on the other hand, is: &#34;Joe — and his trusty mutt — was always welcome.&#34; Now, there <em>is</em> a special dash character, but in plain non-Unicode texts both are commonly represented by a hyphen (&#34;-&#34;). Then the only way I see to tell them apart is to only &#34;space+hyphen+space&#34; or &#34;space+hyphen+other punctuation mark&#34; as a dash.</p><p>Example: the sentence</p><blockquote><p>If only he had tried&#8230; well, it doesn&#39;t matter now.</p></blockquote><p>should result in</p><pre><code>{&#34;If &#34;, Space},
+{&#34;only &#34;, Space},
+{&#34;he &#34;, Space},
+{&#34;had &#34;, Space},
+{&#34;tried... &#34;, Ellipsis},
+{&#34;well, &#34;, Comma},
+{&#34;it &#34;, Space},
+{&#34;doesn&#39;t &#34;, Space},
+{&#34;matter &#34;, Space},
+{&#34;now&#34;, Point}
+</code></pre><p>The way I see it, I need some sort of exhaustive parsing instead of my greedy prototype (and, naturally, separators themselves should be represented by strings, not characters). What&#39;s the simplest way to do that? Can I use regular expressions for this (I&#39;m terrible with them)?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>hyphen is a punctuation. Consider the text &#34;we need to fix this up - to date we haven&#39;t bothered&#34; and &#34;fix the errors up-to and including Tuesday&#34;. Relying on spaces won&#39;t help you with sloppy typists.</p><p>Typically though, you handle your text single character at a time, and once you locate the start of a multi-char punctuation, you then process subsequent text at that point. eg. when you find a &#39;.&#39; you then read-ahead to determine in the next 2 characters are also &#39;.&#39;, in which case you combine the 3 into a single &#39;ellipsis&#39; punctuation. The problem becomes one of reading ahead into the stream and, if you do not consume he subsequent characters, put them back into the stream for the main processing loop to work with. This kind of problem is why stream buffers have functions such as putback() and <a href="http://www.cplusplus.com/reference/istream/istream/peek/" rel="nofollow">peek()</a>.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   </div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

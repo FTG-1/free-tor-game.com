@@ -1,0 +1,67 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Replace Type Code with Class (From Refactoring [Fowler]) &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1077078 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1077078" class="post-1077078 software type-software status-publish hentry category-software tag-c tag-refactoring"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Replace Type Code with Class (From Refactoring [Fowler])</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">refactoring</span></p><div class="entry-content"><p>This strategy involves replacing the likes of this:</p><pre><code>public class Politician
+{
+    public const int Infidelity = 0;
+    public const int Embezzlement = 1;
+    public const int FlipFlopping = 2;
+    public const int Murder = 3;
+    public const int BabyKissing = 4;
+
+    public int MostNotableGrievance { get; set; }
+}
+</code></pre><p>With:</p><pre><code>public class Politician
+{
+    public MostNotableGrievance MostNotableGrievance { get; set; }
+}
+
+public class MostNotableGrievance
+{
+    public static readonly MostNotableGrievance Infidelity = new MostNotableGrievance(0);
+    public static readonly MostNotableGrievance Embezzlement = new MostNotableGrievance(1);
+    public static readonly MostNotableGrievance FlipFlopping = new MostNotableGrievance(2);
+    public static readonly MostNotableGrievance Murder = new MostNotableGrievance(3);
+    public static readonly MostNotableGrievance BabyKissing = new MostNotableGrievance(4);
+
+    public int Code { get; private set; }
+
+    private MostNotableGrievance(int code)
+    {
+        Code = code;
+    }
+}
+</code></pre><p>Why exactly is this preferable to making the type an enumeration, like so:</p><pre><code>public class Politician
+{
+    public MostNotableGrievance MostNotableGrievance { get; set; }
+}
+
+public enum MostNotableGrievance
+{
+    Infidelity = 0,
+    Embezzlement = 1,
+    FlipFlopping = 2,
+    Murder = 3,
+    BabyKissing = 4
+}
+</code></pre><p>There is no behavior associated with the type and if there was you would be using a different type of refactoring anyways, for example, &#39;Replace Type Code with Subclasses&#39; + &#39;Replace Conditional with Polymorphism&#39;.</p><p>However, the author does explain why he frowns on this method (in Java?):</p><blockquote><p>Numeric type codes, or enumerations, are a common feature of C-based<br /> languages. With symbolic names they can be quite readable. The problem<br /> is that the symbolic name is only an alias; the compiler still sees<br /> the underlying number. The compiler type checks using the number 177<br /> not the symbolic name. Any method that takes the type code as an<br /> argument expects a number, and there is nothing to force a symbolic<br /> name to be used. This can reduce readability and be a source of bugs.</p></blockquote><p>But when trying to apply this statement to C#, this statement doesn&#39;t appear to be true: it won&#39;t accept a number because an enumeration is actually considered to be a class. So the following code:</p><pre><code>public class Test
+{
+    public void Do()
+    {
+        var temp = new Politician { MostNotableGrievance = 1 };
+    }
+}
+</code></pre><p>Will not compile. So can this refactoring be considered unecessary in newer high-level languages, like C#, or am I not considering something?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I think you&#39;ve almost answered your own question there.</p><p>The second piece of code is preferred over the first because it offers type-safety. With the first piece, if you have a similar enumeration of Fish then you can say something like</p><pre><code>MostNotableGrievance grievance = Fish.Haddock;
+</code></pre><p>and the compiler won&#39;t care. If Fish.Haddock = 2 then the above will be exactly equivalent to</p><pre><code>MostNotableGrievance grievance = MostNotableGrievance.FlipFlopping;
+</code></pre><p>but obviously not instantly readable as such.</p><p>The reason enumerations are often no better is because the implicit conversion to and from int leave you with the exact same problem.</p><p>But, in C#, there is no such implicit conversion, so an enum is a better structure to use. You&#39;ll rarely see either of the first two approaches used.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-classes-instance-members-vs-enum/'>C# Classes instance members vs. enum</a></li><li class="list-group-item"><a href='../c-is-having-public-constants-bad/'>C# &#8211; Is having public constants &#8220;bad&#8221;</a></li><li class="list-group-item"><a href='../c-encapsulating-a-class-within-another-class-to-hide-its-exposed-properties-and-details/'>C# &#8211; Encapsulating a class within another class to hide its exposed properties and details</a></li><li class="list-group-item"><a href='../c-const-vs-readonly-for-a-singleton/'>C# &#8211; const vs. readonly for a singleton</a></li><li class="list-group-item"><a href='../c-force-derived-class-to-implement-static-method-c/'>C# &#8211; Force Derived Class to Implement Static Method C#</a></li><li class="list-group-item"><a href='../c-implementing-a-service-layer-with-a-static-class/'>C# &#8211; Implementing a Service Layer with a Static Class</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

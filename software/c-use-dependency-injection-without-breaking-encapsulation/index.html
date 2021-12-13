@@ -1,0 +1,128 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211;  use Dependency Injection without breaking Encapsulation &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1068996 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1068996" class="post-1068996 software type-software status-publish hentry category-software tag-c tag-dependency-injection tag-encapsulation"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211;  use Dependency Injection without breaking Encapsulation</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">dependency-injection</span><span class="mr-2 badge badge-warning">encapsulation</span></p><div class="entry-content"><p>Here is my Solution and projects:</p><ul><li>BookStore <em>(solution)</em><ul><li>BookStore.Coupler <em>(project)</em><ul><li>Bootstrapper.cs</li></ul></li><li>BookStore.Domain <em>(project)</em><ul><li>CreateBookCommandValidator.cs</li><li>CompositeValidator.cs</li><li>IValidate.cs</li><li>IValidator.cs</li><li>ICommandHandler.cs</li></ul></li><li>BookStore.Infrastructure <em>(project)</em><ul><li>CreateBookCommandHandler.cs</li><li>ValidationCommandHandlerDecorator.cs</li></ul></li><li>BookStore.Web <em>(project)</em><ul><li>Global.asax</li></ul></li><li>BookStore.BatchProcesses <em>(project)</em><ul><li>Program.cs</li></ul></li></ul></li></ul><p><strong>Bootstrapper.cs</strong>:</p><pre><code>public static class Bootstrapper.cs 
+{
+    // I&#39;m using SimpleInjector as my DI Container
+    public static void Initialize(Container container) 
+    {
+        container.RegisterManyForOpenGeneric(typeof(ICommandHandler&lt;&gt;), typeof(CreateBookCommandHandler).Assembly);
+        container.RegisterDecorator(typeof(ICommandHandler&lt;&gt;), typeof(ValidationCommandHandlerDecorator&lt;&gt;));
+        container.RegisterManyForOpenGeneric(typeof(IValidate&lt;&gt;),
+            AccessibilityOption.PublicTypesOnly,
+            (serviceType, implTypes) =&gt; container.RegisterAll(serviceType, implTypes),
+            typeof(IValidate&lt;&gt;).Assembly);
+        container.RegisterSingleOpenGeneric(typeof(IValidator&lt;&gt;), typeof(CompositeValidator&lt;&gt;));
+    }
+}
+</code></pre><p><strong>CreateBookCommandValidator.cs</strong></p><pre><code>public class CreateBookCommandValidator : IValidate&lt;CreateBookCommand&gt;
+{
+    public IEnumerable&lt;IValidationResult&gt; Validate(CreateBookCommand book)
+    {
+        if (book.Author == &#34;Evan&#34;)
+        {
+            yield return new ValidationResult&lt;CreateBookCommand&gt;(&#34;Evan cannot be the Author!&#34;, p =&gt; p.Author);
+        }
+        if (book.Price &lt; 0)
+        {
+            yield return new ValidationResult&lt;CreateBookCommand&gt;(&#34;The price can not be less than zero&#34;, p =&gt; p.Price);
+        }
+    }
+}
+</code></pre><p><strong>CompositeValidator.cs</strong></p><pre><code>public class CompositeValidator&lt;T&gt; : IValidator&lt;T&gt;
+{
+    private readonly IEnumerable&lt;IValidate&lt;T&gt;&gt; validators;
+
+    public CompositeValidator(IEnumerable&lt;IValidate&lt;T&gt;&gt; validators)
+    {
+        this.validators = validators;
+    }
+
+    public IEnumerable&lt;IValidationResult&gt; Validate(T instance)
+    {
+        var allResults = new List&lt;IValidationResult&gt;();
+
+        foreach (var validator in this.validators)
+        {
+            var results = validator.Validate(instance);
+            allResults.AddRange(results);
+        }
+        return allResults;
+    }
+}
+</code></pre><p><strong>IValidate.cs</strong></p><pre><code>public interface IValidate&lt;T&gt;
+{
+    IEnumerable&lt;IValidationResult&gt; Validate(T instance);
+}
+</code></pre><p><strong>IValidator.cs</strong></p><pre><code>public interface IValidator&lt;T&gt;
+{
+    IEnumerable&lt;IValidationResult&gt; Validate(T instance);
+}
+</code></pre><p><strong>ICommandHandler.cs</strong></p><pre><code>public interface ICommandHandler&lt;TCommand&gt;
+{
+    void Handle(TCommand command);
+}
+</code></pre><p><strong>CreateBookCommandHandler.cs</strong></p><pre><code>public class CreateBookCommandHandler : ICommandHandler&lt;CreateBookCommand&gt;
+{
+    private readonly IBookStore _bookStore;
+
+    public CreateBookCommandHandler(IBookStore bookStore)
+    {
+        _bookStore = bookStore;
+    }
+
+    public void Handle(CreateBookCommand command)
+    {
+        var book = new Book { Author = command.Author, Name = command.Name, Price = command.Price };
+        _bookStore.SaveBook(book);
+    }
+}
+</code></pre><p><strong>ValidationCommandHandlerDecorator.cs</strong></p><pre><code>public class ValidationCommandHandlerDecorator&lt;TCommand&gt; : ICommandHandler&lt;TCommand&gt;
+{
+    private readonly ICommandHandler&lt;TCommand&gt; decorated;
+    private readonly IValidator&lt;TCommand&gt; validator;
+
+    public ValidationCommandHandlerDecorator(ICommandHandler&lt;TCommand&gt; decorated, IValidator&lt;TCommand&gt; validator)
+    {
+        this.decorated = decorated;
+        this.validator = validator;
+    }
+
+    public void Handle(TCommand command)
+    {
+        var results = validator.Validate(command);
+
+        if (!results.IsValid())
+        {
+            throw new ValidationException(results);
+        }
+
+        decorated.Handle(command);
+    }
+}
+</code></pre><p><strong>Global.asax</strong></p><pre><code>// inside App_Start()
+var container = new Container();
+Bootstrapper.Initialize(container);
+// more MVC specific bootstrapping to the container. Like wiring up controllers, filters, etc..
+</code></pre><p><strong>Program.cs</strong></p><pre><code>// Pretty much the same as the Global.asax
+</code></pre><p>Sorry for the long setup to the problem, I have no better way of explaining this other than detailing my actual problem.</p><p>I don&#39;t want to make my CreateBookCommandValidator <code>public</code>. I would rather it be <code>internal</code> but if I make it <code>internal</code> then I will not be able to register it with my DI Container.  The reason I would like it to be internal is because the only project that should have notion of my IValidate&lt;&gt; implementations are in the BookStore.Domain project.  Any other project just needs to consume IValidator&lt;&gt; and the CompositeValidator should be resolved which will fulfill all validations.</p><p>How can I use Dependency Injection without breaking encapsulation?  Or am I going about this all wrong?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Making the <code>CreateBookCommandValidator</code> public does not violate encapsulation, since</p><blockquote><p>Encapsulation is used to hide the values or state of a structured data
+ object inside a class, preventing unauthorized parties direct access
+ to them (<a href="https://en.wikipedia.org/wiki/Encapsulation_(object-oriented_programming)" rel="nofollow">wikipedia</a>)</p></blockquote><p>Your <code>CreateBookCommandValidator</code> doesn&#39;t allow access to its data members (it currently doesn&#39;t seem to have any) so its not violating encapsulation.</p><p>Making this class public does not violate any other principle (such as the <a href="https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)" rel="nofollow">SOLID</a> principles), because:</p><ul><li>That class has a single well defined responsibility and therefore follows the Single Responsibility Principle.</li><li>Adding new validators to the system can be done without changing a single line of code and you therefore follow the Open/Closed Principle.</li><li>That IValidator&lt;T&gt; interface that this class implements is narrow (has only one member) and follows the Interface Segregation Principle.</li><li>Your consumers only depend on that IValidator&lt;T&gt; interface and therefore follow the Dependency Inversion Principle.</li></ul><p>You can only make the <code>CreateBookCommandValidator</code> internal if the class isn&#39;t consumed directly from outside the library, but this hardly ever is the case, since your unit tests are an important consumer of this class (and almost every class in your system).</p><p>Although you can make the class internal and use [InternalsVisibleTo] to allow the unit test project to access your project&#39;s internals, why bother?</p><p>The most important reason to make classes internal is to prevent external parties (that you don&#39;t have control over) to take a dependency on such class, because that would prevent you from making future changing to that class without breaking anything. In other words, this only holds when you&#39;re creating a reusable library (such as a dependency injection library). As a matter of fact, Simple Injector contains internal stuff and its unit test project tests these internals.</p><p>However, if you&#39;re not creating a reusable project, this problem does not exist. It does not exist, because you can change the projects that depend on it, and the other developers in your team will have to follow your guidelines. And one simple guideline will do: Program to an abstraction; not an implementation (the Dependency Inversion Principle).</p><p>So long story short, don&#39;t make this class internal unless you are writing a reusable library.</p><p>But if you still want to make this class internal, you can still register it with Simple Injector without any problem like this:</p><pre><code>container.RegisterManyForOpenGeneric(typeof(IValidate&lt;&gt;),
+    AccessibilityOption.AllTypes,
+    container.RegisterAll,
+    typeof(IValidate&lt;&gt;).Assembly);
+</code></pre><p>The only thing to make sure of is that your all validators have a public constructor, even though they are internal. If you really want your types to have an internal constructor (don&#39;t really know why you would want that) you can override the <a href="https://simpleinjector.readthedocs.org/en/latest/extensibility.html#overriding-constructor-resolution-behavior" rel="nofollow">Constructor Resolution Behavior</a>.</p><p><strong>UPDATE</strong></p><p>Since <a href="https://simpleinjector.codeplex.com/releases/view/120507" rel="nofollow">Simple Injector v2.6</a>, the default behavior of <code>RegisterManyForOpenGeneric</code> is to register both public and internal types. So supplying <code>AccessibilityOption.AllTypes</code> is now redundant and the following statement will register both public and internal types:</p><pre><code>container.RegisterManyForOpenGeneric(typeof(IValidate&lt;&gt;),
+    container.RegisterAll,
+    typeof(IValidate&lt;&gt;).Assembly);
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-use-dependency-injection-for-data-objects/'>C# &#8211; Use Dependency Injection For Data Objects</a></li><li class="list-group-item"><a href='../understanding-dependency-injection/'>Understanding dependency injection</a></li><li class="list-group-item"><a href='../c-dependency-injection-placement/'>C# Dependency Injection Placement</a></li><li class="list-group-item"><a href='../c-dependency-injection-vs-singleton-pattern/'>C# &#8211; Dependency Injection vs Singleton Pattern</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

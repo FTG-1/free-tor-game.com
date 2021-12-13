@@ -1,0 +1,67 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Runtime Inheritance &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1085342 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1085342" class="post-1085342 software type-software status-publish hentry category-software tag-inheritance tag-programming-languages"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Runtime Inheritance</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">inheritance</span><span class="mr-2 badge badge-info">programming-languages</span></p><div class="entry-content"><p>I recently came across the term &#34;runtime inheritance&#34; when reading <a href="https://en.wikipedia.org/wiki/Class-based_programming">this</a> Wikipedia article. I tried to search for it and came across <a href="http://searchsoa.techtarget.com/answer/Differences-between-compile-time-and-run-time-inheritance">this</a> article that tries to explain the difference between <strong>runtime and compile time inheritance</strong>, in which they explain  runtime inheritance as the &#34;ability to <em>construct the parent/child hierarchy tree at runtime</em> &#34;. It also explains that it could be achieved in Java by using tools that modify the bytecode after compilation of the source, as Java does not natively support it. It did not give a clear idea about how it could be used or what languages support it natively.</p><p>I would like to know more about runtime inheritance. I would like answers for these :</p><ol><li>What exactly is runtime inheritance ?</li><li>What type of languages support it ?</li><li>Any situation in which it could prove useful ?</li></ol></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><h2>Runtime Inheritance</h2><p>Runtime inheritance is, as you say, constructing the parent/child hierarchy tree at runtime. However, you seem unsure as to what that might mean or look like. In languages like Java, you basically have to define the class hierarchy at compile time. That means your code has to have this general structure.</p><pre><code>class NewClass {
+    //Some methods and stuff
+}
+class ChildClass extends NewClass {
+   //Some methods and stuff
+}
+</code></pre><p>It&#39;s not really possible (read: convenient), outside of very arcane tricks like modifying byte code on the fly, to define a new class. Contrast that with Python, where similar code can be done like this:</p><pre><code>class NewClass():
+    pass
+
+class ChildClass(NewClass):
+    pass
+</code></pre><p>Or in the interpreter on the fly:</p><pre><code>&gt;&gt;&gt; NewClass()
+Traceback (most recent call last):
+  File &#34;&lt;pyshell#0&gt;&#34;, line 1, in &lt;module&gt;
+    NewClass()
+NameError: name &#39;NewClass&#39; is not defined
+&gt;&gt;&gt; class NewClass():
+    pass
+
+&gt;&gt;&gt; NewClass()
+&lt;__main__.NewClass object at 0x02AC6970&gt;
+&gt;&gt;&gt; ChildClass()
+Traceback (most recent call last):
+  File &#34;&lt;pyshell#5&gt;&#34;, line 1, in &lt;module&gt;
+    ChildClass()
+NameError: name &#39;ChildClass&#39; is not defined
+&gt;&gt;&gt; class ChildClass(NewClass):
+    pass
+
+&gt;&gt;&gt; nc = NewClass()
+&gt;&gt;&gt; cc = ChildClass()
+&gt;&gt;&gt; nc
+&lt;__main__.NewClass object at 0x02E9B190&gt;
+&gt;&gt;&gt; cc
+&lt;__main__.ChildClass object at 0x02E9B150&gt;
+</code></pre><p>Here, I&#39;ve created classes of the same names as in Java, but I&#39;ve done it on the fly in an interpreter. No compile time restrictions at all. But wait, there&#39;s more! You can create a new class, on the fly, with just three things: a name, an inheritance order tuple, and a namespace dictionary (or dictionary-like object).</p><pre><code>&gt;&gt;&gt; NewClass
+Traceback (most recent call last):
+  File &#34;&lt;pyshell#0&gt;&#34;, line 1, in &lt;module&gt;
+    NewClass
+NameError: name &#39;NewClass&#39; is not defined
+&gt;&gt;&gt; NewClass = type(&#34;NewClass&#34;, (), {})
+&gt;&gt;&gt; NewClass()
+&lt;__main__.NewClass object at 0x02AA6970&gt;
+&gt;&gt;&gt; ChildClass
+Traceback (most recent call last):
+  File &#34;&lt;pyshell#3&gt;&#34;, line 1, in &lt;module&gt;
+    ChildClass
+NameError: name &#39;ChildClass&#39; is not defined
+&gt;&gt;&gt; ChildClass = type(&#34;ChildClass&#34;, (NewClass,), {})
+&gt;&gt;&gt; ChildClass()
+&lt;__main__.ChildClass object at 0x02EBB190&gt;
+&gt;&gt;&gt; 
+</code></pre><p>Note how in this language you can create a new class, possibly using variables for the name, inheritance order, and namespace. <em>Without even using the class keyword</em>. <strong>That</strong> is runtime inheritance.</p><p>As a closing note for this section, I don&#39;t want to give the impression that this is somehow the only way to do it. Prototype based inheritance as implemented in JavaScript is quite a different approach to this, and supports fascinating and useful (but also very dangerous) things like reassigning the parent class on an existing object.</p><h2>What type of languages support it</h2><p>I don&#39;t think there&#39;s really a good way to classify it without being circular and saying &#34;Runtime Inheritance is supported in Runtime Inheritable languages&#34;. Depending on who you talk to, I&#39;m confident you can find this type of feature in any paradigm (functional, procedural, object-oriented, etc.). It&#39;s really just another language feature, albeit a powerful one.</p><h2>Any situation in which it could prove useful ?</h2><p><em>Absolutely</em>. Options include, but aren&#39;t limited to, these:</p><ul><li>Implementing an interpreter where the programmer can define types</li><li>Creating appropriate data types when reading in data, such as a network remote procedure call, or creating DOM node types based on an XML schema</li><li>Any kind of simulation software where the user can create their own category of objects and then make some of them.</li><li>Creating a new class to represent typeclasses in a regular expression parser</li></ul></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../subscript-binding-and-array-categories/'>Subscript binding and array categories</a></li><li class="list-group-item"><a href='../javascript-why-is-the-use-of-constructors-discouraged-when-creating-prototypes/'>Javascript &#8211; Why is the use of constructors discouraged when creating prototypes</a></li><li class="list-group-item"><a href='../java-the-process-of-determining-which-method-in-a-class-hierarchy-should-execute-known-as/'>Java &#8211;  the process of determining which method in a class hierarchy should execute known as</a></li><li class="list-group-item"><a href='../object-oriented-is-prototypal-inheritance-inherently-slower/'>Object-oriented &#8211; Is prototypal inheritance inherently slower</a></li><li class="list-group-item"><a href='../java-when-should-i-extend-a-java-swing-class/'>Java &#8211; When should I extend a Java Swing class</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

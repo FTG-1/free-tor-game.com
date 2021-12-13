@@ -1,0 +1,82 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; How to solve this seating problem &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1076614 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1076614" class="post-1076614 software type-software status-publish hentry category-software tag-algorithms tag-java"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; How to solve this seating problem</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">algorithms</span><span class="mr-2 badge badge-info">java</span></p><div class="entry-content"><p>I was solving a seating problem whose solution seems trivial but I am not able to get it. The problem states in short that we have to seat n (even) students in n/2 rows where students are labelled from 1 to n and no two adjacent students should have consecutive labels like &#34;1 2&#34; or &#34;5 4&#34;. Also every student is either in class L or R. No row should have a R students at the left position and L student in the right position simultaneously.</p><p>My approach was to first choose a student from a non-empty class and then iterate through all other left students so that whichever is feasible to be seated with him and make them sit and so on. In this process I choose first from L class and seat him on the left and if it is empty then from the R class.</p><p>Here:</p><pre><code>        List&lt;Integer&gt; L = new ArrayList&lt;&gt;();
+        List&lt;Integer&gt; R = new ArrayList&lt;&gt;();
+        int n = in.nextInt();//number of students
+        String s = in.nextLine();//It is a string like &#34;RRLRLRLL&#34; where i^th character is the class of i^th student
+        for (int i = 0; i &lt; n; i++) {
+            if (s.charAt(i) == &#39;L&#39;)
+                L.add(i + 1);
+            else
+                R.add(i + 1);
+        }
+        for (int i = 0; i &lt; n / 2; i++) {
+            int x = (L.size() &gt; 0) ? L.remove(0) : R.remove(0);
+            int y = 0;
+            if (L.size() &gt; 0) {
+                y = findfrom(x, L, R);
+            } else if (R.size() &gt; 0) {
+                y = findfrom(x, R, L);
+            }
+            out.println(x + &#34; &#34; + y);
+
+private int findfrom(int x, List&lt;Integer&gt; L, List&lt;Integer&gt; R) {
+    int y = -1;
+    int j = 0;
+    do {
+        y = L.get(j);
+        j++;
+    } while (Math.abs(y - x) == 1 &amp;&amp; j &lt; L.size());
+    if (Math.abs(y - x) != 1)
+        L.remove(new Integer(y));
+    else
+        y = findfrom(x, R, L);
+    return y;
+}
+</code></pre><p>But this would fail for the case where n=6 and L=[2,3,6] and R=[1,4,5] (RLLRRL).<br /> Now we will choose 2 and 6. Then 3 and 1. Then left are 4 and 5, which is a problem.</p><p>I also thought of doing:<br /> &#8211; DFS<br /> &#8211; Random arrangement followed by swapping wrong student to another feasible position</p><p>What can I do, What am I not thinking?</p><hr/><p><sup>See <a href="http://codeforces.com/problemset/problem/234/A" rel="nofollow">&#34;Problem-234A : Codeforces&#34;</a> for more details.</sup></p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>The problem is inviting you to overthink it.  You can solve it by making sure you don&#39;t give each rule more power over you than it deserves.  This is a requirements gathering problem.  Always boil a requirement down to the real needs.  Don&#39;t let it create added assumptions about what it needs.</p><p>What you&#39;re missing is that the RL part of the problem (elbow bumping) is trivial to solve.</p><p>One of the example outputs looks like this:</p><pre><code>1 4
+2 5
+6 3
+</code></pre><p>That means 1 and 2 are not considered adjacent to each other.  So being adjacent only happens horizontally, that is, at the same desk.</p><p>That makes the RL problem trivial because it doesn&#39;t matter what desk is next to what desk.  You just need pairs whose numbers don&#39;t conflict.  Once you have that you can fix RL by just swapping them because LR is just as legal as LL and RR.</p><p>I can even predict how they will always get their output.  Their method of finding non conflicting pairs is to just cut the group in half to make two groups and pair lowest to highest.</p><p>It&#39;s obvious if you think of this:</p><pre><code>6  
+LLRLLL
+</code></pre><p>as</p><pre><code>L R  
+===
+1  
+2  
+  3  
+---
+4  
+5  
+6  
+</code></pre><p>Pairing from first to last gives the example output.  Again:</p><pre><code>1 4
+2 5
+6 3
+</code></pre><p>The handedness looks like:</p><pre><code>L L
+L L
+L R
+</code></pre><p>You could have also made it</p><pre><code>L L
+L L
+R L
+</code></pre><p>with</p><pre><code>1 4
+2 5
+3 6
+</code></pre><p>But that causes the elbow bumping.</p><p>Pairing the first half with the second half in order wont pair conflicting numbers together unless n = 2.  Which is fine because if n = 2 the problem isn&#39;t solvable anyway.</p><p>A pseudo code solution:</p><blockquote><p>Students 1 to n/2, please sit at the desk that matches your student number.  Of the two seats at that desk choose the one that keeps your elbow from poking your partner.</p><p>Students n/2+1 to n, please sit in the remaining chair at the desk that is n/2 less than your student number.</p></blockquote><p>Done this way you don&#39;t even need to swap.</p><p>This solution didn&#39;t just come to me.  At first I was thinking about backtracking, depth first searching, rule based reasoning.  Then I thought, wait, start simple and make the problem prove that it&#39;s complicated.  Lets see what it looks like if I just visualize the problem in text.  I started typing numbers in different orders, row first, column first.  I tried sliding the column around.  I hit on the idea of showing the handedness of numbers by creating L and R columns so I didn&#39;t have to keep looking back at LLRLLL to see which was which.  After that it all fell into place. A glance at the sample output told me exactly what they&#39;d done. All because I&#39;d created a useful way to express the input that simplified solving the problem.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/c-can-anyone-help-solve-this-complex-algorithmic-problem/'>C# &#8211; Can anyone help solve this complex algorithmic problem</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/relative-scoring-system-how-to-solve-this/'>Relative Scoring system &#8211; How to solve this</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/java-how-to-solve-the-problem-of-nested-comments/'>Java &#8211; How to solve the problem of nested comments</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,73 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Unit-testing &#8211; Unit testing protected methods which have no reason to be public &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1076616 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1076616" class="post-1076616 software type-software status-publish hentry category-software tag-abstraction tag-clean-code tag-polymorphism tag-unit-testing"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Unit-testing &#8211; Unit testing protected methods which have no reason to be public</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">abstraction</span><span class="mr-2 badge badge-info">clean code</span><span class="mr-2 badge badge-warning">polymorphism</span><span class="mr-2 badge badge-primary">unit testing</span></p><div class="entry-content"><p>I need to make a sponsorship system with complex business requirements. Basically, after a user makes a payment, the system should get triggered. There are many different types of sponsoring, so I found abstractions to make my life simpler now and in the future.</p><p>To use polymorphism, I first created an abstract class that every sponsoring system would inherit from, and implement each abstract method needed.</p><p>Here&#39;s the class :</p><pre><code>abstract class SponsorshipService
+{
+    /** @var UserKang */
+    protected $user;
+    /** @var UserKang */
+    protected $sponsor;
+    /** @var SponsorUser */
+    protected $sponsorship;
+    /** @var int */
+    protected $amount;
+    /** @var BillingMicroService */
+    protected $billingMicroService;
+    /** @var MailMicroService */
+    protected $mailMicroService;
+
+    public function __construct(BillingMicroService $billingMicroService, MailMicroService $mailMicroService)
+    {
+        $this-&gt;billingMicroService = $billingMicroService;
+        $this-&gt;mailMicroService = $mailMicroService;
+    }
+
+    public function apply(UserKang $user, int $amount): bool
+    {
+        $this-&gt;user = $user;
+        $this-&gt;amount = $amount;
+
+        if (!$this-&gt;user-&gt;isSponsored()) {
+            return false;
+        }
+
+        $this-&gt;sponsor = $this-&gt;user-&gt;getSponsor();
+        $this-&gt;sponsorship = $this-&gt;user-&gt;getSponsorship();
+
+        if (!$this-&gt;checkSponsorshipAppliance()) {
+            return false;
+        }
+
+        $offeredCash = $this-&gt;getOfferedCash();
+        $isCreditOffered = $this-&gt;offerCreditSponsorship($offeredCash);
+
+        if (!$isCreditOffered) {
+            return false;
+        }
+
+        $this-&gt;sendEmail();
+        $this-&gt;updateSponsorship();
+    }
+
+    abstract protected function checkSponsorshipAppliance(): bool;
+
+    abstract protected function getOfferedCash(): int;
+
+    abstract protected function offerCreditSponsorship(): bool;
+
+    abstract protected function sendEmail(): void;
+
+    abstract protected function updateSponsorship(): void;
+}
+</code></pre><p>This is all good so far, but I&#39;d like to unit tests each of these abstract methods for each SponsorshipService implementation I&#39;ll make. But I made these protected, because it doesn&#39;t seem like they have any reason to be public, and I think the less public methods a class has, the easier it is to use, and the safer it is too.</p><p>What&#39;s wrong in this design ? Clearly I don&#39;t want to unit test <code>apply</code> in every possible way for every implementation as it would be a nightmare as much now as it&#39;d be in the future.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><blockquote><p>What&#39;s wrong in this design?</p></blockquote><p>It is a subjective question, though here&#39;s some food for thought:</p><hr/><p>The constructor initializes two instance members (<code>billingMicroService</code>, <code>mailMicroService</code>), yet not all instance members — the others get initialized in <code>apply</code>.</p><p>When we have instance fields that can be grouped into two (or more) distinct sets of lifetimes within one class, it suggests that we have conflated what could be independent domain concepts/entities — and this suggests refactoring into two (or more) classes.  (Sometimes one set of instance fields could become parameters instead of another class.)</p><hr/><p><code>apply</code> also conditionally initializes some fields suggesting possible further conflation.</p><hr/><p>Do you expect a single concrete subclass to implement all the features you are offering in the abstract base, like sending emails and offerings of cash as well as offerings of credit?</p><p>This feels like a violation of single responsibility, for one.</p><p>But for another, if you want to mix and match abilities to send emails, with different ways to offer cash, with yet differing ways of offering credit, you&#39;ll have to create a new subclass for each combination — this results in class explosion, and can be addressed  by composition.</p><p>(While it is true that you can introduce abstract <em>subclasses</em> that offer partial functionality so you have more DRY (reuse) than re-implementing things in each concrete subclass, managing a class hierarchy to pick features that way is hard an unnecessary since this can be done more simply with composition instead.)</p><hr/><p>If you use composition instead of inheritance, I believe you&#39;ll find testing individual capabilities easier.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../unit-testing-real-time-unit-testing-or-how-to-mock-now/'>Unit-testing &#8211; Real time unit testing &#8211; or &#8220;how to mock now&#8221;</a></li><li class="list-group-item"><a href='../java-should-i-unit-test-the-subclasses-or-the-abstract-parent-class/'>Java &#8211; Should I unit test the subclasses or the abstract parent class</a></li><li class="list-group-item"><a href='../c-method-to-validate-an-object-should-i-have-one-method-encapsulating-all-validation-logic/'>C# &#8211; Method to validate an object &#8211; should I have one method encapsulating all validation logic</a></li><li class="list-group-item"><a href='../unit-testing-how-to-structure-a-set-of-classes-that-deal-with-external-apis-for-maximum-testability/'>Unit-testing &#8211; How to structure a set of classes that deal with external APIs for maximum testability</a></li><li class="list-group-item"><a href='../python-is-it-possible-advisable-to-combine-unit-testing-and-integration-testing/'>Python &#8211; Is it possible/advisable to combine unit testing and integration testing</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

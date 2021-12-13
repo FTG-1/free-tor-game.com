@@ -1,0 +1,62 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Ny good search algorithm for a single character &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1075662 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1075662" class="post-1075662 software type-software status-publish hentry category-software tag-algorithms tag-string-matching"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Ny good search algorithm for a single character</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">algorithms</span><span class="mr-2 badge badge-info">string-matching</span></p><div class="entry-content"><p>I know several basic string-matching algorithms such as KMP or Boyer-Moore, but all of those analyze the pattern before searching.However, if one has a single character, there is not much to analyze.<br /> So is there any better algorithm than the naive search of comparing every character of the text ?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>It being understood that the worst case is <code>O(N)</code>, there are some very nice micro-optimizations.</p><p>The naive method performs a character comparison and an end-of-text comparison for each character.</p><p>Using a <a href="https://en.wikipedia.org/wiki/Sentinel_value" rel="nofollow noreferrer">sentinel</a> (i.e. a copy of the target character at the end of the text) reduces the number of comparisons to 1 per character.</p><p>At the bit twiddling level there is:</p><pre><code>#define haszero(v)      ( ((v) - 0x01010101UL) &amp; ~(v) &amp; 0x80808080UL )
+#define hasvalue(x, n)  ( haszero((x) ^ (~0UL / 255 * (n))) )
+</code></pre><p>to know if any byte in a word (<code>x</code>) has a specific value (<code>n</code>).</p><p>The subexpression <code>v - 0x01010101UL</code>, evaluates to a high bit set in any byte whenever the corresponding byte in <code>v</code> is zero or greater than <code>0x80</code>.</p><p>The sub-expression <code>~v &amp; 0x80808080UL</code> evaluates to high bits set in bytes where the byte of <code>v</code> doesn&#39;t have its high bit set (so the byte was less than <code>0x80</code>).</p><p>By ANDing these two sub-expressions (<code>haszero</code>) the result is the high bits set where the bytes in <code>v</code> were zero, since the high bits set due to a value greater than <code>0x80</code> in the first sub-expression are masked off by the second (April 27, 1987 by Alan Mycroft).</p><p>Now we can XOR the value to test (<code>x</code>) with a word that has been filled with the byte value in which we&#39;re interested (<code>n</code>). Because XORing a value with itself results in a zero byte and nonzero otherwise, we can pass the result to <code>haszero</code>.</p><p>This is often used in a typical <a href="http://en.cppreference.com/w/c/string/byte/strchr" rel="nofollow noreferrer"><code>strchr</code></a> implementation.</p><p>(Stephen M Bennet suggested this on December 13, 2009. Further details in the well known <a href="http://graphics.stanford.edu/~seander/bithacks.html" rel="nofollow noreferrer">Bit Twiddling Hacks</a>).</p><hr/><p>PS</p><blockquote><p>this code is broken for any combination of <code>1111</code>&#39;s next to a <code>0</code></p></blockquote><p>The hack passes the brute force test (just be patient):</p><pre class="lang-c++ prettyprint-override"><code>#include &lt;iostream&gt;
+#include &lt;limits&gt;
+
+bool haszero(std::uint32_t v)
+{
+  return (v - std::uint32_t(0x01010101)) &amp; ~v &amp; std::uint32_t(0x80808080);
+}
+
+bool hasvalue(std::uint32_t x, unsigned char n)
+{
+  return haszero(x ^ (~std::uint32_t(0) / 255 * n));
+}
+
+bool hasvalue_slow(std::uint32_t x, unsigned char n)
+{
+  for (unsigned i(0); i &lt; 32; i += 8)
+    if (((x &gt;&gt; i) &amp; 0xFF) == n)
+      return true;
+
+  return false;
+}
+
+int main()
+{
+  const std::uint64_t stop(std::numeric_limits&lt;std::uint32_t&gt;::max());
+
+  for (unsigned c(0); c &lt; 256; ++c)
+  {
+    std::cout &lt;&lt; &#34;Testing &#34; &lt;&lt; c &lt;&lt; std::endl;
+
+    for (std::uint64_t w(0); w != stop; ++w)
+    {
+      if (w &amp;&amp; w % 100000000 == 0)
+        std::cout &lt;&lt; w * 100 / stop &lt;&lt; &#34;%\r&#34; &lt;&lt; std::flush;
+
+      const bool h(hasvalue(w, c));
+      const bool hs(hasvalue_slow(w, c));
+
+      if (h != hs)
+        std::cerr &lt;&lt; &#34;hasvalue(&#34; &lt;&lt; w &lt;&lt; &#39;,&#39; &lt;&lt; c &lt;&lt; &#34;) is &#34; &lt;&lt; h &lt;&lt; &#39;\n&#39;;
+    }
+  }
+
+  return 0;
+}
+</code></pre><blockquote><p>Lots of upvotes for an answer which makes the assumption one chararacter=one byte, which is nowadays not the standard any more</p></blockquote><p>Thank you for the remark.</p><p>The answer was meant to be anything but an essay on multi-byte / variable-width encodings :-) (in all fairness that&#39;s not my area of expertise and I&#39;m not sure it&#39;s what the OP was looking for).</p><p>Anyway it seems to me that the above ideas/tricks could somewhat be adapted to MBE (especially <a href="https://en.m.wikipedia.org/wiki/Self-synchronizing_code" rel="nofollow noreferrer">self-synchronizing encodings</a>):</p><ul><li>as noted in <a href="https://softwareengineering.stackexchange.com/questions/313215/is-there-any-good-search-algorithm-for-a-single-character/313217#comment661854_313217">Johan&#39;s comment</a> the hack can &#39;easily&#39; be extended to work for double bytes or anything (of course you cannot stretch it too much);</li><li>a typical function that locates a character in a multibyte character string:<ul><li>contains calls to <code>strchr</code> / <code>strstr</code> (e.g. <a href="https://github.com/coreutils/gnulib/blob/master/lib/mbschr.c" rel="nofollow noreferrer">GNUlib coreutils mbschr</a>)</li><li>expects them to be well tuned.</li></ul></li><li>the sentinel technique can be used with a little foresight.</li></ul></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-which-string-search-algorithm-is-actually-the-fastest/'>C++ &#8211; Which string search algorithm is actually the fastest</a></li><li class="list-group-item"><a href='../php-how-would-you-go-about-making-a-search-algorithm-for-a-crm/'>Php &#8211; How would you go about making a search algorithm for a CRM</a></li><li class="list-group-item"><a href='../best-method-for-pattern-matching-on-binary-string/'>Best method for Pattern Matching on Binary String</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

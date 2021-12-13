@@ -1,0 +1,195 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Memory/cache performance in working with arrays in C &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1068463 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1068463" class="post-1068463 software type-software status-publish hentry category-software tag-c tag-c99 tag-memory"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Memory/cache performance in working with arrays in C</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">c99</span><span class="mr-2 badge badge-warning">memory</span></p><div class="entry-content"><p>I&#39;ve been toying with some array examples in C. I want to understand more about memory concepts, alignment, and cache. Especially on large arrays on heap. Sometimes I work on large images (extremely large) so that&#39;s why it&#39;s important to me, but it doesn&#39;t matter for what I&#39;m asking now.</p><p>I wrote a following example:</p><pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;inttypes.h&gt;
+#include &lt;GLFW/glfw3.h&gt;
+
+#define ARRAY_NUM 1000000 * 1000 // GIG
+int main(int argc, char *argv[]) {
+
+    if(!glfwInit()) {
+        exit(EXIT_FAILURE);
+    }
+
+    uint64_t *array = malloc(sizeof(uint64_t) * ARRAY_NUM);
+
+    double time_start = glfwGetTime();
+    for(uint64_t i = 0; i &lt; ARRAY_NUM; ++i) {
+        array[i] = 0xff;
+    }
+    double time_end = glfwGetTime();
+
+    free(array);
+    glfwTerminate();
+
+    double performance = ((ARRAY_NUM * sizeof(uint64_t))/1000000) / (time_end - time_start);
+    printf(&#34;Done in %f\n&#34;, (time_end - time_start));
+    printf(&#34;Performance: %f MB/s\n&#34;, performance);
+
+    exit(EXIT_SUCCESS);
+}
+</code></pre><p>With 1 gig allocated I get:</p><pre><code>Done in 36.126213
+Performance: 221.445854 MB/s
+</code></pre><p>300 meg I get:</p><pre><code>Done in 7.564931
+Performance: 317.253391 MB/s
+</code></pre><p>200 meg I get:</p><pre><code>Done in 1.279391
+Performance: 1250.594728 MB/s
+</code></pre><p>100 meg I get:</p><pre><code>Done in 0.355763
+Performance: 2248.685313 MB/s
+</code></pre><p>10 meg I get:</p><pre><code>Done in 0.036575
+Performance: 2187.315761 MB/s
+</code></pre><p>and 1 meg I get:</p><pre><code>Done in 0.004050
+Performance: 1975.160383 MB/s
+</code></pre><p>Of course, timings vary ~5-10% between runs.</p><p>Now, what I&#39;m wondering here is what can and should be done in order to have consistent maximum throughput one could get in order to traverse arrays on the heap &#8211; especially large ones. Something tells me that even highest numbers of 2+ GB/s aren&#39;t top numbers here, and what interests me is 1 meg result vs 10 and 100 &#8211; it seems cache gets hot only after certain time.</p><p>I am using C99 (gcc5) and my understanding is that with malloc and uint64_t I ought to get aligned memory already. If not, is there maybe a sure way to that? If that&#39;s the culprit altogether, of course. Maybe I&#39;m hitting cache lines wrong, or hitting OS&#39;s VM pages that it doesn&#39;t like? Where would one even start in optimizing linear access within a large array?</p><p>Details:</p><ul><li>I&#39;ve done this on a 2011 MacbookAir4,2 (I5-2557M) with 4GB RAM and SSD (maybe that&#39;s the problem &#8211; low amount of RAM and malloc couldn&#39;t get the block in one go? I have to test this on my workstation when I get to it)</li><li>gcc 5.2.0 (homebrew) with flags: <code>-pedantic -std=c99 -Wall -Werror -Wextra -Wno-unused -O9</code> (yeah, niner&#8230; I use 3 otherwise, but you never know) with additional include and library flags as well as framework flags in order to use glfw timer which I tend to use. I could&#39;ve done it without, it doesn&#39;t matter.</li></ul><p><strong>EDIT:</strong></p><p>After some thoughts Erik implanted me with, I made another test. Showing some of the stuff related to pre-fetching and, hopefully, cache as well.</p><pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt; // memcpy
+#include &lt;inttypes.h&gt;
+#include &lt;GLFW/glfw3.h&gt;
+
+#define ARRAY_NUM 1000000 * 125 // GIG
+int main(int argc, char *argv[]) {
+
+    double performance = 0.0;
+
+    if(!glfwInit()) {
+        exit(EXIT_FAILURE);
+    }
+
+    uint64_t *array = malloc(sizeof(uint64_t) * ARRAY_NUM);
+    uint64_t *array_copy = malloc(sizeof(uint64_t) * ARRAY_NUM);
+
+    double time_start = glfwGetTime();
+    for(uint64_t i = 0; i &lt; ARRAY_NUM; ++i) {
+        array[i] = 0xff;
+    }
+    double time_end = glfwGetTime();
+
+    performance = ((ARRAY_NUM * sizeof(uint64_t))/1000000) / (time_end - time_start);
+    printf(&#34;Init done in %f - size of array: %lu MBs (x2)\n&#34;, (time_end - time_start), (ARRAY_NUM*sizeof(uint64_t)/1000000));
+    printf(&#34;Performance: %f MB/s\n\n&#34;, performance);
+
+    performance = 0;
+    time_start = glfwGetTime();
+    for(uint64_t i = 0; i &lt; ARRAY_NUM; ++i) {
+        array_copy[i] = array[i];
+    }
+    time_end = glfwGetTime();
+
+    performance = ((ARRAY_NUM * sizeof(uint64_t))/1000000) / (time_end - time_start);
+    printf(&#34;Copying (linear) done in %f\n&#34;, (time_end - time_start));
+    printf(&#34;Performance: %f MB/s\n\n&#34;, performance);
+
+    performance = 0;
+    time_start = glfwGetTime();
+    for(uint64_t i = 0; i &lt; ARRAY_NUM; i=i+8) {
+        array_copy[i] = array[i];
+        if(i &lt; (ARRAY_NUM-8)) {
+            array_copy[i+1] = array[i+1];
+            array_copy[i+2] = array[i+2];
+            array_copy[i+3] = array[i+3];
+            array_copy[i+4] = array[i+4];
+            array_copy[i+5] = array[i+5];
+            array_copy[i+6] = array[i+6];
+            array_copy[i+7] = array[i+7];
+        }
+    }
+    time_end = glfwGetTime();
+
+    performance = ((ARRAY_NUM * sizeof(uint64_t))/1000000) / (time_end - time_start);
+    printf(&#34;Copying (stride 8) done in %f\n&#34;, (time_end - time_start));
+    printf(&#34;Performance: %f MB/s\n\n&#34;, performance);
+
+
+
+    const int imax = 100;
+    double performance_average = 0.0;
+    for(int j = 0; j &lt; imax; ++j) {
+        uint64_t tmp = 0;
+        performance = 0;
+        time_start = glfwGetTime();
+        for(uint64_t i = 0; i &lt; ARRAY_NUM; i=i+8) {
+            tmp = array[i];
+            if(i &lt; (ARRAY_NUM-8)) {
+                tmp = array[i+1];
+                tmp = array[i+2];
+                tmp = array[i+3];
+                tmp = array[i+4];
+                tmp = array[i+5];
+                tmp = array[i+6];
+                tmp = array[i+7];
+            }
+        }
+        time_end = glfwGetTime();
+
+        performance = ((ARRAY_NUM * sizeof(uint64_t))/1000000) / (time_end - time_start);
+        performance_average += performance;
+        printf(&#34;[%d/%d] Performance stride 8: %f MB/s\r&#34;, j+1, imax, performance);
+        fflush(stdout);
+    }
+    performance_average = performance_average / imax;
+    printf(&#34;\nAverage: %f MB/s\n\n&#34;, performance_average);
+
+    performance_average = 0.0;
+    for(int j = 0; j &lt; imax; ++j) {
+        uint64_t tmp = 0;
+        performance = 0;
+        time_start = glfwGetTime();
+        for(uint64_t i = 0; i &lt; ARRAY_NUM; ++i) {
+            tmp = array[i];
+        }
+        time_end = glfwGetTime();
+
+        performance = ((ARRAY_NUM * sizeof(uint64_t))/1000000) / (time_end - time_start);
+        performance_average += performance;
+        printf(&#34;[%d/%d] Performance dumb: %f MB/s\r&#34;, j+1, imax, performance);
+        fflush(stdout);
+    }
+    performance_average = performance_average / imax;
+    printf(&#34;\nAverage: %f MB/s\n\n&#34;, performance_average);
+
+    performance = 0;
+    time_start = glfwGetTime();
+    memcpy(array_copy, array, ARRAY_NUM*sizeof(uint64_t));
+    time_end = glfwGetTime();
+
+    performance = ((ARRAY_NUM * sizeof(uint64_t))/1000000) / (time_end - time_start);
+    printf(&#34;Copying (memcpy) done in %f\n&#34;, (time_end - time_start));
+    printf(&#34;Performance: %f MB/s\n&#34;, performance);
+
+    free(array);
+    free(array_copy);
+    glfwTerminate();
+
+    exit(EXIT_SUCCESS);
+}
+</code></pre><p>If you don&#39;t want to use glfw&#39;s timer, just replace it with yours. I compile it with <code>-pedantic -std=c99 -Wall -Werror -Wextra -Wno-unused -O0</code> and <code>-fprefetch-loop-arrays</code> doesn&#39;t seem to have effects, so I left it out.</p><p>Now I can see effects of pre-fetching in play. Here&#39;s a sample output:</p><pre><code>Init done in 0.784799 - size of array: 1000 MBs (x2)
+Performance: 1274.211087 MB/s
+
+Copying (linear) done in 2.086404
+Performance: 479.293545 MB/s
+
+Copying (stride 8) done in 0.313592
+Performance: 3188.856625 MB/s
+
+[100/100] Performance stride 8: 6458.897164 MB/s
+Average: 6393.163000 MB/s
+
+[100/100] Performance dumb: 2597.816831 MB/s
+Average: 2530.225830 MB/s
+
+Copying (memcpy) done in 0.202581
+Performance: 4936.303056 MB/s
+</code></pre><p>You can see how reading 8 values per loop (arbitrary value for now) yields more than twice the bandwidth! What surprised me was that copying was x6+ increase. I have included memcpy as a reference, which is even more faster. Interesting play. I would like to hear more about what to look for and how to approach optimal read/write on arrays and possibly non-trivial payloads (I chose uint64_t in this case).</p><p>edit2:</p><p>with a stride of 40 (no more, no less &#8211; 320bytes) I got reads of ~7800 MB/s. Which is closer to maximum of 10600 (1333MhZ DDR3).</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Your tests are basically looping straight thru memory, so the cache is working for you roughly as follows:</p><p>You touch some memory not in any cache, which triggers a cache line load from the closest cache, L1, which cascades thru the L2 and L3 caches, until main memory is reached.  An L3-cache-line-sized chunk of data from main memory is fetched to fill the L3.  Then an L2-cache-line-sized chunk of data from L3 is fetched to fill the L2, and so with L1 filling from L2.</p><p>Your program can now resume processing of the memory location that triggered the miss.  The next few iterations of your loop will proceed with data from the L1 cache, because a cache line size is larger than the 8 bytes you are touching in each iteration.  After some small number of iterations, the cache line end is reached, and this triggers another cache miss.  It may or may not go all the way out to main memory again, depending on if the L2 or L3 cache line size is the same or larger than the L1 cache line size.</p><p>Your loop is generally only benefiting from the cache by the cache line size as more data then one iteration is asking for is fetched by the hardware.</p><p>Some processors (Itanium) have a mechanism for the software to inform the hardware to try to perform cache line loads in advance.  This can cover some of the cost of the main memory loads.</p><p>Since your loop never revisits any of the memory it touches, you don&#39;t get any further benefit from the cache.  If you wanted to experiment further, you could consider:</p><p>Writing an outer loop that steps by some fixed stepping amount and some inner loops that use data in the stepping range repeatedly:  So, a triply nested loop with the outer iterating by the fixed stepping amount and the first inner providing simple repetition (e.g. 100 iterations) and the inner most loop accessing the range of the array as per the stepping amount.  Essentially we&#39;re going to access each memory location in the array 100 times, but change the order and grouping of how we access those locations, by varying the stepping size in different runs.  This should show substantially more variation (orders of magnitude) between when the caches are working well and they are not.</p><p>With small stepping size the caches should work well and the 100 iterations over the each small range will benefit from greatly from cache reuse, and with large stepping sizes, performance should fall off dramatically, being closer to what you&#39;re observing with your straight run thru memory.</p><p>(All this assumes, of course, that the compiler doesn&#39;t mess with your code too much, sometimes overly simple benchmarks get optimized away...)</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../addressable-memory-unit/'>Addressable memory unit</a></li><li class="list-group-item"><a href='../c-strategies-to-keep-tabs-of-memory-leaks-in-non-memory-managed-languages/'>C++ &#8211; strategies to keep tabs of memory leaks in non memory-managed languages</a></li><li class="list-group-item"><a href='../how-important-it-is-to-fix-memory-leaks/'>How important it is to fix memory leaks</a></li><li class="list-group-item"><a href='../why-is-cpu-cache-memory-so-fast/'>Why is CPU cache memory so fast</a></li><li class="list-group-item"><a href='../relation-between-cache-line-and-memory-page/'>Relation between cache line and memory page</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

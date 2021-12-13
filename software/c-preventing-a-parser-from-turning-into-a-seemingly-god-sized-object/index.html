@@ -1,0 +1,71 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C++ &#8211; Preventing a parser from turning into a (seemingly) god-sized object &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1087840 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1087840" class="post-1087840 software type-software status-publish hentry category-software tag-anti-patterns tag-c"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C++ &#8211; Preventing a parser from turning into a (seemingly) god-sized object</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">anti-patterns</span><span class="mr-2 badge badge-info">c</span></p><div class="entry-content"><p>So I have a program whose purpose is to take text files and parse them into a binary format that an embedded system understands.  However, the text format I&#39;ve inherited that I need to parse is sufficiently complex enough that after refactoring the main <code>parse</code> routine I&#39;m left with a class with more than 50 methods that almost all look something like <code>parseChannel</code>, <code>parseWCommand</code>, <code>parseVCommand</code>, <code>parsePCommand</code>, <code>parseLoop</code>, <code>parseHex</code>, <code>parseInt</code>, etc. etc. etc.</p><p>Needless to say, the class, from its declaration, looks huge and daunting.</p><p>However, the methods to interface with the class are extremely simple, just <code>parse</code> (compile the text, figure out its compiled size) and <code>link</code> (fix the pointers once the location in memory is known, return the finalized raw binary data).  Really, to the user the class has virtually no other reason for existence besides those two functions, but there&#39;s so much seemingly useless fluff in the class declaration that it&#39;s hard to even see what it&#39;s supposed to do. There&#39;s a similar situation going on with the rather massive number of data members that, again, are useless to everything but the class&#39;s internal methods that need them to talk to each other, though I don&#39;t know if that&#39;s as much of an issue.</p><p>I&#39;ve considered making a separate class solely for parsing that&#39;s used within the <code>parse</code> method, but it seems strange to me to build an entirely separate class that&#39;s only used in a single method in a single class.  It seems a bit&#8230;superfluous, I guess?  And I don&#39;t even know if that&#39;s attacking the right problem.</p><p> I guess in the end, here&#39;s what I&#39;m asking:</p><ol><li>Is this seemingly-huge class actually a problem?  I don&#39;t think it&#39;s strictly a &#34;god object&#34;, but it superficially looks like one.</li><li>If it is a problem, what are the best method(s) to fix it?</li></ol></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><h1>Ditch the OOP</h1><p>The member functions probably don’t need to be. You can have the <code>Parser</code> class provide a few primitive operations (accept character, backtrack, &amp;c.) and implement the rest of the parser as free functions taking a <code>Parser</code> reference. They can live in the source file (under an anonymous namespace) thus keeping the header nice and minimal.</p><p>In this sense, <code>Parser</code> is really a minimal wrapper around a stream state.</p><p>Also, it helps to factor out combinators such as <code>many</code>, <code>choice</code>, and so on, to avoid writing error-prone and verbose manual loops.</p><h2>Sketch</h2><p>In <code>Parse.h</code>, your entire public API.</p><pre><code>unique_ptr&lt;const Program&gt; parse(istream&amp;);
+</code></pre><p>Your parser state can be entirely private to <code>Parse.cpp</code>.</p><pre><code>struct Parser {
+
+  Parser(istream&amp; stream) : stream(stream) {}
+
+  bool accept(const char expected) {
+    char actual;
+    if (!stream.get(actual)) return false;
+    if (expected == actual) return true;
+    stream.seekg(-1, ios::cur);
+    return false;
+  }
+
+  template&lt;class F, class O&gt;
+  bool accept_if(F predicate, O output) {
+    char actual;
+    if (!stream.get(actual)) return false;
+    if (predicate(actual)) {
+      *output++ = actual;
+      return true;
+    }
+    return false;
+  }
+
+  void expect(const char expected) { if (!accept(expected)) throw ...; }
+
+  void push_mark() { marks.push_back(stream.tellg()); }
+  void pop_mark() { stream.seekg(marks.back()); drop_mark(); }
+  void drop_mark() { marks.pop_back(); }
+
+private:
+  istream&amp; stream;
+  vector&lt;istream::pos_type&gt; marks;
+};
+</code></pre><p>The public API implementation just forwards to the start production of a grammar with a new parser.</p><pre><code>unique_ptr&lt;const Program&gt; parse(istream&amp; stream) {
+  return parse_program(Parser(stream));
+}
+</code></pre><p>Output iterators are a fairly convenient way to produce multiple results.</p><pre><code>template&lt;class F, class O&gt;
+bool many_if(Parser&amp; parser, F predicate, O output) {
+  bool success;
+  while (parser.accept_if(predicate, output)) success = true;
+  return success;
+}
+</code></pre><p>Pointers have the advantage of a conversion to bool.</p><pre><code>unique_ptr&lt;const Expression&gt; number(Parser&amp; parser) {
+  string digits;
+  auto append = back_inserter(digits);
+  return many_if(isdigit, append) ? make_unique&lt;Number&gt;(digits) : nullptr;
+}
+</code></pre><p>And so on. The real strengths of C++ to leverage when writing parsers are:</p><ul><li>Generic programming</li><li>Iterators</li><li>Streams</li></ul><p>Objects, not so much.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/java-limitations-of-polymorphism-in-statically-typed-languages/'>Java &#8211; Limitations of Polymorphism in statically typed languages</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/object-oriented-proper-way-to-allow-access-to-private-list-by-reference/'>Object-oriented &#8211;  proper way to allow access to private list by reference</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-how-to-deal-with-pointers-from-child-to-parent/'>C++ &#8211; How to deal with pointers from child to parent</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-augmenting-functionality-of-subclasses-without-code-duplication-in-c/'>C++ &#8211; Augmenting functionality of subclasses without code duplication in C++</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-is-this-using-macros-to-define-classes-that-fit-a-pattern-in-c-a-sound-idea/'>C++ &#8211; Is this using macros to define classes that fit a pattern in C++ a sound idea</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,93 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>How to implement an &#8216;if&#8217; statement in an interpreter &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1071279 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1071279" class="post-1071279 software type-software status-publish hentry category-software tag-compiler tag-interpreters tag-virtual-machine"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">How to implement an &#8216;if&#8217; statement in an interpreter</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">compiler</span><span class="mr-2 badge badge-info">interpreters</span><span class="mr-2 badge badge-warning">virtual machine</span></p><div class="entry-content"><p>If I were writing a compiler (say for a stack-based VM), the code for an <code>if</code> statement:</p><pre><code>if (&lt;some_expression&gt;)
+{
+    &lt;some_instructions&gt;
+}
+</code></pre><p>Would be translated to the following psuedo-assembly:</p><pre><code>&lt;evaluate expression and push result on stack&gt;
+JUMP-IF-TRUE label
+&lt;some_instructions&gt;
+:label
+</code></pre><p>This is easy to implement in a compiler, however I&#39;m not sure how to implement this in an interpreter.</p><p>The difference between an interpreter and a compiler, is that a compiler outputs instructions to be performed later, and an interpreter performs right away.</p><p>So e.g. instead of outputting the instruction <code>PUSH</code>, an interpreter would simply <code>PUSH</code> on a stack it maintains. And so on.</p><p>So regarding <code>JUMP</code> instructions (such as the <code>JUMP-IF-TRUE</code> psuedo-instruction), I guess my question is how are these implemented in interpreters?</p><p>More accurately, how can I make an interpreter &#39;jump&#39; over a piece of code, for example when interpreting an <code>if</code> statement?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>As a picture is worth a thousand words, let&#39;s write an interpreter together! Of course, a very simple one. We use OCaml for this, but if you do not know OCaml, this is fine, because we will write very little code and comment it anyway.</p><p>We first define what is a program for us. We consider a very simple language, allowing to print text, add numbers, and test if a number is zero with an if-statement:</p><pre><code>type statement =
+| Print of string
+| If of expr * statement * statement
+| Sequence of statement list
+and expr =
+| Constant of int
+| Plus of expr * expr
+</code></pre><p>The code above is a <em>type declaration</em> and defines what our idea of a program is. It defines an abstract symbolic form for programs – as opposed to the concrete tetual form – which is easy to manipulate in OCaml. This type definition is a plain translation of the english description of what a program is, with the addition of a sequence, to execute more operations.  (If we remove the <code>Plus</code> and the <code>Sequence</code> operations we pretty much obtain the smallest possible language demonstrating an <code>If</code> statement, but I felt it could be a bit too boring!)</p><p><strong>Real life note</strong> In real life, a program contains a lot of annotations. An  important one is that program elements are typically annotated with their location in termes of file, line, column, which is useful to report errors.</p><p>We can already write an entertaining program in our language:</p><pre><code>let program = Sequence([
+  Print(&#34;Hello, world!&#34;);
+  If(Plus(Constant(1),Constant(0)),
+    Print(&#34;One is the truth&#34;),
+    Print(&#34;One is a lie&#34;));
+  Print(&#34;Oh, that was a tough one!&#34;);
+])
+</code></pre><p>This should print the text <code>Hello, world!</code> to please Dennis, then compute 1 + 0 and compare the result to 0 – as for the definition of <code>If</code> in our language - if the result is distinct from 0, then the first branch is executed and the perlish message <code>One is the truth</code> is printed, otherwise the also perlish message <code>One is a lie</code> is printed. After such a tough challenge, our strained computer will share its feelings <code>Oh, that was a tough one!</code>.</p><p><strong>Real life note</strong> In the real world, one needs to write a parser to translate plain text into an abstract program as the one held by the variable <code>program</code>. We can use <strong>lex</strong> and <strong>yacc</strong> for this, and their various derivatives.</p><p>Now let us write an interpreter for our language. (If you felt asleep, wake up now, the actual answer to the question will soon be presented!)</p><pre><code>let rec interpreter = function
+| Sequence(hd::tl) -&gt; interpreter hd; interpreter(Sequence(tl))
+| Sequence([]) -&gt; ()
+| Print(message) -&gt; print_endline message
+| If(condition, truebranch, falsebranch) -&gt;
+    (* The answer to the question is here! *)
+    if (eval condition) &lt;&gt; 0 then
+      interpreter truebranch
+    else
+      interpreter falsebranch
+and eval = function
+| Constant(c) -&gt; c
+| Plus(a,b) -&gt; (eval a) + (eval b)
+</code></pre><p>Most of us are likely not familiar with OCaml, so let us walk gently through this piece of code:</p><pre><code>let rec interpreter = function
+| Sequence(head::tail) -&gt; interpreter head; interpreter(Sequence(tail))
+   (* To interpret a list of statements, we interpret the first
+      and then interpret the tail of the list. *)
+
+| Sequence([]) -&gt; ()
+   (* To interpret an empty list of statements, we just do nothing.
+      Fair enough, right? *)
+
+| Print(message) -&gt; print_endline message
+    (* To print a message, we use the host-language printing facility. *)
+
+| If(condition, truebranch, falsebranch) -&gt;
+    (* The answer to the question is here!
+
+       We first evaluate the condition, with the eval function below
+       and use the host-language if facility to take the decision
+       of recursively calling the interpreter on the truebranch or
+       the falsebranch. *)
+
+    if (eval condition) &lt;&gt; 0 then
+      interpreter truebranch
+    else
+      interpreter falsebranch
+
+and eval = function
+| Constant(c) -&gt; c
+    (* Constants evaluate to themselves *)
+| Plus(a,b) -&gt; (eval a) + (eval b)
+    (* A Plus statement evaluates to the sum of its parts. *)
+</code></pre><p>Now let&#39;s execute the program:</p><pre><code>let () = interpreter program
+</code></pre><p>which causes the output</p><pre><code>Hello, world!
+One is the truth
+Oh, that was a tough one!
+</code></pre><p>It you want to try it, just copy the program snippets in a file <code>interpreter.ml</code> and run with <strong>ocaml</strong> from your shell prompt:</p><pre><code>% ocaml imterpreter.ml
+</code></pre><p><strong>Conclusion</strong> When we write an interpreter using an intermediate abstract representation of the program like in this small example. The <code>If</code> statement is easily implemented in terms of conditionals in the host language. Other strategies are possible, it is perfectly imaginable to compile the program “on the fly” and to feed it to a virtual machine. (Some people will argue that there is essentially no difference between the two approaches.)</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/how-do-vms-implement-function-calling/'>How do VMs implement function calling</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/does-an-interpreter-produce-machine-code/'>Does an interpreter produce machine code</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/is-it-possible-to-create-a-bootstrapped-interpreter-independent-of-the-original-interpreter/'>Is it possible to create a &#8220;bootstrapped&#8221; interpreter independent of the original interpreter</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/how-does-a-compiler-work-when-its-not-directly-compiling-to-machine-code/'>How does a compiler work when it&#8217;s not directly compiling to machine code</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

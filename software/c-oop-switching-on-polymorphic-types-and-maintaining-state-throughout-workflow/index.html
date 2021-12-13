@@ -1,0 +1,143 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; OOP: Switching on polymorphic types and maintaining state throughout workflow &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1087164 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1087164" class="post-1087164 software type-software status-publish hentry category-software tag-abstract-class tag-c tag-object-oriented tag-polymorphism tag-switch-statement"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; OOP: Switching on polymorphic types and maintaining state throughout workflow</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">abstract class</span><span class="mr-2 badge badge-info">c</span><span class="mr-2 badge badge-warning">object-oriented</span><span class="mr-2 badge badge-primary">polymorphism</span><span class="mr-2 badge badge-danger">switch statement</span></p><div class="entry-content"><p><strong>High level:</strong><br /> I think my design pattern is flawed. Despite implementing Polymorphism, I find myself relying on large switch statements based on derived Type within my WPF application. As I&#39;m adding more and more classes derived from my abstract base class I can&#39;t help but feel like my code it bad.. spaghetti code if you will</p><p><strong>Example:</strong> Let&#39;s say I have a abstract base class called: PDF.cs. I have to implement 35 different derived classes from PDF.cs. The user picks 1 one of these derived classes from a drop down list on page 1 of the app. As the app progresses from page to page the user adds unique properties and values to the PDF type they are making. The pages are shared between types, however different controls are rendered and different properties are assigned depending on the type selected on page 1. The user is also allowed to navigate backwards and forwards between pages, with the data maintaining state.</p><p><strong>My implementation:</strong></p><pre><code>// Pdf was passed to this page, handling UI
+public void UtilizeState(IPdfBase pdf) {
+    switch (pdf.PdfType)
+    {
+        case PdfTypes.TypeA
+            var aPdf = (a)pdf;
+            this.CurrentPdf = aPdf;
+            DoStuff_PdfA(aPdf);
+            break;
+        case PdfTypes.TypeB
+            var bPdf = (b)pdf;
+            this.CurrentPdf = bPdf;
+            DoStuff_PdfB(bPdf);
+            break;
+    }
+
+    // we could be moving backward, need to populate UI
+    if(this.CurrentPdf.Reverse)
+    {
+        handleReverse(this.CurrentPdf);
+    }
+    else
+    {
+        handleNewPdf(this.CurrentPdf);
+    {
+}
+
+// Moving to the next page
+private void btnNext_Click(object sender, RoutedEventArgs e)
+{       
+        switch (CurrentPdf.PdfType)
+        {
+            case PdfType.TypeA:
+                var aPdf = (PSI)CurrentPdf;
+                Switcher.Switch(new UploadPdf(), aPdf);
+                break;
+
+            case PdfType.TypeB:
+                var bPdf = (COD)CurrentPdf;
+                Switcher.Switch(new UploadPdf2(), bPdf); // Some pdf&#39;s follow a different workflow..
+                break;
+        }
+}
+
+private void btnBack_Click(object sender, RoutedEventArgs e)
+{
+    // another switch...
+}
+</code></pre><p><strong>Comments:</strong> As I progress through this project, stuff is getting messy. Especially with 3 huge switch statements per page, one to handle PDF types incoming, another to send PDF types backwards a page, and yet another to send PDF types forward a page. Is my design inherently wrong? How would you handle passing many derived objects, with different business rules and workflows, through out shared pages?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>A common suggestion is to put all the logic into each <code>Pdf</code> object. But this requires that you extend the interface of <code>Pdf</code> and amend the implementation of each <code>Pdf</code> object each time want to support a new operation. It also requires that each <code>Pdf</code> object has to know everything about how to operate on it, rather than just knowing how to store its own representation. The result is that you end up with giant <code>Pdf</code> objects that basically have to do everything.</p><p>You probably want to use the <a href="https://en.wikipedia.org/wiki/Visitor_pattern" rel="noreferrer">Visitor Pattern</a> to accomplish this.</p><h2>Standard Visitor Pattern</h2><p>Add a new method to your <code>Pdf</code> base class:</p><pre><code>class Pdf {
+  ...
+  public abstract void AcceptVisitor(IPdfVisitor visitor);
+}
+</code></pre><p>The IPdfVisitor interface is fairly simple:</p><pre><code>interface IPdfVisitor {
+  void Visit(FirstPdf pdf);
+  void Visit(SecondPdf pdf);
+  void Visit(ThirdPdf pdf);
+}
+</code></pre><p>Now, each Pdf class object you implement defines the AcceptVisitor function in the same way (but you need to write the implementation in each class).</p><pre><code>class FirstPdf : Pdf {
+  ...
+  public override void AcceptVisitor(IPdfVisitor visitor) {
+    visitor.Visit(this);
+  }
+}
+</code></pre><p>So, why do you have to have the implementation in each class? Because the compiler knows the static type of each class. So when you call <code>visitor.Visit(this)</code> from an object of type <code>FirstPdf</code>, it will call the Visit function that accepts an argument of type <code>FirstPdf</code>. Now, you implement visitors for each &#34;verb&#34; you want to implement. Maybe you have a <code>SavePdfVisitor</code>, a <code>PrintPdfVisitor</code>, and a <code>DisplayPdfVisitor</code>, for example. They would look like this:</p><pre><code>class SavePdfVisitor : IPdfVisitor {
+  public void Visit(FirstPdf pdf) {
+    // FirstPdf specific save logic
+  }
+  public void Visit(SecondPdf pdf) {
+    // SecondPdf specific save logic
+  }
+  public void Visit(ThirdPdf pdf) {
+    // ThirdPdf specific save logic
+  }
+}
+</code></pre><p>Now, your generic save method for Pdfs looks like this:</p><pre><code>public void Save(Pdf pdf) {
+  IPdfVisitor saveVisitor = new SavePdfVisitor();
+  pdf.AcceptVisitor(saveVisitor);
+}
+</code></pre><p>The <code>pdf</code> object calls <code>Visit</code> and passes itself to the save visitor, without needing to know what type of operation is being performed. And the correct method of SavePdfVisitor gets called. At a minimum, this lets you put all Save logic into a single place and use private methods for shared functionality.</p><p>One advantage of this is that if you define a new type of <code>Pdf</code>, when you implement its <code>AcceptVisitor</code> method, you will get a compiler error unless you add that type to the <code>IPdfVisitor</code> interface and then to each of the visitor objects. This guarantees that when you define a new type of <code>Pdf</code>, you don&#39;t forget to implement the logic for it for all the operations you perform on <code>Pdf</code>&#39;s.</p><h2>Better Visitor Pattern (In My Opinion)</h2><p>On the other hand, if you have a lot of shared logic -- for example, the save operation is the same for most <code>Pdf</code> types but is custom for just a few -- you can define your visitor objects using an abstract base class instead of an interface like this.</p><pre><code>abstract class PdfVisitor {
+  public abstract void Visit(Pdf pdf);
+  public virtual void Visit(FirstPdf pdf) {
+    Visit((Pdf)pdf);
+  }
+  public virtual void Visit(SecondPdf pdf) {
+    Visit((Pdf)pdf);
+  }
+  public virtual void Visit(ThirdPdf pdf) {
+    Visit((Pdf)pdf);
+  }
+}
+
+class Pdf {
+  ...
+  public abstract void AcceptVisitor(PdfVisitor visitor);
+}
+
+class FirstPdf : Pdf {
+  ...
+  public override void AcceptVisitor(PdfVisitor visitor) {
+    visitor.Visit(this);
+  }
+}
+// Do the same for other Pdf classes
+</code></pre><p><strong>Notice that <code>PdfVisitor</code> does NOT define the implementation of <code>Visit(Pdf pdf)</code>.</strong> It does, however, provide a default implementation of <code>Visit</code> for all the concrete implementation types. That default implementation just calls <code>Visit(Pdf pdf)</code>. When you implement <code>Visit(Pdf pdf)</code> in each of your concrete visitor objects, that defines the default behavior for that visitor or action. For example, suppose that your <code>DisplayPdfVisitor</code> uses the same logic for every type of <code>Pdf</code>. You just implement it this way:</p><pre><code>class DisplayPdfVisitor : PdfVisitor {
+  public override void Visit(Pdf pdf) {
+    // Display logic here
+  }
+}
+</code></pre><p>On the other hand, if <code>SavePdfVisitor</code> does the same thing for all <code>Pdf</code> objects, except that <code>SecondPdf</code> needs a special implementation, do this:</p><pre><code>class SavePdfVisitor : PdfVisitor {
+  public override void Visit(Pdf pdf) {
+    // default save implementation
+  }
+  public override void Visit(SecondPdf pdf) {
+    // custom save implementation for SecondPdf type
+  }
+}
+</code></pre><p>Now if you call <code>pdf.AcceptVisitor(saveVisitor)</code> on a <code>Pdf</code> object of type <code>SecondPdf</code> and it calls <code>visitor.Visit(this)</code>, it will call the method that accepts an object of type <code>SecondPdf</code>. However, the same code path for any other type of <code>Pdf</code> will just call the default implementation.</p><p>The advantage of this approach is that you can define a new <code>Pdf</code> operation by creating a visitor that just implements a single method and it will apply to all object types. You can also define a new type of <code>Pdf</code> object and it will get default behavior on all your visitors without having to make any changes. If you create a new <code>Pdf</code> class, say <code>FourthPdf</code>, and you realize that you need custom logic for it in your <code>DisplayPdfVisitor</code> then you just modify the base class:</p><pre><code>abstract class PdfVisitor {
+  // previous stuff
+  public virtual void Visit(FourthPdf pdf) { 
+    Visit((Pdf)pdf);
+  }
+}
+</code></pre><p>And then in <code>DisplayPdfVisitor</code>:</p><pre><code>class DisplayPdfVisitor : PdfVisitor {
+  // other implementation
+  public override void Visit(FourthPdf pdf) {
+    // custom FourthPdf display logic
+  }
+}
+</code></pre><p>You didn&#39;t have to change <code>SavePdfVisitor</code> or <code>PrintPdfVisitor</code> or anything else. They gladly apply the default save and print behavior to <code>FourthPdf</code> objects, but <code>DisplayPdfVisitor</code> handles them differently.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-sanity-of-design-for-the-in-memory-object-representations-of-database-rows/'>C# &#8211; Sanity of design for the in-memory object representations of database rows</a></li><li class="list-group-item"><a href='../c-user-and-role-modeling/'>C# &#8211; User and role modeling</a></li><li class="list-group-item"><a href='../java-implementing-strategy-pattern-multiple-variables/'>Java &#8211; Implementing strategy pattern multiple variables</a></li><li class="list-group-item"><a href='../object-oriented-orm-inheritance-mapping-or-not-how-to-map-shared-and-specific-properties-for-a-set-of-related-real-world-objects/'>Object-oriented &#8211; ORM Inheritance mapping or not, how to map shared and specific properties for a set of related, real world objects</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

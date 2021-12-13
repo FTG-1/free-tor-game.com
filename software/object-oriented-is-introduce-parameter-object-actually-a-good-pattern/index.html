@@ -1,0 +1,78 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Object-oriented &#8211; Is &#8220;Introduce Parameter Object&#8221; actually a good pattern &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1068573 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1068573" class="post-1068573 software type-software status-publish hentry category-software tag-design-patterns tag-object-oriented tag-refactoring"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Object-oriented &#8211; Is &#8220;Introduce Parameter Object&#8221; actually a good pattern</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">design-patterns</span><span class="mr-2 badge badge-info">object-oriented</span><span class="mr-2 badge badge-warning">refactoring</span></p><div class="entry-content"><p>I have a situation where I want to call a function which requires a number of parameters. This function is not called directly, it is called indirectly and the parameters are delegated several times. Some extra parameters may be added in between the different layers, but those aren&#39;t included in the example for the sake of simplicity.</p><p>In pseudo code, <code>A</code> indirectly calls the functionality that occurs in <code>C.abc</code>.</p><pre><code>class A {
+    private B b;
+
+    public int abc() {
+        return b.abc(value1, value2, value3);
+    }
+}
+
+class B {
+    private C c;
+
+    public int abc(int x, int y, int z) {
+        return c.abc(x, y, z);
+    }
+}
+
+class C {
+    private int w = 100;
+
+    public int abc(int x, int y, int z) {
+        // Do something with parameters x, y, z, e.g.:
+        return w + x + y + z;
+    }
+}
+</code></pre><p>The number of parameters could be different than three of course: it could be smaller or larger as long as the parameters are going to be used together. The <code>Introduce Parameter Object</code> is sometimes advised in such a situation (<a href="https://sourcemaking.com/refactoring/introduce-parameter-object" rel="noreferrer">here</a> and <a href="http://refactoring.com/catalog/introduceParameterObject.html" rel="noreferrer">here</a>).</p><p>It would be applied as follows:</p><pre><code>class XYZParameterObject {
+
+    private int x, y, z;
+
+    public constructor(int x, int y, int z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    public int abc(int w) {
+        return w + x + y + z;
+    }
+}
+
+class A {
+    private B b;
+
+    public int abc() {
+        return b.abc(new XYZParameterObject(value1, value2, value3));
+    }
+}
+
+class B {
+    private C c;
+
+    public int abc(XYZParameterObject xyz) {
+        return c.abc(xyz);
+    }
+}
+
+class C {
+    private int w = 10;
+
+    public int abc(XYZParameterObject xyz) {
+        // Do something with parameters x, y, z, e.g.:
+        return xyz.abc(this.w);
+    }
+}
+</code></pre><p>To me this seems like a class is designed around just one method, while it does not have any behavior. It would actually be the same as passing a closure instead of creating a <code>XYZParameterObject</code> instance. In both situations the x, y, z parameters are reduced to simply one parameter. Both looks like abusing a class just for the sake of not having to pass the same arguments over and over. On the other hand, that would be somewhat convenient of course!</p><p>So what is an advisable practice in such a situation?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>A parameter object is just a way of collecting a set of parameters into a unit. But in your example you are doing something more - your are adding business logic (the addition) into the parameter object itself (which in turn means the C class becomes is superfluous). But then it is not just a parameter object anymore.</p><p>A parameter object is not a class built around a single method, it is a data transfer object, which means it does not have methods at all (or at at least only methods for accessing data). But it could be the starting point for a real class with business methods.</p><p>Whether a parameter object is a good idea in the first place depends on your code. Your example is too abstract to tell. But if <code>x</code>, <code>y</code> and <code>z</code> say represented coordinates for a point in 3D it would probably be useful to group them in a parameter object, but probably also useful furthermore to add some business logic for calculations on points, e.g scaling, adding etc.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-object-oriented-class-design/'>Java &#8211; Object-Oriented Class Design</a></li><li class="list-group-item"><a href='../how-to-avoid-duplication-of-code-related-to-shared-entities-in-the-repository-pattern/'>How to avoid duplication of code related to shared entities in the repository pattern</a></li><li class="list-group-item"><a href='../object-oriented-clean-code-consequences-of-short-methods-with-few-parameters/'>Object-oriented &#8211; Clean code: consequences of short methods with few parameters</a></li><li class="list-group-item"><a href='../unit-testing-how-to-not-test-implementation-when-method-returns-void/'>Unit-testing &#8211; How to not test implementation when method returns void</a></li><li class="list-group-item"><a href='../object-oriented-why-is-white-box-testing-discouraged-in-oop/'>Object-oriented &#8211; Why is white box testing discouraged in OOP</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

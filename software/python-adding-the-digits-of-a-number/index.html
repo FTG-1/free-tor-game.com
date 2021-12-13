@@ -1,0 +1,67 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Python &#8211; adding the digits of a number &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1078444 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1078444" class="post-1078444 software type-software status-publish hentry category-software tag-floating-point tag-loops tag-python"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Python &#8211; adding the digits of a number</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">floating point</span><span class="mr-2 badge badge-info">loops</span><span class="mr-2 badge badge-warning">python</span></p><div class="entry-content"><p>I am trying to write a program that asks the user for a decimal number and then calculates the sum of its digits. for example if the number is 123.25 then the sum will be 1+2+3+2+5=13.</p><p>I decided to first turn the number to 0.12325 (any number will be formatted this way but I am using the example) and then move the decimal point to the right one place and isolate the digits one by one.</p><p>here is what I got (I tried it in python and c++ i get the same problem in both):</p><pre><code>number = float(raw_input (&#34;please enter a Decimal number: &#34;))
+total = 0
+
+while number &gt;= 1:
+    number = number / 10 ## turning 123.25 to 0.12325
+
+while number &gt; 0:
+    number = number * 10 ## making 0.12325 to 1.2325
+    total = total + int(number)  ## storing the digit on the left of the decimal point
+    number = number  - int (number) ## getting rid of the digit left to the decimal point
+
+print total
+</code></pre><p>The problem is that everything works fine until the last digit. When it comes to the point where it&#39;s 5.0 than the statement <strong>number = number &#8211; int(number)</strong> gives me 1 instead of zero. It is supposed to be 5.0 &#8211; 5 = 0 but it isn&#39;t.</p><p>This is what I get when i print the number at every stage:</p><pre>please enter a Decimal number: 123.25
+0.12325
+0.2325
+0.325
+0.25
+0.5    ##### Here is where the problem starts #####
+0.999999999999
+0.999999999993
+0.999999999929
+..... here it goes on for  a while. I spared you the rest .....
+</pre><p>More accurately, I printed the number at every step in the loop:</p><pre>please enter a Decimal number: 123.25
+
+number at start of loop:  0.12325
+number after &#39;number * 10&#39; :  1.2325
+number at the end of the loop:  0.2325
+
+number at start of loop:  0.2325
+number after &#39;number * 10&#39; :  2.325
+number at the end of the loop:  0.325
+
+number at start of loop:  0.325
+number after &#39;number * 10&#39; :  3.25
+number at the end of the loop:  0.25
+
+number at start of loop:  0.25
+number after &#39;number * 10&#39; :  2.5
+number at the end of the loop:  0.5
+
+number at start of loop:  0.5
+number after &#39;number * 10&#39; :  5.0
+number at the end of the loop:  0.999999999999
+</pre><p>All of a sudden it stops being accurate.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>This can be done with the following python one-liner:</p><pre><code>&gt;&gt;&gt; f = 123.25
+&gt;&gt;&gt; sum(int(ch) for ch in str(f) if ch.isdigit())
+13
+&gt;&gt;&gt;
+</code></pre><p>To break down how this works:</p><p>Convert to string as @whatsisname recommends to avoid floating point rounding issues</p><pre><code>str(f)
+</code></pre><p>Create a list containing each character</p><pre><code>ch for ch in str(f)
+</code></pre><p>Throw out everything that isn&#39;t a digit</p><pre><code>ch for ch in str(f) if isdigit(ch)
+</code></pre><p>Convert everything in the result to an int</p><pre><code>int(ch) for ch in str(f) if isdigit(ch)
+</code></pre><p>Sum everything</p><pre><code>sum(int(ch) for ch in str(f) if isdigit(ch))
+</code></pre><p>There are three key points here:</p><ol><li>Do not be afraid to convert numbers to strings.  The performance hit of doing so is usually inconsequential on modern machines, and this makes manipulating digits much more natural</li><li>Python list comprehensions combined with standard functions are extremely useful for anything that involves &#34;do something with this list of something&#34;.</li><li>When using floating point math, you should never expect exact results except in trivial cases (like 0.0) because of precision issues.</li></ol></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../purely-sql-alternate-to-looping/'>Purely SQL alternate to looping</a></li><li class="list-group-item"><a href='../avoiding-division-by-zero-using-float-comparison/'>Avoiding Division by Zero Using Float Comparison</a></li><li class="list-group-item"><a href='../python-efficiency-considerations-nested-loop-vs-recursion/'>Python &#8211; Efficiency considerations: nested loop vs recursion</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

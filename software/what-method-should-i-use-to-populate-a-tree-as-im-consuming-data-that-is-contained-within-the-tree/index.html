@@ -1,0 +1,274 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>What method should I use to populate a tree as I&#8217;m consuming data that is contained within the tree &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1086421 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1086421" class="post-1086421 software type-software status-publish hentry category-software tag-data tag-data-structures tag-trees"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">What method should I use to populate a tree as I&#8217;m consuming data that is contained within the tree</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">data</span><span class="mr-2 badge badge-info">data structures</span><span class="mr-2 badge badge-warning">trees</span></p><div class="entry-content"><p>I have a tree that consists of 5 types of nodes &#8211; <code>V</code>, <code>W</code>, <code>X</code>, <code>Y</code>, and <code>Z</code>. <code>V</code> represents the root node, and a given tree has exactly one element of type <code>V</code>. A <code>V</code> contains one or more <code>W</code>s, a <code>W</code> contains one or more <code>X</code>s, an <code>X</code> contains one of more <code>Y</code>s, and a <code>Y</code> contains one or more <code>Z</code>s:</p><p><a href="../../../i.stack.imgur.com/uTWnq.png" rel="noreferrer"><img src="../../../i.stack.imgur.com/uTWnq.png" alt="tree structure"/></a></p><p>Looking at this, I decided to model this with the following class structure:</p><p><a href="../../../i.stack.imgur.com/VJTgZ.png" rel="noreferrer"><img src="../../../i.stack.imgur.com/VJTgZ.png" alt="class structure"/></a></p><p>Not shown in the class structure are the data elements that are unique to each type of node along with the methods to access those data elements. However, each node does have a unique set of attributes and operations.</p><p>To give a perspective on size, there could be up to thousands of nodes at the <code>Z</code> level. It&#39;s going to be much smaller at the <code>W</code> level, as there are almost no cases of 1:1:1:1 mappings from <code>W</code> to <code>Z</code>.</p><p>My problem comes when I think about how to build this tree.</p><p>The data comes in what can be thought of as a stream. There is a unit that I&#39;ll refer to as <code>DataChunk</code>. A <code>DataChunk</code> contains the data for one or more levels of the tree. If the <code>DataChunk</code> contains data for a <code>Z</code>, then it also contains data for a <code>Y</code>, <code>X</code>, and <code>W</code>. However, a <code>DataChunk</code> that contains data for <code>X</code> will contain data for <code>W</code>, but not necessarily <code>Y</code>.</p><p>In a stream, the start of a <code>DataChunk</code> is marked off by a <a href="https://en.wikipedia.org/wiki/Syncword" rel="noreferrer">sync word</a>. In a set of datagrams, each <code>DataChunk</code> is a single datagram. In a set of files, the <code>DataChunk</code> could be presented as a set of files where 1 file is one <code>DataChunk</code> or 1 file contains multiple <code>DataChunk</code>s, each marked by the sync word. The order is not specified.</p><p>In order to build the tree, I need to accept a <code>DataChunk</code> and parse information out of it.</p><p>One approach would be to have each node accept a <code>DataChunk</code> object, parse the information out, and set its own attributes and then see if it has a matching child to pass the node to. If the corresponding child exists, pass the data chunk to it. If the corresponding child doesn&#39;t exist, create it and then pass the data chunk to it. However, this leaves me with a mutable object &#8211; after construction, I can pass an arbitrary <code>DataChunk</code> into any node and change the tree. This also appears to be a violation of SRP, as each data node is responsible for not only the data associated with it, but to help build the tree.</p><p>Another approach may be to have some kind of Builder approach, but this would balloon my classes to 10 &#8211; I would need the node data class and the builder class. It also seems like this would be rather inefficient, since the Builder would essentially be a second tree with a mutable interface that would return the tree structure described above. It doesn&#39;t seem performant in terms of time or memory consumption.</p><p>I&#39;m also somewhat concerned with flexibility going forward. The tree data model isn&#39;t likely to change, but the format of the <code>DataChunk</code> may change or be supplemented with additional formats for the data to use to build the tree. That may be another point to the builder-style approach.</p><p>Is there a  data-consuming / tree-building approach that I&#39;ve overlooked? Would it be preferable to do what appears to be a violation of SRP and present a client with a mutable data structure (assuming they have or construct instances of <code>DataChunk</code>) or go with a more complex builder to present the client with a cleaner interface, but have a more complex code base.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Ok, so here&#39;s what I came up with. This contains <code>Java</code>, better get yourself some coffee. The Irish one. (for the same reason)</p><p>In a sense, a tree is self similar. After all, a tree is a graph. Each node knows a certain number of other nodes.</p><p>Speaking of <code>Node</code>s:</p><pre><code>import java.util.HashMap;
+
+public class Node &lt;Child extends ICanBeMergedWith&lt;? super Child&gt; &amp; ICanBecomeImmutable&gt; implements ICanBecomeImmutable, ICanBeMergedWith&lt;Node&lt;Child&gt;&gt;
+{
+    private HashMap&lt;Child, Child&gt; children;
+    private String name;
+    private boolean mutable;
+
+    public Node(String name)
+    {
+        this.name = name;
+        children = new HashMap&lt;Child,Child&gt;();
+        mutable = true;
+    }
+
+    public boolean add(Child child)
+    {
+        if (!mutable)
+        {
+            return false;
+        }
+
+        if(!children.containsKey(child))
+        {
+            children.put(child, child);
+        }
+        else
+        {
+            children.get(child).merge(child);
+        }
+
+        return true;
+    }
+
+    @Override
+    public void merge(Node&lt;Child&gt; other)
+    {
+        if (!mutable || !equals(other))
+        {
+            return;
+        }
+
+        for(Child child : other.children.values())
+        {
+            add(child);
+        }
+    }
+
+    @Override
+    public String toString()
+    {
+        String s = name + &#34;:&#34;;
+        for (Child child : children.values())
+        {
+            s += System.getProperty(&#34;line.separator&#34;) + child.toString().replaceAll(&#34;(?m)^&#34;, &#34;\t&#34;);
+        }
+        return s;
+    }
+
+    @Override
+    public void petrify()
+    {
+        mutable = false;
+
+        for (Child child : children.values())
+        {
+            child.petrify();
+        }
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return name.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        if (name == null)
+            if (((Node&lt;Child&gt;) obj).name != null)
+                return false;
+        return name.equals(((Node&lt;Child&gt;) obj).name);
+    }
+}
+</code></pre><p>Sorry for serving that thing up front, but there&#39;s no way around it.</p><ol><li>Each Node should be able to compare itself to other Nodes. That gives a great advantage, because you can create different objects modelling the same node as you see fit (and as the incoming data stream dictates), then throw it all together and let the objects figure out which of them should be merged together. In <code>Java</code>land you have to do some shenanigans with <code>equals()</code> and <code>hashCode()</code>. I just copied that together from the web. You have to come up with your own implementation depending on what the actual implementations of <code>X</code>, <code>Y</code> etc. do in your use case. I my case they all just have a name. If two nodes of the same type have the same name, they are equal.</li><li>There&#39;s a <code>HashMap&lt;Child, Child&gt; children;</code>, which is the list of other known <code>Node</code>s I was talking about above. Admittedly, a <code>HashSet&lt;Child&gt;</code> could also work, for all we need is some data structure that keeps its children unique, but it&#39;s kind of hard to get something back out of a <code>HashSet</code>, which is necessary to add more things to it. Basically speaking, <code>HashMap&lt;Child, Child&gt;</code> is used like a <code>HashSet&lt;Child&gt;</code>, but is more convenient (and faster).</li><li>This list is filled via <code>add(Child child)</code> method. If the child is not in the list already, add it as is. If the child is in the list already, that means that this <strong>exact</strong> child is not necessarily already in the list, but some child that is considered equal, so the incoming child received as parameter is merged into the one that&#39;s in the list already. Think of this like placing two folders together that have the name: that doesn&#39;t mean they have the same sub folders. To do this, I had to create <code>ICanBeMergedWith&lt;T&gt;</code>, which you can find below, because I am unable to integrate big code blocks into list (editors?!)</li><li>As you said this leaves you with a mutable data structure. My initial solution to this was to create a <code>NullObject</code> instance per class. So all the mutating method calls could be either delegated to <code>this</code> within the class or to the <code>NullObject</code>. It turns out that <code>static</code> and generic types do not go well together. I was no able to create a generic inner <code>NullObject</code> singleton. As can be seen above, I went for a simple flag variable that prevents access to the internal data structure. I created <code>ICanBecomeImmutable</code> for that.</li><li>These interfaces are just marker interfaces to differentiate between <code>Node&lt;Child&gt;</code> and <code>Child</code>. I think this would all be a lot easier if there were self types (that is, being able to type something to whatever class <code>this</code> is) But for a lack thereof and my lack of skills, this is the solution I came up with. You can explicitly type things, which soon becomes as ugly with <code>Node&lt;Node&lt;Node&lt;V&gt;&gt;&gt;</code>. Or maybe I&#39;m just totally wrong here.</li></ol><p>So much for <code>Node</code>. The actual classes a a tad bit simpler, here they are:</p><p>V:</p><pre><code>public class V extends Node&lt;W&gt;
+{
+    public V(String name)
+    {
+        super(name);
+    }
+}
+</code></pre><p>W:</p><pre><code>public class W extends Node&lt;X&gt;
+{
+    public W(String name)
+    {
+        super(name);
+    }
+}
+</code></pre><p>X:</p><pre><code>public class X extends Node&lt;Y&gt;
+{
+    public X(String name)
+    {
+        super(name);
+    }
+}
+</code></pre><p>Y:</p><pre><code>public class Y extends Node&lt;Z&gt;
+{
+    public Y(String name)
+    {
+        super(name);
+    }
+}
+</code></pre><p>Z:</p><pre><code>public class Z implements ICanBecomeImmutable, ICanBeMergedWith &lt;Z&gt;
+{
+    @Override
+    public String toString()
+    {
+        return &#34;Z&#34;;
+    }
+
+    @Override
+    public void petrify()
+    {
+        // nothing to do
+    }
+
+    @Override
+    public void merge(Z other)
+    {
+        // whatever
+    }
+}
+</code></pre><p>Only <code>Z</code> is a little different, because it can be known to <code>Node</code> but is not a <code>Node</code> itself. Two empty methods aren&#39;t too bad I guess.</p><p>Last but not least, the above mentioned interfaces:</p><p>interface for merging:</p><pre><code>public interface ICanBeMergedWith&lt;T&gt;
+{
+    void merge(T other);
+}
+</code></pre><p>interface for making object immutable:</p><pre><code>public interface ICanBecomeImmutable
+{
+    void petrify();
+}
+</code></pre><p>I created a little test application:</p><pre><code>public class Main
+{
+    public static void main(String[] args)
+    {
+        // building main tree
+        System.out.println(&#34;========= main tree ========= &#34;);
+        V v1 = new V(&#34;v1&#34;);
+
+        W w1 = new W(&#34;w1&#34;);
+        W w2 = new W(&#34;w2&#34;);
+
+        X x1 = new X(&#34;x1&#34;);
+        X x2 = new X(&#34;x2&#34;);
+
+        Y y1 = new Y(&#34;y1&#34;);
+        Y y2 = new Y(&#34;y2&#34;);
+
+        v1.add(w1);
+        // v1.petrify();
+        v1.add(w2);
+
+        w1.add(x1);
+        w2.add(x2);
+
+        x1.add(y1);
+        // v1.petrify();
+        x2.add(y2);
+
+        y1.add(new Z());
+        y1.add(new Z());
+        y1.add(new Z());
+        // v1.petrify();
+        y1.add(new Z());
+        y2.add(new Z());
+        y2.add(new Z());
+
+        System.out.println(v1);
+        System.out.println(&#34;========= sub tree ========= &#34;);
+
+        // building second tree
+        V v2 = new V(&#34;v1&#34;);  // !!! same name as v1 object, should be merged to one
+        W w3 = new W(&#34;w2&#34;);  // !!! same name as w2 object, should be merged to one
+        X x3 = new X(&#34;x2&#34;);  // !!! same name as x2 object, should be merged to one
+        X x4 = new X(&#34;x4&#34;);
+        Y y3 = new Y(&#34;y2&#34;);  // !!! same name as y2 object, should be merged to one
+
+        v2.add(w3);
+
+        w3.add(x3);
+        w3.add(x4);
+
+        x3.add(y3);
+
+        y3.add(new Z());
+        y3.add(new Z());
+        y3.add(new Z());
+        y3.add(new Z());
+        y3.add(new Z());
+
+        System.out.println(v2);
+
+        System.out.println(&#34;========= merge tree ========= &#34;);
+
+        v1.merge(v2);
+        System.out.println(v1);
+    }
+}
+</code></pre><p>There are a few <code>v1.petrify();</code> scattered around to stop further expansion of the tree.</p><p>The output is as follows for me:</p><pre><code>========= main tree ========= 
+v1:
+    w1:
+        x1:
+            y1:
+                Z
+                Z
+                Z
+                Z
+    w2:
+        x2:
+            y2:
+                Z
+                Z
+========= sub tree ========= 
+v1:
+    w2:
+        x2:
+            y2:
+                Z
+                Z
+                Z
+                Z
+                Z
+        x4:
+========= merge tree ========= 
+v1:
+    w1:
+        x1:
+            y1:
+                Z
+                Z
+                Z
+                Z
+    w2:
+        x2:
+            y2:
+                Z
+                Z
+                Z
+                Z
+                Z
+                Z
+                Z
+        x4:
+</code></pre><hr/><p>This is where my partial answer ends, because I do not know how the <code>DataChunk</code>s look like. What you have to do now is to transform the data into a tree, then merge the tree with the main tree. As far as I could tell. Every <code>DataChunk</code> has to start at some <code>V</code> <code>Node</code>, because it would otherwise be impossible to which parent <code>Node</code> this subtree belongs to. But even if it wasn&#39;t, you have the ability now to add and merge <code>Nodes</code> at every level of the tree. When the stream is finished, call <code>petrify()</code> on the root<code>V</code> <code>Node</code> to prevent any further mutation of the data.</p><p>Also, do some more testing.</p><p>Something should probably be <code>final</code>. It looks more professional if something is <code>final</code>. No seriously, this is to show that not every detail was thought through entirely. This is to prove that from the types and the stated requirements, this can be possible. Nothing more nothing less.</p><hr/><p><strong>disclaimer:</strong> I don&#39;t have much experience with generics so far. Chances are this is the worst horrible nonsense ever. I was about to deem this impossible, when I gave it a last try, typed &#34;super&#34; to create and upper bound and all the red lines disappeared. Magic!</p><p>Also: yeah WTF, how dare I post an implementation on programmers.SE?  The thing is: you can do stuff on the whiteboard for sure, but there ain&#39;t no result without implementation. And what is supported by the language you choose in the end makes a huge difference on the effort it takes to do the actual implementation. You cannot hit &#34;compile&#34; and the compiler is always right. That&#39;s why I went for a concrete implementation.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../are-trees-organised-by-a-firstchild-nextsibling-structure-if-not-why-not/'>Are trees organised by a &#8220;firstchild, nextsibling&#8221; structure? If not, why not</a></li><li class="list-group-item"><a href='../marked-nodes-in-fibonacci-heaps/'>Marked nodes in Fibonacci heaps</a></li><li class="list-group-item"><a href='../is-a-tree-with-nodes-that-have-reference-to-parent-still-a-tree/'>Is a tree with nodes that have reference to parent still a tree</a></li><li class="list-group-item"><a href='../data-structures-and-algorithms-for-a-directed-rooted-tree-with-inherited-properties/'>Data structures and algorithms for a directed rooted tree with inherited properties</a></li><li class="list-group-item"><a href='../difference-between-sibling-lists-left-child-right-sibling-binary-tree-and-doubly-chained-tree/'>Difference between sibling lists, left-child right-sibling binary tree and doubly-chained tree</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,58 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Python GUI and MVC &#8211; get variable from other module &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1068452 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1068452" class="post-1068452 software type-software status-publish hentry category-software tag-mvc tag-python"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Python GUI and MVC &#8211; get variable from other module</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">mvc</span><span class="mr-2 badge badge-info">python</span></p><div class="entry-content"><p>I am trying to split my code into different layers:<br /> GUI, reading the GUI, creating input, calculating the model, interpreting data, creating view, sending the view to the GUI.<br /> Somebody told me about MVC and I would like to try to build my program that way. But I&#39;m a little confused about how to exchange information between those modules. I&#39;m running into problems with undefined global names and so forth.<br /> My model is written in matlab and consists of a simulation. The GUI is supposed to present the data in plots.</p><p>My actual problem is: how to connect the different modules/classes/files to each other if they are supposed to be as independent as possible?</p><p>For example: I&#39;m creating a GUI in one file, like this:</p><pre><code># userinterface.py
+
+class Userinterface(object):
+    def __init__(self, controller):
+        self.controller = controller
+        self.buildGUI()
+        return
+
+    def buildGUI():
+        # build lots of widgets and stuff
+        widget = tk.Thewidget(options=values, command=self.controller.onclick)
+</code></pre><p>And call it my interface. In order to keep this file nice and clean, I would like to define all functions to handle button clicks and read fields in another file and I guess this is what you would call the controller part:</p><pre><code># main.py
+    import userinterface as gui
+
+    class Controls(object):
+        def onclick(self):
+            # read values from widgets and do stuff
+            var1 = GUI.widget_entry.get()
+            # Call some other function with var1 etc.
+
+if __name__ == &#39;__main__&#39;:
+    GUI_controls = Controls()
+    GUI = gui.UserInterface(GUI_controls)
+</code></pre><p>But how do I do to connect these two? In my example above, I&#39;m handing over an instance of my Controls object. But then I read about Events too or Inheritance or subclasses.</p><p>I&#39;m rather new to programming and started all this 2 months ago, so I&#39;m struggling sorting all these theories.</p><p>If somebody could point out to me what the way of communication between my modules/files should be and what such a meeting-point looks like. Or just give me a link that I can study (like Javier did, although I&#39;ll have to read this thing more than once)</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>You&#39;re on the right track. The controller is what binds the app together, so passing it around to the various view and model classes is fine.</p><p>However, don&#39;t think that just because you have a controller, all widgets must use that controller for everything. For instance, I wouldn&#39;t put the <code>onclick</code> method in the controller. The controller should be for routing business logic, but what you&#39;re doing is mostly specific to the GUI.</p><p>I think a good general rule of thumb is that GUI events and callbacks should be within the GUI module. They then call the controller when interfacing with business logic. Fetching a string from the GUI itself is not business logic.</p><p>So, instead of:</p><pre><code># GUI module
+button = Button(..., command=controller.on_click)
+
+# Controller module
+def on_click():
+    var1 = GUI.widget_entry.get()
+    self.do_something(var1)
+</code></pre><p>I would do this:</p><pre><code># GUI module
+button = Button(..., command=on_click)
+def on_click():
+    var1 = widget_entry.get()
+    controller.do_something(var1)
+</code></pre><p>With the above, the controller doesn&#39;t need to know what widgets are part of the GUI. All it does is provide an interface through which the GUI can request services.</p><p>If you prefer to keep the <code>on_click</code> in the controller, that&#39;s possible too, and not completely unreasonable. However, instead of building in knowledge of the GUI widgets into the controller, give the GUI an interface that the controller can use.</p><p>For example, instead of doing <code>GUI.widget_entry.get()</code>, the controller would call an accessor such as <code>GUI.get_entry_widget_value()</code>. That allows you to refactor the GUI without having to change the controller. If you move the entry to <code>the_widget_entry</code> instead of <code>widget_entry</code>, the controller can be completely unaware and still function properly.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/java-how-to-completely-decouple-model-from-view-controller-in-java-swing/'>Java &#8211; How to completely decouple Model from View/Controller in Java Swing</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/javascript-angularjs-modules-implementation-technique-and-structure/'>JavaScript &#038; AngularJs Modules Implementation technique and structure</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

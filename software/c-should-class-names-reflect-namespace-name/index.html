@@ -1,0 +1,53 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C++ &#8211; Should class names reflect namespace name &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1075828 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1075828" class="post-1075828 software type-software status-publish hentry category-software tag-c tag-design tag-namespace tag-naming"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C++ &#8211; Should class names reflect namespace name</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">design</span><span class="mr-2 badge badge-warning">namespace</span><span class="mr-2 badge badge-primary">naming</span></p><div class="entry-content"><p>Is it generally considered good practise for a <code>class</code> name to reflect the <code>namespace</code> name it exists under, or should the <code>namespace</code> name implicitly be considered part of the <code>class</code> name?</p><p>For example, suppose I have a collection of classes which all act to filter a <code>class Foo</code>:</p><pre><code>class FooFilter
+{
+    public virtual bool operator()(const Foo&amp; obj) const = 0;
+};
+</code></pre><p>Subtypes could be called <code>HappyFooFilter</code>, <code>SadFooFilter</code>, &#8230; etc.</p><p>Now if we wrap these into a namespace, we have something like:</p><pre><code>namespace fooFilter
+{
+    class FooFilter ...
+    class HappyFooFilter ....
+    class SadFooFilter ...
+    etc ....
+}
+</code></pre><p>But this contains a redundancy in the class names (e.g. <code>fooFilter::HappFooFilter</code>). So with the introduction of the <code>namespace fooFilter</code>, should the class names change to reflect this new structure?</p><pre><code>namespace fooFilter
+{
+    class Base ...
+    class Happy ....
+    class Sad ...
+    etc ....
+}
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>The problem is that your example is vague and your names are anemic.  If we make them good robust names doesn&#39;t the choice become obvious?</p><pre><code>namespace ImageFilter
+{
+     class BasicFace ...
+     class HappyFace ...
+     class SadFace ...
+}
+</code></pre><p>verses</p><pre><code>namespace ImageFilter
+{
+     class BasicFaceImageFilter ...
+     class HappyFaceImageFilter ...
+     class SadFaceImageFilter ...
+}
+</code></pre><p>This <a href="https://news.ycombinator.com/item?id=11463102" rel="nofollow noreferrer">smurf naming anti pattern</a> has tempted me in the past as well.  I&#39;ve come to feel it&#39;s the result of trying to keep anemic names on life support.  Rethink all the names and try again.  It&#39;s a <a href="https://softwareengineering.stackexchange.com/questions/191929/the-problems-with-avoiding-smurf-naming-classes-with-namespaces">pain</a> to do but it makes for better code.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/php-dynamic-class-inheritance-for-php/'>Php &#8211; Dynamic Class Inheritance For PHP</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-what-should-be-done-with-class-names-that-conflict-common-framework-names/'>C# &#8211; What should be done with class names that conflict (common) framework names</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/the-problems-with-avoiding-smurf-naming-classes-with-namespaces/'>The problems with Avoiding Smurf Naming classes with namespaces</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-same-class-and-namespace-name/'>C# &#8211; Same class and namespace name</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-using-a-domain-name-as-c-namespace/'>C++ &#8211; Using a domain name as C++ namespace</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-namespace-and-class-naming-convention-for-libraries/'>C# namespace and class naming convention for libraries</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-avoiding-conflicting-namespace-and-class-name/'>C# &#8211; Avoiding conflicting namespace and class name</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,108 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Python &#8211; Setting class/methods conditionally &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1071377 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1071377" class="post-1071377 software type-software status-publish hentry category-software tag-object-oriented-design tag-python"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Python &#8211; Setting class/methods conditionally</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">object-oriented-design</span><span class="mr-2 badge badge-info">python</span></p><div class="entry-content"><p>I want to keep the end-user (often myself) from being presented with inapplicable methods when coding directly in an interpreter, but I also <em>don&#39;t want the user to have to inspect the incoming data and then determine which class to instantiate</em>. This is probably the XY problem, but here&#39;s a working example, in which I set the class dynamically:</p><pre><code>class _BaseNumber(object):
+    def __init__(self, x):
+        self.x = x
+
+class _Even(_BaseNumber):
+    def cool_method_just_for_evens(self):
+        pass
+
+class Number(object):
+    def __new__(self, x):
+        if x % 2 == 0:
+            return _Even(x)
+        else:
+            return _BaseNumber(x)
+
+print(type(Number(3)))
+print(type(Number(4)))
+</code></pre><p>This works, with a result of</p><pre><code>&lt;class &#39;__main__._BaseNumber&#39;&gt;
+&lt;class &#39;__main__._Even&#39;&gt;
+</code></pre><p>Is there a cleaner/more efficient way to conditionally enable certain methods? Or is this sort of conditional functionality discouraged for some reason that will come back to bite me later on?</p><p>I&#39;m in Python 2.7, but apparently that&#39;s not a tag here.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>What you are seeing here, Tom, is the <a href="https://en.wikipedia.org/wiki/Strategy_pattern" rel="nofollow">Strategy</a> design pattern, which may or may not be a variation of <a href="https://en.wikipedia.org/wiki/Facade_pattern" rel="nofollow">Facade</a> or <a href="https://en.wikipedia.org/wiki/Decorator_pattern" rel="nofollow">Decorator</a>, and uses the <a href="https://en.wikipedia.org/wiki/Adapter_pattern" rel="nofollow">Adapter</a> design pattern.</p><p>The strategy method itself is a <a href="https://en.wikipedia.org/wiki/Factory_method_pattern" rel="nofollow">Factory method</a>. A simple factory method produces an object with parameters you supply, but you have provided a conditional returning a specific subtype (or the supertype itself), you provided a strategy.</p><p>When you are using the strategy pattern you usually provide a common (adapter) interface for all underlying implementations and use that one. By doing so you are abstracting the inner parts which you do not care about.</p><p>Consider your example in a compiled language <code>C++</code>:</p><pre><code>#include &lt;exception&gt;
+
+class Number
+{
+protected:
+    int _number;
+
+public:
+    explicit Number(const int number)
+        : _number(number)
+    {       
+    }
+
+    int getNumber() const
+    {
+        return _number;
+    }
+};
+
+class EvenNumber : public Number
+{
+public:
+    explicit EvenNumber(const int number)
+        : Number(number)
+    {
+    }
+
+    bool isNumberReallyEven() const
+    {
+        return _number % 2 == 0;
+    }
+};
+
+namespace NumberStrategy
+{
+    Number createNumber(const int number)
+    {
+        switch (number % 2)
+        {
+        case 0:
+            return EvenNumber(number);
+        case 1:
+            return Number(number);
+        }
+        throw std::exception(&#34;Should never happen.&#34;);
+    }
+}
+
+int main(int agrc, char* argv[])
+{
+    auto number = NumberStrategy::createNumber(2);
+    auto isItEven = number.isNumberReallyEven();
+
+    return EXIT_SUCCESS;
+}
+</code></pre><p>By compiling this short snippert, you will get a compilation error on the line 52:</p><blockquote><p>&#39;isNumberReallyEven&#39;: is not a member of &#39;Number&#39;</p></blockquote><p>But why, you may ask? By passing the number 2 to the <code>NumberStrategy::createNumber</code> function, I should have the <code>EvenNumber</code> instance which has the <code>isNumberReallyEven</code> method.</p><p>You actually do have the instance but compiler does not know that, because the return type of the <code>NumberStrategy::createNumber</code> function is <code>Number</code>. If you want to access the underlying methods, you need to tell the compiler which type you really have by casting it.</p><p>C++11 has a very nice concept for this called <a href="http://en.cppreference.com/w/cpp/language/reinterpret_cast" rel="nofollow"><code>reinterpret_cast</code></a>. It is completely unsafe, so when you use it you must be completely sure you know what you are doing. Obviously, in this example you know that passing an even number to the <code>NumberStrategy::createNumber</code> function will return the <code>EvenNumber</code> type.</p><p>You change the program to this:</p><pre><code>int main(int agrc, char* argv[])
+{
+    auto number = NumberStrategy::createNumber(2);
+
+    // I know I recieved a number but I am 100% sure it has to be even,
+    // thus I am casting it manually without any worry.
+    auto evenNumber = reinterpret_cast&lt;EvenNumber&amp;&gt;(number);
+    auto isItEven = evenNumber.isNumberReallyEven();
+
+    return EXIT_SUCCESS;
+}
+</code></pre><p>And it compiles.</p><p>You may ask why I decided to show you a C++ example instead of a Python one? I am not a Python programmer but I work with PHP (a dynamic language as well). In dynamic languages the program would probably still work even without the casting, due to the nature of the language - it will simply inspect the type during the runtime and see whether the method is available or not and in the case of passing a 2 to the method it would be.</p><p>By using for example C++, the compiler will not allow you to get past certain restriction you wouldn&#39;t have to deal with in an interpreted language and that is good. When another programmer reads the code he will instantly know that you are doing that on purpose.</p><p>The same applies to Python. If you are calling a method which you know is available in a subtype but the contract of the method states a supertype is returned instead, you should probably comment that you are exactly sure the method will be available when you call it.</p><hr/><p>Then there&#39;s the other thing: <strong>wrong abstraction</strong>. If you encouter a situation where you are forced to typecast a variable to access its methods, should the <code>supertype&lt;-&gt;subtype</code> relationship even exist?</p><p>In the C++ snippet this problem is easily fixed by placing the <code>isNumberReallyEven</code> method in the <code>Number</code> class. If you cannot do something like that, your design <em>may</em> be wrong.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/python-what-are-class-methods-and-instance-methods-in-python/'>Python &#8211; What are &#8220;class methods&#8221; and &#8220;instance methods&#8221;, in Python</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/object-oriented-design-pattern-for-similar-classes-that-require-different-implementations/'>Object-oriented &#8211; Design pattern for similar classes that require different implementations</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

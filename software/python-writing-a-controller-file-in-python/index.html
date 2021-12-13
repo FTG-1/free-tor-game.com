@@ -1,0 +1,75 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Python &#8211; writing a controller file in Python &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1073402 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1073402" class="post-1073402 software type-software status-publish hentry category-software tag-controller tag-modules tag-python"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Python &#8211; writing a controller file in Python</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">controller</span><span class="mr-2 badge badge-info">modules</span><span class="mr-2 badge badge-warning">python</span></p><div class="entry-content"><p>I need some advice on my idea to write a controller file in Python, and not like the C in MVC type controller but a more simpler idea. Just a Python script that controls the operation of some other Python scripts.</p><p>I will outline the idea, and any advice or ideas would be greatly appreciated.</p><p>I have to write a system that does some background tasks for a web application. The web app is in PHP and separate from the Python system I am writing, the Python will do some automated tasks and calculate and save some analytical data for the web app to use and display.</p><p>I have experience with basic Python but I have not pushed forward to learn much about class/objective Python. So far what I have written for the system is a bunch of separate py scripts that do the jobs they have to do, written totally procedurally. They all work fine, but it&#39;s not really a system yet. My initial krux was that I had to keep them all alive and running infinitely in the background. After some research I decided that the best way to do this was to have a process manager like Supervisord look after each script, I would start up the scripts and allow them to run for a certain time with a finite loop (in each script) and then they would exit, then the supervisor would restart them every time they exit and keep them alive. I wanted to avoid using infinite loops because of the possibility of memory leaks (I believe allowing the process to exit totally frees up memory associated with that process and prevents leaks). I have not tested any of this, it&#39;s just a concept at the moment.</p><p>Something I would prefer to do would be to have one script be the controller of the rest of the scripts and have the supervisor only look after the controller. This saves me having to update the supervisors config file every time I add to the Python system.</p><p>The basic idea for the controller would be to have a loop fork new threads for each separate script/process and then have the controller wait for all the other threads to complete before allowing the loop to do another iteration (starting everything again).</p><p>I&#39;m guessing what I need to do for this would be to wrap all the code in each script in a function, then import them as modules into the controller and call each function on a new thread inside the &#39;main&#39; loop of the controller. Then the loop just runs, calls each function on a new thread and waits for each thread to finish before starting again.</p><p>How does this sound as a concept?</p><p>The only direct coding question I have is about turning my scripts into modules, how do I go from totally procedural code (no functions, no classes) into an importable module? can I wrap the procedures in just a function, or do I need to have them in a class also?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I have a similar system but have a different concept:</p><ul><li>I use <code>cron</code> to auto-start processes</li><li>Check if related process is running</li><li>If it is not running, then start the process.</li></ul><p>The module uses <code>psutil</code> package to get a list of running processes, search for the related process and returns whether is it in the list or not. That may sound practical or not according to your use case though:</p><pre><code>import psutil
+
+class ProcessControl(object):
+    &#34;&#34;&#34;
+    This program checks whether the given python file is running or not. If check_params flag is set as True, then
+    it will be checked if an instance of the python file is running with all of the given paramters. If check_params
+    flag sets as False, then the check will be made with only using the python file name and instances of the file
+    running with different parameters will also be count.
+    &#34;&#34;&#34;
+    def __init__(self, filename, *args):
+        self.filename = filename
+        self.args = args
+        self.arg_num = len(args)
+
+    def process_count(self, check_params):
+        process_count = 0
+        # Examine the process list to check if given process is running or not...
+        for _prs in psutil.process_iter():
+            try:
+                _cmdline = _prs.cmdline()
+            except TypeError:
+                _cmdline = _prs.cmdline
+            if len(_cmdline) &gt;= 2 and &#34;python&#34; in _cmdline[0] and self.filename in _cmdline[1] and _prs.is_running():
+                # We found an instance of the process that is running. Since This control function is triggered when
+                # we run the python code, There would be at least one process (this one) which is running. Counting 2
+                # or more processes means there is another instance which is still running when we trigger the python
+                # code file
+                if check_params:
+                    # We also will check the parameters for the complete similarity
+                    if len(_cmdline) == 2 + self.arg_num and all(str(_arg) in _cmdline[2:] for _arg in self.args):
+                        process_count += 1
+                    else:
+                        # This is no match...
+                        pass
+                else:
+                    process_count += 1
+            else:
+                # This is no match....
+                pass
+        return process_count
+
+    def is_running(self, check_params=True):
+        return self.process_count(check_params) &gt; 1
+</code></pre><p>I have little python files which have similar code as below:</p><p><strong>Ex:</strong></p><blockquote><p>myFile.py</p></blockquote><pre><code>class MyCodeClass:
+    def run_code(self):
+         ...
+
+
+if __name__ == &#34;__main__&#34;:
+    my_code = MyCodeClass()
+    try:
+        if ProcessControl(__file__).is_running():
+            print &#34;Already Running&#34;
+        else:
+            my_code.run_code()
+    except Exception as e:
+        print e
+</code></pre><p>And finally I have lines that trigger this file in my <code>cron</code>:</p><pre><code>* * * * * python myFile.py
+</code></pre><p>Logic:</p><p><code>cron</code> triggers this file every <code>x</code> minutes. <code>ProcessControl</code> checks whether file is running or not. When calling <code>is_running</code> method, you can pass a bool value so the controller will ignore the parameters passed while running the python file. Like if <code>check_params</code> is <code>True</code> following two commands will be accepted as different and both will be triggered:</p><pre><code>python myOtherFile.py 127.0.0.1 220
+python myOtherFile.py 127.0.0.1 250
+</code></pre><p>and disabling <code>check_params</code> will evaluate the second call as the same program and will not trigger it</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../python-architecting-python-application-consisting-of-many-small-scripts/'>Python &#8211; Architecting Python application consisting of many small scripts</a></li><li class="list-group-item"><a href='../python-encoding-a-bash-script-for-use-in-python/'>Python &#8211; Encoding a bash script for use in Python</a></li><li class="list-group-item"><a href='../python-maintaining-log-stream-after-file-name-change/'>Python &#8211; Maintaining log stream after file name change</a></li><li class="list-group-item"><a href='../python-writing-functional-integration-tests-for-python/'>Python &#8211; writing functional/integration tests for python</a></li><li class="list-group-item"><a href='../python-mvc-file-separation/'>Python MVC-file-separation</a></li><li class="list-group-item"><a href='../python-best-practice-for-python-main-function-definition-and-program-start-exit/'>Python &#8211; Best practice for Python main function definition and program start/exit</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

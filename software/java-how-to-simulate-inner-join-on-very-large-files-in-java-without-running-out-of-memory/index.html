@@ -1,0 +1,424 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; How to simulate inner join on very large files in java (without running out of memory) &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1074033 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1074033" class="post-1074033 software type-software status-publish hentry category-software tag-file-handling tag-java"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; How to simulate inner join on very large files in java (without running out of memory)</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">file handling</span><span class="mr-2 badge badge-info">java</span></p><div class="entry-content"><p>I am trying to simulate SQL joins using java and very large text files (INNER, RIGHT OUTER and LEFT OUTER). The files have already been sorted using an external sort routine.</p><p>The issue I have is I am trying to find the most efficient way to deal with the INNER join part of the algorithm. Right now I am using two Lists to store the lines that have the same key and iterate through the set of lines in the right file once for every line in the left file (provided the keys still match). In other words, the join key is not unique in each file so would need to account for the Cartesian product situations &#8230;</p><pre><code>left_01, 1
+left_02, 1
+right_01, 1
+right_02, 1
+right_03, 1
+
+left_01 joins to right_01 using key 1
+left_01 joins to right_02 using key 1
+left_01 joins to right_03 using key 1
+left_02 joins to right_01 using key 1
+left_02 joins to right_02 using key 1
+left_02 joins to right_03 using key 1
+</code></pre><p>My concern is one of memory. I will run out of memory if i use the approach below but still want the inner join part to work fairly quickly. What is the best approach to deal with the INNER join part keeping in mind that these files may potentially be huge</p><pre><code>public class Joiner {
+
+  private void join(BufferedReader left, BufferedReader right, BufferedWriter output) throws Throwable {
+
+    BufferedReader _left = left;
+    BufferedReader _right = right;
+    BufferedWriter _output = output;
+    Record _leftRecord;
+    Record _rightRecord;
+
+    _leftRecord = read(_left);
+    _rightRecord = read(_right);
+
+    while( _leftRecord != null &amp;&amp; _rightRecord != null ) {
+
+      if( _leftRecord.getKey() &lt; _rightRecord.getKey() ) {
+        write(_output, _leftRecord, null);
+        _leftRecord = read(_left);
+      }
+      else if( _leftRecord.getKey() &gt; _rightRecord.getKey() ) {
+        write(_output, null, _rightRecord);
+        _rightRecord = read(_right);
+      }
+      else {
+        List&lt;Record&gt; leftList = new ArrayList&lt;Record&gt;();
+        List&lt;Record&gt; rightList = new ArrayList&lt;Record&gt;();
+
+        _leftRecord = readRecords(leftList, _leftRecord, _left);
+        _rightRecord = readRecords(rightList, _rightRecord, _right);
+
+        for( Record equalKeyLeftRecord : leftList ){
+          for( Record equalKeyRightRecord : rightList ){
+            write(_output, equalKeyLeftRecord, equalKeyRightRecord);
+          }
+        }
+      }
+    }
+
+    if( _leftRecord != null ) {
+      write(_output, _leftRecord, null);
+      _leftRecord = read(_left);
+      while(_leftRecord != null) {
+        write(_output, _leftRecord, null);
+        _leftRecord = read(_left);        
+      }
+    }
+    else {  
+      if( _rightRecord != null ) {
+        write(_output, null, _rightRecord);
+        _rightRecord = read(_right);
+        while(_rightRecord != null) {
+          write(_output, null, _rightRecord);
+          _rightRecord = read(_right);
+        }
+      }     
+    }
+    _left.close();
+    _right.close();
+    _output.flush();
+    _output.close();
+  }
+
+  private Record read(BufferedReader reader) throws Throwable {
+    Record record = null;
+
+    String data = reader.readLine();
+    if( data != null ) {
+      record = new Record(data.split(&#34;\t&#34;));
+    }
+    return record;
+  }
+
+  private Record readRecords(List&lt;Record&gt; list, Record record, BufferedReader reader) throws Throwable {
+    int key = record.getKey();
+    list.add(record);
+    record = read(reader);
+    while( record != null &amp;&amp; record.getKey() == key) {
+      list.add(record);
+      record = read(reader);
+    }
+    return record;    
+  }
+
+  private void write(BufferedWriter writer, Record left, Record right) throws Throwable {   
+    String leftKey = (left == null ? &#34;null&#34; : Integer.toString(left.getKey()));
+    String leftData = (left == null ? &#34;null&#34; : left.getData());
+    String rightKey = (right == null ? &#34;null&#34; : Integer.toString(right.getKey()));
+    String rightData = (right == null ? &#34;null&#34; : right.getData());
+
+    writer.write(&#34;[&#34; + leftKey + &#34;][&#34; + leftData + &#34;][&#34; + rightKey + &#34;][&#34; + rightData + &#34;]\n&#34;);
+  }
+
+  public static void main(String[] args) {
+        try {
+
+          BufferedReader leftReader = new BufferedReader(new FileReader(&#34;LEFT.DAT&#34;));
+          BufferedReader rightReader = new BufferedReader(new FileReader(&#34;RIGHT.DAT&#34;));
+          BufferedWriter output = new BufferedWriter(new FileWriter(&#34;OUTPUT.DAT&#34;));
+
+      Joiner joiner = new Joiner();
+      joiner.join(leftReader, rightReader, output);
+    } 
+        catch (Throwable e) {
+      e.printStackTrace();
+    }
+  }
+}
+</code></pre><p>After applying the ideas from the proposed answer, I changed the loop to this</p><pre><code>private void join(RandomAccessFile left, RandomAccessFile right, BufferedWriter output) throws Throwable {
+
+    long _pointer = 0;
+
+    RandomAccessFile _left = left;
+    RandomAccessFile _right = right;
+
+    BufferedWriter _output = output;
+
+    Record _leftRecord;
+    Record _rightRecord;
+
+    _leftRecord = read(_left);
+    _rightRecord = read(_right);
+
+    while( _leftRecord != null &amp;&amp; _rightRecord != null ) {
+
+        if( _leftRecord.getKey() &lt; _rightRecord.getKey() ) {
+            write(_output, _leftRecord, null);
+            _leftRecord = read(_left);
+        }
+        else if( _leftRecord.getKey() &gt; _rightRecord.getKey() ) {
+            write(_output, null, _rightRecord);             
+            _pointer = _right.getFilePointer();
+            _rightRecord = read(_right);
+        }
+        else {          
+            long _tempPointer = 0;
+            int key = _leftRecord.getKey();                                                         
+            while( _leftRecord != null &amp;&amp; _leftRecord.getKey() == key ) {
+                _right.seek(_pointer);
+                _rightRecord = read(_right);
+                while( _rightRecord != null &amp;&amp; _rightRecord.getKey() == key ) {
+                    write(_output, _leftRecord, _rightRecord );
+                    _tempPointer = _right.getFilePointer();
+                    _rightRecord = read(_right); 
+                }
+                _leftRecord = read(_left);
+            }
+            _pointer = _tempPointer;
+        }
+    }
+
+    if( _leftRecord != null ) {
+        write(_output, _leftRecord, null);
+        _leftRecord = read(_left);
+        while(_leftRecord != null) {
+            write(_output, _leftRecord, null);
+            _leftRecord = read(_left);              
+        }
+    }
+    else {  
+        if( _rightRecord != null ) {
+            write(_output, null, _rightRecord);
+            _rightRecord = read(_right);
+            while(_rightRecord != null) {
+                write(_output, null, _rightRecord);
+                _rightRecord = read(_right);
+            }
+        }           
+    }
+    _left.close();
+    _right.close();
+    _output.flush();
+    _output.close();
+}
+</code></pre><p><em>UPDATE</em><br /> While this approach worked, it was terribly slow and so I have modified this to create files as buffers and this works very well. Here is the update &#8230;</p><pre><code>private long getMaxBufferedLines(File file) throws Throwable {
+    long freeBytes = Runtime.getRuntime().freeMemory() / 2;     
+    return (freeBytes / (file.length() / getLineCount(file)));
+}
+
+private void join(File left, File right, File output, JoinType joinType) throws Throwable {
+
+    BufferedReader leftFile = new BufferedReader(new FileReader(left));
+    BufferedReader rightFile = new BufferedReader(new FileReader(right));
+    BufferedWriter outputFile = new BufferedWriter(new FileWriter(output));
+    long maxBufferedLines = getMaxBufferedLines(right);
+
+    Record leftRecord;
+    Record rightRecord;
+
+    leftRecord = read(leftFile);
+    rightRecord = read(rightFile);
+
+    while( leftRecord != null &amp;&amp; rightRecord != null ) {
+
+        if( leftRecord.getKey().compareTo(rightRecord.getKey()) &lt; 0) {
+            if( joinType == JoinType.LeftOuterJoin 
+                    || joinType == JoinType.LeftExclusiveJoin
+                    || joinType == JoinType.FullExclusiveJoin
+                    || joinType == JoinType.FullOuterJoin ) { 
+                write(outputFile, leftRecord, null);
+            }
+            leftRecord = read(leftFile);
+        }
+        else if( leftRecord.getKey().compareTo(rightRecord.getKey()) &gt; 0 ) {
+            if( joinType == JoinType.RightOuterJoin 
+                    || joinType == JoinType.RightExclusiveJoin
+                    || joinType == JoinType.FullExclusiveJoin
+                    || joinType == JoinType.FullOuterJoin ) {
+                write(outputFile, null, rightRecord);
+            }
+            rightRecord = read(rightFile);
+        }
+        else if( leftRecord.getKey().compareTo(rightRecord.getKey()) == 0 ) {
+            String key = leftRecord.getKey(); 
+            List&lt;File&gt; rightRecordFileList = new ArrayList&lt;File&gt;();
+            List&lt;Record&gt; rightRecordList = new ArrayList&lt;Record&gt;();
+            rightRecordList.add(rightRecord);
+            rightRecord = consume(key, rightFile, rightRecordList, rightRecordFileList, maxBufferedLines);
+
+            while( leftRecord != null &amp;&amp; leftRecord.getKey().compareTo(key) == 0 ) {
+                processRightRecords(outputFile, leftRecord, rightRecordFileList, rightRecordList, joinType);
+                leftRecord = read(leftFile);
+            }
+
+            // need a dispose for deleting files in list
+        }
+        else {
+            throw new Exception(&#34;DATA IS NOT SORTED&#34;);
+        }
+    }
+
+    if( leftRecord != null ) {
+        if( joinType == JoinType.LeftOuterJoin 
+                || joinType == JoinType.LeftExclusiveJoin
+                || joinType == JoinType.FullExclusiveJoin
+                || joinType == JoinType.FullOuterJoin ) {
+            write(outputFile, leftRecord, null);
+        }
+        leftRecord = read(leftFile);
+        while(leftRecord != null) {
+            if( joinType == JoinType.LeftOuterJoin 
+                    || joinType == JoinType.LeftExclusiveJoin
+                    || joinType == JoinType.FullExclusiveJoin
+                    || joinType == JoinType.FullOuterJoin ) {
+                write(outputFile, leftRecord, null);
+            }
+            leftRecord = read(leftFile);              
+        }
+    }
+    else {  
+        if( rightRecord != null ) {
+            if( joinType == JoinType.RightOuterJoin 
+                    || joinType == JoinType.RightExclusiveJoin
+                    || joinType == JoinType.FullExclusiveJoin
+                    || joinType == JoinType.FullOuterJoin ) {
+                write(outputFile, null, rightRecord);
+            }
+            rightRecord = read(rightFile);
+            while(rightRecord != null) {
+                if( joinType == JoinType.RightOuterJoin 
+                        || joinType == JoinType.RightExclusiveJoin
+                        || joinType == JoinType.FullExclusiveJoin
+                        || joinType == JoinType.FullOuterJoin ) {
+                    write(outputFile, null, rightRecord);
+                }
+                rightRecord = read(rightFile);
+            }
+        }           
+    }
+    leftFile.close();
+    rightFile.close();
+    outputFile.flush();
+    outputFile.close();
+}
+
+public void processRightRecords(BufferedWriter outputFile, Record leftRecord, List&lt;File&gt; rightFiles, List&lt;Record&gt; rightRecords, JoinType joinType) throws Throwable {
+
+    for(File rightFile : rightFiles) {
+        BufferedReader rightReader = new BufferedReader(new FileReader(rightFile));
+        Record rightRecord = read(rightReader);
+        while(rightRecord != null){
+
+            if( joinType == JoinType.LeftOuterJoin 
+                    || joinType == JoinType.RightOuterJoin
+                    || joinType == JoinType.FullOuterJoin
+                    || joinType == JoinType.InnerJoin ) {               
+
+                write(outputFile, leftRecord, rightRecord);
+            }
+            rightRecord = read(rightReader);
+        }
+        rightReader.close();
+    }
+
+    for(Record rightRecord : rightRecords) {
+        if( joinType == JoinType.LeftOuterJoin 
+                || joinType == JoinType.RightOuterJoin
+                || joinType == JoinType.FullOuterJoin
+                || joinType == JoinType.InnerJoin ) {               
+
+            write(outputFile, leftRecord, rightRecord);
+        }
+    }
+}
+
+/**
+ * consume all records having key (either to a single list or multiple files) each file will 
+ * store a buffer full of data. The right record returned represents the outside flow (key is 
+ * already positioned to next one or null) so we can&#39;t use this record in below while loop or 
+ * within this block in general when comparing current key. The trick is to keep consuming 
+ * from a List. When it becomes empty, re-fill it from the next file until all files have 
+ * been consumed (and the last node in the list is read). The next outside iteration will be 
+ * ready to be processed (either it will be null or it points to the next biggest key
+ * @throws Throwable 
+ * 
+ */
+private Record consume(String key, BufferedReader reader, List&lt;Record&gt; records, List&lt;File&gt; files, long bufferMaxRecordLines ) throws Throwable {
+    boolean processComplete = false;
+    Record record = records.get(records.size() - 1);
+
+    while(!processComplete){
+        long recordCount = records.size();
+        if( record.getKey().compareTo(key) == 0 ){
+            record = read(reader);                
+            while( record != null &amp;&amp; record.getKey().compareTo(key) == 0 &amp;&amp; recordCount &lt; bufferMaxRecordLines ) {
+                records.add(record);
+                recordCount++;
+                record = read(reader);
+            }
+        }
+        processComplete = true;
+        // if record is null, we are done
+        if( record != null ) {
+
+            // if the key has changed, we are done
+            if( record.getKey().compareTo(key) == 0 ) {
+
+                // Same key means we have exhausted the buffer.
+                // Dump entire buffer into a file. The list of file 
+                // pointers will keep track of the files ...                    
+                processComplete = false;
+                dumpBufferToFile(records, files);
+                records.clear();
+                records.add(record);
+            }
+        }
+    }
+    return record;
+}
+
+/**
+ * Dump all records in List of Record objects to a file. Then, add that 
+ * file to List of File objects
+ * 
+ * NEED TO PLACE A LIMIT ON NUMBER OF FILE POINTERS (check size of file list)
+ * 
+ * @param records
+ * @param files
+ * @throws Throwable 
+ */
+private void dumpBufferToFile(List&lt;Record&gt; records, List&lt;File&gt; files) throws Throwable {
+    String prefix = &#34;joiner_&#34; + files.size() + 1;
+    String suffix = &#34;.dat&#34;;
+    File file = File.createTempFile(prefix, suffix, new File(&#34;cache&#34;));
+    BufferedWriter writer = new BufferedWriter(new FileWriter(file));       
+
+    for( Record record : records ) {
+        writer.write( record.dump() );
+    }
+
+    files.add(file);
+    writer.flush();
+    writer.close();
+}
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>you can use a random <a href="http://docs.oracle.com/javase/7/docs/api/java/io/RandomAccessFile.html" rel="nofollow">RandomAccessFile</a></p><pre><code>private void join(RandomAccessFile left, RandomAccessFile right, BufferedWriter output) throws Throwable {
+
+    long rightIndex = right.getFilePointer();
+
+    Record leftRecord = read(left);
+    Record rightRecord;
+
+    while((leftRecord )!=null){
+        right.seek(rightIndex);
+
+        while((rightRecord = read(right))!=null &amp;&amp; leftRecord.getKey() &gt; rightRecord.getKey()){
+            //skip right until it can match left
+            // store pointer because we don&#39;t need to return to earlier
+            rightIndex = right.getFilePointer();
+        }
+
+        while(rightRecord !=null &amp;&amp; leftRecord.getKey()==rightRecord.getKey()){
+            write(_output, leftRecord, rightRecord );
+            rightRecord = read(right))
+        }
+        leftRecord = read(left);
+        //you can test the need to skip this left record if you keep the previous key and the current rightRecord.getKey()
+    }
+}
+</code></pre><p>this will be a O(n+m) time and O(1) space algorithm</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../php-file_put_contents-file-locking/'>PHP file_put_contents File Locking</a></li><li class="list-group-item"><a href='../java-most-efficient-way-of-searching-very-large-strings-of-text-in-java/'>Java &#8211; Most efficient way of searching very large strings of text in java</a></li><li class="list-group-item"><a href='../c-why-would-anyone-use-multipart-form-data-for-mixed-data-and-file-transfers/'>C# &#8211; Why would anyone use multipart/form-data for mixed data and file transfers</a></li><li class="list-group-item"><a href='../java-updating-nested-objects-in-ddd-aggregate-by-example-delegation-or-direct-access-from-the-root/'>Java &#8211; Updating nested objects in DDD Aggregate by example: delegation or direct access from the root</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

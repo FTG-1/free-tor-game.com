@@ -1,0 +1,58 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Strategy Pattern not sufficient for the problem &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1085052 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1085052" class="post-1085052 software type-software status-publish hentry category-software tag-c tag-delegates tag-design-patterns"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Strategy Pattern not sufficient for the problem</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">delegates</span><span class="mr-2 badge badge-warning">design-patterns</span></p><div class="entry-content"><p>Let me sketch the situation:</p><ul><li>I have multiple users, with certain properties (2 enums)</li><li>For each user I need to fetch data, for some with some basic filtering, for some extended filtering (= basic filtering + extra filtering). I&#39;d like to do that not separate for every user, but I&#39;d rather group the users and do it in two queries.</li><li>For every user, I need to filter that data depending on the values of the enums. I will <strong>always</strong> need to do <code>GetFirstData()</code> (method depending on first enum), <code>GetLastData()</code> (method depending on second enum), <code>CheckData()</code> (depending on both enums).</li></ul><p>I&#39;ve been looking at the <a href="http://www.codeproject.com/Articles/776819/Strategy-Pattern-Csharp" rel="nofollow">Strategy Pattern</a>, but it seems that&#39;s more designed to implement one behavior. I want to combine my behaviors to avoid making the combinations between all <code>GetFirstData</code> and <code>GetLastData</code>, is there any pattern to do this better? I&#39;ve been thinking on just using <strong>2 delegates</strong> and assign the corresponding methods <strong>depending on the values of the enums</strong>. Would this be the cleanest way?</p><p><em>Little example of what I mean:</em></p><pre><code>public class User
+{
+   public Enum1 FirstEnum {get; set;}
+   public Enum2 SecondEnum {get; set;}
+   ...
+}
+public IEnumerable&lt;Data&gt; Filter(int userId, Expression extraFilter)
+{
+    var data = GetData(userId);
+    if(extraFilter != null)
+      data = data.Where(extraFilter);
+    return data;
+}
+public Data GetFirstData(IEnumerable&lt;Data&gt; data);
+public Data GetLastData(IEnumerable&lt;Data&gt; data);
+public bool CheckData(IEnumerable&lt;Data&gt; data);
+</code></pre><p>My endresult could do something like this:</p><pre><code>public class EndResult
+{
+    public Data FirstResult {get; set;}
+    public Data SecondResult {get; set;}
+    public Func&lt;IEnumerable&lt;Data&gt;,Data&gt; GetFirstData {get; set;}
+    public Func&lt;IEnumerable&lt;Data&gt;,Data&gt; GetLastData {get; set;}
+    public bool ExtendeFiltering {get; set;}
+
+    public EndResult(User user)
+    {
+        switch(user.enum1)
+        {
+            case: GetFirstData = specificFunction;
+                  ExtendedFiltering = true;
+            ...
+        }
+        //Second for GetLastData;
+    }
+
+    public void Execute()
+    {
+        GetData();
+        CheckData();
+        GetFirstData();
+        GetLastData();
+    }
+}
+</code></pre><p><strong>Edit:</strong> For future readers who are curious, I didn&#39;t use delegates (not directly at least). I created 2 interface <code>IFirst</code> and <code>ILast</code> with a corresponding method. In my static create method defined on my processor class, I do the logic to create an instance of those interfaces based on certain conditions. The reason I left the path of directly using delegates is because it turned out I needed more parameters than just <code>User</code> for some of them. So I resorted to different implementations based on the parameters I need in the constructor of those classes.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Using delegates in the suggested manner <strong>is</strong> a specific form of the strategy pattern which can always be used if the strategy objects are as simple as a function (see <a href="https://softwareengineering.stackexchange.com/questions/155705/strategy-vs-delegates">here</a>, for example).</p><p>However, the essence of your code is that you have an object of type <code>EndResult</code> which encapsulates how a set of operations interact (if the operations are given by strategy objects or &#34;strategy delegates&#34; does not matter). This is called <a href="https://en.wikipedia.org/wiki/Mediator_pattern" rel="nofollow noreferrer">Mediator pattern</a>, the <code>Mediator</code> here provides what is called &#34;context&#34; in <a href="https://en.wikipedia.org/wiki/Strategy_pattern" rel="nofollow noreferrer">this description of the strategy pattern</a>.</p><p>Deciding between the different strategies will typically be the task of a <a href="https://en.wikipedia.org/wiki/Factory_method_pattern" rel="nofollow noreferrer">factory method</a>. If you make that method part of your mediator (as in your example, in the constructor of the <code>EndResult</code>), or if you prefer to delegate this to another class, is something you need to decide by yourself. It depends on things of the overall size and structure of that class and the surroundings, and how much &#34;separation of concerns&#34; you really need. I would typically start with a &#34;small solution&#34; (both in one class) and refactor as soon as the class starts getting &#34;too large&#34;.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-design-pattern-to-solve-this-problem/'>C# &#8211;  design pattern to solve this problem</a></li><li class="list-group-item"><a href='../c-force-derived-class-to-implement-static-method-c/'>C# &#8211; Force Derived Class to Implement Static Method C#</a></li><li class="list-group-item"><a href='../architecture-using-func-instead-of-interfaces-for-ioc/'>Architecture &#8211; Using Func instead of interfaces for IoC</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

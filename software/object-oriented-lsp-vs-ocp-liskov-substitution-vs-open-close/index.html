@@ -1,0 +1,268 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Object-oriented &#8211; LSP vs OCP / Liskov Substitution VS Open Close &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1064967 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1064967" class="post-1064967 software type-software status-publish hentry category-software tag-inheritance tag-liskov-substitution tag-object-oriented tag-open-close tag-solid"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Object-oriented &#8211; LSP vs OCP / Liskov Substitution VS Open Close</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">inheritance</span><span class="mr-2 badge badge-info">liskov-substitution</span><span class="mr-2 badge badge-warning">object-oriented</span><span class="mr-2 badge badge-primary">open-close</span><span class="mr-2 badge badge-danger">solid</span></p><div class="entry-content"><p>I am trying to understand the SOLID principles of OOP and I&#39;ve come to the conclusion that LSP and OCP have some similarities (if not to say more).</p><blockquote><p>the open/closed principle states &#34;software entities (classes, modules, functions, etc.) should be open for extension, but closed for modification&#34;.</p></blockquote><p>LSP in simple words states that any instance of <code>Foo</code> can be replaced with any instance of <code>Bar</code> which is derived from <code>Foo</code> and the program will work the same very way.</p><p>I&#39;m not a pro OOP programmer, but it seems to me that LSP is only possible if <code>Bar</code>, derived from <code>Foo</code> does not change anything in it but only extends it. That means that in particular program LSP is true only when OCP is true and OCP is true only if LSP is true. That means that they are equal.</p><p>Correct me if I&#39;m wrong. I really want to understand these ideas.<br /> Great thanks for an answer.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Gosh, there are some weird misconceptions on what OCP and LSP and some are due to mismatch of some terminologies and confusing examples. Both principles are only the &#34;same thing&#34; if you implement them the same way. Patterns usually follow the principles in one way or another with few exceptions.</p><p>The differences will be explained further down but first let us take a dive into the principles themselves:</p><h1>Open-Closed Principle (OCP)</h1><p>According to <a href="http://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod">Uncle Bob</a>:</p><blockquote><p>You should be able to extend a classes behavior, without modifying it.</p></blockquote><p>Note that the word <em>extend</em> in this case doesn&#39;t necessarily mean that you should subclass the actual class that needs the new behavior. See how I mentioned at first mismatch of terminology? The keyword <code>extend</code> only means subclassing in Java, but the principles are older than Java.</p><p>The original came from Bertrand Meyer in 1988:</p><blockquote><p>Software entities (classes, modules, functions, etc.) should be open for extension, but closed for modification.</p></blockquote><p>Here it is much clearer that the principle is applied to <em>software entities</em>. A bad example would be override the software entity as you&#39;re modifying the code completely instead of providing some point of extension. The behavior of the software entity itself should be extensible and a good example of this is implementation of the <a href="http://en.wikipedia.org/wiki/Strategy_pattern">Strategy-pattern</a> (because it is the easiest to show of the GoF-patterns bunch IMHO):</p><pre class="lang-java prettyprint-override"><code>// Context is closed for modifications. Meaning you are
+// not supposed to change the code here.
+public class Context {
+
+    // Context is however open for extension through
+    // this private field
+    private IBehavior behavior;
+
+    // The context calls the behavior in this public 
+    // method. If you want to change this you need
+    // to implement it in the IBehavior object
+    public void doStuff() {
+        if (this.behavior != null)
+            this.behavior.doStuff();
+    }
+
+    // You can dynamically set a new behavior at will
+    public void setBehavior(IBehavior behavior) {
+        this.behavior = behavior;
+    }
+}
+
+// The extension point looks like this and can be
+// subclassed/implemented
+public interface IBehavior {
+    public void doStuff();
+}
+</code></pre><p>In the example above the <code>Context</code> is <em>locked</em> for further modifications. Most programmers would probably want to subclass the class in order to extend it but here we don&#39;t because it assumes it&#39;s behavior can be <em>changed</em> through anything that implements the <code>IBehavior</code> interface.</p><p>I.e. the context class is <em>closed for modification but open for extension</em>. It actually follows another basic principle because we&#39;re putting the behavior with object composition instead of inheritance:</p><blockquote><p>&#34;Favor &#39;<a href="http://en.wikipedia.org/wiki/Object_composition">object composition</a>&#39; over &#39;<a href="http://en.wikipedia.org/wiki/Inheritance_(computer_science)">class inheritance</a>&#39;.&#34; (Gang of Four 1995:20)</p></blockquote><p>I&#39;ll let the reader read up on that principle as it is outside the scope of this question. To continue with the example, say we have the following implementations of the IBehavior interface:</p><pre class="lang-java prettyprint-override"><code>public class HelloWorldBehavior implements IBehavior {
+    public void doStuff() {
+        System.println(&#34;Hello world!&#34;);
+    }
+}
+
+public class GoodByeBehavior implements IBehavior {
+    public void doStuff() {
+        System.out.println(&#34;Good bye cruel world!&#34;);
+    }
+}
+</code></pre><p>Using this pattern we can modify the behavior of the context at runtime, through the <code>setBehavior</code> method as extension point.</p><pre class="lang-java prettyprint-override"><code>// in your main method
+Context c = new Context();
+
+c.setBehavior(new HelloWorldBehavior());
+c.doStuff();
+// prints out &#34;Hello world!&#34;
+
+c.setBehavior(new GoodByeBehavior());
+c.doStuff();
+// prints out &#34;Good bye cruel world!&#34;
+</code></pre><p>So whenever you want to extend the &#34;closed&#34; context class, do it by subclassing it&#39;s &#34;open&#34; collaborating dependency. This is clearly not the same thing as subclassing the context itself yet it is OCP. LSP makes no mention about this either.</p><h2>Extending with Mixins Instead of Inheritance</h2><p>There are other ways to do OCP other than subclassing. One way is to keep your classes open for extension through the use of <em>mixins</em>. This is useful e.g. in languages that are prototype-based rather than class-based. The idea is to amend a dynamic object with more methods or attributes as needed, in other words objects that blends or &#34;mixes in&#34; with other objects.</p><p>Here is a javascript example of a mixin that renders a simple HTML template for anchors:</p><pre class="lang-js prettyprint-override"><code>// The mixin, provides a template for anchor HTML elements, i.e. &lt;a&gt;
+var LinkMixin = {
+    render: function() {
+        return &#39;&lt;a href=&#34;&#39; + this.link +&#39;&#34;&gt;&#39;
+            + this.content 
+            + &#39;&lt;/a&gt;;
+    }
+}
+
+// Constructor for a youtube link
+var YoutubeLink = function(content, youtubeId) {
+    this.content = content;
+    this.setLink(this.youtubeId);
+};
+// Methods are added to the prototype
+YoutubeLink.prototype = {
+    setLink: function(youtubeid) {
+        this.link = &#39;http://www.youtube.com/watch?v=&#39; + youtubeid;
+    }
+};
+// Extend YoutubeLink prototype with the LinkMixin using
+// underscore/lodash extend
+_.extend(YoutubeLink.protoype, LinkMixin);
+
+// When used:
+var ytLink = new YoutubeLink(&#34;Cool Movie!&#34;, &#34;idOaZpX8lnA&#34;);
+
+console.log(ytLink.render());
+// will output: 
+// &lt;a href=&#34;http://www.youtube.com/watch?=vidOaZpX8lnA&#34;&gt;Cool Movie!&lt;/a&gt;
+</code></pre><p>The idea is to extend the objects dynamically and the advantage of this is that objects may share methods even if they are in completely different domains. In the above case you can easily create other kinds of html anchors by extending your specific implementation with the <code>LinkMixin</code>.</p><p>In terms of OCP, the &#34;mixins&#34; are extensions. In the example above the <code>YoutubeLink</code> is our software entity that is closed for modification, but open for extensions through the use of mixins. The object hierarchy is flattened out which makes it impossible to check for types. However this is not really a bad thing, and I&#39;ll explain in further down that checking for types is generally a bad idea and breaks the idea with polymorphism.</p><p>Note that it is possible to do multiple inheritance with this method as most <code>extend</code> implementations can mix-in multiple objects:</p><pre class="lang-js prettyprint-override"><code>_.extend(MyClass, Mixin1, Mixin2 /* [, ...] */);
+</code></pre><p>The only thing you need to keep in mind is to not collide the names, i.e. mixins happen to define the same name of some attributes or methods as they will be overridden. In my humble experience this is a non-issue and if it does happen it is an indication of flawed design.</p><h1>Liskov&#39;s Substitution Principle (LSP)</h1><p>Uncle Bob defines it simply by:</p><blockquote><p>Derived classes must be substitutable for their base classes.</p></blockquote><p>This principle is old, in fact Uncle Bob&#39;s definition doesn&#39;t differentiate the principles as that makes LSP still closely related to OCP by the fact that, in the above Strategy example, the same supertype is used (<code>IBehavior</code>). So lets look at it&#39;s original definition by Barbara Liskov and see if we can find out something else about this principle that looks like a mathematical theorem:</p><blockquote><p>What is wanted here is something like the following substitution property: If
+ for each object <code>o1</code> of type <code>S</code> there is an object <code>o2</code> of type <code>T</code> such that for all programs <code>P</code> defined in terms of <code>T</code>, the behavior of <code>P</code> is unchanged when <code>o1</code> is substituted for <code>o2</code> then <code>S</code> is a subtype of <code>T</code>.</p></blockquote><p>Lets shrug on this for a while, notice as it doesn&#39;t mention classes at all. In JavaScript you can actually follow LSP even though it is not explicitly class-based. If your program has a list of at least a couple of JavaScript objects that:</p><ul><li>needs to be computed the same way,</li><li>have the same behavior, and</li><li>are otherwise in some way completely different</li></ul><p>...then the objects are regarded as having the same &#34;type&#34; and it doesn&#39;t really matter for the program. <strong>This is essentially <a href="http://en.wikipedia.org/wiki/Polymorphism_(computer_science)">polymorphism</a>.</strong> In generic sense; you shouldn&#39;t need to know the actual subtype if you&#39;re using it&#39;s interface. OCP does not say anything explicit about this. It also actually pinpoints a design mistake most novice programmers do:</p><p><strong>Whenever you&#39;re feeling the urge to check the subtype of an object, you&#39;re most likely doing it WRONG.</strong></p><p>Okay, so it might not be wrong all the time but if you have the urge to do some <em>type checking</em> with <code>instanceof</code> or enums, you might be doing the program a bit more convoluted for yourself than it needs to be. But this is not always the case; quick and dirty hacks to get things working is an okay concession to make in my mind if the solution is small enough, and if you practice <a href="http://c2.com/xp/RefactorMercilessly.html">merciless refactoring</a>, it may get improved once changes demand it.</p><p>There are ways around this &#34;design mistake&#34;, depending on the actual problem:</p><ul><li>The super class is not calling the prerequisites, forcing the caller to do so instead.</li><li>The super class is missing a generic method that the caller needs.</li></ul><p>Both of these are common code design &#34;mistakes&#34;. There are a couple of different refactorings you can do, such as <a href="http://en.wikipedia.org/wiki/Pull_Up_refactoring">pull-up method</a>, or refactor to a pattern such the <a href="http://butunclebob.com/ArticleS.UncleBob.IuseVisitor">Visitor pattern</a>.</p><p>I actually like the Visitor pattern a lot as it can take care of large if-statement spaghetti and it is simpler to implement than what you&#39;d think on existing code. Say we have the following context:</p><pre class="lang-java prettyprint-override"><code>public class Context {
+
+    public void doStuff(string query) {
+
+        // outcome no. 1
+        if (query.Equals(&#34;Hello&#34;)) {
+            System.out.println(&#34;Hello world!&#34;);
+        } 
+
+        // outcome no. 2
+        else if (query.Equals(&#34;Bye&#34;)) {
+            System.out.println(&#34;Good bye cruel world!&#34;);
+        }
+
+        // a change request may require another outcome...
+
+    }
+
+}
+
+// usage:
+Context c = new Context();
+
+c.doStuff(&#34;Hello&#34;);
+// prints &#34;Hello world&#34;
+
+c.doStuff(&#34;Bye&#34;);
+// prints &#34;Bye&#34;
+</code></pre><p>The outcomes of the if-statement can be translated into their own visitors as each is depending on some decision and some code to run. We can extract these like this:</p><pre class="lang-java prettyprint-override"><code>public interface IVisitor {
+    public bool canDo(string query);
+    public void doStuff();
+}
+
+// outcome 1
+public class HelloVisitor implements IVisitor {
+    public bool canDo(string query) {
+        return query.Equals(&#34;Hello&#34;);
+    }
+    public void doStuff() {
+         System.out.println(&#34;Hello World&#34;);
+    }
+}
+
+// outcome 2
+public class ByeVisitor implements IVisitor {
+    public bool canDo(string query) {
+        return query.Equals(&#34;Bye&#34;);
+    }
+    public void doStuff() {
+        System.out.println(&#34;Good bye cruel world&#34;);
+    }
+}
+</code></pre><p>At this point, if the programmer did not know about the Visitor pattern, he&#39;d instead implement the Context class to check if it is of some certain type. Because the Visitor classes have a boolean <code>canDo</code> method, the implementor can use that method call to determine if it is the right object to do the job. The context class can use all visitors (and add new ones) like this:</p><pre class="lang-java prettyprint-override"><code>public class Context {
+    private ArrayList&lt;IVisitor&gt; visitors = new ArrayList&lt;IVisitor&gt;();
+
+    public Context() {
+        visitors.add(new HelloVisitor());
+        visitors.add(new ByeVisitor());
+    }
+
+    // instead of if-statements, go through all visitors
+    // and use the canDo method to determine if the 
+    // visitor object is the right one to &#34;visit&#34;
+    public void doStuff(string query) {
+        for(IVisitor visitor : visitors) {
+            if (visitor.canDo(query)) {
+                visitor.doStuff();
+                break;
+                // or return... it depends if you have logic 
+                // after this foreach loop
+            }
+        }
+    }
+
+    // dynamically adds new visitors
+    public void addVisitor(IVisitor visitor) {
+        if (visitor != null)
+            visitors.add(visitor);
+    }
+}
+</code></pre><p>Both patterns follow OCP and LSP, however they are both pinpointing different things about them. So how does code look like if it violates one of the principles?</p><h1>Violating one principle but following the other</h1><p>There are ways to break one of the principles but still have the other be followed. The examples below seem contrived, for good reason, but I&#39;ve actually seen these popping up in production code (and even worser):</p><h2>Follows OCP but not LSP</h2><p>Lets say we have the given code:</p><pre class="lang-java prettyprint-override"><code>public interface IPerson {}
+
+public class Boss implements IPerson {
+    public void doBossStuff() { ... }
+}
+
+public class Peon implements IPerson {
+    public void doPeonStuff() { ... }
+}
+
+public class Context {
+    public Collection&lt;IPerson&gt; getPersons() { ... }
+}
+</code></pre><p>This piece of code follows the open-closed principle. If we&#39;re calling the context&#39;s <code>GetPersons</code> method, we&#39;ll get a bunch of persons all with their own implementations. That means that IPerson is closed for modification, but open for extension. However things take a dark turn when we have to use it:</p><pre class="lang-java prettyprint-override"><code>// in some routine that needs to do stuff with 
+// a collection of IPerson:
+Collection&lt;IPerson&gt; persons = context.getPersons();
+for (IPerson person : persons) {
+    // now we have to check the type... :-P
+    if (person instanceof Boss) {
+        ((Boss) person).doBossStuff();
+    }
+    else if (person instanceof Peon) {
+        ((Peon) person).doPeonStuff();
+    }
+}
+</code></pre><p>You have to do type checking and type conversion! Remember how I mentioned above how type checking is a <em>bad thing</em>? Oh no! But fear not, as also mentioned above either do some pull-up refactoring or implement a Visitor pattern. In this case we can simply do a pull up refactoring after adding a general method:</p><pre class="lang-java prettyprint-override"><code>public class Boss implements IPerson {
+    // we&#39;re adding this general method
+    public void doStuff() {
+        // that does the call instead
+        this.doBossStuff();
+    }
+    public void doBossStuff() { ... }
+}
+
+
+public interface IPerson {
+    // pulled up method from Boss
+    public void doStuff();
+}
+
+// do the same for Peon
+</code></pre><p>The benefit now is that you don&#39;t need to know the exact type anymore, following LSP:</p><pre class="lang-java prettyprint-override"><code>// in some routine that needs to do stuff with 
+// a collection of IPerson:
+Collection&lt;IPerson&gt; persons = context.getPersons();
+for (IPerson person : persons) {
+    // yay, no type checking!
+    person.doStuff();
+}
+</code></pre><h2>Follows LSP but not OCP</h2><p>Lets look at some code that follows LSP but not OCP, it is kind of contrived but bear with me on this one it&#39;s very subtle mistake:</p><pre class="lang-java prettyprint-override"><code>public class LiskovBase {
+    public void doStuff() {
+        System.out.println(&#34;My name is Liskov&#34;);
+    }
+}
+
+public class LiskovSub extends LiskovBase {
+    public void doStuff() {
+        System.out.println(&#34;I&#39;m a sub Liskov!&#34;);
+    }
+}
+
+public class Context {
+    private LiskovBase base;
+
+    // the good stuff
+    public void doLiskovyStuff() {
+        base.doStuff();
+    }
+
+    public void setBase(LiskovBase base) { this.base = base }
+}
+</code></pre><p>The code does LSP because the context can use LiskovBase without knowing the actual type. You&#39;d think this code follows OCP as well but look closely, is the class really <em>closed</em>? What if the <code>doStuff</code> method did more than just print out a line?</p><p>The answer if it follows OCP is simply: <strong>NO</strong>, it isn&#39;t because in this object design we&#39;re required to override the code completely with something else. This opens up the cut-and-paste can of worms as you have to copy code over from the base class to get things working. The <code>doStuff</code> method sure is open for extension, but it wasn&#39;t completely closed for modification.</p><p>We can apply the <a href="http://en.wikipedia.org/wiki/Template_method_pattern">Template method pattern</a> on this. The template method pattern is so common in frameworks that you might have been using it without knowing it (e.g. java swing components, c# forms and components, etc.). Here is that one way to close the <code>doStuff</code> method for modification and making sure it stays closed by marking it with java&#39;s <code>final</code> keyword. That keyword prevents anyone from subclassing the class further (in C# you can use <a href="http://msdn.microsoft.com/en-us/library/88c54tsw.aspx"><code>sealed</code></a> to do the same thing).</p><pre class="lang-java prettyprint-override"><code>public class LiskovBase {
+    // this is now a template method
+    // the code that was duplicated
+    public final void doStuff() {
+        System.out.println(getStuffString());
+    }
+
+    // extension point, the code that &#34;varies&#34;
+    // in LiskovBase and it&#39;s subclasses
+    // called by the template method above
+    // we expect it to be virtual and overridden
+    public string getStuffString() {
+        return &#34;My name is Liskov&#34;;
+    }
+}
+
+public class LiskovSub extends LiskovBase {
+    // the extension overridden
+    // the actual code that varied
+    public string getStuffString() {
+        return &#34;I&#39;m sub Liskov!&#34;;
+    }
+}
+</code></pre><p>This example follows OCP and seems silly, which it is, but imagine this scaled up with more code to handle. I keep seeing code deployed in production where subclasses completely override everything and the overridden code is mostly cut-n-pasted between implementations. It works, but as with all code duplication is also a set-up for maintenance nightmares.</p><h1>Conclusion</h1><p>I hope this all clears out some questions regarding OCP and LSP and the differences/similarities between them. It is easy to dismiss them as the same but the examples above should show that they aren&#39;t.</p><p>Do note that, gathering from above sample code:</p><ul><li><p>OCP is about locking the working code down but still keep it open somehow with some kind of extension points.</p><p>This is to avoid code duplication by encapsulating the code that changes as with the example of Template Method pattern. It also allows for failing fast as breaking changes are painful (i.e. change one place, break it everywhere else). For the sake of maintenance the concept of encapsulating change is a good thing, because changes <em>always</em> happen.</p></li><li><p>LSP is about letting the user handle different objects that implement a supertype without checking what the actual type they are. This is inherently what <em>polymorphism</em> is about.</p><p>This principle provides an alternative to do type-checking and type-conversion, that can get out of hand as the number of types grow, and can be achieved through pull-up refactoring or applying patterns such as Visitor.</p></li></ul></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../object-oriented-do-you-leverage-the-benefits-of-the-open-closed-principle/'>Object-oriented &#8211; Do you leverage the benefits of the open-closed principle</a></li><li class="list-group-item"><a href='../object-oriented-open-closed-principle-and-reopening-ruby-classes/'>Object-oriented &#8211; Open/Closed principle and reopening Ruby Classes</a></li><li class="list-group-item"><a href='../solid-vs-static-methods/'>SOLID vs. static methods</a></li><li class="list-group-item"><a href='../object-oriented-solid-does-liskov-substitution-principle-lsp-conflict-with-the-interface-segregation-principle-isp/'>Object-oriented &#8211; SOLID, Does Liskov Substitution Principle (LSP) conflict with the Interface Segregation Principle (ISP)</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

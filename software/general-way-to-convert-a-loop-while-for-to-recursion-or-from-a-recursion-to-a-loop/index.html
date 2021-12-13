@@ -1,0 +1,107 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>General way to convert a loop (while/for) to recursion or from a recursion to a loop &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1063384 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1063384" class="post-1063384 software type-software status-publish hentry category-software tag-algorithms tag-loops tag-recursion"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">General way to convert a loop (while/for) to recursion or from a recursion to a loop</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">algorithms</span><span class="mr-2 badge badge-info">loops</span><span class="mr-2 badge badge-warning">recursion</span></p><div class="entry-content"><p>This problem is mainly focusing on the algorithm, maybe something abstract and more academic.</p><p>The example is offering a thought, I wanna a generic way, so example is only used as to make us more clearly about your thoughts.</p><p>Generally speaking, a loop can be converted to a recursive.</p><p>e.g:</p><pre><code>for(int i=1;i&lt;=100;++i){sum+=i;}
+</code></pre><p>And its related recursive is:</p><pre><code>int GetTotal(int number)
+{
+   if (number==1) return 1;   //The end number
+   return number+GetTotal(number-1); //The inner recursive
+}
+</code></pre><p>And finally to simplify this, a tail-recursive is needed:</p><pre><code>int GetTotal (int number, int sum)
+{
+    if(number==1) return sum;
+    return GetTotal(number-1,sum+number);
+}
+</code></pre><p>However, most cases aren&#39;t so easy to answer and analyze. What I wanna know is:</p><p>1) <strong>Can we get a &#34;general common way&#34; to convert a loop (for/while……) to a recursive?</strong> And what kinds of things should we pay attention to while doing conversion? It would be better to write detailed info with some samples and your persudo theories as well as the conversion process.</p><p>2) &#34;Recursive&#34; has two forms: Linely recursive and Tail-Recursive. <strong>So which is better to convert? What &#34;rule&#34; should we master?</strong></p><p>3) Sometimes we need to keep the &#34;history&#34; of recursive, this is easily be done in a loop statement:</p><p>e.g:</p><pre><code>List&lt;string&gt; history = new List&lt;string&gt;();
+int sum=0;
+for (int i=1;i&lt;=100;++i)
+{
+   if(i==1) history.Add(i.ToString()+&#34;&#39;s result is:1.&#34;);
+   else
+   {
+     StringBuilder sub = new StringBuilder();
+
+      for(int j=1;j&lt;=i;++j)
+      {
+          if(j==i) sbu.Append(j.ToString());
+          else
+          {
+            sub.Append(j.ToString()+&#34;+&#34;);
+          }
+      }
+    sum +=i;
+    sbu.Append(&#34;&#39;s result is:&#34;+sum+Environment.NewLine);
+   }
+}
+</code></pre><p>The result below is:</p><p>1&#39;s result is 1.</p><p>1+2&#39;s result is 3.</p><p>1+2+3&#39;s result is 6<br /> …………</p><p>However I think it&#39;s hard to keep the history in a recursive, because a recursive-based algorithm focuses on to getting the last result and do a call-back return. So all of these are done through the stack maintained by the programming language assigning memory in the form of stack automatically. And <strong>how we can &#34;manually&#34; take each of the &#34;stack values&#34; out and return multiple values through a recursive algorithm?</strong></p><p><strong>And what about &#34;from a recursive algorithm to a loop&#34;? Can they be converted to each other (I think it should be done theoretically, but I want more accurate things to prove my thoughts)</strong>.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Actually you should break the function down first:</p><p>A loop has a few parts:</p><ol><li><p>the header, and processing <em>before</em> the loop. May declare some new variables</p></li><li><p>the condition, when to stop the loop.</p></li><li><p>the actual loop body. It changes some of the header&#39;s variables and/or the parameters passed in.</p></li><li><p>the tail; what happens after the loop and return result.</p></li></ol><p>Or to write it out:</p><pre><code>foo_iterative(params){
+    header
+    while(condition){
+        loop_body
+    }
+    return tail
+}
+</code></pre><p>Using these blocks to make a recursive call is pretty straightforward:</p><pre><code>foo_recursive(params){
+    header
+    return foo_recursion(params, header_vars)
+}
+
+foo_recursion(params, header_vars){
+    if(!condition){
+        return tail
+    }
+
+    loop_body
+    return foo_recursion(params, modified_header_vars)
+}
+</code></pre><p>Et voilà; a tail recursive version of any loop. <code>break</code>s and <code>continue</code>s in the loop body will still have to be replaced with <code>return tail</code> and return <code>foo_recursion(params, modified_header_vars)</code> as needed but that is simple enough.</p><hr/><p>Going the other way is more complicated; in part because there can be multiple recursive calls. This means that each time we pop a stack frame there can be multiple places where we need to continue. Also there may be variables that we need to save across the recursive call and the original parameters of the call.</p><p>We can use a switch to work around that:</p><pre><code>bar_recurse(params){
+    if(baseCase){
+        finalize
+        return
+    }
+    body1
+    bar_recurse(mod_params)
+    body2
+    bar_recurse(mod_params)
+    body3
+}
+
+
+bar_iterative(params){
+    stack.push({init, params})
+
+    while(!stack.empty){
+        stackFrame = stack.pop()
+
+        switch(stackFrame.resumPoint){
+        case init:
+            if(baseCase){
+                finalize
+                break;
+            }
+            body1
+            stack.push({resum1, params, variables})
+            stack.push({init, modified_params})
+            break;
+        case resum1:
+            body2
+            stack.push({resum2, params, variables})
+            stack.push({init, modified_params})
+            break;
+        case resum2:
+            body3
+            break;
+        }
+    }
+}
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../recursion-or-while-loops/'>Recursion or while loops</a></li><li class="list-group-item"><a href='../what-methods-are-there-to-avoid-a-stack-overflow-in-a-recursive-algorithm/'>What methods are there to avoid a stack overflow in a recursive algorithm</a></li><li class="list-group-item"><a href='../java-divide-and-conquer-algorithm-clarification-needed/'>Java &#8211; Divide and Conquer Algorithm clarification needed</a></li><li class="list-group-item"><a href='../is-a-while-loop-intrinsically-a-recursion/'>Is a while loop intrinsically a recursion</a></li><li class="list-group-item"><a href='../python-efficiency-considerations-nested-loop-vs-recursion/'>Python &#8211; Efficiency considerations: nested loop vs recursion</a></li><li class="list-group-item"><a href='../eliminating-recursion/'>Eliminating recursion</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

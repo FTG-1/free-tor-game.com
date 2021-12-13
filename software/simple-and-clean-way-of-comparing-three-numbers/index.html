@@ -1,0 +1,58 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Simple and clean way of comparing three numbers &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1063721 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1063721" class="post-1063721 software type-software status-publish hentry category-software tag-algorithms tag-c"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Simple and clean way of comparing three numbers</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">algorithms</span><span class="mr-2 badge badge-info">c</span></p><div class="entry-content"><p>I&#39;ve got some code that has a sequence of <code>if</code>s that work, but just feel messy. Basically, I want to choose the largest of three integers and set a status flag to say which was chosen. My current code looks like this:</p><pre><code>a = countAs();
+b = countBs();
+c = countCs();
+
+if (a &gt; b &amp;&amp; a &gt; c)
+    status = MOSTLY_A;
+else if (b &gt; a &amp;&amp; b &gt; c)
+    status = MOSTLY_B;
+else if (c &gt; a &amp;&amp; c &gt; b)
+    status = MOSTLY_C;
+else
+    status = DONT_KNOW;
+</code></pre><p>This pattern occurs a few times, and with long variable names it gets a little difficult to visually confirm that each <code>if</code> is correct. I feel there might be a better and clearer way to do this; can anyone suggest anything?</p><hr/><p>There are some potential duplicates, but they don&#39;t quite align with this question.</p><p>In the suggested duplicate: <a href="https://softwareengineering.stackexchange.com/questions/191208/approaches-to-checking-multiple-conditions">Approaches to checking multiple conditions?</a> all of the suggested solutions seem equally clumsy as the original code, so they do not provide a better solution.</p><p>And this post <a href="https://softwareengineering.stackexchange.com/questions/122485/elegant-ways-to-handle-ifif-else-else">Elegant ways to handle if(if else) else</a> deals only with nesting levels and asymmetry, which is not the problem here.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><h3>Factorize logic, return early</h3><p>As suggested in comments, it would be sufficient to simply wrap your logic in a function and exit early with <code>return</code>&#39;s in order to simplify things a lot. Also, you could factorize a bit of functionnality by delegating tests to another function. More concretely:</p><pre><code>bool mostly(max,u,v) {
+   return max &gt; u &amp;&amp; max &gt; v;
+}
+
+status_t strictly_max_3(a,b,c)
+{
+  if mostly(a,b,c) return MOSTLY_A;
+  if mostly(b,a,c) return MOSTLY_B;
+  if mostly(c,a,b) return MOSTLY_C;
+  return DONT_KNOW;
+}
+</code></pre><p>This is shorter than my previous attempt:</p><pre><code>status_t index_of_max_3(a,b,c)
+{
+  if (a &gt; b) {
+    if (a == c)
+      return DONT_KNOW;
+    if (a &gt; c)
+      return MOSTLY_A;
+    else
+      return MOSTLY_C;
+  } else {
+    if (a == b)
+      return DONT_KNOW;
+    if (b &gt; c)
+      return MOSTLY_B;
+    else
+      return MOSTLY_C;
+  }
+}
+</code></pre><p>The above is a little more verbose, but is easy to read IMHO and does not recompute comparisons multiple times.</p><h3>Visual confirmation</h3><p>In <a href="https://softwareengineering.stackexchange.com/a/287591/33157">your answer</a> you say:</p><blockquote><p>my issue was mostly visual confirmation that all comparisons used the
+ same variables</p></blockquote><p>... also, in your question, you say:</p><blockquote><p>This pattern occurs a few times, and with long variable names it gets
+ a little difficult to visually confirm that each if is correct.</p></blockquote><p>I may not understand what you are trying to achieve: do you want to copy-paste the pattern everywhere you need it? With a function like the one above, you capture the pattern once, and you check once for all that all comparisons use <code>a</code>, <code>b</code> and <code>c</code> as required. Then, you don&#39;t need to worry anymore when you call the function. Of course, maybe in practice your problem is a little more complex than the one you described: if so, please add some details if possible.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../how-would-an-algorithm-that-splits-sorts-numbers-into-three-groups-to-make-them-equally-large-work/'>How would an algorithm that splits/sorts numbers into three groups to make them equally large work</a></li><li class="list-group-item"><a href='../name-of-the-countdown-numbers-round-problem-and-algorithmic-solutions/'>Name of the Countdown Numbers round problem &#8211; and algorithmic solutions</a></li><li class="list-group-item"><a href='../advice-for-simple-communication-protocol-ipod-and-arduino/'>Advice for simple communication protocol (iPod and Arduino)</a></li><li class="list-group-item"><a href='../best-two-way-compression-algorithm-for-32-bit-numbers/'>Best two-way compression algorithm for 32-bit numbers</a></li><li class="list-group-item"><a href='../fastest-algorithm-of-dividing-array-into-positive-and-negative-numbers/'>Fastest algorithm of dividing array into positive and negative numbers</a></li><li class="list-group-item"><a href='../c-fastest-way-to-find-all-numbers-with-digits/'>C++ &#8211; Fastest way to find all numbers with digits</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

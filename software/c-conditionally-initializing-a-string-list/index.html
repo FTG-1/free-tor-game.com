@@ -1,0 +1,79 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Conditionally initializing a string list &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1071015 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1071015" class="post-1071015 software type-software status-publish hentry category-software tag-c tag-initialization tag-list tag-net"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Conditionally initializing a string list</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">initialization</span><span class="mr-2 badge badge-warning">list</span><span class="mr-2 badge badge-primary">net</span></p><div class="entry-content"><p>I am writing a program that needs to be able to process data from a number of different sources. The sources output data in a variety of formats. So, depending on which source is being used, I need to initialize a string list with a different set of column headers. The quantity of headers varies between 10 and 18 columns depending on the data source.</p><p>Essentially, I need a clean method to conditionally initialize a list. I have three working solutions but I am not sure which is the cleanest/best practice:</p><ul><li>Example #1 requires that I add each header to the list line-by-line. With the number of potential sources and columns that need to be added for each, this list gets pretty long.</li><li>Example #2 requires that I use {} around each case statement to limit the scope so that I can declare the <i>dataHeaders</i> list individually in each case statement. I have never encountered a situation wherein I had to limit the scope to an individual case statement and as such, I suspect it is bad practice.</li><li>Example #3 seems like the best option. I actually implemented this one as I was writing this question. I don&#39;t really see any drawbacks here but I thought I&#39;d still pose the question anyhow.</li></ul><p>Is there a better/cleaner way to do this? If not, which example is the best practice?</p><p>Example #1:</p><pre><code>List&lt;string&gt; headers = new List&lt;string&gt;();
+switch (dataSource)
+{
+    case &#34;Source 1&#34;:
+        headers.Add(&#34;header1&#34;);
+        headers.Add(&#34;header2&#34;);
+        headers.Add(&#34;header3&#34;);
+        headers.Add(&#34;...&#34;);
+        headers.Add(&#34;header18&#34;);
+        break;
+    case &#34;Source 2&#34;:
+        headers.Add(&#34;headerA&#34;);
+        headers.Add(&#34;headerB&#34;);
+        headers.Add(&#34;headerC&#34;);
+        headers.Add(&#34;...&#34;);
+        headers.Add(&#34;headerJ&#34;);
+        break;
+    default:
+        // TODO: Handle bad sources.
+        break;
+}
+</code></pre><p>Example #2:</p><pre><code>List&lt;string&gt; headers = new List&lt;string&gt;();
+switch (dataSource)
+{
+    case &#34;Source 1&#34;:
+        {
+            List&lt;string&gt; dataHeaders = new List&lt;string&gt;() { &#34;header1&#34;, &#34;header2&#34;, &#34;header3&#34;, &#34;...&#34;, &#34;header18&#34; }
+            headers = dataHeaders;
+            break;
+        }
+    case &#34;Source 2&#34;:
+        {
+            List&lt;string&gt; dataHeaders = new List&lt;string&gt;() { &#34;headerA&#34;, &#34;headerB&#34;, &#34;headerC&#34;, &#34;...&#34;, &#34;headerJ&#34; }
+            headers = dataHeaders;
+            break;
+        }
+    default:
+        {
+            // TODO: Handle bad sources.
+            break;
+        }
+}
+</code></pre><p>Example #3:</p><pre><code>List&lt;string&gt; headers = new List&lt;string&gt;();
+switch (dataSource)
+{
+    case &#34;Source 1&#34;:
+        headers.AddRange(new List&lt;string&gt;() { &#34;header1&#34;, &#34;header2&#34;, &#34;header3&#34;, &#34;...&#34;, &#34;header18&#34; })
+        break;
+    case &#34;Source 2&#34;:
+        headers.AddRange(new List&lt;string&gt;() { &#34;headerA&#34;, &#34;headerB&#34;, &#34;headerC&#34;, &#34;...&#34;, &#34;headerJ&#34; })
+        break;
+    default:
+        // TODO: Handle bad sources.
+        break;
+}
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>A lot of times, you can really clean up a problem like this by expressing your data in a form with less syntax than a programming language, such as a CSV string.  I don&#39;t know C#, but an example in Scala is:</p><pre class="lang-scala prettyprint-override"><code>def headersForDataSource(dataSource: String): Option[Array[String]] = {
+  val headers = &#34;&#34;&#34;
+    Source1,header1,header2,header3,...,header18
+    Source2,headerA,headerB,headerC,...,headerJ
+    &#34;&#34;&#34;
+
+  val lines = headers.lines map (_.trim split &#39;,&#39;)
+  lines find (_(0) == dataSource) map (_.tail)
+}
+</code></pre><p>You can see this makes your list of headers significantly more compact and easier to read, because it doesn&#39;t clutter and intermingle it with the syntax of the data structure.   It&#39;s putting it in your preferred format, instead of the format forced on you by the programming language.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-best-way-to-load-application-settings/'>Java &#8211; Best way to load application settings</a></li><li class="list-group-item"><a href='../c-same-constructor-signature-with-different-semantics/'>C# &#8211; Same constructor signature with different semantics</a></li><li class="list-group-item"><a href='../c-good-practice-when-inheriting-static-classes-isnt-possible-allowed/'>C# &#8211;  good practice when inheriting static classes isn&#8217;t possible/allowed</a></li><li class="list-group-item"><a href='../c-when-are-enums-not-a-code-smell/'>C# &#8211; When are enums NOT a code smell</a></li><li class="list-group-item"><a href='../c-most-efficient-method-for-large-switch-statements/'>C# &#8211; Most efficient method for large switch statements</a></li><li class="list-group-item"><a href='../should-i-localize-exception-messages/'>Should I localize exception messages</a></li><li class="list-group-item"><a href='../c-putting-some-business-logic-in-repositories-versus-keeping-it-out-of-repositories-entirely/'>C# &#8211; Putting some business logic in repositories versus keeping it out of repositories entirely</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,93 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>DDD Aggregate Root with Complex Aggregates &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1077196 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1077196" class="post-1077196 software type-software status-publish hentry category-software tag-domain-driven-design"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">DDD Aggregate Root with Complex Aggregates</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">domain-driven-design</span></p><div class="entry-content"><p>I have an AR and I can&#39;t figure out the best way to create/edit some of the complex aggregates contained in it. These aggregates have many parameters so I decided within the domain model to use Value Objects instead of primitive types.</p><pre><code>public class Load : AggregateRoot
+{
+    public virtual string Name { get; protected set; }
+
+    public virtual User ResponsibilityOf { get; protected set; }
+
+    public virtual User AssignedTo { get; protected set; }
+
+    public virtual User CoveredBy { get; protected set; }
+
+    public virtual State State { get; protected set; }
+
+    public virtual Cargo Cargo { get; protected set; }
+
+    public virtual Guid CustomerId { get; protected set; }
+
+    public virtual IList&lt;Run&gt; Runs { get; protected set; }
+
+    public Load(Guid customerId, string name) : this()
+    {
+        if (string.IsNullOrEmpty(name))
+            throw new ArgumentNullException(nameof(name));
+
+        Name = name;
+        CustomerId = customerId;
+        Runs = new List&lt;Run&gt;();
+    }
+}
+</code></pre><p>Runs is a collection of Value Objects and Run is defined below. It&#39;s a good example of the issue I&#39;m facing because it takes several parameters and some of them are Value Objects.</p><pre><code>public sealed class Run : ValueObject&lt;Run&gt;
+{
+    public int Order { get; private set; }
+
+    public Location Origin { get; private set; }
+
+    public Location Destination { get; private set; }
+
+    public Guid CarrierId { get; private set; }
+
+    private Run() { }
+
+    public Run(Guid carrierId, Location origin, Location destination, int order = 0) : this()
+    {
+        if (carrierId == Guid.Empty)
+            throw new ArgumentNullException(nameof(carrierId));
+
+        Origin = origin ?? throw new ArgumentNullException(nameof(origin));
+        Destination = destination ?? throw new ArgumentNullException(nameof(destination));
+        Order = order;
+        CarrierId = carrierId;
+    }
+}
+</code></pre><p>I want to add methods for CRUD operations for Runs to the AR (Load) and I don&#39;t know how to approach it. This would be a trivial task if Origin and Destination were primitives or they only took one or two parameters to instantiate. But Origin and Destination are Value Objects.</p><pre><code>public sealed class Location: ValueObject&lt;Location&gt;
+{
+    public string Name { get; private set; }
+
+    public Address Address { get;private  set; }
+
+    public string Notes { get; private set; }
+
+    public string Directions { get; private set; }
+
+    public int CustomerId { get; private set; }
+
+    public string HoursOfOperation { get; private set; }
+
+    public Phone Phone { get; private set; }
+}
+</code></pre><p>So when I go to add my CRUD methods to the Aggregate Root Load, I&#39;m lost on how best to achieve this goal. I could add the following, but it doesn&#39;t seem like the DDD way to solve this problem because outside of the domain should not know what Run is right?</p><pre><code>void AddRun(Run run);
+void RemoveRun(Run run);
+void UpdateRun(Guid id, Run run );
+</code></pre><p>If outside of the domain doesn&#39;t know what Run is, I would have to use primitive types as parameters and that would get messy really fast because there would need to be so many parameters to build up the object.</p><p><strong>Edit 1:</strong><br /> Corrected a few things pointed out in answers.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><blockquote><p>I have an AR and I can&#39;t figure out the best way to create/edit some of the complex aggregates contained in it.</p></blockquote><p>Caution: your spelling is off.  AR don&#39;t contain aggregates, the naming is the other way around.</p><blockquote><p>An AGGREGATE is a cluster of associated objects that we treat as a unit for the purpose of data changes.  Each AGGREGATE has a root and a boundary.</p></blockquote><p>Conceptually, the aggregate is a graph of (possibly complex) <em>entities</em>, with the aggregate root being one of those entities in the graph.</p><p>Also: value objects are usually immutable - you shouldn&#39;t have setters.</p><blockquote><p>So when I go to add my CRUD methods to the Aggregate Root Load, I&#39;m lost on how best to achieve this goal. I could add the following, but it doesn&#39;t seem like the DDD way to solve this problem because outside of the domain should not know what Run is right?</p></blockquote><p>There are a couple possible answers to the riddle.</p><p>In this model, you seem to have a lot of properties that you need to reference to get anything done.  So something like a http message that describes a change is going to have a complicated json document.</p><p>One way to turn that document into something that the model understands is to use a builder pattern.  You give the application little mini factories to build up the data structures that it needs to talk to the model.  That&#39;s a perfectly reasonable thing to do.</p><p>Another possible answer is to examine your model more carefully; domain models are primarily about change; they aren&#39;t glorified document stores.  Information that the model doesn&#39;t need should be stored in a document somewhere else.  For example, if a Run is a response to an &#34;Order&#34;, then the Run might have a copy of the order number and a copy of the data that it actually needs to do its work, but not everything else.</p><p>(In the same vein: if you have a CustomerId in your value, you probably don&#39;t also need a Customer value.  Use the id to look up the details you don&#39;t normally use.)</p><blockquote><p>Unfortunately most of the Run information will be needed by the model.</p></blockquote><p>If that&#39;s so, then it is, and you&#39;ll have to manage it.  But push back on that assumption -- if you confuse the data you need to make a decision with the data you need to create a view, you are going to end up making more work for yourself.</p><blockquote><p>Would the factories go in the domain layer?</p></blockquote><p>It&#39;s a reasonable first guess - we usually start out with an assumption of one implicit collection of agnostic primitives (whatever language we happen to be coding in at the time).  Evans coupled aggregates, repositories, and factories together in chapter 6 of the blue book, considering them all to be part of the domain layer.</p><p>I think it&#39;s a bit more correct to think of these factories as part of an adapter that allows the application to communicate with the model.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/java-ddd-and-validation-of-aggregate-root/'>Java &#8211; DDD and validation of aggregate root</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/ddd-identifying-aggregate-root/'>DDD: Identifying aggregate root</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/ddd-aggregate-root-with-large-number-of-children/'>DDD &#8211; Aggregate root with large number of children</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/ddd-put-logic-in-service-or-aggregate-root/'>DDD: Put logic in service or aggregate root</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/find-the-ddd-aggregate-root/'>Find the DDD Aggregate Root</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/ddd-integrating-aggregate-root-with-open-host-service-ohs/'>DDD integrating aggregate root with open host service (OHS)</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/ddd-aggregate-root-get-reference-to-another-aggregate-root/'>DDD &#8211; Aggregate Root get reference to another Aggregate Root</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

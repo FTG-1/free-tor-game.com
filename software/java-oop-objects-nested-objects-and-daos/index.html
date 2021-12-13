@@ -1,0 +1,132 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; OOP Objects, nested objects, and DAO&#8217;s &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1072307 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1072307" class="post-1072307 software type-software status-publish hentry category-software tag-dao tag-java tag-object-oriented tag-object-oriented-design tag-php"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; OOP Objects, nested objects, and DAO&#8217;s</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">dao</span><span class="mr-2 badge badge-info">java</span><span class="mr-2 badge badge-warning">object-oriented</span><span class="mr-2 badge badge-primary">object-oriented-design</span><span class="mr-2 badge badge-danger">PHP</span></p><div class="entry-content"><p>Here&#39;s something I keep struggling to figure out the best solution to. I&#39;ve had this problem while working with PHP and Java so it&#39;s a fundamental understanding of OOP issue. Examples are in PHP.</p><p>Let&#39;s say I have a few object&#39;s here. Song, Artist, ArtistProfile, User.</p><p>So in some instances I want the ArtistProfile and an array of User objects (subscribers) when I call the Artist (e.g. the artist&#39;s profile page), in other instances I only want the Artist info, like when viewing a page of the song.</p><p>Should I be nesting one object as part of another or should I be creating more specific objects for different usages.</p><p>Option 1: Nested</p><pre><code>Class Song {
+   private $songId;
+   private $songName;
+   private $year;
+   private $Artist; //Artist object
+}
+
+Class Artist {
+   private $artistId;
+   private $name;
+   private $age;
+   private $subscriberArr; //Array of User objects which then have more nested objects such as a Role object, Profile object
+   private $profile; //Profile object which could also have more nested objects
+}
+
+Class User {
+   private $userId;
+   private $name;
+   private $age;
+   private $role; //Role object
+   private $profile; //UserProfile object
+}
+</code></pre><p>Option 2: Build more objects</p><pre><code>Class Song {
+   private $songId;
+   private $songName;
+   private $year;
+   private $artistId;
+}
+
+Class Artist {
+   private $artistId;
+   private $age;
+   private $name;
+}
+
+Class User {
+   private $userId;
+   private $name;
+   private $age;
+   private $roleId;
+}
+
+Class SongWithArtist {
+   private $song; //Basic Song object
+   private $artist; //Basic Artist object
+}
+
+Class ArtistWithProfile {
+   private $artist; //Basic artist object
+   private $profile; //Profile object
+   private $subscriberArr; //UserDisplay object containing basic User object
+}
+
+ Class UserWithProfile {}
+</code></pre><p>Option 1 means wasting a lot of time/resources grabbing information I may not need for that page but easier to manage. Option 2 is messy and requires keeping track of which object is what but faster and far less db calls. Which is the &#39;correct&#39; option and/or is there a 3rd correct option?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><blockquote><p>Should I be nesting one object as part of another or should I be creating more specific objects for different usages.</p></blockquote><ol><li><p>Follow OO principles first which means &#34;more specific objects.&#34; 
+In doing so your classes may &#34;line up&#34; with your database schema or not but do not let DB schema trump good OO design.</p></li><li><p><a href="http://en.wikipedia.org/wiki/Single_responsibility_principle" rel="nofollow"><strong>Single Responsibility Principle</strong></a> will help guide you in what classes to build. SRP means, for example, that a <code>Song</code> is a song. It is not an artist, it is not a list of subscribers, so it should not have artist or subscriber stuff in it. Only song stuff.</p></li><li><p>The above means that you will have lots of <strong>small, independent, fully functional things</strong> - classes. By &#34;fully functional&#34; I mean, if a <code>Song</code> is a <code>name</code>, <code>date</code>, and <code>id</code> then that&#39;s what&#39;s in it. period. The fact that a certain artist sings that song does not inherently, fundamentally define what a <code>Song</code> is. This means other classes to model relationships like &#34;an artist&#39;s song repertoire&#34; for example.</p></li><li><p>Small functional classes leads to good DAO&#39;s and flexibility for your user interface.</p></li></ol><blockquote><p>Option 1 means wasting a lot of time/resources grabbing information I may not need for that page but easier to manage. Option 2 is messy and requires keeping track of which object is what but faster and far less db calls</p></blockquote><ol><li><p>You are falling victim to <strong>premature optimization.</strong> How can you know up front that option 2 will have &#34;fewer DB calls?&#34; What does that mean anyway?</p></li><li><p>This is simply the wrong way to think about your domain classes/model. This is why you end up duplicating your DB schema:</p></li></ol><p>.</p><pre><code>Class SongWithArtist {
+  private $song; //Basic Song object
+  private $artist; //Basic Artist object
+}
+</code></pre><p>When what you should have is something describing the real world:</p><pre><code>Class ArtistPortfolio {
+    private Artist $theArtist;
+    private List&lt;Song&gt; $portfolio;  // list of songs (s)he sings 
+}
+
+Class ArtistSubscribers {
+    private Artist $theArtist;
+    private List&lt;User&gt; $subscribers;  // list of people who like this artist
+}
+
+// And it would probably make sense to combine the above 2 classes:
+
+Class ArtistProfile {
+    // an Artist object, not just an id. We&#39;re doing OBJECT oriented programming.
+    private Artist $theArtist;
+
+    private List&lt;Song&gt; $portfolio;  // list of Song objects 
+    private List&lt;User&gt; $subscribers; // list of User objects
+}
+
+// and if you need a list of profiles...
+Class ArtistProfiles {
+    private List&lt;ArtistProfile&gt; $profiles; // a list of type ArtistProfile
+
+    public ArtistProfile GetProfileByArtist (Artist thisArtist){}
+    public ArtistProfile GetProfileByName (string name) {}
+    public ArtistProfile GetProfileById (string id) {}
+}
+
+// I&#39;d say a ArtistProfile could be part of an Artist..
+
+Class Artist {
+    private $id;
+    private $name;
+    private ArtistProfile $profile; // this is composition.
+}
+
+
+//In lieu of the above, an DAO oriented Artist composition ...
+// Just go with the refactoring flow!
+Class Profile {
+    private $id;
+    private $name;
+    private $birthdate
+}
+
+ Class Repertoire {
+    // a Profile object, not just an id. We&#39;re doing OBJECT oriented programming.
+    private Profile $theArtist;
+
+    private List&lt;Song&gt; $portfolio;  // list of Song objects 
+    private List&lt;User&gt; $subscribers; // list of User objects
+}
+
+Class Artist {
+    private Profile $me;
+    private Repertoire $myStuff; 
+}
+</code></pre><p><strong>Too Many DB Calls!</strong></p><p>NOT. You can instantiate a <code>Artist</code> object without populating the <code>$myStuff</code> and in turn, defer populating <code>$subscribers</code> / <code>portfolio</code> lists until needed. This is called <strong>lazy loading.</strong></p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../object-oriented-oop-what-is-meant-by-object-to-object-communication/'>Object-oriented &#8211; OOP what is meant by object-to-object communication</a></li><li class="list-group-item"><a href='../php-when-to-use-arrays-and-when-to-use-objects-for-mostly-data-storing-code-constructs/'>PHP: when to use arrays, and when to use objects for mostly-data-storing code constructs</a></li><li class="list-group-item"><a href='../object-oriented-how-to-search-through-an-array-of-objects/'>Object-oriented &#8211; How to search through an array of objects</a></li><li class="list-group-item"><a href='../object-oriented-using-static-to-create-an-immutable-object/'>Object-oriented &#8211; Using static to create an immutable object</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

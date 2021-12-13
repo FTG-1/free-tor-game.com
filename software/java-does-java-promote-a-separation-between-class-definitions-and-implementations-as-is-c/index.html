@@ -1,0 +1,56 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; Does Java promote a separation between class definitions and implementations, as is  C++ &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1078698 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1078698" class="post-1078698 software type-software status-publish hentry category-software tag-c tag-java tag-programming-languages"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; Does Java promote a separation between class definitions and implementations, as is  C++</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">java</span><span class="mr-2 badge badge-warning">programming-languages</span></p><div class="entry-content"><p>I have a homework assignment and I need to evaluate which approach is better according to GRASP &#34;Protected Variation&#34;. I found <a href="https://stackoverflow.com/questions/333889/in-c-why-have-header-files-and-cpp-files">a question on Stack Overflow about the separation of header and code files in C++</a>.</p><p>However, what I want to know why Java does not follow C++ in promoting the separation between class definitions and class implementations. Are there any advantages with the Java method, over the C++ method?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>How many lines of code are in the following program?</p><pre><code>#include &lt;iostream&gt;
+
+int main()
+{
+   std::cout &lt;&lt; &#34;Hello, world!\n&#34;;
+   return 0;
+}
+</code></pre><p>You probably answered 7 (or 6 if you didn&#39;t count the blank line, or 4 if you didn&#39;t count the braces).</p><p>Your compiler, however, sees something very different:</p><pre><code>~$ cpp hello.cpp | wc
+  18736   40822  437015
+</code></pre><p>Yes, that&#39;s 18.7 KLOC just for a &#34;Hello, world!&#34; program.  The C++ compiler has to <em>parse</em> all that.  This is a major reason why <a href="https://stackoverflow.com/questions/318398/why-does-c-compilation-take-so-long">C++ compilation takes so long</a> compared to other languages, and why modern languages eschew header files.</p><p>A better question would be</p><h1>Why <em>does</em> C++ have header files?</h1><p>C++ was designed to be a superset of C, so it had to keep header files for backwards compatibility.</p><h1>OK, so why does C have header files?</h1><p>Because of its primitive separate compilation model.  The object files generated by C compilers don&#39;t include any type information, so in order to prevent type errors you need to include this information in your source code.</p><pre><code>~$ cat sqrtdemo.c 
+int main(void)
+{
+    /* implicit declaration int sqrt(int) */
+    double sqrt2 = sqrt(2);
+    printf(&#34;%f\n&#34;, sqrt2);
+    return 0;
+}
+
+~$ gcc -Wall -ansi -lm -Dsqrt= sqrtdemo.c
+sqrtdemo.c: In function ‘main’:
+sqrtdemo.c:5:5: warning: implicit declaration of function ‘printf’ [-Wimplicit-function-declaration]
+sqrtdemo.c:5:5: warning: incompatible implicit declaration of built-in function ‘printf’ [enabled by default]
+~$ ./a.out 
+2.000000
+</code></pre><p>Adding the proper type declarations fixes the bug:</p><pre><code>~$ cat sqrtdemo.c 
+#undef printf
+#undef sqrt
+
+int printf(const char*, ...);
+double sqrt(double);
+
+int main(void)
+{
+    double sqrt2 = sqrt(2);
+    printf(&#34;%f\n&#34;, sqrt2);
+    return 0;
+}
+
+~$ gcc -Wall -ansi -lm sqrtdemo.c
+~$ ./a.out 
+1.414214
+</code></pre><p>Notice that there are no <code>#include</code>s.  But when you use a large number of external functions (which most programs will), manually declaring them gets tedious and error-prone.  It&#39;s much easier to use header files.</p><h1>How are modern languages able to avoid header files?</h1><p>By using a different object file format that includes type information.  For example, the Java <a href="http://java.sun.com/docs/books/jvms/second_edition/html/ClassFile.doc.html#1169" rel="nofollow noreferrer">*.class file format</a> includes &#34;descriptors&#34; that specify the types of fields and method parameters.</p><p>This was not a new invention.  Earlier (1987), when Borland added separately-compiled &#34;units&#34; to Turbo Pascal 4.0, it chose to use a new <code>*.TPU</code> format rather than Turbo C&#39;s <code>*.OBJ</code> in order to remove the need for header files.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../how-a-pure-functional-programming-language-manage-without-assignment-statements/'>How a pure functional programming language manage without assignment statements</a></li><li class="list-group-item"><a href='../java-designing-a-list-class-with-filtering-and-sorting/'>Java &#8211; Designing a list class with filtering and sorting</a></li><li class="list-group-item"><a href='../java-should-cucumber-step-definitions-in-java-be-static-methods-or-instance-methods/'>Java &#8211; Should cucumber step definitions in Java be static methods or instance methods</a></li><li class="list-group-item"><a href='../java-why-prefer-non-static-inner-classes-over-static-ones/'>Java &#8211; Why prefer non-static inner classes over static ones</a></li><li class="list-group-item"><a href='../java-software-architecture-for-two-similar-classes-which-require-different-input-parameters-for-the-same-method/'>Java &#8211; Software architecture for two similar classes which require different input parameters for the same method</a></li><li class="list-group-item"><a href='../c-header-files-design-just-like-defining-an-api/'>C++ Header files design : just like defining an API</a></li><li class="list-group-item"><a href='../java-should-i-unit-test-the-subclasses-or-the-abstract-parent-class/'>Java &#8211; Should I unit test the subclasses or the abstract parent class</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,96 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>My algorithm that extracts the largest box that can be made from smaller boxes, is too slow &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1081454 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1081454" class="post-1081454 software type-software status-publish hentry category-software tag-3d tag-algorithms tag-optimization"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">My algorithm that extracts the largest box that can be made from smaller boxes, is too slow</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">3d</span><span class="mr-2 badge badge-info">algorithms</span><span class="mr-2 badge badge-warning">optimization</span></p><div class="entry-content"><p>Imagine a cube based world (such as Minecraft, Trove, or Cube World) where everything is made up of identically sized cubes and all the cubes are of the same <em>kind</em>.</p><p>The goal is to represent the world with the fewest number of rectangular boxes (by merging cubes but retaining convex shape (aka, a rectangular box shape)). My algorithm succeeds at this, but its performance is too slow for its intended purpose. Are there faster algorithms?</p><p>The pseudo-C#-code for my algorithm is basically:</p><pre><code>struct Coordinate { int x,y,z; }; //&lt;-- integer based grid
+HashSet&lt;Coordinate&gt; world; // &lt;-- contains all the cubes
+
+//width, height, and length represent how many cubes it spans
+struct RectangularBox { Coordinate coord; int width,height,length; }
+
+void Begin()
+{
+    List&lt;RectangularBox&gt; fewestBoxes = new List&lt;RectangularBox&gt;();
+    while(world.Count &gt; 0)
+    {
+         RectangularBox currentLargest = ExtractLargest();
+         fewestBoxes.Add(currentLargest);
+         world.RemoveRange(currentLargest.ContainedCubes());
+    }
+    //done; `fewestBoxes` contains the fewest rectangular boxes needed.
+}
+
+private RectangularBox ExtractLargest()
+{
+    RectangularBox largestBox = new RectangularBox();
+    foreach (Coordinate origin in world)
+    {
+        RectangularBox box = FindMaximumSpan(origin);
+        if (box.CalculateVolume() &gt;= largestBox.CalculateVolume())
+            largestBox = box;
+    }
+    return largestBox;
+}
+
+private RectangularBox FindMaximumSpan(Coordinate origin)
+{
+    int maxX, maxY,maxZ;
+    while (world.Contains(origin.Offset(maxX, 0, 0))) maxX++;
+    while (world.Contains(origin.Offset(0, maxY, 0))) maxY++;
+    while (world.Contains(origin.Offset(0, 0, maxZ))) maxZ++;
+
+    RectangularBox largestBox;
+    for (int extentX = 0; extentX &lt;= maxX; extentX++)
+        for (int extentY = 0; extentY &lt;= maxY; extentY++)
+            for (int extentZ = 0; extentZ &lt;= maxZ; extentZ++)
+            {
+                int lengthX = extentX + 1;
+                int lengthY = extentY + 1;
+                int lengthZ = extentZ + 1;
+                if (BoxIsFilledWithCubes(origin, lengthX, lengthY, lengthZ))
+                {
+                    int totalVolume = lengthX * lengthY * lengthZ;
+                    if (totalVolume &gt;= largestBox.ComputeVolume())
+                        largestBox = new RectangularBox(origin, lengthX, lengthY, lengthZ);
+                }
+                else
+                    break;
+            }
+    return largestBox;
+}
+
+private bool BoxIsFilledWithCubes(Coordinate coord, 
+    int lengthX, int lengthY, int lengthZ)
+{
+    for (int gX = 0; gX &lt; lengthX; gX++)
+        for (int gY = 0; gY &lt; lengthY; gY++)
+            for (int gZ = 0; gZ &lt; lengthZ; gZ++)
+                if (!world.Contains(coord.Offset(gX, gY, gZ)))
+                    return false;
+    return true;
+}
+</code></pre><p>Essentially, for every block in the world, it first finds how many contigious blocks there are in each of the three positive dimensions (+X, +Y, +Z). And then it kinda flood-fills that volume and checks which is the largest filling that isn&#39;t missing any blocks.</p><hr/><p><em>Update: Since I seemed to have implied this was for a game&#39;s rendering engine, I just want to clarify, this isn&#39;t for a game&#39;s rendering engine; it&#39;s for a file-converter; no GUI.</em></p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>You can make use of the fact that when</p><pre><code> BoxIsFilledWithCubes(c,x,y,z)
+</code></pre><p>returns true, then it is not necessary to check in <code>BoxIsFilledWithCubes(c,x+1,y,z)</code> all those cubes in the coordinate range &#34;(c,x,y,z)&#34; again. You need only to check those cubes with the new x-coordinate <code>c.x + (x+1)</code>. (Same is true for <code>y+1</code>, or <code>z+1</code>). More generally, by splitting up a box into two smaller boxes (for which you might already know if they are both filled with cubes, or not both filled), you can apply a divide-and-conquer technique here, which becomes faster than your original approach when you cache the intermediate results.</p><p>To accomplish this, you start implementing <code>BoxIsFilledWithCubes(c,x,y,z)</code> recursively, for example:</p><pre><code> bool BoxIsFilledWithCubes(coord,lx,ly,lz)
+ {
+     if(lx==0|| ly==0 || lz==0)
+        return true;
+     if(lx==1 &amp;&amp; ly==1 &amp;&amp; lz==1)
+          return world.Contains(coord);
+     if(lx&gt;=ly &amp;&amp; lx&gt;=lz)  // if lx is the maximum of lx,ly,lz ....
+         return BoxIsFilledWithCubes(coord,lx/2,ly,lz) 
+             &amp;&amp; BoxIsFilledWithCubes(coord.Offset(lx/2,0,0), lx-lx/2, ly, lz);
+     else if(ly&gt;=lz &amp;&amp; ly&gt;=lx)  
+         // ... analogously when ly or lz is the maximum
+
+ }
+</code></pre><p>and then use <strong>memoization</strong> (like it is discussed <a href="https://softwareengineering.stackexchange.com/questions/77174/is-function-memoization-really-only-for-primitives">here</a>) to avoid any repeated calls to <code>BoxIsFilledWithCubes</code> with the same parameters. Note you will have to clear the memoization cache when you apply a change to your <code>world</code> container, like by <code>world.RemoveRange</code>. Nevertheless I guess this will make your program faster.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-how-to-extract-the-active-code-path-from-a-complex-algorithm/'>C++ &#8211; How to extract the active code path from a complex algorithm</a></li><li class="list-group-item"><a href='../3d-packing-algorithm-for-items-shipping/'>3d Packing algorithm for item&#8217;s shipping</a></li><li class="list-group-item"><a href='../when-speaking-how-can-i-say-that-the-time-complexity-order-of-an-algorithm-is-on-log-n/'>When speaking, how can I say that the time complexity order of an algorithm is O(N log N)</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

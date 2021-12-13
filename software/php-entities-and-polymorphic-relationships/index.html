@@ -1,0 +1,98 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Php &#8211; Entities and polymorphic relationships &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1081957 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1081957" class="post-1081957 software type-software status-publish hentry category-software tag-doctrine tag-orm tag-php tag-polymorphism tag-relationships"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Php &#8211; Entities and polymorphic relationships</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">doctrine</span><span class="mr-2 badge badge-info">orm</span><span class="mr-2 badge badge-warning">PHP</span><span class="mr-2 badge badge-primary">polymorphism</span><span class="mr-2 badge badge-danger">relationships</span></p><div class="entry-content"><p>Lets say that I have a shelf on which I can put items that are shelfable (not sure if that is actually a word but you can understand my point).<br /> So I have the following:</p><pre><code>class Shelf
+{
+    /** @var ShelfableItemInterface[] **/
+    private $items = [];
+
+    // addItem, getItems...
+}
+
+interface ShelfableItemInterface
+{
+}
+
+/** let&#39;s imagine that not all books are shelfable **/
+class Notebook extends Book implements ShelfableItemInterface
+{
+}
+
+class PhotoFrame implements ShelfableItemInterface
+{
+}
+</code></pre><p>So those are the definitions, and now I can create shelfs with different items on them:</p><pre><code>$shelf = new Shelf();
+$shelf-&gt;addItem(new Notebook(...));
+$shelf-&gt;addItem(new PhotoFrame(...));
+$shelf-&gt;addItem(new PhotoFrame(...));
+
+// will return the three items
+var_dump($shelf-&gt;getItems());
+</code></pre><p>So, this works perfectly while all that data is not persisted and retrieved from storage.</p><p>I&#39;m currently using Doctrine ORM which can automatically fetch the related objects and instantiate the objects of their proper classes, but that only works if all the related items extend same class which should be set in the relationship definition.</p><p>This is a problem as I don&#39;t want to be forced to make the related items extend some class (as we can see the Notebook already extends something), but make the relationship work by interface.</p><p>I know that I still would have some mapping strategy (or however we should call that), so for example in the database we&#39;ll have a table with the following:</p><pre><code>+----+---------+-----------+
+| id | shef_id | item_type |
++----+---------+-----------+
+|  1 |       5 |         1 |
+|  2 |       5 |         2 |
+|  3 |       5 |         2 |
++----+---------+-----------+
+</code></pre><p>(additional data in tables per type)</p><p>So, I&#39;m confused how to make this work or where to put the process, in order for the ORM (or my logic) to know that when I call getItems(), when fetching the related items, if &#34;item_type&#34; is 2, it should instantiate object from PhotoFrame, 1 for Notebook etc.</p><p>I don&#39;t know if I stated my problem clearly, but I hope you can understand me.</p><p>Update: I see that this is available in java &#8211; <a href="http://jpaobjects.sourceforge.net/m2-site/main/documentation/docbkx/html/user-guide/ch04s09.html" rel="nofollow noreferrer">http://jpaobjects.sourceforge.net/m2-site/main/documentation/docbkx/html/user-guide/ch04s09.html</a> without the class inheritance part, but I would like to learn how I can achieve this in php without such library</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>The issue here is that <strong>the database doesn&#39;t care about interfaces</strong>. Interfaces are a language/compiler construct and have no real meaning outside of the application. To an outside observer, it&#39;s impossible to see if two classes have the same properties because an interface demands it, or because of pure coincidence.</p><p>ORMs usually provide a basic handling of inheritance, but the database itself doesn&#39;t quite care about inheritance either. The database is interested in tables and keys, nothing more (I&#39;ve oversimplified it, but the point still stands).</p><p>You seem to expect a solution in which you can implement an interface on a class and not have to change the data model to reflect that change. It doesn&#39;t work like that. If you want to store a &#34;A is shelved on B&#34; relationship, you will have to define a FK for every possible implementation of A. Or you do away with an FK constraint, which I don&#39;t quite suggest.</p><hr/><p>What you have here is a one-to-many relationship. A shelf can have many items, an item can only be on one shelf at a time.</p><p>One-to-many relationships dictate that the &#34;many&#34; each store an FK to the &#34;one&#34;. Which in this case means that every <code>ShelfableItem</code> must have a <code>ShelfId</code>.</p><p>My PHP is a bit rusty. If I remember correctly, interfaces cannot implement properties/fields, only methods. I&#39;m not sure how to do this in PHP syntax, but purely to show a basic example, I&#39;ll use C#.</p><p>Have the interface include the FK:</p><pre><code>public interface ShelfableItemInterface
+{
+    int ShelfId { get; set; }
+}
+</code></pre><p>Implement the interface so that the items actually have a <code>ShelfId</code>:</p><pre><code>public class Book : ShelfableItemInterface
+{
+    public int Id { get; set; }
+
+    //other fields
+
+    public int ShelfId { get; set; }
+}
+
+public class Jar: ShelfableItemInterface
+{
+    public int Id { get; set; }
+
+    //other fields
+
+    public int ShelfId { get; set; }
+}
+</code></pre><p>Store this value in your existing database tables:</p><pre><code>+-----------------------------+
+|            BOOKS            |
++----+---------+--------------+
+| id | shelfid | other fields |
++----+---------+--------------+
+|  1 |       5 |              |
+|  2 |       5 |              |
+|  3 |       5 |              |
++----+---------+--------------+
+
++-----------------------------+
+|            JARS             |
++----+---------+--------------+
+| id | shelfid | other fields |
++----+---------+--------------+
+|  1 |       5 |              |
+|  2 |       5 |              |
+|  3 |       5 |              |
++----+---------+--------------+
+</code></pre><hr/><blockquote><p>(additional data in tables per type)</p></blockquote><p>I understand why you think you need a &#34;shelfableitems&#34; table, but in reality it&#39;s more a burden than it is a blessing.</p><p>It creates a lot of extra work:</p><ul><li>You need to define item types.</li><li>You need to retrieve items from the correct table based on their item type, which is <em>less-than-obvious</em> to do in a single query.</li><li>You forgo the data integrity of having a FK constraint.<ul><li>Therefore, you run the risk of the referenced item (book/jar) already having been deleted but a &#34;ghost entry&#34; remains in the ShelfableItems table.</li></ul></li></ul><p>ALternatively, you could create an intermediary table that does have (optional) FK constraints, but then you need to make a separate column for every possible FK:</p><pre><code>+----------------------------------------------------+
+|            ShelfableItems                          |
++----+---------+----------+---------+----------------+
+| id | shelfid |  bookid  |  jarid  |  photoframeid  |
++----+---------+----------+---------+----------------+
+|  1 |       5 |    1     |  NULL   |   NULL         |
+|  2 |       5 |  NULL    |   6     |   NULL         |
+|  3 |       5 |  NULL    |  NULL   |   15           |
++----+---------+----------+---------+----------------+
+</code></pre><p>This creates a lot of wasted space. You have N columns, but you can guarantee that in every row, you will have (N-1) columns that are NULL.</p><p>But, more importantly, <strong>implementing this intermediary table is not necessary for data integrity purposes</strong>. Everything works perfectly fine without it, and it takes less effort to develop/maintain the data integrity.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../php-anemic-domain-model-business-logic-and-datamapper-php/'>Php &#8211; Anemic Domain Model, Business Logic and DataMapper (PHP)</a></li><li class="list-group-item"><a href='../php-what-kind-of-web-development-projects-benefit-from-using-orm/'>Php &#8211; What kind of Web development projects benefit from using ORM</a></li><li class="list-group-item"><a href='../audit-trails-and-entity-relationships/'>Audit trails and entity relationships</a></li><li class="list-group-item"><a href='../database-design-for-polymorphic-data/'>Database design for polymorphic data</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

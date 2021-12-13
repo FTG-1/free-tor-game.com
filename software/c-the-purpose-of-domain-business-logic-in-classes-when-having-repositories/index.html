@@ -1,0 +1,161 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211;  the purpose of domain/business logic in classes when having repositories &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1067895 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1067895" class="post-1067895 software type-software status-publish hentry category-software tag-architecture tag-asp-net-mvc tag-c tag-repository"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211;  the purpose of domain/business logic in classes when having repositories</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">Architecture</span><span class="mr-2 badge badge-info">asp.net-mvc</span><span class="mr-2 badge badge-warning">c</span><span class="mr-2 badge badge-primary">repository</span></p><div class="entry-content"><p>From my experience I think that having classes/models without behaviour only in my application, next to their repositories is not good OOP. But, this was the way I implemented the repository pattern. I just make everywhere I need an repository instance, to perform some actions. The result of this approach was that all my domain classes didn&#39;t have behaviour.</p><p>They were just objects holding data with no methods. My teacher said to me that I was using thin models and that I should strive to make fat models. In response to that feedback, I implemented some business logic in the classes, but I ran into some problems:</p><p><strong>Example:</strong></p><pre><code>public class Movie
+{
+    private MovieRepository movieRepo = new MovieRepository(new MovieDbContext());
+    private PostRepository postRepo = new PostRepository(new PostDbContext());
+
+    public decimal Rating { get; set; }
+    public List&lt;Post&gt; Posts { get; set; }
+
+    public void Rate(User user, Movie movie)
+    {
+        if(movie.Rating &lt; 0 || movie.Rating &gt; 10) 
+        {
+            throw new Exception(&#34;The rating must be a digit between 0 and 10&#34;);
+        }
+        this.Rating = movie.Rating;
+        movieRepo.RateMovie(user.Id, movie.Id, (int)movie.Rating);
+    }
+
+    public void AddPost(User user, Movie movie, string text)
+    {
+        int maxId = 0;
+        foreach (Post p in Posts)
+        {
+            if (p.Id &gt; maxId)
+            {
+                maxId = p.Id;
+            }
+        }
+
+        Post post = new Post(maxId + 1, user, text, DateTime.Now);
+        this.Posts.Add(post);
+
+        postRepo.AddPost(user.Id, movie.Id, text, DateTime.Now);
+    }
+
+
+}
+</code></pre><p>As you can see in the example above, I first handle some domain logic, to perform actions on the class itself and then I persist it to the database using a repository. But why am I even adding the posts to the class itself in the AddPost-method, when I handle it with a repository right after?</p><p>Is this just because you can now actually see the changes you made directly on the screen, in-memory? Or is business logic&#39;s purpose only to validate parameter&#39;s input, as shown in the movie Rate method? But these kind of exceptions can also be thrown in the repository if the repository method also checks if a digit is between 0 and 10. But i think a repository shouldn&#39;t be concerned about that. The repository only needs to translate input to database information, am I right?</p><p>But having said that, I don&#39;t understand exactly the need of performing changes on the object itself, when you handle it with a repository. Instead of that you could to this(anywhere in your application, to display the user object):</p><pre><code>postRepo.AddPost(2, 1, &#34;Nice movie!&#34;, DateTime.Now);
+User user = userRepo.GetById(2);
+</code></pre><p>What are the pros and cons of this difference?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><blockquote><p>What is the purpose of <strong>domain/business logic in classes</strong> when having <strong>repositories</strong>?</p></blockquote><p>This is kind of like asking:</p><blockquote><p>What is the purpose of <strong>cars</strong> when we have <strong>garages</strong>?</p></blockquote><p>The reason is that Business Classes and Repositories solve different problems, and therefore are different Concerns in the application. As such, they need to be in separate classes.</p><p>A Repository&#39;s main purpose is to provide a layer of abstraction between persistence and your code. Switching database vendors, or even storage mediums (database, flat file, web service, etc) shouldn&#39;t matter outside of your Repository classes.</p><p>The purpose of a Business Class is to enforce business logic.</p><p>The purpose of separating business logic from persistence logic is so you can apply business logic without worrying about persistence. Maybe you&#39;ve got a data import. Unit tests then don&#39;t need a database just to validate business rules.</p><p>Think of the requirements you have now:</p><ol><li>A <strong>Movie Rating</strong> must have a <strong>User</strong></li><li>A <strong>Movie Rating</strong> must have a <strong>Movie</strong></li><li>A <strong>Movie Rating</strong> must be between 0 and 10</li><li>If a <strong>User</strong> has previously rated a <strong>Movie</strong>, the rating will be changed</li><li>If a <strong>User</strong> has not rated a <strong>Movie</strong>, the rating will be added</li><li>A <strong>User</strong> must have a username</li><li>A <strong>User</strong> has zero or more movie ratings</li><li>A <strong>User</strong> can rate movies</li></ol><p>None of these have <em>anything</em> to do with inserting, updating, selecting or deleting data in the database. In fact, these same rules could be applied if you switch persistence to an XML file.</p><p>Now, consider these Business Classes:</p><p>First, a silly stub for the Movie:</p><pre class="lang-csharp prettyprint-override"><code>public class Movie
+{
+    public int Id { get; set; }
+    public string Title { get; set; }
+}
+</code></pre><p>Now we know a Movie Rating is composed of three things: A user; a movie, and a number rating.</p><p>The User class:</p><pre class="lang-csharp prettyprint-override"><code>public class User
+{
+    public User(string username)
+    {
+        // Requirement #6
+        if (string.IsNullOrEmpty(username))
+            throw new ArgumentNullException(&#34;username&#34;);
+
+        Username = username;
+
+        // Requirement #7
+        movieRatings = new Collection&lt;MovieRating&gt;();
+    }
+
+    // Requirement #6
+    public string Username { get; private set; }
+
+    // Requirement #7
+    private ICollection&lt;MovieRating&gt; movieRatings;
+
+    // Requirement #6
+    public IEnumerable&lt;MovieRating&gt; MovieRatings
+    {
+        get { return movieRatings; }
+    }
+
+    // Requirement #4
+    public MovieRating GetRating(Movie movie)
+    {
+        return MovieRatings.FirstOrDefault(rating =&gt; rating.Movie.Id == movie.Id);
+    }
+
+    // Requirement #8 and #1
+    public MovieRating RateMovie(Movie movie, int rating)
+    {
+        // Requirement #2
+        if (movie == null)
+            throw new ArgumentNullException(&#34;movie&#34;);
+
+        var movieRating = GetRating(movie);
+
+        if (movieRating == null)
+        {
+            // Requirement #5
+            movieRating = new MovieRating(this, movie, rating);
+            movieRatings.Add(movieRating);
+        }
+        else
+        {
+            // Requirement #4
+            movieRating.ChangeRating(rating);
+        }
+
+        return movieRating;
+    }
+}
+</code></pre><p>The MovieRating class:</p><pre class="lang-csharp prettyprint-override"><code>public class MovieRating
+{
+    // Requirement #8 and #1
+    internal MovieRating(User user, Movie movie, int rating)
+    {
+        // Requirement #1
+        if (user == null)
+            throw new ArgumentNullException(&#34;user&#34;);
+
+        // Requirement #2
+        if (movie == null)
+            throw new ArgumentNullException(&#34;movie&#34;);
+
+        // Requirement #3
+        if (IsValidRating(rating))
+            throw new ArgumentOutOfRangeException(&#34;rating&#34;, &#34;Rating must be between &#34; + MIN_RATING + &#34; and &#34; + MAX_RATING);
+
+        User = user;
+        Movie = moview;
+        Rating = rating;
+    }
+
+    public User User { get; private set; }
+    public User Movie { get; private set; }
+    public int Rating { get; private set; }
+
+    // Requirement #3
+    public const int MIN_RATING = 0;
+    public const int MAX_RATING = 10;
+
+    // Requirement #3
+    public static bool IsValidRating(int rating)
+    {
+        return rating &gt;= MIN_RATING &amp;&amp; rating &lt;= MAX_RATING;
+    }
+
+    // Requirement #4
+    public void ChangeRating(int newRating)
+    {
+        // Requirement #3
+        if (IsValidRating(newRating))
+            throw new ArgumentOutOfRangeException(&#34;newRating&#34;, &#34;Rating must be between &#34; + MIN_RATING + &#34; and &#34; + MAX_RATING);
+
+        Rating = newRating;
+    }
+}
+</code></pre><p>I&#39;ve put comments in the C# code to illustrate how the Business classes (User, Movie and MovieRating) enforce business logic.</p><p>Noteworthy features of this code:</p><ul><li><p>The constructor for the <code>MovieRating</code> class is marked <code>internal</code> restricting who can create instances of this class to code inside the same Assembly as the class.</p></li><li><p>The <code>RateMovie</code> method on the <code>User</code> class is <code>public</code> and is the only thing that creates the MovieRating objects. This ensures that you have correctly linked the right User with the movie when adding it to the private movie ratings collection</p></li><li><p>The <code>User.movieRatings</code> field is private so the User class has full control over how MovieRating&#39;s are created</p></li><li><p>The <code>User.MovieRatings</code> property is an <code>IEnumerable&lt;MovieRating&gt;</code> so that client code <em>must</em> call the <code>RateMovie</code> method on the <code>User</code> class in order to rate a movie for that user.</p></li><li><p>The minimum and maximum ratings are codified as constants on the MovieRating class</p></li><li><p>A static <code>IsValidRating</code> method is public so any code, regardless of whether or not a MovieRating object is available, has one central place to know if a rating is valid or not. Think form field validators in the presentation/web layer of your application.</p></li><li><p>The <code>RateMovie</code> method finds an existing rating and changes it, or creates a new MovieRating object if one doesn&#39;t exist (requirement #4)</p></li><li><p><strong>None of these features have <em>anything</em> to do with how data is inserted or updated</strong></p></li></ul></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-what-do-you-do-when-a-client-requires-rich-text-editing-on-their-website/'>C# &#8211; What do you do when a client requires Rich Text Editing on their website</a></li><li class="list-group-item"><a href='../mvc-net-mvc-project-architecture-layering/'>Mvc &#8211; .NET MVC project architecture / layering</a></li><li class="list-group-item"><a href='../c-entity-framework-5-separating-business-logic-from-model-repository/'>C# &#8211; Entity Framework 5, separating business logic from model &#8211; Repository</a></li><li class="list-group-item"><a href='../architecture-how-to-avoid-tight-coupling-when-practically-every-decision-logic-has-to-check-lots-of-distributed-state/'>Architecture &#8211; How to avoid tight coupling when practically every decision-logic has to check lots of distributed state</a></li><li class="list-group-item"><a href='../mvc-where-to-put-user-interface-domain-model-manipulation-logic-transferring-data-from-the-view-to-domain-model/'>Mvc &#8211; Where to put User Interface/Domain Model manipulation logic (transferring data from the view to Domain Model)</a></li><li class="list-group-item"><a href='../c-putting-some-business-logic-in-repositories-versus-keeping-it-out-of-repositories-entirely/'>C# &#8211; Putting some business logic in repositories versus keeping it out of repositories entirely</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

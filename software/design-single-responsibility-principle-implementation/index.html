@@ -1,0 +1,64 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Design &#8211; Single Responsibility Principle Implementation &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1085658 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1085658" class="post-1085658 software type-software status-publish hentry category-software tag-architecture tag-design tag-single-responsibility tag-solid"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Design &#8211; Single Responsibility Principle Implementation</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">Architecture</span><span class="mr-2 badge badge-info">design</span><span class="mr-2 badge badge-warning">single-responsibility</span><span class="mr-2 badge badge-primary">solid</span></p><div class="entry-content"><p>In my spare time, I&#39;ve been designing a CMS in order to learn more about actual software design and architecture, etc.</p><p>Going through the SOLID principles, I already notice that ideas like &#34;MVC&#34;, &#34;DRY&#34;, and &#34;KISS&#34;, pretty much fall right into place. That said, I&#39;m still having problems deciding if one of two implementations is the best choice when it comes to the Single Responsibility Principle.</p><p>Implementation #1:</p><pre><code>class User
+    getName
+    getPassword
+    getEmail
+    // etc...
+
+class UserManager
+    create
+    read
+    update
+    delete
+
+class Session
+    start
+    stop
+
+class Login
+    main
+
+class Logout
+    main
+
+class Register
+    main
+</code></pre><p>The idea behind this implementation is that all user-based actions are separated out into different classes (creating a possible case of the aptly-named <a href="https://softwareengineering.stackexchange.com/questions/17100/clarify-the-single-responsibility-principle">Ravioli Code</a>), but following the SRP to a &#34;tee&#34;, almost literally.</p><p>But then I thought that it was a bit much, and came up with this next implementation</p><pre><code>class UserView extends View
+    getLogin //Returns the html for the login screen
+    getShortLogin //Returns the html for an inline login bar
+    getLogout //Returns the html for a logout button
+    getRegister //Returns the html for a register page
+    // etc... as needed
+
+class UserModel extends DataModel implements IDataModel
+    // Implements no new methods yet, outside of the interface methods
+    // Haven&#39;t figured out anything special to go here at the moment
+    // All CRUD operations are handled by DataModel 
+    //   through methods implemented by the interface
+
+class UserControl extends Control implements IControl
+    login
+    logout
+    register
+    startSession
+    stopSession
+
+class User extends DataObject
+    getName
+    getPassword
+    getEmail
+    // etc...
+</code></pre><p>This is obviously still very organized, and still very &#34;single responsibility&#34;. The <code>User</code> class is a data object that I can manipulate data on and then pass to the <code>UserModel</code> to save it to the database. All the user data rendering (what the user will see) is handled by <code>UserView</code> and it&#39;s methods, and all the user actions are in one space in <code>UserControl</code> (plus some automated stuff required by the CMS to keep a user logged in or to ensure that they stay out.) I personally can&#39;t think of anything wrong with this implementation either.</p><p>In my personal feelings I feel that both are effectively correct, but I can&#39;t decide which one would be easier to maintain and extend as life goes on (despite leaning towards Implementation #1.)</p><p>So what about you guys? What are your opinions on this? Which one is better? What basics (or otherwise, nuances) of that principle have I missed in either design?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I&#39;ve always considered the single responsbility principle more of a philosophy than principle.</p><p>Robert C. Martin (Uncle Bob) <a href="http://www.objectmentor.com/resources/articles/srp.pdf">restates the Single Responsibility Principle (linked to PDF)</a>:</p><blockquote><p>There should never be more than one reason for a class to change</p></blockquote><p>Quoted from the reply you got your post.</p><p>When we try to appease the SPR, we focus on the implementation rather than on the purpose.</p><p>Major mistake.</p><p>My understanding of the SRP is this,  when an addition blurs the responsibility of an implementation, the focal point should be reconsidered.</p><p>For me, it is all about the relationships between purposes.</p><p>Sure, a user has to be authenticated and authorized regarding actions to take - but the authentication and authorization should be separated from the user.</p><p>It&#39;s not like you are going to try to authorize/authenticate a non-user anyway?</p><p>And thus, you should consider splitting implementation when the responsibilities of a class outgrows it purpose. After all, design patterns have purposes too.</p><p>Take a look at <a href="http://en.wikipedia.org/wiki/GRASP_(object-oriented_design)">GRASP</a> when you get a chance.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../do-setters-and-getters-always-break-the-single-responsibility-principle/'>Do setters and getters always break the Single-Responsibility Principle</a></li><li class="list-group-item"><a href='../databases-and-the-single-responsibility-principle/'>Databases and the single responsibility principle</a></li><li class="list-group-item"><a href='../architecture-when-using-the-single-responsibility-principle-what-constitutes-a-responsibility/'>Architecture &#8211; When using the Single Responsibility Principle, what constitutes a &#8220;responsibility?&#8221;</a></li><li class="list-group-item"><a href='../design-single-responsibility-principle-violation/'>Design &#8211; Single Responsibility Principle Violation</a></li><li class="list-group-item"><a href='../architecture-applicability-of-single-responsibility-principle/'>Architecture &#8211; Applicability of Single Responsibility Principle</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

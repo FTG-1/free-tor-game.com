@@ -1,0 +1,72 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Should wrappers compare as equal using the == operator when they wrap the same object &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1079055 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1079055" class="post-1079055 software type-software status-publish hentry category-software tag-c tag-net tag-operators"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Should wrappers compare as equal using the == operator when they wrap the same object</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">net</span><span class="mr-2 badge badge-warning">operators</span></p><div class="entry-content"><p>I&#39;m writing a wrapper for XML elements that allows a developer to easily parse attributes from the XML. The wrapper has no state other than the object being wrapped.</p><p>I am considering the following implementation (simplified for this example) which includes an overload for the <code>==</code> operator.</p><pre><code>class XmlWrapper
+{
+    protected readonly XElement _element;
+
+    public XmlWrapper(XElement element)
+    {
+        _element = element;
+    }
+
+    public string NameAttribute
+    {
+        get
+        {
+            //Get the value of the name attribute
+        }
+        set
+        {
+            //Set the value of the name attribute
+        }
+    }
+
+    public override bool Equals(object other)
+    {
+        var o = other as XmlWrapper;
+        if (o == null) return false;
+        return _element.Equals(o._element);
+    }
+
+    public override int GetHashCode()
+    {
+        return _element.GetHashCode();
+    }
+
+    static public bool operator == (XmlWrapper lhs, XmlWrapper rhs)
+    {
+        if (ReferenceEquals(lhs, null) &amp;&amp; ReferenceEquals(rhs, null)) return true;
+        if (ReferenceEquals(lhs, null) || ReferenceEquals(rhs, null)) return false;
+
+        return lhs._element == rhs._element;
+    }
+
+    static public bool operator != (XmlWrapper lhs, XmlWrapper rhs)
+    {
+        return !(lhs == rhs);
+    }
+}
+</code></pre><p>As I understand idiomatic c#, the <code>==</code> operator is for reference equality while the <code>Equals()</code> method is for value equality. But in this case, the &#34;value&#34; is just a reference to the object being wrapped. So I am not clear what is conventional or idiomatic for c#.</p><p>For example, in this code&#8230;</p><pre><code>var underlyingElement = new XElement(&#34;Foo&#34;);
+var a = new XmlWrapper(underlyingElement);
+var b = new XmlWrapper(underlyingElement);
+
+a.NameAttribute = &#34;Hello&#34;;
+b.NameAttribute = &#34;World&#34;;
+
+if (a == b)
+{
+    Console.WriteLine(&#34;The wrappers a and b are the same.&#34;);
+}
+</code></pre><p>&#8230;.should the program output &#34;The wrappers a and b are the same&#34; ? Or would that be odd, i.e. violate the <a href="https://softwareengineering.stackexchange.com/questions/187457/what-is-the-principle-of-least-astonishment">principal of least astonishment</a>?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Since the reference to the wrapped <code>XElement</code> is immutable, there is no externally observable difference between two instances of <code>XmlWrapper</code> that wrap the same element, so it makes sense to overload <code>==</code> to reflect this fact.</p><p>Client code almost always cares about logical equality (which, by default, is implemented using reference equality for reference types). The fact that there are two instances on the heap is an implementation detail that clients shouldn&#39;t care about (and those that do will use <code>Object.ReferenceEquals</code> directly).</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-should-i-omit-the-parameter-e-when-using-eventhandler/'>C# &#8211; Should I omit the parameter &#8220;e&#8221; when using EventHandler<EventArgs></a></li><li class="list-group-item"><a href='../c-presenter-accessing-the-value-in-text-box-using-sender-object/'>C# &#8211; Presenter accessing the value in text box using sender object</a></li><li class="list-group-item"><a href='../should-a-domain-object-wrap-contain-a-dto-interface/'>Should a domain object wrap/contain a DTO interface</a></li><li class="list-group-item"><a href='../c-update-an-attached-object-using-a-detached-but-equal-object/'>C# &#8211;  update an attached object using a detached but equal object</a></li><li class="list-group-item"><a href='../c-when-should-i-use-cs-implicit-type-conversion-operator/'>C# &#8211; When should I use C#&#8217;s implicit type conversion operator</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,75 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Is a singleton with an update method and software state verification a valid pattern &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1077696 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1077696" class="post-1077696 software type-software status-publish hentry category-software tag-c tag-singleton tag-vb-net"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Is a singleton with an update method and software state verification a valid pattern</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">singleton</span><span class="mr-2 badge badge-warning">vb.net</span></p><div class="entry-content"><p>Stack overflow suggested that this question my be better suited here. I normally work in c#, but I&#39;m working in a vb.net net application currently.  So feel free to respond with vb.Net or c#&#8230;</p><p>Essentially I have a singleton that does all of the heavy lifting of getting global settings which are stored in the database; but there is an interface (dialog form) that allows those settings to change.</p><p>So what I did was create a singleton which on the first instantiation (only) runs the public update method.  If, however, a user opens the settings dialog, the singleton is instantiated and the update command is invoked separately just in case the user made changes to the settings in the settings dialog&#8230; its the only place where I run the Update method outside of the initial instantiation of the singleton object.  Conceivably another errant developer could irresponsibly run the Update method over and over again, but it would not harm anything except slow down the application&#8211;and this is the main reason I wanted to use a singleton, because there are cases where with calls to the settings is made hundreds if not thousands of times in loops; which would really slow down the application, and also the settings are being called from many random locations depending on what the user does&#8230;  why don&#39;t I use a simple DTO, well, that&#39;s described below.</p><p>The other crazy thing about this application is that multiple &#34;environments&#34; can be running in the same thread, each with completely different settings (long story).  The way the prior developers handled this was by making a call to update a settings DTO every time there was a possible switch or change in the settings or &#34;environment&#34;, or upon starting up the application. On a search there are around 40 locations&#8230; seems nuts to me.  This is on top of the hundreds of calls were the DTO is accessed.  I want this singleton to do the heavy lifting and verify which environment the app is in and retrieve the settings only once from the database&#8211;except on that one occasion with the settings dialog I mentioned above, where the Update method is invoked.</p><p>End result, one nutty singleton&#8230; Below is a simplified version of the code.  Basically, I&#39;m asking whether is this a reasonable pattern, or is there a better one for this?  Note that one potential downside to my solution is that I still need to make a database call, as a check to the current database, every time this class is instantiated.  Thanks for the feedback.</p><pre><code>   Public Class MySingleton
+
+        Private Shared _Instance As MySingleton = Nothing
+
+        Private _ExampleSetting As String
+
+        Private _CurrentDatabase as DBDatabase
+
+        Public Shared ReadOnly Property GetInstance() As MySingleton
+            Get
+                If _Instance Is Nothing Then
+                      _Instance = New MySingleton()
+                ElseIf _CurrentDatabase &lt;&gt; GetCurrentDataBase() Then 
+                      _Instance = New MySingleton()
+                End If
+
+                Return _Instance
+            End Get
+        End Property
+
+        Public ReadOnly Property ExampleSetting As String
+            Get
+                Return _ExampleSetting
+            End Get
+        End Property
+
+
+        Private Sub New()
+
+            Update()
+
+        End Sub
+
+
+        Public Sub Update()
+
+            _CurrentDatabase  = GetCurrentDataBase()
+
+            _ExampleSetting = _CurrentDatabase.GetSetting(&#34;exampleSetting&#34;)
+
+        End Sub
+
+    End Class
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Your &#34;singleton&#34; isn&#39;t a singleton at all. It&#39;s a data cache, which can result in different parts of your app having different version of that cache. In C# code, as my VB.Net is weak:</p><pre><code>var instance1 = MySingleton.GetInstance();
+// assume instance1.ExampleSetting would return &#34;foo&#34;
+
+// do something that changes ExampleSetting to bar, such that
+// _CurrentDatabase &lt;&gt; GetCurrentDataBase() is now true
+
+var instance2 = MySingleton.GetInstance(); // new instance
+var x = instance1.ExampleSetting; // will be foo
+var y = instance2.ExampleSetting; // will be bar
+</code></pre><p>Just because you are overriding the static <code>_Instance</code> with a new instance won&#39;t affect references to the previous instances held by other parts of the code. You are relying on the developer calling <code>MySingleton.GetInstance()</code> every time to get the latest &#34;singleton&#34;.</p><p><strong>Update</strong></p><p>To address the question of &#34;is there a better way&#34;, one solution is to use dependency injection. Rather than have a globally accessible not-quite-singleton, instead create just one instance of <code>MySingleton</code> and pass it to all parts of the system that need it. Then, whenever it is queried, it can check if the database has changed and update itself, rather than spawning a new instance.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/c-encapsulating-a-class-within-another-class-to-hide-its-exposed-properties-and-details/'>C# &#8211; Encapsulating a class within another class to hide its exposed properties and details</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-should-all-public-methods-in-an-abstract-class-be-marked-virtual/'>C# &#8211; Should all public methods in an abstract class be marked virtual</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/java-why-a-static-main-method-in-java-and-c-rather-than-a-constructor/'>Java &#8211; Why a static main method in Java and C#, rather than a constructor</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-how-get-and-set-accessors-work/'>C# &#8211; How get and set accessors work</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/where-to-keep-global-variables-in-windows-forms-app/'>Where to keep global variables in Windows Forms App</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-best-way-to-query-data-from-database-and-then-modify-it/'>C# &#8211; Best way to query data from database and then modify it</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

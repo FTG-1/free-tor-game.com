@@ -1,0 +1,73 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Haskell memory efficiency &#8211; which is the better approach &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1076031 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1076031" class="post-1076031 software type-software status-publish hentry category-software tag-functional-programming tag-grammar tag-haskell tag-memory"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Haskell memory efficiency &#8211; which is the better approach</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">functional programming</span><span class="mr-2 badge badge-info">grammar</span><span class="mr-2 badge badge-warning">haskell</span><span class="mr-2 badge badge-primary">memory</span></p><div class="entry-content"><p>We are implementing a matrix compression library based on a modified two dimensional grammar syntax. Now we have two approaches for our data types -which one will be better in case of memory usage? (we want to compress something ;)).</p><p>The grammars contain NonTerminals with exactly 4 Productions or a Terminal on the righthand side. We will need the names of Productions for equality checks and grammar minimization.</p><p>The First:</p><pre><code>-- | Type synonym for non-terminal symbols
+type NonTerminal = String
+
+-- | Data type for the right hand side of a production
+data RightHandSide = DownStep NonTerminal NonTerminal NonTerminal NonTerminal | Terminal Int
+
+-- | Data type for a set of productions
+type ProductionMap = Map NonTerminal RightHandSide
+
+data MatrixGrammar = MatrixGrammar {
+    -- the start symbol
+    startSymbol :: NonTerminal,
+    -- productions
+    productions :: ProductionMap    
+    } 
+</code></pre><p>Here our RightHandSide data saves only String names to determine the next productions, and what we do not know here is how Haskell saves these strings. For example the [[0, 0], [0, 0]] matrix has 2 productions:</p><pre><code>a = Terminal 0
+aString = &#34;A&#34;
+b = DownStep aString aString aString aString
+bString = &#34;B&#34;
+productions = Map.FromList [(aString, a), (bString, b)]
+</code></pre><p>So the question here is how often is the String &#34;A&#34; really saved? Once in aString, 4 times in b and once in productions or just once in aString and the others just hold &#34;cheaper&#34; references?</p><p>The Second:</p><pre><code>data Production = NonTerminal String Production Production Production Production
+                | Terminal String Int 
+
+type ProductionMap = Map String Production
+</code></pre><p>here the term &#34;Terminal&#34; is a bit misleading because its actually the production that has a terminal as right hand side.<br /> The same Matrix:</p><pre><code>a = Terminal &#34;A&#34; 0
+b = NonTerminal &#34;B&#34; a a a a
+productions = Map.fromList [(&#34;A&#34;, a), (&#34;B&#34;, b)]
+</code></pre><p>and the similar question: how often is the production a saved internally by Haskell? Possibly we will drop the names inside the productions if we don&#39;t need them, but we are not sure right now about this.</p><p>So lets say we have a grammar with about 1000 productions. Which approach will consume less memory?</p><p>Finally a question about integers in Haskell: Currently we are planning on having name as Strings. But we could easily switch to integer names because with 1000 productions we will have names with more then 4 chars (which i assume is 32 bit?). How does Haskell handle this. Is an Int always 32 Bit and Integer allocates memory that it really needs?</p><p>I also read through this: <a href="https://softwareengineering.stackexchange.com/questions/184586/devising-test-of-haskells-value-reference-semantics">Devising test of Haskell&#39;s value/reference semantics</a> &#8211; but I can&#39;t figure out what that exactly means for us &#8211; I&#39;m more of a imperative java child then good functional programmer 😛</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>You can expand your matrix grammar into an ADT with <em>perfect</em> sharing with a little bit of trickery:</p><pre><code>{-# LANGUAGE DeriveFunctor, DeriveFoldable, DeriveTraversable #-}
+
+import Data.Map
+import Data.Foldable
+import Data.Functor
+import Data.Traversable
+
+-- | Type synonym for non-terminal symbols
+type NonTerminal = String
+
+-- | Data type for the right hand side of a production
+data RHS a = DownStep NonTerminal NonTerminal NonTerminal NonTerminal | Terminal a
+  deriving (Eq,Ord,Show,Read,Functor, Foldable, Traversable)
+
+data G a = G NonTerminal (Map NonTerminal (RHS a))
+  deriving (Eq,Ord,Show,Read,Functor)
+
+data M a = Q (M a) (M a) (M a) (M a) | T a
+  deriving (Functor, Foldable, Traversable)
+
+tabulate :: G a -&gt; M a
+tabulate (G s pm) = loeb (expand &lt;$&gt; pm) ! s where
+  expand (DownStep a11 a12 a21 a22) m = Q (m!a11) (m!a12) (m!a21) (m!a22)
+  expand (Terminal a)               _ = T a
+
+loeb :: Functor f =&gt; f (f b -&gt; b) -&gt; f b
+loeb x = xs where xs = fmap ($xs) x
+</code></pre><p>Here I generalized your grammars to allow for any data type, not just Int, and <code>tabulate</code> will take the grammar and expand it by folding it in upon itself using <code>loeb</code>.</p><p><code>loeb</code> is described in <a href="http://blog.sigfpe.com/2006/11/from-l-theorem-to-spreadsheet.html">an article by Dan Piponi</a></p><p>The resulting expansion as an ADT physically takes no more memory than the original grammar -- in fact it takes a fair bit less, because it doesn&#39;t need the extra log-factor for the Map spine, and it doesn&#39;t need to store the strings at all.</p><p>Unlike the naive expansion, using <code>loeb</code> lets me &#39;tie the knot&#39; and share the thunks for all occurrences of the same non-terminal.</p><p>If you want to dip more into the theory of all of this, we can see that <code>RHS</code> could be turned into a base functor:</p><pre><code>data RHS t nt = Q nt nt nt nt | L t
+</code></pre><p>and then my M type is just the fixed point of that <code>Functor</code>.</p><pre><code>M a ~ Mu (RHS a)
+</code></pre><p>while <code>G a</code> would consist of a chosen string and a map from strings to <code>(RHS String a)</code>.</p><p>We can then expand <code>G</code> into <code>M</code> by lookup up the entry in a map of expanded strings lazily.</p><p>This is sort of the dual of what is done in the <code>data-reify</code> package, which can take such a base functor, and something like <code>M</code> and recover the moral equivalent of your <code>G</code> from it. They use a different type for the non-terminal names, which is basically just an <code>Int</code>.</p><pre><code>data Graph e = Graph [(Unique, e Unique)] Unique
+</code></pre><p>and provide a combinator</p><pre><code>reifyGraph :: MuRef s =&gt; s -&gt; IO (Graph (DeRef s))
+</code></pre><p>which can be used with an appropriate instance on the above data types to get a graph (MatrixGrammar) out of an arbitrary matrix. It won&#39;t do deduplication of identical but separately stored quadrants, but it&#39;ll recover all of the sharing that is present in the original graph.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../why-did-the-haskell-committee-choose-monads-to-represent-i-o/'>Why did the Haskell committee choose monads to represent I/O</a></li><li class="list-group-item"><a href='../whats-the-benefit-of-the-nothing-constructor-in-haskell/'>What&#8217;s the benefit of the Nothing constructor in Haskell</a></li><li class="list-group-item"><a href='../why-isnt-there-a-typeclass-for-functions/'>Why isn&#8217;t there a typeclass for functions</a></li><li class="list-group-item"><a href='../haskell-ways-to-the-3n1-problem/'>Haskell ways to the 3n+1 problem</a></li><li class="list-group-item"><a href='../c-in-memory-data-collection-objects-vs-database/'>C# &#8211; In-memory data collection object(s) vs database</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

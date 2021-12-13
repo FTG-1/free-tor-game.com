@@ -1,0 +1,60 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Javascript &#8211; When to use Prototypes &#038; the correct usage of Prototypes ( Javascript ) &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1078575 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1078575" class="post-1078575 software type-software status-publish hentry category-software tag-angularjs tag-design-patterns tag-javascript tag-prototyping"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Javascript &#8211; When to use Prototypes &#038; the correct usage of Prototypes ( Javascript )</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">angularjs</span><span class="mr-2 badge badge-info">design-patterns</span><span class="mr-2 badge badge-warning">javascript</span><span class="mr-2 badge badge-primary">prototyping</span></p><div class="entry-content"><p>I have been programming in Javascript for a while and I am quite comfortable with it. And I know the basic concept of prototypes and I have also used them a few times. But one thing I can&#39;t figure out is that when should a prototype be used.</p><p>And what is the correct usage of prototypes. For example:</p><p>Currently I am creating a Task Management system. Within this system you can create Projects, each project can then have multiple tasks added into it. Currently I have created the functionality of creating projects.</p><p>All user projects are saved into a Array in my MongoDB database. Once a user creates a project it is added into the projects array. After that I created a getProjects function. This functions uses a GET request and retrieves all the projects for the logged-in user. Once the data is retrieved I save the projects array into an angular variable:</p><p><strong>CREATE Projects:</strong></p><pre><code>  // Create Project Function
+ $scope.createProject = function(id){
+    var pTitle = document.getElementById(&#34;pojectTitle&#34;).value;
+    console.log(&#34;Entered create Project fucntion&#34;);
+    console.log(&#34;user id is&#34; + id);
+    console.log(pTitle);
+
+    // Simple POST request example (passing data) :
+    $http.post(&#34;/createProject/&#34;+ id +&#34;&#34;, {
+        projectTitle: pTitle,
+        userID      : id
+    }).
+    success(function(data, status, headers, config) {
+        // this callback will be called asynchronously
+        // when the response is available
+        $scope.getProjects();
+        console.log(&#34;project created&#34;);
+        console.log(&#34;this is the response data &#34; + data);
+    }).
+    error(function(data, status, headers, config) {
+        // called asynchronously if an error occurs
+        // or server returns response with an error status.
+    });
+ };
+</code></pre><p><strong>GET Projects:</strong></p><pre><code>$scope.getProjects = function(id) {
+   console.log(&#34;getting user projects, please wait ......&#34;);
+   // Simple GET request example (passing data) :
+   $http.get(&#34;/user/projects/&#34; + id + &#34;&#34;, {
+
+   }).
+   success(function(data, status, headers, config) {
+       // this callback will be called asynchronously
+       // when the response is available
+
+       $scope.userProjects = data;
+       console.log(&#34;user projects are here &#34; + $scope.userProjects);
+
+   }).
+   error(function(data, status, headers, config) {
+       // called asynchronously if an error occurs
+       // or server returns response with an error status.
+   });
+
+ };
+</code></pre><p><strong>All the returning JSON data from the above request is saved in:</strong></p><pre><code>   $scope.userProjects = [];
+</code></pre><p>Currently I am using angular&#39;s ng-repeat in my HTML file to loop through the userProjects array and create a Div for each project in the array (within ng-repeat). And in the centre of the div writer the name of the project. See below:</p><p><img src="../../../i.stack.imgur.com/siVyh.png" alt="enter image description here"/></p><p><strong>Now here is my question</strong></p><p>I want to make each div &#34;Clickable&#34; to when a user clicks on the div they are directed to another page where they can add tasks within the project.</p><p>I thought about using Prototype functionality to attach links to each div. So my thought was that I would create Projects class in my angular controller and while I loop through the project array that was returned from the GET request, for each project in the array I will create an instance (object) of that class and attached a clickable event to each div.</p><p>Is this a good approach?<br /> Is this a good use of prototype?<br /> Should I even be using prototypes?<br /> If not, what recommendations could you make?</p><p>If you need more information to answer the question please let  me know.</p><p>Thanks in advance.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>The correct usage of prototypes in JavaScript depends on what you want to achieve. The understanding of what a prototype is and why it exists is a very good question.</p><p>Prototype exists in JavaScript, because objects do not have classical <strong>inheritance</strong> based on a Class, like in traditional languages. In JavaScript, <strong>objects</strong> are pairs of keys and values. They have <strong>one additional property</strong>: a pointer to another object: the object prototype. Important to know is that every function is a <strong>first-class</strong> object in JavaScript.</p><p>Prototype is used primarily for inheritance; you add methods and properties on a function’s prototype to make methods and properties available to its instances. Every object inherits properties from an object, and is the object’s parent. This makes the prototype property work like a class property - all instances deriving from the same parent class have access to this property.</p><p>If you do not use the property, it will be a <strong>static</strong> property, which bound to that particular type of instance without inheritance.</p><p>So, when to use prototypes? Prototypes are for optimization. As you are thinking in objects and you want shared attributes for a specific problem domain, this is a good reason to use the prototype property to implement this.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../should-client-side-model-contain-foreign-keys-to-extract-data-already-on-client/'>Should client-side model contain foreign keys to extract data already on client</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

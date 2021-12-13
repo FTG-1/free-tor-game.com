@@ -1,0 +1,59 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; Floating point calculation being too exact &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1081625 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1081625" class="post-1081625 software type-software status-publish hentry category-software tag-floating-point tag-java"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; Floating point calculation being too exact</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">floating point</span><span class="mr-2 badge badge-info">java</span></p><div class="entry-content"><p>In Java, I&#39;ve run this method:</p><pre><code>private static void floatAddition() {
+    float a = 0.1F, b = 0.2F, c = a+b;
+    System.out.println(a + &#34; + &#34; + b + &#34; = &#34; + c);
+}
+</code></pre><p>and the result is <code>0.3</code> for floatAddition. I&#39;m now trying to get behind why it is adding to a round result, and not to something slightly off due to floating points.</p><p>I&#39;ve manually transformed <code>0.1</code> and <code>0.2</code> into binary 32-Bit system with IEEE 754 standard, this is what I got:</p><pre class="lang-none prettyprint-override"><code>0.1 (decimal) = 0 01111011 10011001100110011001101 (binary)
+0.2 (decimal) = 0 01111100 10011001100110011001101 (binary)
+</code></pre><p>I now add these two together. Since the exponents are different, I have to bring them both to the bigger one (2^-3) so I&#39;m unnormalizing 0.1.</p><pre>0.1 (decimal) = 0.11001100110011001100111 * 2<sup>-3</sup> (binary)
+0.2 (decimal) = 1.10011001100110011001101 * 2<sup>-3</sup> (binary)</pre><p>This is the manual addition result:</p><pre>0.1 (decimal) + 0.2 (decimal) = 10.01100110011001100110100 * 2<sup>-3</sup> (binary)</pre><p>In IEEE 754 standard, this would be</p><pre class="lang-none prettyprint-override"><code>0 01111101 00110011001100110011010
+</code></pre><p>Now for checking whether or not I&#39;m correct, I&#39;ve used this IEEE 754 Converter: <a href="http://www.h-schmidt.net/FloatConverter/IEEE754.html" rel="nofollow">http://www.h-schmidt.net/FloatConverter/IEEE754.html</a><br /> According to this site, my result should&#39;ve been 0.30000001192092896.</p><p>Why is my floating point calculation more exact than it should be?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Lets look at some quick code:</p><pre class="lang-java prettyprint-override"><code>public class Floats {
+    public static void main(String[] args) {
+        float a = 0.1F;
+        float b = 0.2F;
+        float c = a+b;
+        System.out.println(a + &#34; + &#34; + b + &#34; = &#34; + c);
+
+        System.out.printf(&#34;0x%8x&#34;, Float.floatToIntBits(c));
+    }
+}
+</code></pre><p>The output of this code is:</p><pre class="lang-none prettyprint-override"><code>0.1 + 0.2 = 0.3
+0x3e99999a
+</code></pre><p>That last line is the hexadecimal representation of the value that is being rendered as 0.3.</p><p>So, lets look what C does.</p><pre class="lang-c prettyprint-override"><code>#include &lt;stdio.h&gt;
+int main (int argc, char* argv[]) {
+    float a = 0.1F;
+    float b = 0.2F;
+    float c = a + b;
+    printf(&#34;%f + %f = %f\n&#34;, a, b, c);
+    printf(&#34;0x%8x\n&#34;, *(unsigned int*)&amp;c);  
+}
+</code></pre><p>And this produces the output:</p><pre class="lang-none prettyprint-override"><code>0.100000 + 0.200000 = 0.300000
+0x3e99999a
+</code></pre><p>You will note that the representation of the float value is equivalent.</p><p>I am certain that the code is properly following the specification.  You may be confused at the float to string conversion, but that is something to be done with various formatting or <a href="https://docs.oracle.com/javase/7/docs/api/java/text/DecimalFormat.html">other libraries</a> to display what you want.</p><p>But the underlying floating point representation is exactly what it should be.</p><p>As an aside, the difference between the C and the Java can be seen by switching to <code>printf</code> where one is expected to be a bit more precise with the values:</p><pre><code>public class Floats {
+    public static void main(String[] args) {
+        float a = 0.1F;
+        float b = 0.2F;
+        float c = a+b;
+        System.out.println(a + &#34; + &#34; + b + &#34; = &#34; + c);
+        System.out.printf(&#34;%f + %f = %f\n&#34;, a, b, c);
+
+        System.out.printf(&#34;0x%8x&#34;, Float.floatToIntBits(c));
+    }
+}
+</code></pre><p>prints out:</p><pre class="lang-none prettyprint-override"><code>0.1 + 0.2 = 0.3
+0.100000 + 0.200000 = 0.300000
+0x3e99999a
+</code></pre><p>Note the <code>printf</code> in Java matches the <code>printf</code> in C.</p><p>Digging into the JLS we find in section <a href="https://docs.oracle.com/javase/specs/jls/se7/html/jls-5.html#jls-5.1.11">5.1.11</a>,</p><blockquote><p>If T is <code>float</code>, then use <code>new Float(x)</code>.</p></blockquote><p>Digging through this, one gets to <code>sun.misc.FloatingDecimal</code> which when created with <code>FloatingDecimal(float f)</code> which goes through a <a href="http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/6-b14/sun/misc/FloatingDecimal.java#FloatingDecimal.%3Cinit%3E%28float%29">fair bit of calculations</a> to try to figure out what to display.  Java8 changes this a little bit to do the <a href="http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/8u40-b25/sun/misc/FloatingDecimal.java#FloatingDecimal.getBinaryToASCIIConverter%28float%29">BinaryToAsciiConverter</a>, but the idea is still the same.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../what-causes-floating-point-rounding-errors/'>What causes floating point rounding errors</a></li><li class="list-group-item"><a href='../implementing-base-10-floating-point-division/'>Implementing base-10 floating point division</a></li><li class="list-group-item"><a href='../solutions-for-floating-point-rounding-errors/'>Solutions for floating point rounding errors</a></li><li class="list-group-item"><a href='../javascript-does-comparing-equality-of-float-numbers-mislead-junior-developers-even-if-no-rounding-error-occurs-in-the-case/'>Javascript &#8211; Does comparing equality of float numbers mislead junior developers even if no rounding error occurs in the case</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

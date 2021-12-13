@@ -1,0 +1,72 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>What does the following definition of an interface mean &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1080462 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1080462" class="post-1080462 software type-software status-publish hentry category-software tag-c tag-interfaces tag-object-oriented-design"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">What does the following definition of an interface mean</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">interfaces</span><span class="mr-2 badge badge-warning">object-oriented-design</span></p><div class="entry-content"><p>I am reading <a href="http://rads.stackoverflow.com/amzn/click/0750679069" rel="nofollow">Real-Time UML Workshop for Embedded Systems</a> and I do not understand what they are saying here. I have <strong>bolded</strong> the parts of the text that I do not fully understand. I am trying to understand this from a C stand point of view.</p><blockquote><p>An interface is a named collection of services. Services come in two<br /> basic flavors. Operations  are synchronous services that are invoked,<br /> or called by clients. Event receptions are asynchronous services that<br /> are invoked by sending an asynchronous signal to the object accepting<br /> that event. An interface can contain either or both operations and<br /> event receptions. Both operations and event signals can contain data,<br /> called parameters, passed with the invocation. The set of parameters,<br /> along with the name of the service, is called the signature of the<br /> service. <strong>A class that is compliant with an interface provides a<br /> method for every operation and an event reception for every signal<br /> specified in the interface.</strong></p><p><strong>Interfaces allow you to separate the specification of services that may be called on a class from the implementation of those services. A<br /> class defines methods (for operations) and event receptions (for<br /> signals, specified on the state machine). Both methods and event<br /> receptions include the lines of code that implement the service. An<br /> operation or signal is a specification only, and does not include such<br /> implementation detail.</strong></p><p><strong>Interfaces may not have implementation (either attributes or methods) and are not directly instantiable. A class is said to realize<br /> an interface if it provides a method for every operation specified in<br /> the interface, and those methods have the same names, parameters,<br /> return values, preconditions, and postconditions of the corresponding<br /> operations in the interface.</strong></p></blockquote><p>What is an example (or two!) of implementation of an interface in C ?<br /> From what it seems like, its just a prototype of a specific functions in the header file.</p><p>I removed UML and added interface and object-oriented-design because I think the question turns around this subjects rather than UML</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>OOP languages do it much better, and even in C there are better ways to do this, but here is a crude example. I&#39;ll show an interface with methods only - the concept of event receptions is more complex, but orthogonal to the one of interfaces, and also beside methods and event receptions there can be other things an interface&#39;s implementation needs to fulfill, and I can&#39;t show them all here(definitely not in C!)</p><pre><code>#include&lt;stdio.h&gt;
+
+typedef struct {
+    /// Prints a key-value pair, where value is an integer
+    void (*printIntItem)(char key[], int value);
+    /// Prints a key-value pair, where the value is a string
+    void (*printStringItem)(char key[], char value[]);
+} PrintInterface;
+
+
+void json_printIntItem(char key[], int value) {
+    printf(&#34;{\&#34;%s\&#34;: %d}\n&#34;, key, value);
+}
+void json_printStringItem(char key[], char value[]) {
+    printf(&#34;{\&#34;%s\&#34;: \&#34;%s\&#34;}\n&#34;, key, value);
+}
+PrintInterface PrintJson() {
+    PrintInterface interface;
+    interface.printIntItem = json_printIntItem;
+    interface.printStringItem = json_printStringItem;
+    return interface;
+}
+
+
+void xml_printIntItem(char key[], int value) {
+    printf(&#34;&lt;%s&gt;%d&lt;/%s&gt;\n&#34;, key, value, key);
+}
+void xml_printStringItem(char key[], char value[]) {
+    printf(&#34;&lt;%s&gt;%s&lt;/%s&gt;\n&#34;, key, value, key);
+}
+PrintInterface PrintXml() {
+    PrintInterface interface;
+    interface.printIntItem = xml_printIntItem;
+    interface.printStringItem = xml_printStringItem;
+    return interface;
+}
+
+
+void printStuff(PrintInterface implementation) {
+    implementation.printIntItem(&#34;one&#34;, 1);
+    implementation.printStringItem(&#34;two&#34;, &#34;2&#34;);
+}
+
+int main() {
+    PrintInterface jsonImpl = PrintJson();
+    printStuff(jsonImpl);
+
+    PrintInterface xmlImpl = PrintXml();
+    printStuff(xmlImpl);
+    return 0;
+}
+</code></pre><p><code>PrintInterface</code> is the interface. It has two methods - <code>printIntItem</code> and <code>printStringItem</code>. Their contract can be divided into two parts:</p><ul><li>Explicit contract - can be enforced by the language. That&#39;s the signature, what they accept and what they return. Some languages allow adding more things to enforce in this contract - e.g. which exceptions(errors) may be thrown, how the method can interact with other data etc. In this case all that&#39;s enforced is that the methods accept two arguments - a string and a int/string - and return nothing.</li><li>Implicit contract - the documentation, including what can be understood from the methods names and the names of their arguments. The language can not enforce this, so it&#39;s up to the programmer to respect. It&#39;s almost always a bad idea to ignore that part of the contract - if the author bothers to write something in the documentation it&#39;s usually for a reason, and also users of the interface will expect the contract to be respected.</li></ul><p>I&#39;ve also written two implementations - <code>PrintJson</code> and <code>PrintXml</code>. What they do is simply to put functions inside an <code>PrintInterface</code> struct. Proper OOP languages/libraries have much more
+efficient and convenient ways to do this, but this one is for the sake of
+being easy to follow. They both return a value of the same type - <code>PrintInterface</code> - and that type can be passed around to users of the interface - like <code>printStuff</code>.</p><p>When you run this program, this will be printed:</p><pre><code>{&#34;one&#34;: 1}
+{&#34;two&#34;: &#34;2&#34;}
+&lt;one&gt;1&lt;/one&gt;
+&lt;two&gt;2&lt;/two&gt;
+</code></pre><p>First <code>printStuff</code> is called with the JSON implementation. It uses the API to print the key-value pair <code>&#34;one&#34;-&gt;1</code> and then the key-value pair <code>&#34;two&#34;-&gt;&#34;2&#34;</code>, and thus <code>{&#34;one&#34;: 1}</code> and <code>{&#34;two&#34;: &#34;2&#34;}</code> are printed because it uses a JSON implementation.</p><p>Then <code>printStuff</code> is called with the XML implementation. It uses the API to print the key-value pair <code>&#34;one&#34;-&gt;1</code> and then the key-value pair <code>&#34;two&#34;-&gt;&#34;2&#34;</code>, and thus <code>&lt;one&gt;1&lt;/one&gt;</code> and <code>&lt;two&gt;2&lt;/two&gt;</code> are printed because it now uses an XML implementation.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-should-i-implement-an-interface-directly-or-have-the-superclass-do-it/'>Java &#8211; Should I implement an interface directly or have the superclass do it</a></li><li class="list-group-item"><a href='../java-explanation-of-the-definition-of-interface-inheritance-as-described-in-gof-book/'>Java &#8211; Explanation of the definition of interface inheritance as described in GoF book</a></li><li class="list-group-item"><a href='../c-is-using-protected-inheritance-to-hide-but-exploit-implemented-interface-from-the-public-ok/'>C++ &#8211; Is using protected inheritance to hide (but exploit) implemented interface from the public ok</a></li><li class="list-group-item"><a href='../what-makes-the-iterator-a-design-pattern/'>What Makes the Iterator a Design Pattern</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

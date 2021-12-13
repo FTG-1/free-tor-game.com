@@ -1,0 +1,73 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Javascript &#8211; When using Redux/Redux-Saga &#8211; should JWTs be set in the action creators/sagas &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1086809 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1086809" class="post-1086809 software type-software status-publish hentry category-software tag-authentication tag-javascript tag-jwt tag-redux tag-redux-saga"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Javascript &#8211; When using Redux/Redux-Saga &#8211; should JWTs be set in the action creators/sagas</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">authentication</span><span class="mr-2 badge badge-info">javascript</span><span class="mr-2 badge badge-warning">jwt</span><span class="mr-2 badge badge-primary">redux</span><span class="mr-2 badge badge-danger">redux-saga</span></p><div class="entry-content"><p>Almost every blog post I&#39;ve encountered around generic auth handling using JWTs in a React/Redux/Saga application does the same thing, which is to store the JWT in local storage, in the action/saga.</p><p>For example:</p><p><a href="https://medium.com/@stepankuzmin/authentication-with-react-router-redux-5-x-and-redux-saga-55da66b54be7" rel="nofollow noreferrer"><strong>Example A</strong></a> <strong>(redux-saga)</strong>:</p><pre><code>function* authorize({ payload: { login, password } }) {
+  const options = {
+    body: JSON.stringify({ login, password }),
+    method: &#39;POST&#39;,
+    headers: { &#39;Content-Type&#39;: &#39;application/json&#39; }
+  };
+
+  try {
+    const { token } = yield call(fetchJSON, &#39;/login&#39;, options);
+    yield put({ type: AUTH_SUCCESS, payload: token });
+    localStorage.setItem(&#39;token&#39;, token);
+  } catch (error) {
+    let message;
+    switch (error.status) {
+      case 500: message = &#39;Internal Server Error&#39;; break;
+      case 401: message = &#39;Invalid credentials&#39;; break;
+      default: message = &#39;Something went wrong&#39;;
+    }
+    yield put({ type: AUTH_FAILURE, payload: message });
+    localStorage.removeItem(&#39;token&#39;);
+  }
+}
+
+function* Saga() {
+  yield takeLatest(AUTH_REQUEST, authorize);
+}
+</code></pre><p><a href="http://jasonwatmore.com/post/2017/12/07/react-redux-jwt-authentication-tutorial-example" rel="nofollow noreferrer"><strong>Example B</strong> <strong>(redux):</strong></a></p><pre><code>function login(username, password) {
+    const requestOptions = {
+        method: &#39;POST&#39;,
+        headers: { &#39;Content-Type&#39;: &#39;application/json&#39; },
+        body: JSON.stringify({ username, password })
+    };
+
+    return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
+        .then(handleResponse)
+        .then(user =&gt; {
+            // login successful if there&#39;s a jwt token in the response
+            if (user.token) {
+                // store user details and jwt token in local storage to keep user logged in between page refreshes
+                localStorage.setItem(&#39;user&#39;, JSON.stringify(user));
+            }
+
+            return user;
+        });
+}
+
+function logout() {
+    // remove user from local storage to log user out
+    localStorage.removeItem(&#39;user&#39;);
+}
+</code></pre><p>Now &#8211; storing JWTs in local storage aside &#8211; what concerns me &#8211; is the setting of state inside of the action creator/saga &#8211; rather than in a reducer.</p><p>My understanding is that action creators/sagas should be used just to determine the data to be used &#8211; and it is up to the reducers to actual store/persist the data.</p><p>Now of course &#8211; at its initial state, redux won&#39;t persist data. However, you can use a redux middleware like redux-persist to persist it to local storage (and there are other redux-persist middlewares to persist data to other places). Point here is &#8211; redux is the state management.</p><p>Why then &#8211; does everybody seem to just sidestep using redux as your application state when it comes to authentication?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I will do a guess from different sources.</p><ol><li>I heard &#34;security is not a crosscutting concern&#34; I would put authentication in it. It can not be separated from the program although not included in the model and then pressed in when needed.</li><li>Whether you are authenticated is not part of your model in a way that you have two objects, one authenticated and one not authenticated at the same time.</li></ol><p>Thus, you try to push authentication as far away from the other logic. You put it in a layer between communication and model. That layer is so thin that you do not give extra space to it in an example as this layer may not evolve or evolve in unforeseen ways in programs building on the example. Besides, there are only two places to handle that use case.</p><p>An other one is that in an example, you like to go for simplicity instead of perfection.</p><p>PS: An answer like this usually leads to better answers coming. Good luck!</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/how-to-avoid-get-set-actions-in-redux/'>How to avoid get/set actions in redux</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/redux-loading-success-error-pattern-when-using-redux-saga/'>Redux LOADING/SUCCESS/ERROR pattern &#8211; when using redux-saga</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

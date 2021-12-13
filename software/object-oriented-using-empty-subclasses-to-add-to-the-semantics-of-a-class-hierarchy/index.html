@@ -1,0 +1,138 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Object-oriented &#8211; Using empty subclasses to add to the semantics of a class hierarchy &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1080440 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1080440" class="post-1080440 software type-software status-publish hentry category-software tag-object-oriented tag-readability tag-semantics"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Object-oriented &#8211; Using empty subclasses to add to the semantics of a class hierarchy</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">object-oriented</span><span class="mr-2 badge badge-info">readability</span><span class="mr-2 badge badge-warning">semantics</span></p><div class="entry-content"><p>I was wondering whether using (almost) empty derived classes to give additional semantics to a class hierarchy was a good idea (or practice) ?</p><p>Because a (not so short) example is always better than a long speech, let&#39;s assume we&#39;re writing a class hierarchy for SQL generation. You want to represent a data manipulation command (INSERT, UPDATE or DELETE), so you have two alternatives :</p><p><strong>First version, with switch statement</strong></p><pre><code>enum CommandType {
+    Insert,
+    Update,
+    Delete
+}
+
+class SqlCommand {
+    String TableName { get; }
+    String SchemaName { get; }
+    CommandType CommandType { get; }
+    IEnumerable&lt;string&gt; Columns { get; }
+    // ... and so on
+}
+
+class SqlGenerator  {
+    string GenerateSQLFor(SqlCommand command)
+    {
+        switch (command.CommandType) 
+        {
+            case CommandType.Insert:
+                return generateInsertCommand(command);
+            case CommandType.Update:
+                return generateUpdateCommand(command);
+            case CommandType.Delete:
+                return generateDeleteCommand(command);
+            default:
+                throw new NotSupportedException();
+        }
+    }
+}
+</code></pre><p><strong>Second version with VisitorPattern</strong> <em>(Note that the question is NOT about whether the Visitor pattern should be used or adding new operations)</em></p><pre><code>abstract class SqlCommand {
+    String TableName { get; }
+    String SchemaName { get; }
+    IEnumerable&lt;string&gt; Columns { get; }
+    // ... and so on
+    abstract void Accept(SqlCommandVisitor visitor);
+}
+
+class InsertCommand : SqlCommand 
+{
+    overrides void Accept(SqlCommandVisitor visitor) 
+    {
+        visitor.VisitInsertCommand(this);
+    }
+}
+
+class DeleteCommand : SqlCommand 
+{
+    overrides void Accept(SqlCommandVisitor visitor) 
+    {
+        visitor.VisitDeleteCommand(this);
+    }
+}
+
+class SqlCommandVisitor  {
+    void InitStringBuffer() { ... }
+    string GetStringBuffer() { ... }
+
+    string GenerateSQLFor(SqlCommand command)
+    {
+        InitStringBuffer();
+        command.Accept(this);
+        return GetStringBuffer();
+    }
+
+    void Visit(SqlCommand command) { ... }
+    void VisitInsertCommand(InsertCommand command) { ... }
+    void VisitDeleteCommand(DeleteCommand command) { ... }
+    void VisitUpdateCommand(UpdateCommand command) { ... }
+}
+</code></pre><p>With both examples we achieve the same result, but :</p><ul><li>In the first version, my code feels more DRY, even though polymorphism is generally preferable over a switch statement.</li><li>In the second version, I feel like I&#39;m needlessly deriving SqlCommand just so that the code carries more meaning.</li></ul><p>Another similar case is deriving a class from a generic class, just to give additionnal meaning to the collection, eg :</p><pre><code>class CustomerList : List&lt;Customer&gt; { }
+</code></pre><p>I&#39;m left off wondering whether this is a good idea. Are there any pitfalls to doing so ?</p><p>I personally prefer the second version exactly because it adds meaning to the code, and helps me when I read my code later&#8230; But I clearly lack the experience to see any downside to this pattern.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Your second example has the benefit of no case statement, and no CommandType.  This means you can a new statement type without having to modify a case statement.  A case statement ought to cause an OOP programmer to pause a moment and consider whether the design should be changed to get rid of the case statement.  A variable denoting a thing&#39;s type ought to cause the programmer to pause a long while.</p><p>However, the visitor pattern doesn&#39;t seem to be needed here.  Simpler would be to use a class hierarchy, as you did, but then put the SQL generation <em>inside that hierarchy</em> rather than having it be a separate class:</p><pre><code>class SqlCommand {
+  abstract String sql;
+}
+
+class InsertCommand : SqlCommand {
+  overrides String sql {...};
+}
+
+class DeleteCommand : SqlCommand {
+  overrides String sql {...};
+}
+</code></pre><p>The code inside the <code>sql</code> functions will probably turn out to have shared behavior, or enough complexity, that moving the shared behavior and complexity into a separate <code>SqlBuilder</code> class would be good:</p><pre><code>class InsertCommand : SqlCommand {
+  overrides String sql {
+    builder = SqlBuilder.new
+    builder.add(&#34;insert into&#34;)
+    builder.add_identifier(table_name)
+    buidler.add(&#34;values&#34;)
+    builder.add_value_list(column_names)
+    ...
+    return builder.sql
+  };
+}
+</code></pre><p>The SqlCommand drives the process of creating the sql, pushing its details into the SqlBuilder.  This keeps the SqlCommand and SqlBuilder decoupled, since the SqlCommands do not have to expose their entire state for the builder to use.  This has the benefits of your second example, but without the complexity of the visitor pattern.</p><p>If it turns out that sometimes you need the sql built one way and sometimes another (perhaps you want to support more than one SQL back end), then you abstract the SqlBuilder class, like so:</p><pre><code>class SqlBuilder {
+  abstract void add(String s);
+  abstract void add_identifier(String identifier);
+  abstract void add_value_list(String[] value_list);
+  ...
+}
+
+class PostgresSqlBuilder : SqlBuilder {
+  void add(String s) {...}
+  void add_identifier(String identifier) {...}
+  void add_value_list(String[] value_list) {...}
+  ...
+}
+
+class MysqlSqlBuilder : SqlBuilder {
+  void add(String s) {...}
+  void add_identifier(String identifier) {...}
+  void add_value_list(String[] value_list) {...}
+  ...
+}
+</code></pre><p>Then the <code>sql</code> functions use the builder passed into them, rather than creating one:</p><pre><code>class InsertCommand : SqlCommand {
+  overrides String sql (SqlBuilder builder) {
+    builder.add(&#34;insert into&#34;)
+    builder.add_identifier(table_name)
+    buidler.add(&#34;values&#34;)
+    builder.add_value_list(column_names)
+    ...
+    return builder.sql
+  };
+}
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../whats-the-difference-between-syntax-and-semantics/'>What&#8217;s the difference between syntax and semantics</a></li><li class="list-group-item"><a href='../object-oriented-changing-behaviour-of-abstract-class-without-modifying-subclasses/'>Object-oriented &#8211; Changing behaviour of abstract class without modifying subclasses</a></li><li class="list-group-item"><a href='../which-are-the-alternatives-to-using-a-stack-to-represent-function-call-semantics/'>Which are the alternatives to using a stack to represent function call semantics</a></li><li class="list-group-item"><a href='../java-parallel-class-interface-hierarchy-with-the-facade-design-pattern/'>Java &#8211; Parallel Class/Interface Hierarchy with the Facade Design Pattern</a></li><li class="list-group-item"><a href='../object-oriented-should-a-class-know-about-its-subclasses/'>Object-oriented &#8211; Should a class know about its subclasses</a></li><li class="list-group-item"><a href='../object-oriented-is-this-oop-class-hierarchy-too-deep/'>Object-oriented &#8211; Is this OOP class hierarchy too deep</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

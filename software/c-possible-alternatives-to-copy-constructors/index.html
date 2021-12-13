@@ -1,0 +1,107 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C++ &#8211; Possible alternatives to copy constructors &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1086545 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1086545" class="post-1086545 software type-software status-publish hentry category-software tag-c tag-libraries tag-pointers tag-raii tag-smart-pointer"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C++ &#8211; Possible alternatives to copy constructors</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">libraries</span><span class="mr-2 badge badge-warning">pointers</span><span class="mr-2 badge badge-primary">raii</span><span class="mr-2 badge badge-danger">smart-pointer</span></p><div class="entry-content"><p>In my C++ project I am relying on some libraries that do memory management for me. I make wrapper classes, for ease of use and memory safety, for example the class below. Note that this is a much simplified example, to demonstrate my problem.</p><pre><code>#include &lt;library&gt;
+
+class Wrapper {
+private:
+    lib_type* data;
+public:
+    Wrapper() : data(library_new()) {
+    }
+    Wrapper(const Wrapper&amp; orig) = delete;
+    ~Wrapper() {
+        library_free(data);
+    }
+    const lib_type* getData() const {
+        return data;
+    }
+    /* ... */
+    /* Lots of functions for using the wrapped object */
+};
+</code></pre><p>I needed to delete the copy constructor, because otherwise a copy going out of scope would invalidate the original object. Not being allowed to have copies makes the object very impractical to use &#8211; everywhere it is used I now need to hold a reference, and I need to manage the object centrally, which partially defeats the purpose of the wrapper class.</p><p>Possible solutions I have tried/thought of:</p><ul><li><strong>Copying the data.</strong> This is normally not an option though, because it is either not allowed by the library or the data is huge.</li><li><strong>Move constructors.</strong> I tried solving the lack of a copy constructor by using a move constructor, but depending on the implementation, either this did not solve the problem or it became effectively a copy constructor, reintroducing the related problems.</li><li><strong>Smart pointers.</strong> Then I realized it might be solved by using smart pointers to the wrapper instead of references, as this removes the need to maintain a central copy.</li><li><strong>Wrapping a smart pointer.</strong> Or I could wrap a smart pointer to the data instead of a raw pointer. This makes the implementation of the wrapper a little bit more complicated, but also makes it easier to use, giving the classes using it a cleaner interface.</li></ul><p>My attempt at the second smart pointer solution applied to the example above:</p><pre><code>#include &lt;library&gt;
+
+class Deleter {
+public:
+    void operator()(lib_type* p) const {
+        library_free(p);
+    }
+};
+
+class Wrapper {
+private:
+    shared_ptr&lt;lib_type&gt; data;
+public:
+    Wrapper() : data(library_new(), Deleter()) {
+    }
+    Wrapper(const Wrapper&amp; orig) : data(orig.data) {
+    }
+    ~Wrapper() {
+    }
+    const lib_type* getData() const {
+        return *data;
+    }
+    /* ... */
+    /* Lots of functions for using the wrapped object */
+};
+</code></pre><p><strong>Now for the concrete question:</strong> is this a good solution? Or are there other, perhaps better solutions?</p><p>I am particularly worried about the getData implementation; whether I should return a copy of the shared pointer or a naked pointer and why.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I think these implementations are reasonable and a generally good solution. <strong>Adding an appropriate move constructor and move assignment may help deal with your copy concerns</strong> - the default should be appropriate with the shared wrapper.</p><p>Some may argue (or advise) that you do not need to wrap the Standard Library facilities that you use here; whilst this is true, the semantics of the <code>getData()</code> function may be quite specific for your target code - <strong>using the library facility or wrapping it is really a design tradeoff</strong>.</p><p>You may need <em>a few tweaks on the assignment operators</em>; and possibly be more explicit on the other special member functions (I would favour this here - it makes the intent of the code clearer). By way of example;</p><pre><code>#include &lt;library&gt;
+
+class UniqueWrapper {
+private:
+    lib_type* data;
+public:
+    UniqueWrapper() : data(library_new()) {}
+    UniqueWrapper(const UniqueWrapper&amp;) = delete;
+    UniqueWrapper&amp; operator=(const UniqueWrapper&amp;) = delete;
+    UniqueWrapper(UniqueWrapper&amp;&amp;) = delete;
+    UniqueWrapper&amp; operator=(UniqueWrapper&amp;&amp;) = delete;
+
+    ~UniqueWrapper() {
+        library_free(data);
+    }
+    const lib_type* getData() const {
+        return data;
+    }
+};
+</code></pre><p>And as a shared wrapper;</p><pre><code>#include &lt;library&gt;
+
+class Deleter {
+public:
+    void operator()(lib_type* p) const {
+        library_free(p);
+    }
+};
+
+class SharedWrapper {
+private:
+    shared_ptr&lt;lib_type&gt; data;
+public:
+    SharedWrapper() : data(library_new(), Deleter()) {}
+
+    SharedWrapper(const SharedWrapper&amp; orig) = default;
+    SharedWrapper&amp; operator=(const SharedWrapper&amp; orig) = default;
+    SharedWrapper(SharedWrapper&amp;&amp; orig) = default;
+    SharedWrapper&amp; operator=(SharedWrapper&amp;&amp; orig) = default;
+
+    ~SharedWrapper() = default;
+
+    const lib_type* getData() const {
+        return data.get(); // a reference return could also be used.
+    }
+    const lib_type&amp; getDataAlt() const {
+        // alternative for a reference
+        return *data;
+    }
+};
+</code></pre><p>On your last question;</p><blockquote><p>I am particularly worried about the getData implementation; whether I should return a copy of the shared pointer or a naked pointer and why?</p></blockquote><p>When you expose some of the internals of an object, you give up some control over how that data is used - essentially this is not a bad thing, you just need to bear that in mind.</p><p>Having said that, there are ways you can make the code easy to use properly and hard to use incorrectly. Returning a <code>const</code> in this case would probably be advised, since the method is <code>const</code> - it is saying to the client of your code, don&#39;t change it. If changes are to be allowed, then a non-<code>const</code> version is also required.</p><p>The wrapper class you have is there to manage the resource, so I would advise returning a reference (hence for observation) over a pointer; a pointer can be a <code>nullptr</code> so if there is an &#34;optional&#34; nature to the value, a <code>nullptr</code> pointer can be used to indicate that.</p><p>If the shared and const-ness of the return type is to be maintained, David Hammen&#39;s solution of <code>shared_ptr&lt;const lib_type&gt;</code> is neat.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../object-oriented-in-c-is-it-a-reflection-of-poor-software-design-if-objects-are-deleted-manually/'>Object-oriented &#8211; In C++, is it a reflection of poor software design if objects are deleted manually</a></li><li class="list-group-item"><a href='../c-good-design-pattern-for-a-c-wrapper-around-a-c-object/'>C++ &#8211; Good design pattern for a c++ wrapper around a c object</a></li><li class="list-group-item"><a href='../java-why-cant-java-c-implement-raii/'>Java &#8211; Why can&#8217;t Java/C# implement RAII</a></li><li class="list-group-item"><a href='../c-use-of-raw-pointer-of-stdvector/'>C++ &#8211; Use of raw pointer of std::vector</a></li><li class="list-group-item"><a href='../c-should-class-own-or-observe-its-dependencies/'>C++: Should class own or observe its dependencies</a></li><li class="list-group-item"><a href='../c-how-to-pass-a-mock-as-stdunique_ptr-to-class-under-test/'>C++ &#8211; How to pass a mock as std::unique_ptr to Class under test</a></li><li class="list-group-item"><a href='../c-the-safest-practice-in-handling-qwidget-pointer-lifespan-in-a-qobject-oriented-environment/'>C++ &#8211;  the safest practice in handling QWidget pointer lifespan in a QObject oriented environment</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

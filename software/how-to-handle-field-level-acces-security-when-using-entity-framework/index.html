@@ -1,0 +1,113 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>How to handle field level Acces Security when using Entity Framework &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1077432 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1077432" class="post-1077432 software type-software status-publish hentry category-software tag-entity-framework tag-sql-server tag-wcf"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">How to handle field level Acces Security when using Entity Framework</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">entity-framework</span><span class="mr-2 badge badge-info">sql server</span><span class="mr-2 badge badge-warning">wcf</span></p><div class="entry-content"><p>Scenario: a large existing system (~300 tables, 500 stored procs, 200 views and a code base of several 100k lines) with most security level stuff in stored procedures needs to be refactored (for maintainability reasons and just availability of skills more will likely be moving to the C# layer, as well as we are hoping for performance since we&#39;ll be able to better control what gets pulled when better).</p><p>Entity Framework is something we are seriously considering to make things more easily extensible (inheriting the backend schema from a base class for example without having to track down a massive join yourself each time).</p><p>Question: how do you handle security with Entity Framework? The examples I&#39;ve seen where just how to get your model/data model to handle service wide security (tokens for can this guy login? types of things). How can you say a normal user can see these 3 fields on a class but an admin can see these 10? These fields could be logically other classes tables (eg. a particular customers orders). How about things like &#34;this post is read&#34;? Do you just add a list of &#34;haveRead&#34; people to the class or is there a smarter way to get EF to return different versions of the same object depending on who you are? Is there a way to get EF to do this for you without needed a lot of logic in stored procs? If not how do you manage performance (say a person can see a single object and you hit the model for a list of objects then do the filtering higher up in C# meaning you might be getting 1000&#39;s of items but only passing on 1 to the client). Can you lazy load individual fields so that if only weak users are making requests all the admin fields don&#39;t get pulled over from the database?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I have similar problem: I have several users with different permissions. Some of them can do everything and some of them can select/update only certain columns in tables. The solution I have found is the using of <code>OnModelCreating</code> method.</p><p>Now I&#39;d like to explain the general logic. I have database with users who are authenticated by SQL login. These users are mapped to one of custom database roles, and these roles, in their turn, are granted permissions. If you use Windows Authentication, there&#39;s really no difference for code since the idea would be the same: you would create Windows Groups, map your users to those groups and, finally, grant permissions to groups.</p><p>The core of this idea is <code>Ignore</code> method of <code>EntityTypeConfiguration&lt;T&gt;</code> used in <code>OnModelCreating</code> method (which you override in your custom context class). This method lets us ignore the columns in entities which won&#39;t be used by context. So, you should set some condition which branches to code with filtering:</p><pre><code>protected override void OnModelCreating(DbModelBuilder modelBuilder)
+{
+    // Get the entity to which we want to apply filter
+    var detailEntity = modelBuilder.Entity&lt;Detail&gt;();
+
+    // Check the condtion
+    if (someCondition)
+    {
+        // If condition is met, these two properties will be ignored by context.
+        // From now on, these properties will get their default values
+        // when selecting data from database:
+        // for numeric types - zero;
+        // for reference types - null.
+        detailEntity.Ignore(entity =&gt; entity.Price);
+        detailEntity.Ignore(entity =&gt; entity.Discount);
+    }
+}
+</code></pre><p>The condition for filtering is the name of Database Role in SQL Server (if you use SQL Login) or Windows Group the user belongs to (if you use Windows Authentication).</p><p><strong>1. Windows Groups</strong></p><p>For Windows Groups it&#39;s easy - just fetch all groups the user belongs to and compare it to the one you need. Here&#39;s helper class which would fetch user&#39;s Windows Groups and check whether he belongs to the group passed as parameter:</p><pre><code>static class User
+{
+    internal static bool IsInGroup(string groupName)
+    {
+        return GetWindowsGroups().Any(g =&gt; g.ToLower() == groupName.ToLower());
+    }
+
+    internal static List&lt;string&gt; GetWindowsGroups()
+    {
+        List&lt;string&gt; groups = new List&lt;string&gt;();
+        WindowsIdentity user = WindowsIdentity.GetCurrent();
+        user.Groups.ToList().ForEach(ir =&gt;
+        {
+            try
+            {
+                IdentityReference irt = ir.Translate(typeof(NTAccount));
+                groups.Add(irt.Value);
+            }
+            catch { /* just ignore */ }
+        });
+        return groups;
+    }
+}
+</code></pre><p>Now we can use it in <code>OnModelCreating</code>:</p><pre><code>protected override void OnModelCreating(DbModelBuilder modelBuilder)
+{
+    var detailEntity = modelBuilder.Entity&lt;Detail&gt;();
+    if (User.IsInGroup(&#34;DB_OPERATOR&#34;))
+    {
+        // Fully ignore properties in model
+        detailEntity.Ignore(entity =&gt; entity.Price);
+        detailEntity.Ignore(entity =&gt; entity.Discount);
+    }
+}
+</code></pre><p>Now any selection from Detail table will not select these two properties (although, as I said earlier, you <em>can</em> use them in your entity class - they just will be initialized to their default values, but changes to them won&#39;t propagate to database).</p><p><strong>2. SQL Logins</strong></p><p>With SQL Logins, the user&#39;s permissions depend on his database role, so you have to obtain it before any interaction with context. Here&#39;s where things become a bit complicated. Before going further, first, I will use <code>dbo.GetUserRole</code> stored procedure which just fetches a single value - role a user belongs to:</p><pre><code>CREATE PROCEDURE dbo.GetUserRole
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT dp.[name] --, us.[name]
+    FROM sys.sysusers AS us
+    RIGHT JOIN sys.database_role_members AS rm ON us.uid = rm.member_principal_id
+          JOIN sys.database_principals AS dp ON rm.role_principal_id =  dp.principal_id
+    WHERE us.name = CURRENT_USER;
+END;
+</code></pre><p>Second, I will add static <code>Role</code> property indicating user&#39;s database role:</p><pre><code>class TestContext : DbContext
+{
+    internal static string Role { get; private set; }
+}
+</code></pre><p>Now there&#39;s one caveat that awaits us: <strong>You can&#39;t fetch role inside <code>OnModelCreating</code> method</strong>.</p><pre><code>protected override void OnModelCreating(DbModelBuilder modelBuilder)
+{
+    Role = base.Database.SqlQuery&lt;string&gt;(&#34;dbo.GetUserRole&#34;, new object[] { }).First();
+    var detailEntity = modelBuilder.Entity&lt;Detail&gt;();
+    if (Role == &#34;operator&#34;)
+    {
+        detailEntity.Ignore(entity =&gt; entity.Price);
+        detailEntity.Ignore(entity =&gt; entity.Discount);
+    }
+}
+</code></pre><p>Just because EF will throw an exception:</p><blockquote><p>The context cannot be used while the model is being created. This exception may be thrown <strong>if the context is used inside the <code>OnModelCreating</code> method</strong> or if the same context instance is accessed by multiple threads concurrently. Note that instance members of <code>DbContext</code> and related classes are not guaranteed to be thread safe.</p></blockquote><p>Well, if you can&#39;t use context, then we can use context&#39;s <code>DbConnection</code> directly from constructor:</p><pre><code>class TestContext : DbContext
+{
+    public DbSet&lt;Detail&gt; Details { get; set; }
+    internal static string Role { get; private set; }
+
+    public TestContext(string nameOrConnectionString) : base(nameOrConnectionString)
+    {
+        var conn = base.Database.Connection;
+        conn.Open();
+        using (var comm = conn.CreateCommand())
+        {
+            comm.CommandText = &#34;dbo.GetUserRole&#34;;
+            comm.CommandType = CommandType.StoredProcedure;
+            Role = comm.ExecuteScalar() as string;
+        }
+        conn.Close();
+    }
+}
+</code></pre><p>So, for now we have the following. The <code>OnModelCreating</code> is called in one of two cases:</p><p>1) When you call <code>DbContext.Database.Initialize</code> method.</p><p>2) When you make a query against database (in this case <code>Database.Initialize</code> runs implicitly).</p><p>As a side note, the <a href="https://msdn.microsoft.com/en-us/library/system.data.entity.dbcontext.onmodelcreating(v=vs.113).aspx?f=255&amp;MSPPError=-2147217396" rel="nofollow noreferrer">documentation</a> says:</p><blockquote><p>This method is called only once when the first instance of a derived context is created.</p></blockquote><p>However, this is not true.</p><p>So, the solution is to use context&#39;s connection and request a role. This:</p><p>1) must be done before any query or <code>Database.Initialize</code> call</p><p>or</p><p>2) can be done in context&#39;s constructor.</p><p>Now when we have a role, we can use it in our code. I chose <code>String</code> type for storing a role, but you can also use enumeration for convenience:</p><pre><code>enum Role
+{
+    Admin,
+    Regular,
+    Operator
+}
+</code></pre><p>I don&#39;t know whether this pattern I chose is correct, but I haven&#39;t found any info over this theme - and I&#39;m surprised, because in reality this is how databases are designed in mind - with granting different permissions to different users. So, I hope this will help you.</p><p>Good luck!</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../is-the-entity-framework-appropriate-when-all-you-do-is-insert-records-in-bulk/'>Is the Entity Framework appropriate when all you do is insert records in bulk</a></li><li class="list-group-item"><a href='../entity-framework-with-large-systems-how-to-divide-models/'>Entity Framework with large systems &#8211; how to divide models</a></li><li class="list-group-item"><a href='../database-how-to-read-the-entity-framework-model-and-validate-it-against-a-given-connection/'>Database &#8211; How to read the Entity Framework Model and validate it against a given connection</a></li><li class="list-group-item"><a href='../design-how-to-model-users-accounts-in-asp-mvc-framework-with-entity-framework-using-code-first-approach/'>Design &#8211; How to model users accounts in ASP MVC Framework with Entity Framework using code-first approach</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

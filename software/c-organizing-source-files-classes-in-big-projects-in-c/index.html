@@ -1,0 +1,183 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C++ &#8211; Organizing Source files/classes in big projects in C++ &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1075367 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1075367" class="post-1075367 software type-software status-publish hentry category-software tag-c tag-project-structure"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C++ &#8211; Organizing Source files/classes in big projects in C++</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">project-structure</span></p><div class="entry-content"><p>I&#39;m currently writing a bigger program in C++ and have reached a point were I get problems with the organization. I wonder if namespaces are a way out.</p><p>I will try to explain what the program does and show a simplified example of the mess I&#39;m in with it.</p><p>Part of the program configures so-called Devices. Each Device needs to be configured differently.</p><p>So basically the following is done:</p><ul><li><p>Read in existing Devices. The read devices needs to be analyzed to determine which Device type they are. The <code>class Devices</code> does this. It sorts the Devices into the types <code>Device_type10_valve</code> <code>Device_type20_drive</code> and so on&#8230;</p></li><li><p>From another source I get raw data which needs to be analyzed and gets collected into the right device type. I manage all this in <code>class Devices_config_data_collection</code>.</p></li><li><p>Why do I not configure them directly in the Devices? Because I need to collect several of these data inputs together since they can have dependencies with each other (e.g. two containers of <code>Device_config_data_type10_valve</code> get merged into one <code>Device_config_data_type10_valve</code>).</p></li><li><p>The Data of <code>Devices_config_data_collection</code> gets added to the <code>Devices</code></p></li><li><p>Devices with the configured data get written out to the source with the configured data.</p></li></ul><p>To achieve this I have the following class hierarchy in pseudo C++ code</p><pre><code>namespace Application_name {    // for all the methods in the program
+
+    //Device_config_data_type_base.h   // Device_config_data_type_base.cpp
+    class Device_config_data_type_base {
+        //..
+    };
+
+    //Device_config_data_type10_valve.h   // Device_config_data_type10_valve.cpp
+    class Device_config_data_type10_valve : public Device_config_data_type_base {
+        //...
+    };
+
+    //Device_config_data_type20_drive.h   // Device_config_data_type20_drive_valve.cpp
+
+    class Device_config_data_type20_drive : public Device_config_data_type_base {
+        //...
+    };
+
+    //.... more derived classes like this from Device_config_data_base
+
+
+    // Devices_data_collection.h    // Devices_data_collection.cpp
+    class Devices_config_data_collection {
+    public:
+        // put in raw data and make a collection of config data
+    private:
+        struct data {
+            std::vector&lt;Device_config_data_type10_valve&gt; type10;
+            std::vector&lt;Device_config_data_type20_drive&gt; type20;
+            //... and more
+        };
+
+        // more stuff also sorts in valid and invalid inputs
+    };
+
+
+    // Devices_type_base.h // Devices_type_base.cpp
+    class Device_type_base {
+        //..
+    };
+
+    // Device_type10_valve.h // Device_type10_valve.cpp
+    class Device_type10_valve : public Device_type_base {
+        //..
+
+        void insert_config_data(const Device_config_data_type10_valve&amp; data);
+    private:
+        // part of the private data is the config data
+
+        Device_config_data_type10_valve config_data;
+    };
+
+    // Device_type20_drive.h // Device_type20_drive.cpp
+    class Device_type20_drive : public Device_type_base {
+        //..
+        void insert_config_data(const Device_config_data_type20_drive&amp; data);
+    private:
+        Device_config_data_type20_drive config_data;
+    };
+
+    //.... more derived classes like this
+
+    // Devices.h // Devices.cpp
+    class Devices {
+    public:
+        // Reads in existing Devices from a source
+
+        // providing a function to add the data collection to existing Devices
+
+        // writing out the configured devices back to the source
+        void add_data(const Devices_config_data_collection&amp; collection);
+    private:
+        struct data {
+            std::vector&lt;Device_type10_valve&gt; type10;
+            std::vector&lt;Device_type20_drive&gt; type20;
+            //... and more
+        };
+    };
+
+    // a lot more parts of the programm with similiar complexity but they are not devices
+}
+</code></pre><p>I usually put each class in its own h-file and cpp-file with the name like the class name.<br /> The problem I have with this is that the class and file names get very long which doesn&#39;t make the code very nice to read.</p><p>So I was thinking of adding sub namespaces. One for all Devices to isolate this part from the rest of the program. There are more parts which have nothing to do with devices. And another one for the data classes. Then I could shorten the class names.</p><p>Which looks like this in pseudo C++ code:</p><pre><code>namespace Application_name {    // for all the methods in the program
+
+    namespace Device {
+
+
+        namespace Config_data {
+
+            //Device_config_data_type_base.h   // Device_config_data_type_base.cpp
+            class Type_base {
+                //..
+            };
+
+            //Device_config_data_type10_valve.h   // Device_config_data_type10_valve.cpp
+            class Type10_valve : public Type_base {
+                //...
+            };
+
+            //Device_config_data_type20_drive.h   // Device_config_data_type20_drive_valve.cpp
+
+            class Type20_drive : public Type_base {
+                //...
+            };
+
+            //.... more derived classes like this from Device_config_data_base
+
+        }
+
+        // Devices_data_collection.h    // Devices_data_collection.cpp
+        class Collection {
+        public:
+            // put in raw data and make a collection of config data
+        private:
+            struct data {
+                std::vector&lt;Config_data::Type10_valve&gt; type10;
+                std::vector&lt;Config_data::Type20_drive&gt; type20;
+                //... and more
+            };
+
+            // more stuff also sorts in valid and invalid inputs
+        };
+
+        // Devices_type_base.h // Devices_type_base.cpp
+        class Type_base {
+            //..
+        };
+
+        // Device_type10_valve.h // Device_type10_valve.cpp
+        class Type10_valve : public Type_base {
+            //..
+
+            void insert_config_data(const Config_data::Type10_valve&amp; data);
+        private:
+            // part of the private data is the config data
+
+            Config_data::Type10_valve config_data;
+        };
+
+        // Device_type20_drive.h // Device_type20_drive.cpp
+        class Type20_drive : public Type_base {
+            //..
+            void insert_config_data(const Config_data::Type20_drive&amp; data);
+        private:
+            Config_data::Type20_drive config_data;
+        };
+
+        //.... more derived classes like this
+
+
+    }
+
+    // Devices.h // Devices.cpp
+    class Devices {
+    public:
+        // Reads in existing Devices from a source
+        // providing a function to add the data collection to existing Devices
+        // writing out the configured devices back to the source
+        void add_data(const Devices_config_data_collection&amp; collection);
+    private:
+        struct data {
+            std::vector&lt;Device_type10_valve&gt; type10;
+            std::vector&lt;Device_type20_drive&gt; type20;
+            //... and more
+        };
+    };
+
+    // a lot more parts of the program with similar complexity but they are not devices
+}
+</code></pre><p>Note now I have a class <code>Devices::type10_valve</code> and <code>Devices::Config_data::type10_valve</code>.</p><p>I wonder if this is a good practice? Also now comes the problem with the cpp and h files. How to handle them now to represent the class names? If I shorten them I have a name clash with <code>Devices::type10_valve</code> and `Devices::Config_data::type10_valve because they are both type10_valve.cpp/h.</p><p>Is it a good practice to put them into subfolders on the hard disk and also refer the folders in the includes?</p><p>Please let me know what you think, what are your experiences.</p><p>Note I&#39;m using Visual Studio 2017. Any suggestions for organizing issues like this specifically for it are also welcome</p><p>If you need more details let me know.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Namespaces are a very good way to organize your (larger code bases) code.</p><p>And like you indicated, having the filesystem file structure mimic the namespaces in some systematic way, is also a very good practice.</p><p>The key to doing this well lies in coming up with the right organizational decomposition, which of course is intimately tied to your particular application.</p><p>But what you offered as an example looked right on to me.</p><p>An example of a large class library using this sort of organizaitonal scheme would be <a href="https://github.com/SophistSolutions/Stroika/blob/V2.1-Dev/Library/Sources/Stroika/Foundation/Streams/SharedMemoryStream.h" rel="noreferrer">Stroika (shared stream class)</a></p><p>One other slight hint, I wouldn&#39;t use a name like &#39;global_namespace&#39;. I would there - use the name of your application, or project which all the source code is for (note - C++ has something called the global namespace and it means something different than yours).</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-are-utility-classes-with-nothing-but-static-members-an-anti-pattern-in-c/'>C++ &#8211; Are utility classes with nothing but static members an anti-pattern in C++</a></li><li class="list-group-item"><a href='../c-abstract-base-classes-and-copy-construction-rules-of-thumb/'>C++ &#8211; Abstract base classes and copy construction, rules of thumb</a></li><li class="list-group-item"><a href='../c-how-to-store-various-sized-values-in-a-vector/'>C++ &#8211; How to store various sized values in a vector</a></li><li class="list-group-item"><a href='../object-oriented-handling-different-parameters-for-derived-classes/'>Object-oriented &#8211; Handling Different Parameters for Derived Classes</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

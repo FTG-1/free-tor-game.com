@@ -1,0 +1,81 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Avoiding closures &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1083283 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1083283" class="post-1083283 software type-software status-publish hentry category-software tag-c tag-delegates tag-net"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Avoiding closures</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">delegates</span><span class="mr-2 badge badge-warning">net</span></p><div class="entry-content"><p>I have a data structure in the form of a tree.  Each node represents a cardboard box.  The boxes can contain child boxes.</p><pre><code>public class CardboardBox
+{
+   public int Id {get; set;}
+   public int ParentBoxId {get; set;}
+
+   // [...]
+}
+</code></pre><p>I&#39;m storing those objects in a flat list rather than a tree structure:</p><pre><code>public class CardboardBoxList : List&lt;CardboardBox&gt;
+{
+}
+</code></pre><p>I want to be able to traverse the tree so I made a &#39;for each&#39; delgate like this:</p><pre><code>public class CardboardBox
+{
+   // [...]
+
+   public delegate void ForEachDelegate(int childId);
+
+   public void ForEachChildBox(CardboardBoxList fullListOfBoxes, ForEachDelegate forEachDelegate)
+   {
+      List childIdList = fullListOfBoxes.GetChildIdList(this.Id);
+
+      foreach(int childId in childIdList)
+      {
+         forEachDelegate(childId);
+      }
+   }
+}
+</code></pre><p>This is all good because now I can easily recurse through the box-tree with:</p><pre><code>someBox.ForEachChild(fullListOfBoxes, childId =&gt;
+{
+   CardboardBox currentBox = fullListOfBoxes.GetById(childId);
+
+   // [... do something with it ...]
+};
+</code></pre><p>The problem is, I have code that wants to go through the boxes and build some other data structure.  And I need to have some variables outside the delegate call like this:</p><pre><code>NewDataStructure newDataStructure = new NewDataStructure();
+
+int currentParentNodeId = newDataStructure.AddRootNode();
+
+someBox.ForEachChild(fullListOfBoxes, childId =&gt;
+{
+   CardboardBox currentBox = fullListOfBoxes.GetById(childId);
+
+   NewDataStructureNode newNode = new NewDataStructureNode();
+   newNode.Color = currentBox.Color;
+
+   newDataStructure.AddNodeToParent(newNode, currentParentNodeId);
+};
+</code></pre><p>So it needs to create a closure for <code>currentParentNodeId</code> as it builds the new tree structure.  But I want to try to avoid using closures if possible, just to keep the code simple.</p><p>I realize closures just come with the territory when using delegates.  In a way it is kind of the point of using delegates.  You want to have an anonymous method that interacts with the code around it, rather than having to define a whole new method like the old days.</p><p>I just wonder if there is a better way here.  The CardboardBox tree data structure will be used extensively in this code and will sometimes need closures on all types of different variables, so I can&#39;t just add a new parameter to the delegate type.  I would need to create a new delegate and a new <code>ForEachChild</code> method for each delegate type.</p><p>I could try adding a generic parameter to the delegate and just pass in a kind of context parameter, but it still doesn&#39;t feel clean.  In the end I&#39;m trying to avoid having any closures if possible but I am not sure if I am trying to hard.</p><p>Please note this code is all paraphrased and the (probably lame) example of CardboardBox is really a container-type of object in the real code.  The NewDataStructure is also a tree in the real code but it does not necessarily have the same structure as the tree it is built from.</p><p>I posted this question on StackOverflow yesterday but the question was deemed too vague, understandably.  I have tried to re-write it more clearly but I admit it is still fairly unclear.  I have also done a fair bit of searching over the last few days and reading up about delegates, anonymous methods and closures which has been helpful.  But I still don&#39;t feel comfortable just using closures willy-nilly.  So I&#39;d appreciate any advice or just opinions on all this.</p><p>Disclaimer: I have used c# for many years so if there are any syntax errors I don&#39;t need you to point those out.  I am paraphrasing the real code off the top of my head.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Why don&#39;t you design the interface of <code>CardBoardBox</code> utilizing an <code>IEnumerable</code>:</p><pre><code>public class CardboardBox
+{
+   // [...]
+
+   public IEnumerable&lt;int&gt; GetChildBoxIDs(CardboardBoxList fullListOfBoxes)
+   {
+      List childIdList = fullListOfBoxes.GetChildIdList(this.Id);
+
+      foreach(int childId in childIdList)
+      {
+         yield return childId;
+      }
+      // remark: this function could be arbitrarily more complex
+   }
+}
+</code></pre><p>In your example, the calling code then looks like this:</p><pre><code>foreach(var childId in someBox.GetChildBoxIDs(fullListOfBoxes))
+{
+    CardboardBox currentBox = fullListOfBoxes.GetById(childId);
+
+  // [... do something with it ...]
+}
+</code></pre><p>So the caller does not need to provide an anonymous function any more.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-template-method-within-one-class-without-subclasses-or-inheritance/'>Java &#8211; Template method within one class without subclasses or inheritance</a></li><li class="list-group-item"><a href='../object-oriented-do-delegates-defy-oop/'>Object-oriented &#8211; Do delegates defy OOP</a></li><li class="list-group-item"><a href='../c-assert-equality-in-mstest-when-types-may-differ/'>C# &#8211; Assert equality in mstest when types may differ</a></li><li class="list-group-item"><a href='../c-delegates-are-immutable-but-why-does-that-matter/'>C# Delegates are immutable &#8211; but why does that matter</a></li><li class="list-group-item"><a href='../c-passing-anonymous-type-to-a-bound-control/'>C# &#8211; Passing Anonymous Type to a Bound Control</a></li><li class="list-group-item"><a href='../c-avoiding-multiple-calls-to-sql-while-being-modular/'>C# &#8211; avoiding multiple calls to SQL while being modular</a></li><li class="list-group-item"><a href='../c-why-arent-properties-implicitly-convertible-to-delegates/'>C# &#8211; Why aren&#8217;t properties implicitly convertible to delegates</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,73 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C++ &#8211; Error handling in C++ &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1077998 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1077998" class="post-1077998 software type-software status-publish hentry category-software tag-c tag-error-handling tag-errors tag-exceptions"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C++ &#8211; Error handling in C++</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">error handling</span><span class="mr-2 badge badge-warning">errors</span><span class="mr-2 badge badge-primary">exceptions</span></p><div class="entry-content"><p>So, in the recent weeks I delved into C++ programming, and I programmed some things in SDL. Doing so, you always have to deal with a lot of (<em>ugly</em>) C++ code, which looks more like C than C++.<br /> One thing I noticed I when programming with SDL as opposed to college programming, that I do a lot of procedural programming. The reason for this is, that most sample SDL code I look at is structured like this, e.g.</p><pre><code>bool init(…)
+{
+    bool success = true;
+    thing_A = make_thing_A();
+    if (thing_A.is_valid() == false
+    {
+        success = false;
+        std::cout &lt;&lt; &#34;Something went wrong&#34; &lt;&lt; std::endl;
+    }
+    …
+    return success;
+}
+</code></pre><p>&#8230;like this. The cleanup would occur in the caller.<br /> However this only works with functions, that don&#39;t need to return other variables otherwise. And this creates an ugly interface, where you never, if you can write something like <code>if (!init())</code>, which makes you having to consult the documentation.<br /> I never know if this is proper programming practice. Another approach would be to:</p><pre><code>void init(…)
+{
+    try
+    {
+        thing_A = make_thing_A();
+        if (thing_A.is_valid() == false
+        {
+            throw ;
+        }
+        …
+    catch (std::exception &amp;e)
+    {
+        std::cout &lt;&lt; &#34;Something went wrong&#34; &lt;&lt; std::endl;
+         cleanup();
+    }
+}
+</code></pre><p>But then I read, I shouldn&#39;t put this <code>try-catch-routine</code> into the function, but rather into the caller:</p><pre><code>void init(…)
+{
+
+    thing_A = make_thing_A();
+    if (thing_A.is_valid() == false
+    {
+        throw ;
+    }
+}
+
+int main(void)
+{
+    try
+    {
+        init(…);
+    }
+    catch (std::exception &amp;e)
+    {
+        std::cout &lt;&lt; &#34;Something went wrong&#34; &lt;&lt; std::endl;
+        cleanup();
+    }
+}
+</code></pre><p>At the moment this is my number one issue, when writing software, I just don&#39;t what to do. I think the cleanest solution is the second, because it encapsulates the complete logic into the callee and it implements DRY, because you don&#39;t have to put the cleanup logic into every caller. Is that right? <strike>I&#39;ve never heard an absolute opinion on this.</strike></p><p>EDIT: I&#39;m not necessarily specifically talking about SDL2, but more generally. E.g. I know there is a consensus, that you should prefer <code>std::unique_ptr</code> over <code>std::auto_ptr</code>, but when dealing with error handling I see so many approaches: <code>errno</code>, return values, exceptions, booleans, but I don&#39;t which one is the <em>go-to</em> approach, which one you should avoid, in which case it might be a good idea to do approach XYZ, etc.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>There are two methods of dealing with errors that I am aware of.</p><ol><li>Through the return value of a function.</li><li>By raising exceptions.</li></ol><p>They can be mixed when adequate care is taken into designing your application.</p><p>There are pros and cons to both approaches.</p><h2>Dealing with error as a return value</h2><p>The return type of the function can be <code>bool</code> where a return value of <code>true</code> indicates success and <code>false</code> indicates failure.</p><p>You can also use <code>int</code> as return type where a return value of <code>0</code> would indicate success and any non-zero value would indicate failure. This gives a bit more flexibility to indicate the type of error. The returned value could be an error code. You could map that code to an error string and hope to inform the user about the error in a more meaningful way.</p><h3>Pros:</h3><p>The pros of using the return value as an error code is that it is easy to debug the code by just inspecting the code. It is easier to follow the flow of execution.</p><h3>Cons:</h3><p>The cons of using the return value as an error code is that every caller must deal with the return value. If a call ignores a return value, it is a source of a bug. They should not ignore that call since they might not have gotten what they hoped to get.</p><h2>Dealing with error by raising an exception</h2><h3>Pros:</h3><p>Dealing with error by raising an exception opens up a whole lot more flexibility than you could expect from returning an error code.</p><p>You could throw any type of object. It could be a fundamental type, a <code>std::string</code>, any of exceptions defined in the standard library, or any one of your classes.</p><p>Your code can be simpler. You don&#39;t have to worry about catching exceptions everywhere. You could decide the level at which exceptions must be dealt with.</p><h3>Cons:</h3><p>The price of the added flexibility is that your code must be prepared to deal with any exceptions that could get thrown. Also, a lot more care must go into deciding when and how to deal with the exceptions.</p><p>You have to be always cognizant of the fact that any uncaught exception will terminate your program.</p><h2>Concluding Remarks</h2><p>If you are working in a team, make sure that the method you choose seems appropriate to other members of your team.</p><p>If you are working alone in a project, do what makes most sense to you.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/php-mvc-error-handling-view-display-and-user-permissions/'>PHP MVC error handling, view display and user permissions</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/java-my-value-checker-function-needs-to-return-both-a-boolean-and-a-message/'>Java &#8211; My value checker function needs to return both a boolean and a message</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/python-functional-style-exception-handling/'>Python &#8211; Functional style exception handling</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-mapping-exceptions-to-error-response/'>C# &#8211; Mapping exceptions to error response</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-exceptions-error-codes-and-discriminated-unions/'>C# &#8211; Exceptions, error codes and discriminated unions</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,186 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; How to implement an opaque handle in C# &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1083917 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1083917" class="post-1083917 software type-software status-publish hentry category-software tag-c tag-polymorphism"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; How to implement an opaque handle in C#</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">polymorphism</span></p><div class="entry-content"><p>I&#39;m writing a library to be used by several applications.</p><p>Some interfaces which my library declares and uses, and which are implemented by the application, look something like this:</p><pre><code>interface IOpaqueHandle : IDisposable {}
+
+interface IPaintFactory
+{
+    IOpaqueHandle Create(string configData);
+}
+
+interface IPainter
+{
+    void Paint(IOpaqueHandle handle);
+}
+</code></pre><p>The <code>Create</code> method with <code>configData</code> parameter tells the application to allocate some resources and return a handle to those resources:</p><ul><li><p>My library doesn&#39;t know what types of resource are allocated by the application, nor exactly what methods those resources support.</p></li><li><p>The resources probably come from various 3rd-party application-specific library, known to the application but not known by my library.</p></li><li><p><code>Create</code> will be called multiple times with different parameter values, to allocate different resources each with their own <code>IOpaqueHandle</code> instance</p></li></ul><p>The <code>Paint</code> method is an example of telling the application to do something with a specified resource.</p><hr/><p>My question is, <strong>what&#39;s the best way to implement the handle-to-resource mapping in the application?</strong></p><p>For example, assuming that the application&#39;s resources are defined by a class named <code>Resources</code>, I can think of two ways to implement it.</p><ol><li><p>Using a subclass with an upcast:</p><pre><code>class Resource : IOpaqueHandle
+{
+    internal static Resource getResource(IOpaqueHandle handle)
+    {
+        return (Resource)handle;
+    }
+}
+</code></pre></li><li><p>Using a dictionary to map from the handle to the object:</p><pre><code>class Resource : IDisposable
+{
+    internal static Resource getResource(IOpaqueHandle handle)
+    {
+        return s_dictionary[handle];
+    }
+
+    class Handle : IOpaqueHandle
+    {
+        public void Dispose()
+        {
+            Resource resource = getResource(this);
+            resource.Dispose();
+            s_dictionary.Remove(this);
+        }
+    }
+
+    static Dictionary&lt;IOpaqueHandle, Resource&gt; s_dictionary =
+        new Dictionary&lt;IOpaqueHandle, Resource&gt;();
+
+    internal static IOpaqueHandle Create(string configData);
+    {
+        Handle handle = new Handle();
+        Resource resource = new Resource(configData);
+        s_dictionary.Add(handle, resource);
+        return handle;
+    }
+
+    Resource(string configData) { ... }
+}
+</code></pre></li></ol><p><strong>Is the subclass with an upcast simpler (to implement) and faster (at run-time) and therefore preferable?</strong></p><p><strong>Does the second solution have any advantages? It avoids an upcast, for what&#39;s that worth &#8212; is that good?</strong></p><hr/><p>(First edit)</p><p>You might suggest declaring <code>Paint</code> as a method of the handle interface &#8212;<br /> BUT that&#39;s not possible because of different lifetimes:</p><ul><li>An <code>IOpaqueHandle</code> is a long-lived object, e.g. created once at object startup</li><li>An <code>IPainter</code> is a short-lived object, e.g. a new one is created each time the O/S window needs repainting.</li></ul><p>A short-lived <code>IPainter</code> instance is created by the application and passed-in to my library, which calls its <code>Paint</code> method. The implementation of <code>IPainter</code> contains some short lived resources. The <code>Paint</code> method must combine the short-lived resources (contained in the IPainter) with the long-lived resources (contained in the handle).</p><p>Theoretically I could declare a method like this, instead of putting the <code>Paint</code> method in the <code>IPainter</code> interface:</p><pre><code>interface IOpaqueHandle
+{
+    // paint using short-lived resources contained in IPainter
+    void Paint(IPainter painter);
+}
+</code></pre><p>&#8230; but that amounts to the same problem, i.e. how to extract implementation-specific resources from the opaque <code>IPainter</code> interface.</p><hr/><p>(Second edit)</p><p>At the risk of making this question too long, here&#39;s some sample code.</p><p>The following code is in the library, in addition to the interfaces declared at the top.</p><pre><code>class Node
+{
+    internal readonly IOpaqueHandle handle;
+
+    // plus a lot of other data members
+    // e.g. to determine whether this node is visible and should be painted
+
+    internal Node(string configData, IPaintFactory factory)
+    {
+        // get the handle which we&#39;ll pass back to the application if we paint this node
+        handle = factory.Create(configData);
+    }
+
+    internal bool IsVisible { get { ... } }
+}
+
+// facade
+public class MyLibrary
+{
+    List&lt;Node&gt; nodes = new List&lt;Node&gt;();
+
+    // initialize data using config data,
+    // and using app-specific paint factory passed-in by application
+    public void Initialize(List&lt;string&gt; configStrings, IPaintFactory factory)
+    {
+        configStrings.ForEach(configData =&gt; nodes.Add(new Node(configData, factory)));
+    }
+
+    // plus a lot of other methods to manipulate the Nodes
+
+    // called from application when its window wants repainting
+    public void OnPaint(IPainter painter)
+    {
+        nodes.ForEach(node =&gt; { if (node.IsVisible) painter.Paint(node.handle); });
+    }
+}
+</code></pre><p>The above is a simplification. Because <code>Node</code> and <code>MyLibrary</code> are actually hundreds of classes, it wouldn&#39;t be convenient to wrap them all in a single generic class so that they share a common template parameter of type <code>T</code>.</p><p>The following code is in the application.<br /> All the types in the <code>Os</code> namespace belong to some library<br /> which the application is using and which my library doesn&#39;t know about.</p><pre><code>class Resource : IOpaqueHandle
+{
+    readonly Os.Font font;
+    readonly string text;
+
+    internal Resource(string configData) { ... }
+
+    // app-specific method using app-specific types
+    // which my library doesn&#39;t know about and which
+    // therefore isn&#39;t declared in the library&#39;s IOpaqueHandle interface
+    internal void GraphicalPaint(Os.Graphics graphics)
+    {
+        graphics.DrawText(this.font, this.text);
+    }
+}
+
+class PaintFactory : IPaintFactory
+{
+    public IOpaqueHandle Create(string configData)
+    {
+        return new Resource(configData);
+    }
+}
+
+class Painter : IPainter, IDisposable
+{
+    internal readonly Os.Graphics graphics;
+
+    internal Painter(Os.Graphics graphics)
+    {
+        this.graphics = graphics;
+    }
+
+    public void Dispose() { graphics.Dispose(); }
+
+    public void Paint(IOpaqueHandle handle)
+    {
+        // use magic in question to retrieve app-specific resource from opaque handle
+        Resource resource = (Resource)handle;
+
+        // invoke app-specific method to paint this resource
+        resource.GraphicalPaint(this.graphics);
+    }
+}
+
+class Main : Os.Window
+{
+    MyLibrary myLibrary = new MyLibrary();
+
+    void initialize(List&lt;string&gt; configStrings)
+    {
+        PaintFactory paintFactory = new PaintFactory();
+        myLibrary.Initialize(configStrings, paintFactory);
+    }
+
+    // plus other methods to poke the data in MyLibrary
+
+    // event handler called from Os when Window needs repainting
+    void onPaint(Os.Graphics graphics)
+    {
+        using (Painter painter = new Painter(graphics))
+        {
+            myLibrary.OnPaint(painter);
+        }
+    }
+}
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>The Plain answer is that any kind of mapping or up-casting is bad as it risks a run time error when it could otherwise be prevented by strongly typed classes.</p><p>Edit: OP included app code.</p><p>The solution is Generics, which allow you to specify a Type that your library has no knowledge of.</p><pre><code>IPaintFactory&lt;T&gt;
+{
+    IOpaqueHandle&lt;T&gt; Create(config);
+}
+
+IOpaqueHandle&lt;T&gt;
+{
+    T Resource {get;}
+}
+</code></pre><p>This allows the app to specific the type of resource underneath the handler. painter can then be:</p><pre><code>App.Painter : IPainter&lt;App.MyResource&gt;
+{
+    void Paint(IOpaqueHandle&lt;App.MyResource&gt; handle)
+    {
+        handle.Resource.MySecretPaintMethod(); 
+    }
+}
+</code></pre><p>In Your case the type you need to use but the library doesn&#39;t know about is <code>OS.Graphics</code>.</p><p>Because the library class itself has the method which needs this type <code>myLibrary.OnPaint</code> The library will need to be a generic type. The Generic type parameter propagates up to where this function is specified.</p><p>Possibly you could refactor so that some sub class of library has the OnPaint method, then you could limit the generics to that sub type.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-multiple-properties-methods-giving-the-same-result/'>C# &#8211; Multiple properties/methods giving the same result</a></li><li class="list-group-item"><a href='../c-design-pattern-how-to-inject-dependencies-into-a-command-pattern/'>C# &#8211; Design pattern: How to inject dependencies into a Command pattern</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

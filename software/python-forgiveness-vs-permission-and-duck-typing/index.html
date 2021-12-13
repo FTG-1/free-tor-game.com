@@ -1,0 +1,56 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Python Forgiveness vs. Permission and Duck Typing &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1068893 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1068893" class="post-1068893 software type-software status-publish hentry category-software tag-duck-typing tag-exceptions tag-python"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Python Forgiveness vs. Permission and Duck Typing</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">duck-typing</span><span class="mr-2 badge badge-info">exceptions</span><span class="mr-2 badge badge-warning">python</span></p><div class="entry-content"><p>In Python, I often hear that it is better to &#34;beg forgiveness&#34; (exception catching) instead of &#34;ask permission&#34; (type/condition checking).  In regards to enforcing duck typing in Python, is this</p><pre><code>try:
+    x = foo.bar
+except AttributeError:
+    pass
+else:
+    do(x)
+</code></pre><p>better or worse than</p><pre><code>if hasattr(foo, &#34;bar&#34;):
+    do(foo.bar)
+else:
+    pass
+</code></pre><p>in terms of performance, readability, &#34;pythonic&#34;, or some other important factor?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>It really depends on how often you think the exception is going to be thrown.</p><p>Both approaches are, in my opinion, equally valid, at least in terms of readability and pythonic-ness. But if 90% of your objects do <em>not</em> have the attribute <code>bar</code> you&#39;ll notice a distinct performance difference between the two approaches:</p><pre><code>&gt;&gt;&gt; import timeit
+&gt;&gt;&gt; def askforgiveness(foo=object()):
+...     try:
+...         x = foo.bar
+...     except AttributeError:
+...         pass
+... 
+&gt;&gt;&gt; def askpermission(foo=object()):
+...     if hasattr(foo, &#39;bar&#39;):
+...         x = foo.bar
+... 
+&gt;&gt;&gt; timeit.timeit(&#39;testfunc()&#39;, &#39;from __main__ import askforgiveness as testfunc&#39;)
+2.9459929466247559
+&gt;&gt;&gt; timeit.timeit(&#39;testfunc()&#39;, &#39;from __main__ import askpermission as testfunc&#39;)
+1.0396890640258789
+</code></pre><p>But if 90% of your objects <em>do</em> have the attribute, the tables have been turned:</p><pre><code>&gt;&gt;&gt; class Foo(object):
+...     bar = None
+... 
+&gt;&gt;&gt; foo = Foo()
+&gt;&gt;&gt; timeit.timeit(&#39;testfunc(foo)&#39;, &#39;from __main__ import askforgiveness as testfunc, foo&#39;)
+0.31336188316345215
+&gt;&gt;&gt; timeit.timeit(&#39;testfunc(foo)&#39;, &#39;from __main__ import askpermission as testfunc, foo&#39;)
+0.4864199161529541
+</code></pre><p>So, from a performance point of view, you need to pick the approach that works best for your circumstances.</p><p>In the end, some strategic use of the <a href="http://docs.python.org/2/library/timeit.html"><code>timeit</code> module</a> may be the most Pythonic thing you can do.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/object-oriented-is-duck-typing-a-subset-of-polymorphism/'>Object-oriented &#8211; Is duck typing a subset of polymorphism</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/python-duck-typing-data-validation-and-assertive-programming-in-python/'>Python &#8211; Duck typing, data validation and assertive programming in Python</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/python-if-foo-in-dict-vs-try-dictfoo/'>Python &#8211; &#8216;if foo in dict&#8217; vs &#8216;try: dict[foo]&#8217;</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/how-to-a-statically-typed-language-support-duck-typing/'>How to a statically typed language support duck typing</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/python-does-this-code-follow-duck-typing/'>Python &#8211; Does this code follow duck typing</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/javascript-how-to-use-duck-typing-in-javascript-without-always-checking-for-properties-and-methods/'>Javascript &#8211; How to use duck typing in javascript without always checking for properties and methods</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/type-inference-with-duck-typing-does-this-work-why-is-it-not-used/'>Type inference with duck typing &#8211; does this work? Why is it not used</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

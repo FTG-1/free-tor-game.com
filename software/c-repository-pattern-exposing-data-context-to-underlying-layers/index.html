@@ -1,0 +1,104 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Repository Pattern: Exposing Data Context to Underlying Layers &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1068908 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1068908" class="post-1068908 software type-software status-publish hentry category-software tag-c tag-entity-framework tag-repository"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Repository Pattern: Exposing Data Context to Underlying Layers</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">entity-framework</span><span class="mr-2 badge badge-warning">repository</span></p><div class="entry-content"><p>My team is in the process of updating a legacy project. We&#39;ve decided to incorporate the Repository Pattern along with <code>Entity Framework</code> in our Data Access layer. Below is a high-level view of this organization:</p><p><img src="../../../i.stack.imgur.com/ATCVY.png" alt="enter image description here"/></p><p><code>IRepository&lt;TEntity&gt;</code> is a generic interface used to perform common operations on an entity set:</p><pre><code>public interface IRepository&lt;TEntity&gt; where TEntity : class
+{
+    ObjectSet&lt;TEntity&gt; EntitySet { get; set; }
+
+    TEntity Get(object key);
+
+    void Insert(TEntity entity);
+
+    void Update(TEntity entity);
+
+    void Save();
+}
+</code></pre><p>For example if I have an <code>Employee</code> entity, I can create the <code>EmployeeRepository:IRepository&lt;Employee&gt;</code> object. The <code>DataFactory</code> class is then used as a wrapper object to take care of <code>ObjectContext</code> generation, disposal, and exception handling:</p><pre><code>public class DataFactory&lt;TContext, TEntity&gt; : IDisposable
+        where TContext : ObjectContext, new()
+        where TEntity : class
+{
+    private bool _disposed = false;
+    private TContext _context;
+    private IRepository&lt;TEntity&gt; _repository;
+
+    public DataFactory()
+    {
+        _context = new TContext();
+        IRepository&lt;TEntity&gt; repoistory;
+
+        bool isRepositoryFound = TryGetRepository(out repoistory);
+
+        if (!isRepositoryFound)
+        {
+            throw new InvalidOperationException(
+                string.Format(&#34;Unable to find repository of type {0}.&#34;, typeof(TEntity).FullName));
+        }
+
+        _repository = repoistory;
+    }
+
+    public DataFactory(TContext context, IRepository&lt;TEntity&gt; repository)
+    {
+        _context = context;
+        _repository = repository;
+    }
+
+    public void Do(Action&lt;TContext, IRepository&lt;TEntity&gt;&gt; action)
+    {
+        try
+        {
+            action(_context, _repository);
+        }
+        catch (Exception ex)
+        {
+            ProcessException(ex);
+        }
+    }
+
+    public TResult DoAndReturn&lt;TResult&gt;(Func&lt;TContext, IRepository&lt;TEntity&gt;, TResult&gt; action)
+    {
+        try
+        {
+            return action(_context, _repository);
+        }
+        catch (Exception ex)
+        {
+            ProcessException(ex);
+            return default(TResult);
+        }
+    }
+
+    private bool TryGetRepository(out IRepository&lt;TEntity&gt; repository)
+    {
+        Type repositoryType = Assembly.GetExecutingAssembly().GetTypes().SingleOrDefault(t =&gt;
+            typeof(IRepository&lt;TEntity&gt;).IsAssignableFrom(t));
+
+        if (repositoryType == null)
+        {
+            repository = null;
+            return false;
+        }
+
+        repository = (IRepository&lt;TEntity&gt;)Activator.CreateInstance(repositoryType, _context );
+        return true;
+    }
+}
+</code></pre><p>And finally to use this class in the Business Layer, we would have something like:</p><pre><code>using (var factory = new DataFactory&lt;MyDataContext, Employee&gt;())
+{
+    factory.Do((context, repository) =&gt;
+    {
+       // Interact with the repository
+    });
+}
+</code></pre><p>My coworker and I had a long conversation about whether the data context object should be exposed to the underlying layers in the <code>Do()</code> and <code>DoAndReturn()</code> methods. While I do see cases where having direct access to the context could be useful (for example in a case where we might want to turn on/off lazy loading for a particular entity set), I think doing so defeats the whole purpose of abstracting the Data Access layer (which is achieved by providing a common <code>IRepository</code> contract) since now objects can be directly accessed/manipulated through the <code>ObjectContext</code>.</p><p>He suggested having two different versions of these methods: one that exposes only the repository, and one that exposes both the context and repository. Is this an acceptable approach? Any suggestions are appreciated.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Your setup screams one question: why did you introduce the abstractions? If you can&#39;t answer that (and I have the feeling you&#39;re not sure you can, given the nature of the question you posted) get rid of them. Entity framework and other ORMs form an abstraction of their own for database interaction, unit of work etc. Wrapping that in another set of abstraction classes which actually abstract the same thing is just creating more complexity. If I may guess, I think you created this abstraction do be able to order DB work without exposing DB oriented classes, so be able to store work through a repository without working with a context at the BL level. But in general that&#39;s just a fallacy: calling into DB oriented code through a wrapper isn&#39;t really abstracting anything.</p><p>What does help and what you didn&#39;t do, is creating classes for using the ORM with the business logic. A typical example of this is logic which makes sure different business logic methods participate in the same underlying database transaction or better: the work generated by the business logic is collected in the same unit of work.</p><p>To achieve that, it&#39;s a start to model the Business Logic actions into classes which can e.g. result in a series of commands. The BL won&#39;t have access to any DB oriented code, they just formulate what should be done. The action / command objects are then sent to class which does use DB oriented logic and which actually executes the commands / actions.</p><p>The repository pattern is &#39;nice&#39; but IMHO too many times people get into trouble rather quickly as it creates a separate hierarchy of dependencies next to the entity dependencies themselves (e.g. Customer.Orders, with repositories you shouldn&#39;t be able to access that Orders collection, as they&#39;re part of the Orders repository) and isn&#39;t a real answer to what they&#39;re <em>really</em> struggling with.</p><p>Now it would have been great if EF had a separate unit of work class which would have been an easy solution for your problem, but alas... MS too followed Ambler&#39;s design of an ORM and ended up with a central session/context/unit-of-work hybrid.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../unit-of-work-principle-is-causing-a-problem-in-mvc3-application/'>Unit of work principle is causing a problem in MVC3 application</a></li><li class="list-group-item"><a href='../c-confused-on-how-to-properly-employ-a-repository-pattern-with-service-business-layer-on-top/'>C# &#8211; Confused on how to properly employ a Repository Pattern with Service/Business Layer on top</a></li><li class="list-group-item"><a href='../c-passing-state-or-context-across-layers-in-web-api/'>C# &#8211; Passing State or Context Across Layers in Web API</a></li><li class="list-group-item"><a href='../c-repository-pattern-and-joined-queries/'>C# &#8211; Repository Pattern and Joined Queries</a></li><li class="list-group-item"><a href='../c-should-data-access-layer-surface-return-data-transfer-objects-or-return-ef-models/'>C# &#8211; Should Data Access Layer surface return Data Transfer Objects or return EF Models</a></li><li class="list-group-item"><a href='../architecture-dataaccess-layer-coupling-with-domain-layer/'>Architecture &#8211; DataAccess Layer coupling with Domain Layer</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

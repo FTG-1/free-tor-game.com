@@ -1,0 +1,80 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Unit-testing &#8211; How does unit testing work &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1068848 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1068848" class="post-1068848 software type-software status-publish hentry category-software tag-unit-testing"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Unit-testing &#8211; How does unit testing work</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">unit testing</span></p><div class="entry-content"><p>I am trying to make my code more robust and I have been reading about unit testing, but I find it very hard to find an actual useful use.<br /> For instance, the <a href="http://en.wikipedia.org/wiki/Unit_testing">Wikipedia example</a>:</p><pre><code>public class TestAdder {
+    public void testSum() {
+        Adder adder = new AdderImpl();
+        assert(adder.add(1, 1) == 2);
+        assert(adder.add(1, 2) == 3);
+        assert(adder.add(2, 2) == 4);
+        assert(adder.add(0, 0) == 0);
+        assert(adder.add(-1, -2) == -3);
+        assert(adder.add(-1, 1) == 0);
+        assert(adder.add(1234, 988) == 2222);
+    }
+}
+</code></pre><p>I feel that this test is totally useless, because you are required to manually compute the wanted result and test it, I feel like a better unit test here would be</p><pre><code>assert(adder.add(a, b) == (a+b));
+</code></pre><p>but then this is just coding the function itself in the test.<br /> Can someone provide me with an example where unit testing is actually useful? FYI I am currently coding mostly &#34;procedural&#34; functions that take ~10 booleans and a few ints and give me an int result based on this, I feel like the only unit testing I could do would be to simply re-code the algorithm in the test. edit:<br /> I should also have precised this is while porting (possibly badly designed) ruby code (that I didn&#39;t make)</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Unit tests, if you&#39;re testing small enough units, are always asserting the blindingly obvious.</p><p>The reason that <code>add(x, y)</code> even gets mention of a unit test, is because sometime later somebody will go into <code>add</code> and put special tax logic handling code not realizing that add is used everywhere.</p><p>Unit tests are <em>very</em> much about the associative principle: if A does B, and B does C, then A does C.  &#34;A does C&#34; is a higher-level test.  For instance, consider the following, completely legitimate business code:</p><pre><code>public void LoginUser (string username, string password) {
+    var user = db.FetchUser (username);
+
+    if (user.Password != password)
+        throw new Exception (&#34;invalid password&#34;);
+
+    var roles = db.FetchRoles (user);
+
+    if (! roles.Contains (&#34;member&#34;))
+        throw new Exception (&#34;not a member&#34;);
+
+    Session[&#34;user&#34;] = user;
+}
+</code></pre><p>At first glance this looks like an awesome method to unit test, because it has a very clear purpose.  However, it does about 5 different things.  Each thing has a valid and invalid case, and will make a huge permutation of unit tests.  Ideally this is broken down further:</p><pre><code>public void LoginUser (string username, string password) {
+
+    var user = _userRepo.FetchValidUser (username, password);
+
+    _rolesRepo.CheckUserForRole (user, &#34;member&#34;);
+
+    _localStorage.StoreValue (&#34;user&#34;, user);
+}
+</code></pre><p>Now we&#39;re down to units.  One unit test does not care what <code>_userRepo</code> considers valid behavior for <code>FetchValidUser</code>, only that it&#39;s called.  You can use another test to ensure exactly what a valid user constitutes.  Similarly for <code>CheckUserForRole</code> ... you&#39;ve decoupled your test from knowing what the Role structure looks like.  You&#39;ve also decoupled your entire program from being tied strictly to <code>Session</code>.  I imagine all the missing pieces here would look like:</p><pre><code>class UserRepository : IUserRepository
+{
+    public User FetchValidUser (string username, string password)
+    {
+        var user = db.FetchUser (username);
+
+        if (user.Password != password)
+            throw new Exception (&#34;invalid password&#34;);
+
+        return user;
+    }
+}
+
+class RoleRepository : IRoleRepository
+{
+    public void CheckUserForRole (User user, string role)
+    {
+        var roles = db.FetchRoles (user);
+
+        if (! roles.Contains (role))
+            throw new Exception (&#34;not a member&#34;);
+    }
+}
+
+class SessionStorage : ILocalStorage
+{
+    public void StoreValue (string key, object value)
+    {
+        Session[key] = value;
+    }
+}
+</code></pre><p>By refactoring you have accomplished several things at once.  The program is way more supportive of tearing out underlying structures (you can ditch the database layer for NoSQL), or seamlessly adding locking once you realize <code>Session</code> isn&#39;t thread-safe or whatever.  You&#39;ve also now given yourself very straightfoward tests to write for these three dependencies.</p><p>Hope this helps :)</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-does-unit-testing-lead-to-premature-generalization-specifically-in-the-context-of-c/'>C++ &#8211; Does unit testing lead to premature generalization (specifically in the context of C++)</a></li><li class="list-group-item"><a href='../unit-testing-doesnt-single-assert-unit-testing-break-the-dry-principle/'>Unit-testing &#8211; Doesn&#8217;t single-assert unit testing break the DRY principle</a></li><li class="list-group-item"><a href='../c-generic-repository-unit-testing-best-practice/'>C# &#8211; Generic repository unit testing best practice</a></li><li class="list-group-item"><a href='../java-unit-testing-competition/'>Java &#8211; Unit Testing Competition</a></li><li class="list-group-item"><a href='../object-oriented-why-is-white-box-testing-discouraged-in-oop/'>Object-oriented &#8211; Why is white box testing discouraged in OOP</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,65 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Unit-testing &#8211; Can not understand how dependency injection can ease testing inside asp.net MVC &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1076272 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1076272" class="post-1076272 software type-software status-publish hentry category-software tag-asp-net-mvc tag-dependency-injection tag-mvc tag-repository tag-unit-testing"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Unit-testing &#8211; Can not understand how dependency injection can ease testing inside asp.net MVC</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">asp.net-mvc</span><span class="mr-2 badge badge-info">dependency-injection</span><span class="mr-2 badge badge-warning">mvc</span><span class="mr-2 badge badge-primary">repository</span><span class="mr-2 badge badge-danger">unit testing</span></p><div class="entry-content"><p>Each time i read an article or a book about asp.net MVC , there will be a chapter for dependency injection and repository . now i can easily feel the benefits of using repository over hard coding the entity framework code inside the action methods, as using repository i can write the methods which uses the entity framework inside my repository methods and reuse these methods over my action method, so i can easily understand that using Repository will facilitate re-usability .</p><p>but when it comes to dependency injection, authors always say that it facilitate testing and unit testing. so they say instead of initiating the repository class inside the controller class i will be initiating an interface of the repository class. and they say this will facilitate the unit testing.. but i can not get my mind on this , mainly why imitating the repository interface inside my controller class will facilitate unit testing while initiating the repository class itself inside my controller class will not !!</p><p>can anyone adivce on this?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Consider a simple blog, and a PostsController that shows a blog post.</p><p>You enable dependency injection by setting the <code>IPostRepository</code> object using a constructor argument and instead of instantiating a concrete class in the controller:</p><pre class="lang-cs prettyprint-override"><code>public class PostsController : Controller
+{
+    private IPostRepository posts;
+
+    public PostsController(IPostRepository posts)
+    {
+        if (posts == null)
+            throw new ArgumentNullException(&#34;posts&#34;);
+
+        this.posts = posts;
+    }
+
+    public ActionResult Details(int id)
+    {
+        BlogPost post = posts.Find(id);
+
+        if (post == null)
+            return HttpNotFound();
+
+        BlogPostDetails model = new BlogPostDetails(post);
+
+        return View(model);
+    }
+}
+</code></pre><p>By allowing the posts repository to be injected, we can unit test the logic in the controller by providing a &#34;mock&#34; object. In this case, I&#39;m using <a href="https://www.nuget.org/packages/Moq/" rel="nofollow noreferrer">Moq</a>, an object mocking library available on NuGet (not an endorsement, just for the sake of completing the example):</p><pre class="lang-cs prettyprint-override"><code>[TestClass]
+public class BlogPostTests
+{
+    private IPostRepository mockRepository;
+
+    [TestInitialize]
+    public void Setup()
+    {
+        this.mockRepository = new Moq.Mock&lt;IPostRepository&gt;();
+    }
+
+    [TestMethod]
+    public void ReturnsView()
+    {
+        var expectedPost = new BlogPost(&#34;Test Title&#34;, &#34;&lt;p&gt;Body text&lt;/p&gt;&#34;, DateTime.Parse(&#34;2017/01/13&#34;));
+
+        mockRepository.Setup(posts =&gt; posts.Find(1))
+            .Returns(expectedPost) // posts.Find(1) will return a test stub
+            .Verifiable(); // If posts.Find(1) doesn&#39;t get called, test fails
+
+        var controller = new PostsController(mockRepository.Object);
+        var result = controller.Details(1);
+
+        // Assert that correct view was returned
+    }
+}
+</code></pre><p>Now you can disconnect your controller from the rest of the technology stack and just test the &#34;Details&#34; method, making this a true Unit Test. As an added benefit, this test will execute in a millisecond or less. Compare that to a manual functional test run by a human, that will probably take upwards of a minute to set up the data and verify it, or 20-30 seconds for an automated functional test. The unit test will execute faster by an order of magnitude.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../unit-testing-whats-the-best-way-to-build-a-factory-using-ninject/'>Unit-testing &#8211; What&#8217;s the best way to build a factory using NInject</a></li><li class="list-group-item"><a href='../unit-testing-is-dependency-injection-essential-for-unit-testing/'>Unit-testing &#8211; Is dependency injection essential for unit testing</a></li><li class="list-group-item"><a href='../how-is-dependency-injection-not-just-moving-the-complexity-into-a-separate-class/'>How is dependency injection not just moving the complexity into a separate class</a></li><li class="list-group-item"><a href='../how-many-injections-is-acceptable-in-one-class-when-using-dependency-injection/'>How many injections is acceptable in one class when using dependency injection</a></li><li class="list-group-item"><a href='../c-asp-net-mvc-5-web-api-2-unit-testing-data-access-layer/'>C# &#8211; Asp.Net Mvc 5 / Web Api 2 unit testing data access layer</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

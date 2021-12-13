@@ -1,0 +1,148 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Clang warning flags for Objective-C development &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1065066 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1065066" class="post-1065066 software type-software status-publish hentry category-software tag-clang tag-objective-c"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Clang warning flags for Objective-C development</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">clang</span><span class="mr-2 badge badge-info">objective c</span></p><div class="entry-content"><p>As a C &amp; Objective-C programmer, I&#39;m a bit paranoid with the compiler warning flags.<br /> I usually try to find a complete list of warning flags for the compiler I use, and turn most of them on, unless I have a really good reason not to turn it on.</p><p>I personally think this may actually improve coding skills, as well as potential code portability, prevent some issues, as it forces you to be aware of every little detail, potential implementation and architecture issues, and so on&#8230;</p><p>It&#39;s also in my opinion a good every day learning tool, even if you&#39;re an experienced programmer.</p><p>For the subjective part of this question, I&#39;m interested in hearing other developers (mainly C, Objective-C and C++) about this topic.<br /> Do you actually care about stuff like pedantic warnings, etc? And if yes or no, why?</p><p>Now about Objective-C, I recently completely switched to the <a href="http://en.wikipedia.org/wiki/Low_Level_Virtual_Machine">LLVM</a> toolchain (with Clang), instead of GCC.</p><p>On my production code, I usually set this warning flags (explicitly, even if some of them may be covered by -Wall):</p><ul><li>-Wall</li><li>-Wbad-function-cast</li><li>-Wcast-align</li><li>-Wconversion</li><li>-Wdeclaration-after-statement</li><li>-Wdeprecated-implementations</li><li>-Wextra</li><li>-Wfloat-equal</li><li>-Wformat=2</li><li>-Wformat-nonliteral</li><li>-Wfour-char-constants</li><li>-Wimplicit-atomic-properties</li><li>-Wmissing-braces</li><li>-Wmissing-declarations</li><li>-Wmissing-field-initializers</li><li>-Wmissing-format-attribute</li><li>-Wmissing-noreturn</li><li>-Wmissing-prototypes</li><li>-Wnested-externs</li><li>-Wnewline-eof</li><li>-Wold-style-definition</li><li>-Woverlength-strings</li><li>-Wparentheses</li><li>-Wpointer-arith</li><li>-Wredundant-decls</li><li>-Wreturn-type</li><li>-Wsequence-point</li><li>-Wshadow</li><li>-Wshorten-64-to-32</li><li>-Wsign-compare</li><li>-Wsign-conversion</li><li>-Wstrict-prototypes</li><li>-Wstrict-selector-match</li><li>-Wswitch</li><li>-Wswitch-default</li><li>-Wswitch-enum</li><li>-Wundeclared-selector</li><li>-Wuninitialized</li><li>-Wunknown-pragmas</li><li>-Wunreachable-code</li><li>-Wunused-function</li><li>-Wunused-label</li><li>-Wunused-parameter</li><li>-Wunused-value</li><li>-Wunused-variable</li><li>-Wwrite-strings</li></ul><p>I&#39;m interested in hearing what other developers have to say about this.</p><p>For instance, do you think I missed a particular flag for Clang (Objective-C), and why?<br /> Or do you think a particular flag is not useful (or not wanted at all), and why?</p><p><strong>EDIT</strong></p><p>To clarify the question, note that <code>-Wall</code> only provides a few basic warnings.<br /> They are actually a lot more warning flags, not covered by <code>-Wall</code>, hence the question, and the list I provide.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>For context, I&#39;m a Clang developer working at Google. At Google, we&#39;ve rolled
+Clang&#39;s diagnostics out to (essentially) all of our C++ developers, and we
+treat Clang&#39;s warnings as errors as well. As both a Clang developer and one of the larger users of Clang&#39;s diagnostics I&#39;ll try to shed some light on these flags and how they can be used. Note that everything I&#39;m describing is generically applicable to Clang, and not specific to C, C++, or Objective-C.</p><p>TL;DR Version: Please use <code>-Wall</code> and <code>-Werror</code> at a minimum on any new code
+you are developing. We (the compiler developers) add warnings here for good
+reasons: they find bugs. If you find a warning that catches bugs for you, turn
+it on as well. Try <code>-Wextra</code> for a bunch of good candidates here. If one of
+them is too noisy for you to use profitably, <a href="https://bugs.llvm.org/enter_bug.cgi" rel="nofollow noreferrer">file a bug</a>. If you write code that
+contains an &#34;obvious&#34; bug but the compiler didn&#39;t warn about it, file a bug.</p><p>Now for the long version. First some background on warning flag groupings.
+There are a lot of &#34;groupings&#34; of warnings in Clang (and to a limited extent in
+GCC). Some that are relevant to this discussion:</p><ul><li>On-by-default: These warnings are always on unless you explicitly disable them.</li><li><code>-Wall</code>: These are warnings that the developers have <em>high</em> confidence in
+both their value and a low false-positive rate.</li><li><code>-Wextra</code>: These are warnings that are believed to be valuable and sound
+(i.e., they aren&#39;t buggy), but they may have high false-positive rates or
+common philosophical objections.</li><li><code>-Weverything</code>: This is an insane group that literally enables <em>every</em> warning in Clang. Don&#39;t use this on your code. It is intended strictly for
+Clang developers or for exploring <em>what warnings exist</em>.</li></ul><p>There are two primary criteria mentioned above which guide where warnings go in
+Clang, and let&#39;s clarify what these really mean. The first is the potential <strong>value</strong> of a particular occurrence of the warning. This is the expected
+benefit to the user (developer) when the warning fires and <em>correctly</em> identifies an issue with the code.</p><p>The second criteria is the idea of <strong>false-positive</strong> reports. These are
+situations where the warning fires on code, but the potential problem being
+cited does not in fact occur due to the context or some other constraint of the
+program. The code warned about is actually behaving correctly. These are
+especially bad when the warning was never intended to fire on that code
+pattern. Instead, it is a deficiency in the warning&#39;s implementation that causes
+it to fire there.</p><p>For Clang warnings, the <strong>value</strong> is required to be in terms of <em>correctness</em>,
+not in terms of style, taste, or coding conventions. This limits the set of
+warnings available, precluding oft-requested warnings such as warning
+whenever <code>{}</code>s are not used around the body of an <code>if</code> statement. Clang is also
+very intolerant of <strong>false-positives</strong>. Unlike most other compilers it will use
+an incredible variety of information sources to prune false positives including
+the exact spelling of the construct, presence or absence of extra &#39;()&#39;, casts,
+or even preprocessor macros!</p><p>Now let&#39;s take some real-world example warnings from Clang, and look at how
+they are categorized. First, a default-on warning:</p><pre><code>% nl x.cc
+     1  class C { const int x; };
+
+% clang -fsyntax-only x.cc
+x.cc:1:7: warning: class &#39;C&#39; does not declare any constructor to initialize its non-modifiable members
+class C { const int x; };
+      ^
+x.cc:1:21: note: const member &#39;x&#39; will never be initialized
+class C { const int x; };
+                    ^
+1 warning generated.
+</code></pre><p>Here no flag was required to get this warning. The rationale is that this is
+code is never really correct, giving the warning high <strong>value</strong>, and the
+warning only fires on code that Clang can prove falls into this bucket, giving
+it a zero <strong>false-positive</strong> rate.</p><pre><code>% nl x2.cc
+     1  int f(int x_) {
+     2    int x = x;
+     3    return x;
+     4  }
+
+% clang -fsyntax-only -Wall x2.cc
+x2.cc:2:11: warning: variable &#39;x&#39; is uninitialized when used within its own initialization [-Wuninitialized]
+  int x = x;
+      ~   ^
+1 warning generated.
+</code></pre><p>Clang requires the <code>-Wall</code> flag for this warning. The reason is that there is
+a non-trivial amount of code out there which has used (for good or ill) the
+code pattern we are warning about to <em>intentionally</em> produce an uninitialized
+value. Philosophically, I see no point in this, but many others disagree and
+the reality of this difference in opinion is what drives the warning under the <code>-Wall</code> flag. It still has very high <strong>value</strong> and a very low <strong>false-positive</strong> rate, but on some codebases it is a non-starter.</p><pre><code>% nl x3.cc
+     1  void g(int x);
+     2  void f(int arr[], unsigned int size) {
+     3    for (int i = 0; i &lt; size; ++i)
+     4      g(arr[i]);
+     5  }
+
+% clang -fsyntax-only -Wextra x3.cc
+x3.cc:3:21: warning: comparison of integers of different signs: &#39;int&#39; and &#39;unsigned int&#39; [-Wsign-compare]
+  for (int i = 0; i &lt; size; ++i)
+                  ~ ^ ~~~~
+1 warning generated.
+</code></pre><p>This warning requires the <code>-Wextra</code> flag. The reason is that there are <em>very</em> large codebases where mis-matched sign on comparisons is extremely common.
+While this warning does find some bugs, the probability of the code being a bug
+when the user writes it is fairly low on average. The result is an extremely
+high <strong>false-positive</strong> rate. However, when there is a bug in a program due to
+the strange promotion rules, it is often extremely subtle making this warning <em>when it flags a bug</em> have relatively high <strong>value</strong>. As a consequence, Clang
+provides it and exposes it under a flag.</p><p>Typically, warnings don&#39;t live long outside of the <code>-Wextra</code> flag. Clang tries
+very hard to not implement warnings which do not see regular use and testing.
+The additional warnings turned on by <code>-Weverything</code> are usually warnings under
+active development or with active bugs. Either they will be fixed and placed
+under appropriate flags, or they should be removed.</p><p>Now that we have an understanding of how these things work with Clang, let&#39;s
+try to get back to the original question: what warnings should you turn on for
+your development? The answer is, unfortunately, that it depends. Consider the
+following questions to help determine what warnings work best for your
+situation.</p><ul><li>Do you have control over all of your code, or is some of it external?</li><li>What are your goals? Catching bugs, or writing better code?</li><li>What is your false-positive tolerance? Are you willing to write extra code
+to silence warnings on a regular basis?</li></ul><p>First and foremost, if you don&#39;t control the code, don&#39;t try turning extra
+warnings on there. Be prepared to turn some off. There is a lot of bad code in
+the world, and you may not be able to fix all of it. That is OK. Work to find a
+way to focus your efforts on the code <em>you</em> control.</p><p>Next, figure out what you want out of your warnings. This is different for
+different people. Clang will try to warn without any options on egregious bugs,
+or code patterns for which we have long historical precedent indicating the bug
+rate is extremely high. By enabling <code>-Wall</code> you&#39;re going to get a much more
+aggressive set of warnings targeted at catching the most common mistakes that
+Clang developers have observed in C++ code. But with both of these the <strong>false-positive</strong> rate should remain quite low.</p><p>Finally, if you&#39;re perfectly willing to silence <strong>false-positive</strong>s at every
+turn, go for <code>-Wextra</code>. File bugs if you notice warnings which are catching
+a lot of real bugs, but which have silly or pointless false positives. We&#39;re
+constantly working to find ways to bring more and more of the bug-finding logic
+present in <code>-Wextra</code> into <code>-Wall</code> where we can avoid the false-positives.</p><p>Many will find that none of these options is just-right for them. At Google,
+we&#39;ve turned some warnings in <code>-Wall</code> off due to a lot of existing code that
+violated the warning. We&#39;ve also turned some warnings on explicitly, even
+though they aren&#39;t enabled by <code>-Wall</code>, because they have a particularly high
+value to us. Your mileage will vary, but will likely vary in similar ways. It
+can often be much better to enable a few key warnings rather than all of <code>-Wextra</code>.</p><p>I would encourage <em>everyone</em> to turn on <code>-Wall</code> for any non-legacy code. For
+new code, the warnings here are almost always valuable, and really make the
+experience of developing code better. Conversely, I would encourage everyone to <em>not</em> enable flags beyond <code>-Wextra</code>. If you find a Clang warning that <code>-Wextra</code> doesn&#39;t include but which proves <em>at all</em> valuable to you, simply file a bug
+and we can likely put it under <code>-Wextra</code>. Whether you explicitly enable some
+subset of the warnings in <code>-Wextra</code> will depend heavily on your code, your
+coding style, and whether maintaining that list is easier than fixing
+everything uncovered by <code>-Wextra</code>.</p><p>Of the OP&#39;s list of warnings (which included both <code>-Wall</code> and <code>-Wextra</code>) only
+the following warnings are <em>not</em> covered by those two groups (or turned on by
+default). The first group emphasize why over-reliance on explicit warning flags
+can be bad: none of these are even <em>implemented</em> in Clang! They&#39;re accepted on
+the command line only for GCC compatibility.</p><ul><li><code>-Wbad-function-cast</code></li><li><code>-Wdeclaration-after-statement</code></li><li><code>-Wmissing-format-attribute</code></li><li><code>-Wmissing-noreturn</code></li><li><code>-Wnested-externs</code></li><li><code>-Wnewline-eof</code></li><li><code>-Wold-style-definition</code></li><li><code>-Wredundant-decls</code></li><li><code>-Wsequence-point</code></li><li><code>-Wstrict-prototypes</code></li><li><code>-Wswitch-default</code></li></ul><p>The next bucket of unnecessary warnings in the original list are ones which are
+redundant with others in that list:</p><ul><li><code>-Wformat-nonliteral</code> -- Subset of <code>-Wformat=2</code></li><li><code>-Wshorten-64-to-32</code> -- Subset of <code>-Wconversion</code></li><li><code>-Wsign-conversion</code> -- Subset of <code>-Wconversion</code></li></ul><p>There are also a selection of warnings which are more categorically different.
+These deal with language dialect variants rather than with buggy or non-buggy
+code. With the exception of <code>-Wwrite-strings</code>, these all are warnings for
+language extensions provided by Clang. Whether Clang warns about their use
+depends on the prevalence of the extension. Clang aims for GCC compatibility,
+and so in many cases it eases that with implicit language extensions that are
+in wide use. <code>-Wwrite-strings</code>, as commented on the OP, is a compatibility flag
+from GCC that actually changes the program semantics. I deeply regret this
+flag, but we have to support it due to the legacy it has now.</p><ul><li><code>-Wfour-char-constants</code></li><li><code>-Wpointer-arith</code></li><li><code>-Wwrite-strings</code></li></ul><p>The remaining options which are actually enabling potentially interesting
+warnings are these:</p><ul><li><code>-Wcast-align</code></li><li><code>-Wconversion</code></li><li><code>-Wfloat-equal</code></li><li><code>-Wformat=2</code></li><li><code>-Wimplicit-atomic-properties</code></li><li><code>-Wmissing-declarations</code></li><li><code>-Wmissing-prototypes</code></li><li><code>-Woverlength-strings</code></li><li><code>-Wshadow</code></li><li><code>-Wstrict-selector-match</code></li><li><code>-Wundeclared-selector</code></li><li><code>-Wunreachable-code</code></li></ul><p>The reason that these aren&#39;t in <code>-Wall</code> or <code>-Wextra</code> isn&#39;t always clear. For
+many of these, they are actually based on GCC warnings (<code>-Wconversion</code>, <code>-Wshadow</code>, etc.) and as such Clang tries to mimic GCC&#39;s behavior. We&#39;re
+slowly breaking some of these down into more fine-grain and useful warnings.
+Those then have a higher probability of making it into one of the top-level
+warning groups. That said, to pick on one warning, <code>-Wconversion</code> is <em>so</em> broad
+that it will likely remain its own &#34;top level&#34; category for the foreseeable
+future. Some other warnings which GCC has but which have low value <em>and</em> high
+false-positive rates may be relegated to a similar no-man&#39;s-land.</p><p>Other reasons why these aren&#39;t in one of the larger buckets include simple
+bugs, very significant false-positive problems, and in-development warnings.
+I&#39;m going to look into filing bugs for the ones I can identify. They should all
+eventually migrate into a proper large bucket flag or be removed from Clang.</p><p>I hope this clarifies the warning situation with Clang and provides some
+insight for those trying to pick a set of warnings for their use, or their
+company&#39;s use.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

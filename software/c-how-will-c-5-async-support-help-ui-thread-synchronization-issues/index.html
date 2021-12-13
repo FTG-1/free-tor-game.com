@@ -1,0 +1,59 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; How will C# 5 async support help UI thread synchronization issues &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1067600 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1067600" class="post-1067600 software type-software status-publish hentry category-software tag-async tag-c tag-multithreading"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; How will C# 5 async support help UI thread synchronization issues</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">async</span><span class="mr-2 badge badge-info">c</span><span class="mr-2 badge badge-warning">multithreading</span></p><div class="entry-content"><p>I heard somewhere that C# 5 async-await will be so awesome that you will not have to worry about doing this:</p><pre><code>if (InvokeRequired)
+{
+    BeginInvoke(...);
+    return;
+}
+// do your stuff here
+</code></pre><p>It looks like the callback of a await operation will happen in the original thread of the caller. It has been stated several times by Eric Lippert and Anders Hejlsberg that this feature originated from the need to make UIs (particularly touch device UIs) more responsive.</p><p>I think a common usage of such feature would be something like this:</p><pre><code>public class Form1 : Form
+{
+    // ...
+    async void GetFurtherInfo()
+    {
+        var temperature = await GetCurrentTemperatureAsync();
+        label1.Text = temperature;
+    }
+}
+</code></pre><p>If only a callback is used then setting the label text will raise an exception because it&#39;s not being executed in the UI&#39;s thread.</p><p>So far I couldn&#39;t find any resource confirming this is the case. Does anyone know about this? Are there any documents explaining technically how this will work?</p><p>Please provide a link from a reliable source, don&#39;t just answer &#34;yes&#34;.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I think you&#39;re getting a few things confused, here.  What you&#39;re asking for is <strong>already</strong> possible using <code>System.Threading.Tasks</code>, the <code>async</code> and <code>await</code> in C# 5 are just going to provide a little nicer syntactic sugar for the same feature.</p><p>Let&#39;s use a Winforms example - drop a button and a textbox on the form and use this code:</p><pre><code>private void button1_Click(object sender, EventArgs e)
+{
+    Task.Factory.StartNew&lt;int&gt;(() =&gt; DelayedAdd(5, 10))
+        .ContinueWith(t =&gt; DelayedAdd(t.Result, 20))
+        .ContinueWith(t =&gt; DelayedAdd(t.Result, 30))
+        .ContinueWith(t =&gt; DelayedAdd(t.Result, 50))
+        .ContinueWith(t =&gt; textBox1.Text = t.Result.ToString(),
+            TaskScheduler.FromCurrentSynchronizationContext());
+}
+
+private int DelayedAdd(int a, int b)
+{
+    Thread.Sleep(500);
+    return a + b;
+}
+</code></pre><p>Run it and you&#39;ll see that (a) it doesn&#39;t block the UI thread and (b) you don&#39;t get the usual &#34;cross-thread operation not valid&#34; error - unless you remove the <code>TaskScheduler</code> argument from the last <code>ContinueWith</code>, in which case you will.</p><p>This is bog-standard <a href="http://en.wikipedia.org/wiki/Continuation-passing_style">continuation passing style</a>. The magic happens in the <code>TaskScheduler</code> class and specifically the instance retrieved by <code>FromCurrentSynchronizationContext</code>. Pass this into any continuation and you tell it that the continuation must run on whichever thread called the <code>FromCurrentSynchronizationContext</code> method - in this case, the UI thread.</p><p>Awaiters are slightly more sophisticated in the sense that they&#39;re aware of which thread they started on and which thread the continuation needs to happen on.  So the above code can be written a <em>little</em> more naturally:</p><pre><code>private async void button1_Click(object sender, EventArgs e)
+{
+    int a = await DelayedAddAsync(5, 10);
+    int b = await DelayedAddAsync(a, 20);
+    int c = await DelayedAddAsync(b, 30);
+    int d = await DelayedAddAsync(c, 50);
+    textBox1.Text = d.ToString();
+}
+
+private async Task&lt;int&gt; DelayedAddAsync(int a, int b)
+{
+    Thread.Sleep(500);
+    return a + b;
+}
+</code></pre><p>These two should look very similar, and in fact they <em>are</em> very similar. The <code>DelayedAddAsync</code> method now returns a <code>Task&lt;int&gt;</code> instead of an <code>int</code>, and so the <code>await</code> is just slapping continuations onto each one of those.  The main difference is that it&#39;s passing along the synchronization context on each line, so you don&#39;t have to do it explicitly like we did in the last example.</p><p>In theory the differences are a lot more significant. In the second example, every single line in the <code>button1_Click</code> method is actually executed in the UI thread, but the task itself (<code>DelayedAddAsync</code>) runs in the background. In the first example, <em>everything</em> runs in the <em>background</em>, <em>except</em> for the assignment to <code>textBox1.Text</code> which we&#39;ve explicitly attached to the UI thread&#39;s synchronization context.</p><p>That&#39;s what&#39;s really interesting about <code>await</code> - the fact that an awaiter is able to jump in and out of the <em>same method</em> without any blocking calls. You call <code>await</code>, the current thread goes back to processing messages, and when it&#39;s done, the awaiter will pick up exactly where it left off, in the same thread it left off in. But in terms of your <code>Invoke</code>/<code>BeginInvoke</code> contrast in the question, I&#39;m sorry to say that you should have stopped doing that a long time ago.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../thread-synchronization-for-multiple-threads-accessing-a-message-stream/'>Thread synchronization for multiple threads accessing a message stream</a></li><li class="list-group-item"><a href='../c-how-to-diagnose-async-await-deadlocks/'>C# &#8211; How to diagnose async/await deadlocks</a></li><li class="list-group-item"><a href='../java-using-inner-classes-to-achieve-thread-safe-behavior-without-synchronization/'>Java &#8211; Using inner classes to achieve thread-safe behavior without synchronization</a></li><li class="list-group-item"><a href='../c-problem-with-async-await-pattern-in-c-and-javascript-how-to-return-sync-value/'>C# &#8211; Problem with async/await pattern &#8212; in C# and JavaScript &#8212; how to return sync value</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

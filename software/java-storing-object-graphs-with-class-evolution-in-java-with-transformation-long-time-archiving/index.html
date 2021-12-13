@@ -1,0 +1,72 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; Storing object-graphs with class-evolution in Java with transformation (long time archiving) &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1081366 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1081366" class="post-1081366 software type-software status-publish hentry category-software tag-file-storage tag-java tag-serialization tag-storage tag-versioning"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; Storing object-graphs with class-evolution in Java with transformation (long time archiving)</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">file-storage</span><span class="mr-2 badge badge-info">java</span><span class="mr-2 badge badge-warning">serialization</span><span class="mr-2 badge badge-primary">storage</span><span class="mr-2 badge badge-danger">versioning</span></p><div class="entry-content"><h2>Abstract</h2><p>A common problem is to store objects (with graph), and to load them back. This is easy as long the stored object representation matches the executing code. But as time goes by, requirements change and stored objects do not match any longer the code. The stored objects should not loose their data, and the code in the clients should work with the latest object-models.</p><p>So a transformation has to occur somehow between loading the data and returning a object to the client.</p><p>I know that there exist some libraries such as XStream, gson, protobuf and avro. They could load older objects, but afaik just ignore data that does not match any longer the fields in the class (maybe I missed something).<br /> (When I&#39;m talking about storing and serialization I do not mean Java&#39;s built in serialization mechanism.)</p><h2>Question</h2><p>So what is the question? I&#39;m now researching for some time, and there seems no library that adresses this issue (class evolution) without data-loss. I hope to find another working solution or idea how to implement it by myself here.</p><p>I have some requirements:</p><ul><li>File-based &#8211; I want to be able to store the serialized object on disk</li><li>Appendable &#8211; I want to append multiple objects to one file without loading the whole file in memory again and again</li><li>Support for multiple versions in one file &#8211; A file could contain objects with different version (only of the same type)</li><li>Transformation &#8211; Data should be accessible by using the same type, even when changed in between.</li><li>Generic &#8211; The mechanism itself has to be generic, so I could use it for different objects (different objects do not get mixed in one file, only different versions of one type).</li></ul><p>It would be nice if the storing format is human-readable.</p><p>Already stored objects are not updateable (at least not without huge effort). Think of an long-term archive.</p><h2>Example</h2><p>I could give an example for better illustration. Let&#39;s suppose we have two Pojos that we want to serialize.</p><pre><code>public class MyPojo {
+    String text;
+    Long number;
+    Integer[] values;
+    SubPojo pojo;
+}
+
+public class SubPojo {
+    List&lt;String&gt; items;
+}
+</code></pre><p>In the next version we might have renamed a field (text-&gt;content), changed a type (Integer[]-&gt;List), and have transformed a field to List (SubPojo-&gt;List) where the previous field now is the first element of the new list (not loosing data, just transforming to new representation).</p><pre><code>public class MyPojo {
+    String content;
+    Long number;
+    List&lt;Integer&gt; values;
+    List&lt;SubPojo&gt; pojo;
+}
+
+public class SubPojo {
+    List&lt;String&gt; items;
+}
+</code></pre><p>Some pseudocode how the client might take use of this:</p><pre><code>// Write
+Serializer ser = new Serializer();
+MyPojo pojo = new MyPojo();
+pojo.xxx = ...; // set fields
+ser.store(pojo, file, append);
+
+// Read (a version later)
+Serializer ser = new Serializer();
+ser.registerTransformer(new TransformerV1ToV2());
+List&lt;MyPojo&gt; pojos = ser.load(file);
+</code></pre><p>This approach has some drawbacks:</p><ul><li>The transformer have to work on some kind of intermediate format (could be the backed stored format such as json or xml)</li><li>You don&#39;t know how the class format was at some point in time, since you&#39;re only transforming relative to the previous version and mapping to the final class, making search for errors hard</li><li>Performance (depending on how the transformation happens)</li></ul></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I use the Externalizable interface to solve this problem.  It doesn&#39;t really meet your Appendable requirement, but it might get you started.</p><p>Externalizable lets you write each object out yourself. <strong>What I do is include a version number for each class.</strong> Then, when I change the class, I adjust the <code>readExternal</code> method so it can can read the new format as well as the old ones and change the <code>writeExternal</code> method to write the new format with the new version number.  The code to read old formats may need to change to fill new fields (and not fill in removed fields).  Then I&#39;m ready to go.</p><p>There&#39;s usually some sort of object hierarchy in the graph, so if a level 2 class is seriously modified, the new write/read for that class can output/input something completely different from the old one, with completely new lower-level classes.</p><p>Some care <em>is</em> needed because sometimes there isn&#39;t a hierarchy.  You have to remember that, after reading, you can&#39;t set a field by pulling data from objects in fields because they may not really be there yet.  (Sometimes I add a <code>setUp</code> method to all my classes that gets called after the top-level <code>objectRead</code> so the objects in the graph can get themselves organized <em>after</em> the whole graph has been read.</p><p>And it sometimes helps to write out objects manually using a method that just writes out plain bytes.  (But on the read you have to know precisely what you are reading, where <code>readExternal</code> will read a complete object of any class.)</p><p>Code looks something like:</p><pre><code>// version 3 -- November 16, 2013
+// version 2 -- March 22, 2013
+// version 1 -- April 1, 2012
+public void writeExternal( ObjectOutput out )  throws IOException  {
+    out.writeShort( 3 )
+    out.writeLong( longData );
+    out.writeObject( something );
+    ....
+}
+
+public void readExternal( ObjectInput in )  throws IOException,
+             ClassNotFoundException  {
+    short version = in.readShort();
+    if (version &gt; 3)  {
+        // Admit program is too old to read file.
+    }
+    else if (version == 3)  {
+        longData = in.readLong();
+        something = readobject();
+    }
+    else if (version == 2)  {
+        longData = 5;
+        something = readobject();
+    }
+    else
+       ...
+}
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-sql-rdbms-one-query-or-multiple-calls/'>Java &#8211; SQL RDBMS : one query or multiple calls</a></li><li class="list-group-item"><a href='../java-object-oriented-parser-model-review/'>Java &#8211; Object oriented parser model review</a></li><li class="list-group-item"><a href='../xml-serialization-and-deserialization-complex-situation/'>Xml serialization and deserialization complex situation</a></li><li class="list-group-item"><a href='../c-custom-serializer-or-create-base-class-which-implements-ixmlserializable/'>C# &#8211; Custom serializer or create base class which implements IXmlSerializable</a></li><li class="list-group-item"><a href='../java-class-design-for-writing-multiple-versions-of-multiple-files/'>Java &#8211; Class design for writing multiple versions of multiple files</a></li><li class="list-group-item"><a href='../java-processing-a-large-file-concurrently/'>Java &#8211; Processing a large file concurrently</a></li><li class="list-group-item"><a href='../binary-data-formats-how-to-make-ensure-you-can-read-different-format-versions/'>Binary data formats, how to make ensure you can read different format versions</a></li><li class="list-group-item"><a href='../c-canonical-way-to-handle-json-data-format-changes/'>C# &#8211;  canonical way to handle JSON data format changes</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

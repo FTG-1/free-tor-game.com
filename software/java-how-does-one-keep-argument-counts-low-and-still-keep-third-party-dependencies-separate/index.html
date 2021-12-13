@@ -1,0 +1,95 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; How does one keep argument counts low and still keep third party dependencies separate &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1076037 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1076037" class="post-1076037 software type-software status-publish hentry category-software tag-constructors tag-design tag-java tag-third-party-libraries"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; How does one keep argument counts low and still keep third party dependencies separate</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">constructors</span><span class="mr-2 badge badge-info">design</span><span class="mr-2 badge badge-warning">java</span><span class="mr-2 badge badge-primary">third-party-libraries</span></p><div class="entry-content"><p>I use a third party library. They pass me a <a href="http://en.wikipedia.org/wiki/Plain_Old_Java_Object" rel="nofollow noreferrer">POJO</a> that, for our intents and purposes,  is probably implemented like this:</p><pre><code>public class OurData {
+  private String foo;
+  private String bar;
+  private String baz;
+  private String quux;
+  // A lot more than this
+
+  // IMPORTANT: NOTE THAT THIS IS A PACKAGE PRIVATE CONSTRUCTOR
+  OurData(/* I don&#39;t know what they do */) {
+    // some stuff
+  }
+
+  public String getFoo() {
+    return foo;
+  }
+
+  // etc.
+}
+</code></pre><p>For many reasons, including but not limited to encapsulating their API and facilitating unit testing, I want to wrap their data. But I don&#39;t want my core classes to be dependent on their data (again, for testing reasons)! So right now I have something like this:</p><pre><code>public class DataTypeOne implements DataInterface {
+  private String foo;
+  private int bar;
+  private double baz;
+
+  public DataTypeOne(String foo, int bar, double baz) {
+    this.foo = foo;
+    this.bar = bar;
+    this.baz = baz;
+  }
+}
+
+public class DataTypeTwo implements DataInterface {
+  private String foo;
+  private int bar;
+  private double baz;
+
+  public DataTypeOne(String foo, int bar, double baz, String quux) {
+    this.foo = foo;
+    this.bar = bar;
+    this.baz = baz;
+    this.quux = quux;
+  }
+}
+</code></pre><p>And then this:</p><pre><code>public class ThirdPartyAdapter {
+  public static makeMyData(OurData data) {
+    if(data.getQuux() == null) {
+      return new DataTypeOne(
+        data.getFoo(),
+        Integer.parseInt(data.getBar()),
+        Double.parseDouble(data.getBaz()),
+      );
+    } else {
+      return new DataTypeTwo(
+        data.getFoo(),
+        Integer.parseInt(data.getBar()),
+        Double.parseDouble(data.getBaz()),
+        data.getQuux();
+      );
+  }
+}
+</code></pre><p>This adapter class is coupled with the other few classes that MUST know about the third party API, limiting it&#39;s pervasiveness through the rest of my system. However&#8230; this solution is GROSS! In Clean Code, page 40:</p><blockquote><p>More than three arguments (polyadic) requires very special justification&#8211;and then shouldn&#39;t be used anyway.</p></blockquote><p>Things I&#39;ve considered:</p><ul><li>Creating a factory object rather than a static helper method<ul><li>Doesn&#39;t solve the problem of having a bajillion arguments</li></ul></li><li>Creating a subclass of DataTypeOne and DataTypeTwo that has a dependent constructor<ul><li>Still has a polyadic protected constructor</li></ul></li><li>Create entirely separate implementations that conform to the same interface</li><li>Multiple of the above ideas simultaneously</li></ul><p>How should this situation be handled?</p><hr/><p>Note this is not an <a href="https://softwareengineering.stackexchange.com/questions/184464/what-is-an-anti-corruption-layer-and-how-is-it-used">anti-corruption layer</a> situation. There&#39;s nothing wrong with their API. The problems are:</p><ul><li>I don&#39;t want MY data structures to have <code>import com.third.party.library.SomeDataStructure;</code></li><li>I can&#39;t construct their data structures in my test cases</li><li>My current solution results in very very high argument counts. I want to keep argument counts low, WITHOUT passing in their data structures.</li><li>That question is &#34;<strong>what</strong> is a anti corruption layer?&#34;. My question is &#34;<strong>how</strong> can I use a pattern, any pattern, to solve this scenario?&#34;</li></ul><p>I&#39;m not asking for code, either (otherwise this question would be on SO), just asking for enough of an answer to enable me to write the code effectively (which that question does not provide).</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>The strategy I&#39;ve used when there are several initialization parameters is to create a type which just contains the parameters for initialization</p><pre><code>public class DataTypeTwoParameters {
+    public String foo;  // use getters/setters instead if it&#39;s appropriate
+    public int bar;
+    public double baz;
+    public String quuz;
+}
+</code></pre><p>Then the constructor for DataTypeTwo takes a DataTypeTwoParameters object, and DataTypeTwo is constructed via:</p><pre><code>DataTypeTwoParameters p = new DataTypeTwoParameters();
+p.foo = &#34;Hello&#34;;
+p.bar = 4;
+p.baz = 3;
+p.quuz = &#34;World&#34;;
+
+DataTypeTwo dtt = new DataTypeTwo(p);
+</code></pre><p>This gives a lot of opportunity to make it clear what all the parameters going into DataTypeTwo are and what they mean. You can also provide sensible defaults in the DataTypeTwoParameters constructor so that only values which need to be set can be done so in any order the consumer of the API likes.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/how-to-keep-your-third-party-libraries-up-to-date/'>How to keep your third party libraries up to date</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/java-object-oriented-class-design/'>Java &#8211; Object-Oriented Class Design</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/java-how-to-test-state-of-the-object/'>Java &#8211; How to test state of the object</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/java-is-it-considered-bad-practice-to-make-a-dao-call-in-an-objects-constructor/'>Java &#8211; Is it considered bad practice to make a DAO call in an object&#8217;s constructor</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/java-should-constructors-ever-be-used-only-for-side-effects/'>Java &#8211; Should constructors ever be used only for side-effects</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

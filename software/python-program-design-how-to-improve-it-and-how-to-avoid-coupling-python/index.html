@@ -1,0 +1,56 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Python &#8211; Program design &#8211; how to improve it and how to avoid coupling (Python) &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1081048 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1081048" class="post-1081048 software type-software status-publish hentry category-software tag-design tag-modules tag-python"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Python &#8211; Program design &#8211; how to improve it and how to avoid coupling (Python)</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">design</span><span class="mr-2 badge badge-info">modules</span><span class="mr-2 badge badge-warning">python</span></p><div class="entry-content"><p>In the Python program structure below there are two modules with functions.</p><p>Problem description:</p><ol><li>Functions are used inside other functions all over the place. Strong coupling (dependency). For example func1() in module 2 that reads from file is called many many times because it&#39;s called in almost every other function in both modules. That&#39;s resource and performance intensive, yet alone a bad practice.</li><li>Reading from file so many times (each time funct1() is called) can be costly.</li></ol><p>Question: What is a good way to improve this design?</p><p>For example, passing functions from helper module 2 to functions in module 1 AS PARAMETERS? [ If I do that, I still have functions in module 2 dependent upon each other (ie funct4() uses funcr1(), funct2(), funct3(), etc) ]</p><p>My paradigm I started with: I was thinking: &#34;Ah, I&#39;m going to have a main module where the main thing happens. Then I will have a side module for functions that do some prep work and clean-up and called them from module 1.&#34; (Well, now I have this mess.) I wonder if a good design is to make functions less dependent on each other? Each function does one thing and DOESN&#39;T call other functions?? Should I use classes? How? Is it about when to use classes versus modules? Functional versus OO design?</p><p>How would you redesign this so as little coupling as possible and file is read only once (or as few times as possible)?</p><p>Thanks for any tips.</p><p><strong>module 1</strong></p><pre><code>(main module, program execution happens here)
+
+from module2 import *
+
+f1()
+- uses funct1() 4 times
+- uses funct2() 2 times
+
+f2()
+- uses func1() 2 times
+- uses func2() 2 times
+
+f3()
+- uses func1() 1 time
+
+f4()
+- uses func2() 3 times
+- uses func3() 3 times
+- uses func4() 1 time
+
+f5()
+- uses func1() 2 times
+- uses func2() 2 times
+- uses func4() 4 times
+
+f6()
+- uses func1() 3 times
+- uses func2() 3 times
+- uses func4() 2 times
+</code></pre><p><strong>module 2</strong></p><p>(has helper functions that provide clean up and other functionality to module 1)</p><pre><code>func1()
+reads from file (with open(&#39;x.txt&#39;, &#39;r&#39;) af f: ...
+
+func2()
+- uses func1 1 time
+
+func3()
+- uses func1 1 time
+
+func4()
+- uses func1() 1 time
+- uses func2() 2 times - uses func3() 1 time
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>There are at least two questions being asked here (arguably a lot more, so I&#39;ll have to ignore many of the little ones), but the solution to both comes down to <strong>writing a class that effectively encapsulates retrieving (your) data from (your) files</strong>. Since you specifically asked whether it should be a class or something else, in this language classes are the main data abstraction that&#39;s capable of <em>remembering things</em>, which is obviously necessary if you want to avoid reading the same file over and over, so that&#39;s why this should be a class.</p><p>Since you haven&#39;t told me what any of the functions in module 2 actually do after calling func1, I&#39;m going to make up some fairly generic requirements. Let&#39;s pretend func1 reads a comma-separated value file of numbers. Say func2 gets the sum of all numbers. Say func3 gets the average and standard distribution of each row.</p><p>What you want to do is write a class that handles reading and parsing these files, and exposes methods to retrieve certain aspects of the data it finds. For instance, you might have the class&#39; constructor take a single filename/filepath argument, so the file gets read exactly once during construction, and all method calls on the object merely manipulate the in-memory representation of the data you&#39;ve already read. The important thing is that <em>no other module should know (exactly) how this class gets its data</em>. They should see getNums() and getStdDev() and getTotal() methods, but they probably shouldn&#39;t know whether these values come from a .csv file or an Excel spreadsheet or a website or wherever, and they certainly should not know whether that file/site is being cached or not.</p><p>If you do this right, it will be trivial to add getEigenvectors() and whatnot to module2 whenever you feel like it <em>without even thinking about what module1 is doing</em>. That is always the main goal of reducing coupling. This applies to pretty much every language that supports OOP.</p><p>If you need more specific help you&#39;ll have to explain more about what these functions actually do and why the generic advice I just gave is insufficient.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-program-design-with-multiple-data-sets-algorithms-and-results/'>Java &#8211; Program design with multiple data sets, algorithms and results</a></li><li class="list-group-item"><a href='../how-to-structure-big-node-js-modules/'>How to structure big Node.JS modules</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

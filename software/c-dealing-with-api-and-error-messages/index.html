@@ -1,0 +1,70 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Dealing with API and error messages &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1076867 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1076867" class="post-1076867 software type-software status-publish hentry category-software tag-api tag-c tag-error-messages tag-wcf"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Dealing with API and error messages</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">api</span><span class="mr-2 badge badge-info">c</span><span class="mr-2 badge badge-warning">error messages</span><span class="mr-2 badge badge-primary">wcf</span></p><div class="entry-content"><p>We are in the process of constructing an API (using WCF).</p><p>So far I noticed 2 ways in which methods could go wrong due to problems with the parameters sent.</p><ol><li>wrong format, for example we have a string date parameter which should be in a certain format, if it&#39;s in a different format the method cannot continue.</li><li>if a method role is to do something identified by an ID, but that ID does not exist in the application (DB)</li></ol><p>First we thought throwing an exception, but I realize now that this is not truly an &#34;exceptional&#34; situation, these kind of things is pretty common.</p><p>Right now we deal with it in the following way:</p><p>We have an abstract class which is called APIResponse.<br /> it has a boolean success variable, and an array of messages for the API&#39;s client.<br /> Each group of methods has a corresponding implementation of this class and that will be the returned object.</p><p><strong>is this kind of approach ok?</strong></p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I do like this approach, it is totally acceptable.</p><p>Take a look at the Flickr API. They are using error codes and error messages in their api response too.</p><p><a href="http://www.flickr.com/services/api/" rel="nofollow">http://www.flickr.com/services/api/</a></p><p><a href="http://www.flickr.com/services/api/flickr.activity.userComments.html" rel="nofollow">http://www.flickr.com/services/api/flickr.activity.userComments.html</a> (example api method)</p><p>Serving error codes and error messages instead of exceptions is imho much better when dealing with multiple (unknown) client frameworks (.net, java, etc..) If an client api-implementation is wrong because it is using a wrong format, it&#39;s much better to display the error message from the server (&#34;Invalid date format. Must be ddMMyyy.&#34;) instead of getting an weird &#34;FormatException&#34; (+stacktrace).</p><p>Having error ids and error messages:</p><ul><li>improves api usability</li><li>improves maintainability</li><li>improves user / developer experience</li></ul><p>API User(Developer) could reference easily to their problem and that will <strong>save your time.</strong> It would be much easier for you to track down a possible bug/taskswith a specific errorId/errorMessage instead of having &#34;Hey, I&#39;m getting those weird Exceptions when calling XYZ. What am I doing wrong?&#34;</p><p><strong>Edit based upon request:</strong></p><p>Let&#39;s say we have a &#34;BaseResponse&#34; (similar to your APIResponse, comments are stripped out for better readability)</p><pre><code>public class BaseResponse
+{
+  public int ErrorId { get; set; }
+
+  public string ErrorMessage { get; set; }
+
+  public bool Successful { get; set; }
+}
+</code></pre><p>And we&#39;re having an GetDocumentResponse (implemented by DocumentService, see below)</p><pre><code>public sealed class GetDocumentsResponse : BaseResponse
+{
+   public IList&lt;Document&gt; Documents { get; set; }
+}
+</code></pre><p>DocumentService Contract</p><pre><code>[ServiceContract]
+public interface IDocumentService
+{
+    [OperationContract]
+    [WebInvoke(
+         Method = &#34;POST&#34;,
+         BodyStyle = WebMessageBodyStyle.WrappedRequest,
+         ResponseFormat = WebMessageFormat.Json,
+         RequestFormat = WebMessageFormat.Json)]
+    GetDocumentsResponse GetDocuments(string date);
+}
+</code></pre><p>DocumentService Implementation (simplified)</p><pre><code>public GetDocumentsResponse GetDocuments(string date)
+{
+     bool isFormatValid = // parse Date
+     if (!isFormatValid)
+     {
+        // Response = static class, provides generic responses and sets properties of response
+        return Response.ProvideFault&lt;GetDocumentsResponse&gt;(100, &#34;The date-format is not valid. Valid: mmddyyyy&#34;);
+        // return new GetDocumentsResponse { Successful = false, ErrorId: 100, ErrorMessage = &#34;The date-format is not valid. Valid: mmddyyyy&#34;};
+     }
+
+     var documents = this.documentRepository.GetDocuments(...)
+     return new GetDocumentsResponse { Successful = true, Documents = documents };
+}
+</code></pre><p>So, let&#39;s say I&#39;m a developer and I want to use this api.</p><p><strong>1. - Making an valid api call &amp; getting an valid response from server</strong> (JSON Response)</p><pre><code>{
+   &#34;ErrorId&#34;:0,
+   &#34;ErrorMessage&#34;:null,
+   &#34;Successful&#34;:true,
+   &#34;Documents&#34;:[
+      {
+         &#34;DocumentId&#34;:13,
+         &#34;Name&#34;:&#34;xyz&#34;
+      }
+   ]
+}
+</code></pre><p><strong>2. - Making an invalid api call &amp; getting an invalid response from server</strong></p><pre><code>{
+   &#34;ErrorId&#34;:100,
+   &#34;ErrorMessage&#34;:&#34;The date-format is invalid. Valid: mmddyyyy&#34;,
+   &#34;Successful&#34;:false,
+   &#34;Documents&#34;:[
+
+   ]
+}
+</code></pre><p>So, for the first call I&#39;ve done everything right.<br/> The second call <strong>says clearly</strong> what is wrong, I do not have to research some .NET specific exceptions (or better: wcf faults) if I&#39;m a java developer. In a few seconds after getting the response <strong>I do know what went wrong and why it went wrong</strong>. I do not have to research documentation or much worse to ask YOU about the current implementation of GetDocuments and why my date format is invalid. <strong>It saves you and me a lot of time</strong>.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../translating-error-messages-from-an-external-api/'>Translating error messages from an external API</a></li><li class="list-group-item"><a href='../c-return-magic-value-throw-exception-or-return-false-on-failure/'>C# &#8211; Return magic value, throw exception or return false on failure</a></li><li class="list-group-item"><a href='../what-layer-to-introduce-human-readable-error-messages/'>What layer to introduce human readable error messages</a></li><li class="list-group-item"><a href='../c-how-to-design-a-tryparse-method-which-provides-detailed-information-in-case-of-a-parsing-error/'>C# &#8211; How to design a TryParse method which provides detailed information in case of a parsing error</a></li><li class="list-group-item"><a href='../c-how-to-handle-failed-api-calls-in-c/'>C# &#8211; How to handle failed API calls in C#</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

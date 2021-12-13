@@ -1,0 +1,105 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Unit-testing &#8211; How to make complex business logic with lots of dependencies better testable &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1086233 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1086233" class="post-1086233 software type-software status-publish hentry category-software tag-design tag-unit-testing"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Unit-testing &#8211; How to make complex business logic with lots of dependencies better testable</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">design</span><span class="mr-2 badge badge-info">unit testing</span></p><div class="entry-content"><p>This is something hat has been rolling in my mind for quite some time now, but I still haven&#39;t found a good approach to it. So here&#39;s the thing. We have a server application that has quite a few complex use cases which involve a lot of ifs and elses and handling of customer data. I can&#39;t go into the exact details here so let&#39;s make up a sample for some context. Assume you have an order processing system where you process orders for a customer. We use Java/Spring with dependency injection and all the bells and whistles so our service would look like this:</p><pre><code>class OrderService {
+
+    // these are all dependency-injected by Spring -leaving this out for clarity.
+    private CustomerService customerService;
+    private OrderDao orderDao;
+    private DiscountCodeService discountCodeService;
+    private CustomerLoyaltyProgramService loyaltyProgramService;
+    private TaxService taxService;
+
+
+    public Order createOrder(OrderForm form) {
+         // form is pre-validated through JSR303 annotations but there are 
+         // some additional validations
+         // that need to be made
+         // 
+         if (formHasError) {
+              throw SomeException();
+         }
+
+         // ok we can continue here.
+         Customer customer = customerService.getCustomerById(form.getCustomerId())
+
+         // build up an order from the form
+         Order order = new Order();
+         // copy over stuff..
+
+         // check if customer has a discount code
+         if (form.getDiscountCode() != null) {
+             discountCodeInfo = discountCodeService.getDiscountCodeInfoFor(form.getDiscountCode())
+             // now walk over line items to see if there is some applicable order line item.
+         }
+
+         // check if the customer is in any loyalty program that will give him 
+         // additional discounts
+         List&lt;LoyaltyProgram&gt; programs = loyaltyProgramService.findByCustomer(customer);
+         // do some more ifs and elses to apply loyalty program discounts
+
+         // check applicable sales tax for customer
+         SalesTax tax = taxService.findSalesTaxFor(form.getAddress())
+
+         // do some tax calculations, more ifs and elses
+
+         // finally store order
+         orderDao.save(order);
+         return order;
+
+    }
+
+}
+</code></pre><p>Testing such a service with a unit test is basically a nightmare. You have to mock all the dependencies where the mocking depends on the flow through the method and the different business rules that are applied on certain cirumstances. At a certain amount of mocks and code paths your head will simply explode.</p><p>Another approach we tried was to split this up into several private (well protected, as you need to access them in a test) methods, which would make it more testable. However then our business logic is spread all over the place which makes it hard to follow in code and you still have to have some &#34;master method&#34; which calls all the little helper methods in correct order and you need to test that as well so you&#39;re basically back to square one.</p><p>So what I&#39;m looking for is some way to reorganise this which allows you to test the methods easier without having to think about all the dependencies while still keeping the code maintainable and not spreading it all out to a thousand different places where you cannot follow the logic anymore. I figure that this is probably going to be some trade-off, but I wonder how you may have tackled this in your projects.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I think this method is doing too much. It&#39;s not cohesive. Splitting into private methods <strong>won&#39;t</strong> solve the issue here, and it will <a href="https://softwareengineering.stackexchange.com/a/350314/274599">probably make it more worse</a>.</p><p>I think you should change the design so that several components can collaborate. Each component will be small, cohesive, and focused.</p><p>For your specific example I would recommend a <a href="https://en.wikipedia.org/wiki/Intercepting_filter_pattern" rel="nofollow noreferrer">filter chain</a>. A filter chain is a linked list of processors that are executed sequentially and each link in the chain can choose to bail execution, or can adjust the message being passed through the chain.</p><p>You can redesign your method into several links like so:</p><p><a href="https://i.stack.imgur.com/MW8Aw.png" rel="nofollow noreferrer"><img src="https://i.stack.imgur.com/MW8Aw.png" alt="enter image description here"/></a></p><p>Each component will only have a couple dependencies, and you can create the chain at your composition root.</p><pre><code>OrderProcessor persistOrder = new PersistOrderProcessor(null);
+OrderProcessor taxOrder = new TaxOrderProcessor(taxService, persistOrder);
+OrderProcessor discountCodeProcessor = new DiscountCodeOrderProcessor(discountCodeService, taxOrder);
+OrderProcessor loyaltyProcessor = new LoyaltyOrderProcessor(loyaltyService, discountCodeProcessor);
+OrderProcessor root = new ValidateOrderProcessor(loyaltyProcessor);
+</code></pre><p>Each processor&#39;s implementation looks something like this:</p><pre><code>public Order process(order: Order) throws OrderProcessorException {
+    // optionally validate order
+    if (!valid) {
+        throw new InvalidOrderException(...);
+    }
+    // modify order
+    order.setTax(.3f * order.getSubtotal());
+    // continue the chain (or decide not to)
+    if (next != null) {
+        order = next.process(order);
+    }
+    // optionally modify the order again
+    return order;
+}
+</code></pre><p>Then you modify <code>OrderService</code> to inject an <code>OrderProcessor</code> as a dependency and start the chain.</p><pre><code>class OrderService {
+
+    // these are all dependency-injected by Spring -leaving this out for clarity.
+    private OrderProcessor orderProcessor;
+
+    public Order createOrder(OrderForm form) { 
+         // build up an order from the form
+         Order order = new Order();
+         // copy over stuff..
+
+         // start the chain
+         return orderProcessor.process(order);
+    }
+} 
+</code></pre><p>This design allows you to unit-test each part of your order pipeline in isolation with one or two mocks. You have a design that is scalable and flexible to your growing needs to add more logic to order placement. Each step in the processing chain is small and cohesive. The naming of the component is indicative to the responsibility and will be easy for others to navigate.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/unit-testing-unit-testing-internal-components/'>Unit-testing &#8211; Unit testing internal components</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-interfacing-application-code-with-unit-tests/'>C++ &#8211; Interfacing application code with unit tests</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/unit-testing-designing-unit-tests-for-a-stateful-system/'>Unit-testing &#8211; Designing unit tests for a stateful system</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-method-to-validate-an-object-should-i-have-one-method-encapsulating-all-validation-logic/'>C# &#8211; Method to validate an object &#8211; should I have one method encapsulating all validation logic</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/unit-testing-should-you-indirectly-test-private-methods-from-within-public-method-tests/'>Unit-testing &#8211; Should you indirectly test private methods from within public method tests</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

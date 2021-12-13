@@ -1,0 +1,83 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; In Java, why does Integer.MIN_VALUE == -Integer.MIN_VALUE &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1086121 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1086121" class="post-1086121 software type-software status-publish hentry category-software tag-java tag-language-design tag-math"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; In Java, why does Integer.MIN_VALUE == -Integer.MIN_VALUE</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">java</span><span class="mr-2 badge badge-info">language-design</span><span class="mr-2 badge badge-warning">math</span></p><div class="entry-content"><p>Quite simply, I was aghast when I discovered one of my unit tests was failing because <code>-Integer.MIN_VALUE == Integer.MIN_VALUE</code>!</p><p>Why would the language designers choose this, <strong>what is the mathematical advantage</strong>, and what are some alternatives I might consider in the future when dealing with edge cases?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>The short answer is that this is how twos-complement negation works. It&#39;s not overflow, and it
+wouldn&#39;t be detectable without special circuitry in the processor (or equivalent checks in the
+language runtime).</p><h1>How Twos-Complement Arithmetic Works</h1><p>I&#39;ll start with the number line, in binary, limiting my wordsize to 3 bits:</p><pre><code>011 =  3
+010 =  2
+001 =  1
+000 =  0
+111 = -1
+110 = -2
+101 = -3
+100 = -4
+</code></pre><p>Inside the computer, there is an <a href="https://en.wikipedia.org/wiki/Adder_(electronics)" rel="noreferrer">Adder</a> circuit
+that can combine two bits and produce a result plus carry bit. These circuits are chained together,
+so that the processor can add two entire words. The carry bit from this addition is exposed to via
+a processor status register, but <em>is not normally available to high-level languages</em>.</p><p>Some examples:</p><pre><code> 2  010      2  010     2   010
+ 1  001     -1  111     2   010
+== ====     == ====    ==  ====
+ 3  011      1 C001    -4   100
+</code></pre><p>Let&#39;s look at those examples individually:</p><ul><li>2 + 1 = 3, just like you&#39;d expect. Both the addends and the sum are within the range of positive integers
+for our word size.</li><li>2 - 1 = 1, again just like you&#39;d expect. Internally this operation sets the carry bit, indicating that the
+addition overflowed the word size. If we were using unsigned numbers, this would be a problem, but with
+twos-complement numbers it&#39;s OK.</li><li>2 + 2 = -4, which is definitely <em>not</em> what you&#39;d expect. However, note that the carry bit remains unset.
+To detect overflow in this case, you&#39;d have to check that two signed inputs resulted in an output with a
+different sign.</li></ul><p>So why isn&#39;t overflow checked? The simplest answer is cost.</p><p>At the level of the hardware, addition is unsigned (at least on the three processors that I&#39;ve programmed).
+Detecting integer overflow would require a separate set of opcodes for signed math, which would mean more
+transistors, which could be more profitably used elsewhere. In the earlier days of computing that was a
+huge concern; today, maybe not so much but almost everyone is OK with how math is implemented.</p><p>At the level of the language, cost is still a factor. There is the runtime cost of checking every signed
+operation for overflow, but there is also a programmer cost: imagine having to wrap <em>all</em> expressions
+(even a <em>for</em> loop) with a try/catch. The .Net runtime apparently gives you the option of enabling this,
+while Java <a href="http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-2.html#jvms-2.11.3" rel="noreferrer">explicitly does not</a>.</p><h1>How Twos-Complement Negation Works, and why -MIN_VALUE equals itself</h1><p>In prose: twos-complement negation flips all of the bits in a number and then adds one.</p><p>I use a prose definition because that&#39;s almost certainly how it actually works in the hardware (although I&#39;m
+not a hardware engineer, so can&#39;t say for sure, plus different architectures might use different techniques).</p><p>Let&#39;s see what happens with our 3-bit words:</p><pre><code>100 = MIN_VALUE
+011 = all bits flipped
+100 = after adding 1
+</code></pre><p>Note that there&#39;s no carry involved, although you could check for sign of value and result. However, that
+again would require special circuitry and/or runtime-level checks, <em>to catch a result that will happen
+almost never</em>.</p><h1>What Are Some Alternatives, and Why Aren&#39;t They Used</h1><p>One alternative is <a href="https://en.wikipedia.org/wiki/Ones%27_complement" rel="noreferrer">ones-complement</a>, in which negation is
+simply inverting all bits. The ones-complement number line for a 3-bit word looks like this:</p><pre><code>011 =  3
+010 =  2
+001 =  1
+000 =  0
+111 = -0
+110 = -1
+101 = -2
+100 = -3
+</code></pre><p>According to the linked Wikipedia article, there were machines using ones-complement arithmetic; I never used
+one. Again, I&#39;m not a hardware engineer, but I <em>believe</em> that you need separate operations for addition and
+subtraction with ones-complement (in addition to separate operations for unsigned math), which again runs into
+the problem of cost.</p><p>The Wikipedia article mentions the problem of &#34;end-around borrow,&#34; which may have been an issue with the actual
+computers that used ones-complement math, but I don&#39;t think is a necessary problem. I believe that the carry
+bit could also serve as a borrow bit.</p><p>The bigger problem is that you have two values for zero. Which is going to cause programmers to create a <em>lot</em> of off-by-one errors when counting, or is going to require a <em>lot</em> of special-case code in the language
+runtime (eg: a <code>for</code> loop that knows when it crosses 0 that it has to skip to 1/-1).</p><p>Another alternative is to use the high-order bit just as a sign bit, with the low-order bits being the same
+between positive and negative:</p><pre><code>011 =  3
+010 =  2
+001 =  1
+000 =  0
+100 = -0
+101 = -1
+110 = -2
+111 = -3
+</code></pre><p>This is how <a href="https://en.wikipedia.org/wiki/IEEE_754-1985" rel="noreferrer">IEEE-754 floating point</a> works. It makes sense when
+your primary operations are assumed to be multiplication and division, not so much for addition and subtraction.
+And it still has the issue of two zeros.</p><h1>Commentary</h1><p>To me, this question is identical to questions that express outrage over the fact that 0.10 cannot be represented
+by a floating point number: both indicate a belief that digital computers should be able to exactly represent the
+real world. Or, in other words, that computers operate according to the laws of mathematics.</p><p>I can understand this belief; what I can&#39;t understand is the outrage that people express when the belief is shown
+to be false. A few moment&#39;s reflection should make it apparent that the belief <em>cannot</em> be true: computers work
+with finite quantities, whereas mathematics deals with continuous relations (I was about to say that everything
+in the real world is continuous, but figured that someone would bring up quantum mechanics).</p><p>Faced with this fundamental truth, computer designers -- and language designers, and application programmers --
+have to make trade-offs. You might not like the particular tradeoff, but you should seek to understand it rather
+than simply complain about it. And once you understand the tradeoff, you can look for an environment that made a
+different tradeoff.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../why-do-old-programming-languages-continue-to-be-revised/'>Why do old programming languages continue to be revised</a></li><li class="list-group-item"><a href='../why-do-bitwise-operators-have-lower-priority-than-comparisons/'>Why do bitwise operators have lower priority than comparisons</a></li><li class="list-group-item"><a href='../c-why-doesnt-c-have-local-scope-in-case-blocks/'>C# &#8211; Why doesn&#8217;t C# have local scope in case blocks</a></li><li class="list-group-item"><a href='../java-why-doesnt-java-string-have-static-string-manipulation-methods/'>Java &#8211; Why doesn&#8217;t Java String have static string manipulation methods</a></li><li class="list-group-item"><a href='../java-should-i-use-initializer-blocks-in-java/'>Java &#8211; Should I use initializer blocks in Java</a></li><li class="list-group-item"><a href='../java-why-is-throwable-initcause-designed-to-be-called-only-once/'>Java &#8211; Why is Throwable initCause designed to be called only once</a></li><li class="list-group-item"><a href='../c-why-it-is-not-possible-to-overload-compound-assignment-operator-in-c/'>C# &#8211; Why it is not possible to overload compound assignment operator in C#</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

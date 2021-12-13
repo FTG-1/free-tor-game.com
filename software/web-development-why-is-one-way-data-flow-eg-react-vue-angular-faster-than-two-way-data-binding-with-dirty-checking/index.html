@@ -1,0 +1,132 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Web-development &#8211; Why is one way data flow (eg. React, Vue, Angular) faster than two way data binding with dirty checking &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1082575 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1082575" class="post-1082575 software type-software status-publish hentry category-software tag-architecture tag-front-end tag-performance tag-web-development"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Web-development &#8211; Why is one way data flow (eg. React, Vue, Angular) faster than two way data binding with dirty checking</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">Architecture</span><span class="mr-2 badge badge-info">front-end</span><span class="mr-2 badge badge-warning">performance</span><span class="mr-2 badge badge-primary">web-development</span></p><div class="entry-content"><p>I understand that two way data binding can be expensive and slow. For example, imagine a toy grocery list app that lets you list grocery items and their prices, and shows you the sum of the prices (<a href="https://codepen.io/adamzerner/pen/mKONKJ?editors=1010" rel="nofollow noreferrer">CodePen</a>).</p><p><strong>HTML</strong></p><pre><code>&lt;div ng-app=&#34;app&#34;&gt;
+  &lt;div ng-controller=&#34;MainCtrl&#34;&gt;
+     &lt;table&gt;
+       &lt;thead&gt;
+         &lt;tr&gt;
+           &lt;th&gt;Name&lt;/th&gt;
+           &lt;th&gt;Price&lt;/th&gt;
+         &lt;/tr&gt;
+       &lt;/thead&gt;
+       &lt;tbody&gt;
+         &lt;tr ng-repeat=&#34;item in items&#34;&gt;
+           &lt;td&gt;{{ item.name }}&lt;/td&gt;
+           &lt;td&gt;
+             &lt;input type=&#34;number&#34; ng-model=&#34;item.price&#34;&gt;
+           &lt;/td&gt;
+         &lt;/tr&gt;
+       &lt;/tbody&gt;
+    &lt;/table&gt;
+    &lt;p&gt;Total: {{ getTotal() }}&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre><p><strong>JS</strong></p><pre><code>angular
+  .module(&#39;app&#39;, [])
+  .controller(&#39;MainCtrl&#39;, function ($scope) {
+    $scope.items = [{
+      name: &#39;Milk&#39;,
+      price: 3.00,
+    }, {
+      name: &#39;Eggs&#39;,
+      price: 2.50
+    }, {
+      name: &#39;Bread&#39;,
+      price: 2.00
+    }];
+    $scope.getTotal = function () {
+      let total = 0;
+
+      $scope.items.forEach(function (item) {
+        total += item.price
+      });
+
+      return total;
+    };
+  })
+;
+</code></pre><p>Imagine that the user types into the milk price input field. In a perfect world, Angular would know to make sure the milk input field reflects the new value, and to update the total. But in reality, Angular doesn&#39;t know that those are the only things to update. What if I had a &#34;milk + bread cost&#34; field? Then that field would need to be updated too.</p><p>So Angular goes through <em>all</em> of the model properties that are being displayed in the view, and asks &#34;Have you changed? If so, I will rerender you.&#34; If this list is long, it would obviously take a long time.</p><p>But in something like React or Vue, my impression is that it should take a similarly long time. Here is an implementation of the same toy app in Vue (<a href="https://codepen.io/adamzerner/pen/LrxPEP?editors=1010" rel="nofollow noreferrer">CodePen</a>):</p><p><strong>HTML</strong></p><pre><code>&lt;div id=&#34;app&#34;&gt;
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Name&lt;/th&gt;
+        &lt;th&gt;Price&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr v-for=&#34;item in items&#34;&gt;
+        &lt;td&gt;{{ item.name }}&lt;/td&gt;
+        &lt;td&gt;
+          &lt;input 
+            type=&#34;number&#34; 
+            v-bind:value=&#34;item.price&#34; 
+            v-on:change=&#34;setItemPrice(item, $event)&#34;
+          &gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+  &lt;p&gt;Total: {{ total }}&lt;/p&gt;
+&lt;/div&gt;
+</code></pre><p><strong>JS</strong></p><pre><code>new Vue({
+  el: &#39;#app&#39;,
+  computed: {
+    total: function () {
+      let total = 0;
+
+      this.items.forEach(function (item) {
+        total += item.price;
+      });
+
+      return total;
+    },
+  },
+  data: {
+    items: [{
+      name: &#39;Milk&#39;,
+      price: 3.00,
+    }, {
+      name: &#39;Eggs&#39;,
+      price: 2.50
+    }, {
+      name: &#39;Bread&#39;,
+      price: 2.00
+    }],
+  },
+  methods: {
+    setItemPrice: function (item, event) {
+      item.price = Number(event.target.value);
+    },
+  },
+});
+</code></pre><p>My understanding is that after the change event fires and the handler method (<code>setItemPrice</code>) finishes running, Vue will compute a new virtual DOM, diff it with the previous virtual DOM, figure out the minimal set of DOM mutations to perform, and then perform them.</p><p>I would think that the process of traversing the DOM and seeing if there are any differences would take at least as long as the process of traversing the watchers array during dirty checking. My impression is that it would take longer. Just look at the HTML:</p><pre><code>&lt;table&gt;
+  &lt;thead&gt;...&lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Milk&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Bread&lt;/td&gt;
+      &lt;td&gt;2.5&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Eggs&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Total: 7.5&lt;/p&gt;
+</code></pre><p>If <code>n</code> = the size of the grocery list, dirty checking has to iterate through <code>n</code> items in the watchers array. But in traversing the DOM, you have to iterate through the <code>n</code> <code>&lt;tr&gt;</code> tags <em>plus</em> everything else.</p><p>What am I missing about why one way data flow is (seen as) significantly more performant than two way data binding with dirty checking?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I guess you&#39;re trying to compare different things, but I see what you mean. I would rephrased your question to: Why is dirty checking in AngularJS slower than building DOM diffs.</p><p>By the way, Angular2+ also dirty checks values used in template expressions. Say you click a button, angular then runs change detection cycle, and it goes from the top component to the very bottom, and what it is doing it is checking all the model values used in expressions by reference with their previous values. So it dirty checks the values. The difference with AngularJS is that it does not check it twice. And also it does not make deep comparison (which is also disabled in AngularJS by default, but could be turned on as a third argument of $watch function).</p><p>But comparing dirty checking and building DOM diffs is a bit incorrect, cause they are different things, and you can actually combine them.</p><p>What is the difference then. With dirty checking you need to check everything on every change or event. It could be very performant and Angular2+ proves it. But, React on the other hand knows exactly which component has been changed cause you trigger setState(). So instead of checking everything in your app, it will just try to build the diff of the current component tree.</p><p>So in conclusion, dirty checking is not bad, it depends on the implementation, and on your app. You might find that in your application it is faster to dirty check values than it is to build the diffs, or vise versa. <a href="https://itnext.io/angular-5-vs-react-vs-vue-6b976a3f9172" rel="nofollow noreferrer">Here</a> is an interesting performance comparison of React/View/Angular5</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../javascript-how-to-structure-a-modern-web-application/'>Javascript &#8211; How to structure a modern web application</a></li><li class="list-group-item"><a href='../web-development-how-does-two-way-data-binding-differ-from-simple-auto-sync/'>Web-development &#8211; How does two-way data binding differ from simple auto-sync</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

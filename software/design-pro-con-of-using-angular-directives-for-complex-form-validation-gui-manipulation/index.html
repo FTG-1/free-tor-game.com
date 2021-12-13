@@ -1,0 +1,93 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Design &#8211; Pro/con of using Angular directives for complex form validation/ GUI manipulation &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1087908 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1087908" class="post-1087908 software type-software status-publish hentry category-software tag-design tag-web-applications"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Design &#8211; Pro/con of using Angular directives for complex form validation/ GUI manipulation</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">design</span><span class="mr-2 badge badge-info">web-applications</span></p><div class="entry-content"><p>I am building a new SPA front end to replace an existing enterprise&#39;s legacy hodgepodge of systems that are outdated and in need of updating. I am new to angular, and wanted to see if the community could give me some perspective. I&#39;ll state my problem, and then ask my question.</p><p>I have to generate several series of check boxes based on data from a .js include, with data like this:</p><pre><code>$scope.fieldMappings.investmentObjectiveMap = [
+  {&#39;id&#39;:&#34;CAPITAL PRESERVATION&#34;, &#39;name&#39;:&#34;Capital Preservation&#34;},
+  {&#39;id&#39;:&#34;STABLE&#34;, &#39;name&#39;:&#34;Moderate&#34;},
+  {&#39;id&#39;:&#34;BALANCED&#34;, &#39;name&#39;:&#34;Moderate Growth&#34;},
+   // etc
+  {&#39;id&#39;:&#34;NONE&#34;, &#39;name&#39;:&#34;None&#34;}
+];
+</code></pre><p>The checkboxes are created using an ng-repeat, like this:</p><pre><code>&lt;div ng-repeat=&#34;investmentObjective in fieldMappings.investmentObjectiveMap&#34;&gt;
+ ...
+&lt;/div&gt;
+</code></pre><p>However, I needed the values represented by the checkboxes to map to a different model (not just 2-way-bound to the fieldmappings object).</p><p>To accomplish this, I created a directive, which accepts a destination array destarray which is eventually mapped to the model. I also know I need to handle some very specific gui controls, such as unchecking &#34;None&#34; if anything else gets checked, or checking &#34;None&#34; if everything else gets unchecked.</p><p>Also, &#34;None&#34; won&#39;t be an option in every group of checkboxes, so the directive needs to be generic enough to accept a validation function that can fiddle with the checked state of the checkbox group&#39;s inputs based on what&#39;s already clicked, but smart enough not to break if there is no option called &#34;NONE&#34;.</p><p>I started to do that by adding an ng-click which invoked a function in the controller, but in looking around Stack Overflow, I read people saying that its bad to put DOM manipulation code inside your controller &#8211; it should go in directives. So do I need another directive?</p><p>So far: (html):</p><pre><code>&lt;input my-checkbox-group
+          type=&#34;checkbox&#34;
+          fieldobj=&#34;investmentObjective&#34;
+          ng-click=&#34;validationfunc()&#34;
+          validationfunc=&#34;clearOnNone()&#34;
+          destarray=&#34;investor.investmentObjective&#34; /&gt;
+</code></pre><p>Directive code:</p><pre><code>.directive(&#34;myCheckboxGroup&#34;, function () {
+  return {
+    restrict: &#34;A&#34;,
+    scope: {
+      destarray:      &#34;=&#34;,  // the source of all the checkbox values
+      fieldobj:       &#34;=&#34;,  // the array the values came from
+      validationfunc: &#34;&amp;&#34;   // the function to be called for validation (optional)
+    },
+    link: function (scope, elem, attrs) {
+      if (scope.destarray.indexOf(scope.fieldobj.id) !== -1) {
+        elem[0].checked = true;
+      }
+      elem.bind(&#39;click&#39;, function () {
+        var index = scope.destarray.indexOf(scope.fieldobj.id);
+        if (elem[0].checked) {
+          if (index === -1) {
+            scope.destarray.push(scope.fieldobj.id);
+          }
+        }
+        else {
+          if (index !== -1) {
+            scope.destarray.splice(index, 1);
+          }
+        }
+      });
+    }
+  };
+})
+</code></pre><p>.js controller snippet:</p><pre><code>.controller( &#39;SuitabilityCtrl&#39;, [&#39;$scope&#39;, function ( $scope ) {
+  $scope.clearOnNone = function() {
+    // naughty jQuery DOM manipulation code that
+    // looks at checkboxes and checks/unchecks as needed
+  };
+</code></pre><p>The above code is done and works fine, except the naughty jquery code in clearOnNone(), which is why I wrote this question.</p><p>And here is my question: after ALL this, I think to myself &#8211; I could be done already if I just manually handled all this GUI logic and validation junk with jQuery written in my controller. At what point does it become foolish to write these complicated directives that future developers will have to puzzle over more than if I had just written jQuery code that 99% of us would understand with a glance? How do other developers draw the line?</p><p>I see this all over Stack Overflow. For example, <a href="https://stackoverflow.com/questions/16425012/angular-js-and-complex-directives">this question</a> seems like it could be answered with a dozen lines of straightforward jQuery, yet he has opted to do it the angular way, with a directive and a partial&#8230; it seems like a lot of work for a simple problem.</p><p>Specifically, I suppose I would like to know: how SHOULD I be writing the code that checks whether &#34;None&#34; has been selected (if it exists as an option in this group of checkboxes), and then check/uncheck the other boxes accordingly? A more complex directive? I can&#39;t believe I&#39;m the only developer that is having to implement code that is more complex than needed just to satisfy an opinionated framework.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>In my opinion, the quick way to do this in an angular-like way is to introduce a property of your javascript data that tracks the state of the checkbox. Your <code>clearOnNone()</code> function would modify a (dynamically-introduced) <code>checked</code> property of your <code>investmentObjectiveMap</code>. These updates would be immediately be reflected in the DOM. That way there&#39;s no jQuery hacking in the midst of your controller.</p><p>I <a href="http://jsfiddle.net/e2qLN/" rel="nofollow">forked an old fiddle</a> of mine to give you an example.</p><p>html:</p><pre><code>&lt;div ng-app=&#34;myApp&#34;&gt;
+    &lt;div ng-controller=&#34;MyCtrl&#34;&gt;
+        &lt;event class=&#34;event&#34; ng-repeat=&#34;event in events&#34; event=&#34;{{ event.name }}&#34;
+               ng-class=&#34;{&#39;selected&#39; : event.selected}&#34;
+               ng-click=&#34;selectEvent($index)&#34;&gt;
+            {{ event.name }}
+        &lt;/event&gt;
+        &lt;br&gt;
+        &lt;input ng-repeat=&#34;event in events&#34; type=&#34;checkbox&#34; ng-model=&#34;event.selected&#34;&gt;
+        &lt;br&gt;
+        &lt;button ng-click=&#34;selectNone()&#34;&gt;select none&lt;/button&gt;
+
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre><p>js:</p><pre><code>var myApp = angular.module(&#39;myApp&#39;, []).controller(&#39;MyCtrl&#39;, function ($scope, $http) {
+$scope.events = [
+    {name: &#39;event1&#39;, selected: false},
+    {name: &#39;event2&#39;, selected: false},
+    {name: &#39;event3&#39;, selected: false}
+];
+$scope.selectEvent = function ($index) {
+    var e = $scope.events[$index];
+    e.selected = !e.selected;
+};
+$scope.selectNone = function () {
+    $scope.events.forEach(function (event) {
+        event.selected = false;
+    });
+};
+</code></pre><p>});</p><p>With the <a href="http://docs.angularjs.org/api/ng.directive%3ainput.checkbox" rel="nofollow"><code>ng-true-value</code> and corresponding directives</a>, you can get any value you like into your model when boxes are checked.</p><p>EDIT</p><p>I just realized that I misunderstood your <code>clearOnNone()</code> behavior, but hopefully you can see how modifying the <em>data</em> and letting angular do the rest is an answer to your question.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   </div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

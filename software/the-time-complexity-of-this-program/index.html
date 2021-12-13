@@ -1,0 +1,70 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>The time complexity of this program &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1087189 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1087189" class="post-1087189 software type-software status-publish hentry category-software tag-big-o tag-complexity tag-trees"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">The time complexity of this program</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">big o</span><span class="mr-2 badge badge-info">complexity</span><span class="mr-2 badge badge-warning">trees</span></p><div class="entry-content"><p>An algorithm is given on <a href="http://www.geeksforgeeks.org/construct-bst-from-given-preorder-traversa/" rel="nofollow">GeeksForGeeks.com</a> for constructing a Binary Search Tree from its preorder traversal.</p><p>They say that the time complexity for the following code is O(n^2). But in my opinion it should be O(nlogn). I&#39;m confident about calculating O() for most algorithms, but here there&#39;s a divide and conquer algorithm, which runs as <code>T(n) = T(n/2) + O(n)</code>, which I believe should be working in O(nlogn) by the master method?</p><p>Can someone please tell how the complexity is O(n^2)?</p><p>The idea of the code is :</p><blockquote><p>The first element of preorder traversal is always root. We first construct the root. Then we find the index of first element which is greater than root. Let the index be ‘i’. The values between root and ‘i’ will be part of left subtree, and the values between ‘i+1′ and ‘n-1′ will be part of right subtree. Divide given pre[] at index “i” and recur for left and right sub-trees.</p><p>For example in {10, 5, 1, 7, 40, 50}, 10 is the first element, so we make it root. Now we look for the first element greater than 10, we find 40.</p></blockquote><pre><code>struct node
+{
+    int data;
+    struct node *left;
+    struct node *right;
+};
+
+// A utility function to create a node
+struct node* newNode (int data)
+{
+    struct node* temp = (struct node *) malloc( sizeof(struct node) );
+    temp-&gt;data = data;
+    temp-&gt;left = temp-&gt;right = NULL;
+    return temp;
+}
+
+// A recursive function to construct Full from pre[]. preIndex is used
+// to keep track of index in pre[].
+struct node* constructTreeUtil (int pre[], int* preIndex,
+                            int low, int high, int size)
+{
+    // Base case
+    if (*preIndex &gt;= size || low &gt; high)
+        return NULL;
+
+    // The first node in preorder traversal is root. So take the node at
+    // preIndex from p re[] and make it root, and increment preIndex
+    struct node* root = newNode ( pre[*preIndex] );
+    *preIndex = *preIndex + 1;
+
+        // If the current subarry has only one element, no need to recur
+    if (low == high)
+        return root;
+
+    // Search for the first element greater than root
+    int i;
+    for ( i = low; i &lt;= high; ++i )
+        if ( pre[ i ] &gt; root-&gt;data )
+            break;
+
+    // Use the index of element found in postorder to divide postorder array in
+    // two parts. Left subtree and right subtree
+    root-&gt;left = constructTreeUtil ( pre, preIndex, *preIndex, i - 1, size );
+    root-&gt;right = constructTreeUtil ( pre, preIndex, i, high, size );
+
+    return root;
+}
+
+// The main function to construct BST from given preorder traversal.
+// This function mainly uses constructTreeUtil()
+struct node *constructTree (int pre[], int size)
+{
+int preIndex = 0;
+return constructTreeUtil (pre, &amp;preIndex, 0, size - 1, size);
+}
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>While the stated algorithm is O(n log n) on the average case, it is O(n^2)  in the worst case, i.e. when used to reconstruct a tree in which each node has an empty branch either to its left or right. Such a tree has a depth of n, and therefore the algorithm will recurse n times, each recursion requiring an average of n/2 comparisons to complete.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../finding-the-time-complexity-of-the-following-program-that-uses-recursion/'>Finding the time complexity of the following program that uses recursion</a></li><li class="list-group-item"><a href='../algorithm-to-go-from-infix-notation-to-a-tree/'>Algorithm to go from infix notation to a tree</a></li><li class="list-group-item"><a href='../what-method-should-i-use-to-populate-a-tree-as-im-consuming-data-that-is-contained-within-the-tree/'>What method should I use to populate a tree as I&#8217;m consuming data that is contained within the tree</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

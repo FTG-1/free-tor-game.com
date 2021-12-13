@@ -1,0 +1,151 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; What pattern for implementing multiple interfaces on the same type &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1078322 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1078322" class="post-1078322 software type-software status-publish hentry category-software tag-c tag-data-structures tag-design-patterns tag-interfaces tag-legacy"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; What pattern for implementing multiple interfaces on the same type</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">data structures</span><span class="mr-2 badge badge-warning">design-patterns</span><span class="mr-2 badge badge-primary">interfaces</span><span class="mr-2 badge badge-danger">legacy</span></p><div class="entry-content"><p><strong>Description of the environment:</strong></p><ul><li>I am implementing a (hobbyist) modern engine for (an old) PlayStation 1 video game</li><li>Graphical data is represented as <em>packets</em> where it can represent either a polygon or a sprite,<br /> (and they are transformed differently to end up as pixels on screen)</li><li>All those differents type of packets (18 in total) can in fact be reduced to 2 or 3 types at most (what I&#39;ve done to reduce code surface), with some flags indicating what&#39;s present in them</li></ul><p><em>For information purposes,</em></p><p>This format is more or less a variant of the HMD format by Sony, an efficient low-level format that gets consumed directly by the PlayStation 1 GPU, at the expense of being <em>unfriendly</em> to read/parse, etc &#8230; (actually on the real PlayStation 1, one would emit few system library calls to load it and that was it)</p><p><strong>Description of the problem:</strong></p><ul><li>I need to find a (simple yet effective) way of realizing their content</li><li>accounting that they can either be a <em>polygon</em> or a <em>sprite</em></li></ul><p>Long story short,</p><p>The following code snippets below probably explains better what&#39;s the content and the preliminary approach,</p><p><strong>Interfaces that we&#39;ll work against:</strong></p><pre><code>/// &lt;summary&gt;
+///     a graphics primitive.
+/// &lt;/summary&gt;
+public interface IPrimitive
+{
+    bool IsPolygon { get; }
+    bool IsSprite { get; }
+}
+
+/// &lt;summary&gt;
+///     a polygon, i.e. triangle, quad.
+/// &lt;/summary&gt;
+public interface IPolygon : IPrimitive
+{
+    void GetMesh();
+}
+
+/// &lt;summary&gt;
+///     a sprite, (internal representation has different meaning than a polygon).
+/// &lt;/summary&gt;
+public interface ISprite : IPrimitive
+{
+    void GetMesh();
+}
+</code></pre><p><strong>Type present in game data:</strong></p><pre><code>/// &lt;summary&gt;
+///     a packet representing graphical data : a polygon or a sprite.
+/// &lt;/summary&gt;
+public class GraphicsPacket : IPolygon, ISprite
+{
+    public GraphicsPacket(Stream stream)
+    {
+        // read packet ...
+
+
+        // there will be a flag indicating if it&#39;s a sprite
+        // and therefore should be treated differently
+    }
+
+    public bool IsSprite { get; }
+
+    public bool IsPolygon =&gt; !IsSprite;
+
+    void IPolygon.GetMesh()
+    {
+        if (IsSprite)
+            throw new InvalidOperationException(&#34;Instance is not a polygon&#34;);
+    }
+
+    void ISprite.GetMesh()
+    {
+        if (IsPolygon)
+            throw new InvalidOperationException(&#34;Instance is not a sprite&#34;);
+    }
+}
+</code></pre><p><strong>Test of that whole logic:</strong></p><pre><code>public class Test
+{
+    public void BuildPrimitive([NotNull] IPrimitive primitive)
+    {
+        if (primitive == null)
+            throw new ArgumentNullException(nameof(primitive));
+
+        // obviously here, &#39;as&#39; cast would always be true for all cases
+
+        var polygon = primitive.IsPolygon;
+        if (polygon)
+        {
+            // do something with it
+            ((IPolygon)polygon).GetMesh();
+
+            return;
+        }
+
+        var sprite = primitive.IsSprite;
+        if (sprite)
+        {
+            // do something with it
+            ((ISprite)sprite).GetMesh();
+
+            return;
+        }
+
+        throw new NotSupportedException(nameof(primitive));
+    }
+}
+</code></pre><p><strong>Question:</strong></p><p>Is my approach for treating a <em>graphics packet</em> depending its content a good one ?</p><p>i.e.</p><ul><li>explicit interface implementation</li><li>naive <code>bool</code> check and throw on invalid state</li></ul><p><em>Strong arguments about considering splitting the concerns in such case,</em></p><ul><li>game data is just like that, why change the logic ?</li><li>(my) modern, object-oriented approach, summarized this as few types (i.e. DRY concept)</li><li>problem won&#39;t really vanish, as those <em>graphics packet</em> will always be either a polygon or a sprite (i.e. why fight against that logic after all ?)</li></ul><p>Hope that makes sense to you, otherwise let me know how I can improve the question.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>I believe you only need one interface that classes for Polygon and Sprite implement. Based on what I see I would make an interface for GraphicsPacket and create Polygon and Sprite classes that implement it&#39;s methods.</p><p>Then throughout your code you just write it to use GraphicsPacket objects and you don&#39;t need to decide numerous times whether it&#39;s a Polygon or Sprite.</p><pre><code>public interface IGraphicsPacket
+{
+    public GraphicsPacket(Stream stream);
+
+    public GetMesh()
+}
+
+public class  Polygon : IGraphicsPacket
+{
+    public GraphicsPacket(Stream stream)
+    {
+        //Polygon implementation
+    }
+
+    public GetMesh()
+    {
+        //Polygon implementation
+    }
+}
+
+public class  Sprite : IGraphicsPacket
+{
+    public GraphicsPacket(Stream stream)
+    {
+        //Sprite implementation
+    }
+
+    public GetMesh()
+    {
+        //Sprite implementation
+    }
+}
+</code></pre><p><strong>TEST</strong></p><pre><code>public class Test
+{
+    public void BuildPrimitive([NotNull] IGraphicsPacket primitive)
+    {
+        if (primitive == null)
+            throw new ArgumentNullException(nameof(primitive));
+
+        primitive.GetMesh();
+
+        return;
+    }
+}
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/c-design-patterns-why-the-need-for-interfaces/'>C# &#8211; Design Patterns &#8211; Why the need for interfaces</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/php-interface-segregation-principle-type-hinting-multiple-interfaces/'>Php &#8211; Interface Segregation Principle &#8211; type hinting multiple interfaces</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-is-using-interfaces-for-datatypes-an-anti-pattern/'>C# &#8211; Is using interfaces for datatypes an anti-pattern</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/java-implementing-strategy-pattern-multiple-variables/'>Java &#8211; Implementing strategy pattern multiple variables</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-implementing-multiple-disparate-interfaces-in-a-single-base-class/'>C# Implementing multiple, disparate interfaces in a single base class</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-how-to-avoid-duplicate-code-with-interfaces-where-objects-have-the-same-behaviour/'>C# How to avoid duplicate code with interfaces where objects have the same behaviour</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,90 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>What should be the last entry in a switch/case statement &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1087479 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1087479" class="post-1087479 software type-software status-publish hentry category-software tag-default-values tag-language-agnostic tag-patterns-and-practices tag-programming-practices tag-switch-statement"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">What should be the last entry in a switch/case statement</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">default values</span><span class="mr-2 badge badge-info">language-agnostic</span><span class="mr-2 badge badge-warning">patterns-and-practices</span><span class="mr-2 badge badge-primary">programming practices</span><span class="mr-2 badge badge-danger">switch statement</span></p><div class="entry-content"><p>When writing a <code>switch</code> statement that only ever has to deal with a known set of values (imagine an implicit enumeration), I find myself wondering what should be the last entry in the construct. I&#39;m always considering the same 3 approaches, but I&#39;d really like to just stick with the one that makes the most sense and never think about this again. The alternatives are described below. For the sake of discussion, let&#39;s assume there are exactly 4 options for the &#34;switching variable&#34;.</p><ul><li><strong>Approach #1</strong>: 4 cases, no <code>default</code> case.</li><li><strong>Approach #2</strong>: 3 cases, <code>default</code> acts as the last case (+ comment explaining this).</li><li><strong>Approach #3</strong>: 4 cases, <code>default</code> case with a &#34;<code>ShouldNeverHappenException</code>&#34;.</li></ul><p>My thoughts on this are as follows:</p><ul><li>One the one hand, since <code>default</code> is effectively a case that cannot be reached, it seems pointless to clutter the code with it.</li><li>On the other hand, it&#39;s bad <em>not to handle</em> a <code>default</code> case out of of future-proofing considerations, that is, if someday another option becomes available (due to e.g. API changes outside of my control), the code might react to it incorrectly if the <code>default</code> case is used for one of the expected options.</li><li>If the last case handles an error scenario, it might not be so bad if it&#39;s the default behavior (assuming I have no fine-grained error handling).</li></ul><p>Based on the above reasoning I tend to prefer the <strong>3<sup>rd</sup> approach</strong>, but I am no software engineer, and perhaps I&#39;m missing something.</p><p>What are the best practices in this case?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><blockquote><p>imagine an implicit enumeration</p></blockquote><p>I think this is the key point. Implicit means not an actual <code>enum</code> type, but, say, numbers with special meaning.</p><pre><code>const int A = 1;
+const int B = 2;
+const int C = 3;
+</code></pre><p>And a method that is using the switch statement:</p><pre><code>public void DoSomething(int type)
+{
+    switch (type)
+    {
+        case A:
+            // Stuff
+            break;
+        case B:
+            // Stuff
+            break;
+        case C:
+            // Stuff
+            break;
+        default:
+            // Do I even needs this?
+            break;
+    }
+}
+</code></pre><p>The &#34;implicit&#34; enumeration in this example is a 32 bit integer. The entire range of values for the 32 bit integer are your possible cases. So what if I call:</p><pre><code>DoSomething(355);
+</code></pre><p>Or:</p><pre><code>DoSomething(-2);
+</code></pre><p>You might say &#34;I&#39;m always using the constants A, B and C in my program when calling this method, so it&#39;s impossible to pass -1&#34;</p><p>But the compiler allows it, therefore a code change in the future in how DoSomething is called can pass an illegal value.</p><p>If you pass an illegal value, is there an intelligent default you can fall back on? If so, that&#39;s your <code>default</code>. If not, throw an exception.</p><p>I would argue for a <code>default</code> even for an explicit enumeration:</p><pre><code>enum Foo
+{
+    A = 1,
+    B = 2,
+    C = 3
+}
+
+public void DoSomething(Foo type)
+{
+    switch (type)
+    {
+        case A:
+            // Stuff
+            break;
+        case B:
+            // Stuff
+            break;
+        case C:
+            // Stuff
+            break;
+        default:
+            throw new NotImplementedException(&#34;Type &#34; + type + &#34; is not yet implemented&#34;);
+            break;
+    }
+}
+</code></pre><p>The default clause throwing an exception to the fact a value is not implemented is a good debugging tool for the future where you add an item to the enum, and then you forget to change the application behavior based on that.</p><p>Will the exception happen in production? Most likely not. It will probably happen during development or testing and be fixed.</p><p>But that&#39;s the benefit of having a default clause and either doing something by default or blowing up.</p><p>There are some cases where doing nothing is OK. I honestly would <em>still</em> put in a default clause with a comment:</p><pre><code>public void DoSomething(int type)
+{
+    switch (type)
+    {
+        case A:
+            ...
+            break;
+        case B:
+            ...
+            break;
+        case C:
+            ...
+            break;
+        default:
+            // Do nothing intentionally
+            break;
+    }
+}
+</code></pre><p>To me this falls under the same guidelines as exception handling. If you catch the exception, do something with it. If you don&#39;t want to do anything with it, catch the exception and explain why nothing is done:</p><pre><code>try
+{
+    ...
+}
+catch(Exception)
+{
+    // Do nothing, because we are trying to do something and we
+    // really don&#39;t care if it happens.
+}
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../how-is-switch-case-handled-as-to-avoid-comparisons-to-the-case-values/'>How is switch/case handled as to avoid comparisons to the case values</a></li><li class="list-group-item"><a href='../design-map-of-functions-vs-switch-statement/'>Design &#8211; Map of functions vs switch statement</a></li><li class="list-group-item"><a href='../break-on-default-case-in-switch/'>Break on default case in switch</a></li><li class="list-group-item"><a href='../searching-algorithm-used-in-switch-statement/'>Searching algorithm used in switch statement</a></li><li class="list-group-item"><a href='../how-to-reduce-a-switch-in-a-switch-statement/'>How to reduce a switch in a switch statement</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

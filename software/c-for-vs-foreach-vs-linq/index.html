@@ -1,0 +1,205 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; for vs. foreach vs. LINQ &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1063026 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1063026" class="post-1063026 software type-software status-publish hentry category-software tag-c tag-linq"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; for vs. foreach vs. LINQ</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">linq</span></p><div class="entry-content"><p>When I write code in Visual Studio, ReSharper (God bless it!) often suggests me to change my old-school for loop in the more compact foreach form.</p><p>And often, when I accept this change, ReSharper goes a step forward, and suggests me to change it again, in a shiny LINQ form.</p><p>So, I wonder: are there some <em>real</em> advantages, in these improvements? In pretty simple code execution, I cannot see any speed boost (obviously), but I can see the code becoming less and less readable&#8230; So I wonder: is it worth it?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><h2><code>for</code> vs. <code>foreach</code></h2><p>There is a common confusion that those two constructs are very similar and that both are interchangeable like this:</p><pre><code>foreach (var c in collection)
+{
+    DoSomething(c);
+}
+</code></pre><p>and:</p><pre><code>for (var i = 0; i &lt; collection.Count; i++)
+{
+    DoSomething(collection[i]);
+}
+</code></pre><p>The fact that both keywords start by the same three letters doesn&#39;t mean that semantically, they are similar. This confusion is extremely error-prone, especially for beginners. <strong>Iterating through a collection and doing something with the elements is done with <code>foreach</code>; <code>for</code> doesn&#39;t have to and shouldn&#39;t be used for this purpose</strong>, unless you really know what you&#39;re doing.</p><p>Let&#39;s see what&#39;s wrong with it with an example. At the end, you&#39;ll find the full code of a demo application used to gather the results.</p><p>In the example, we are loading some data from the database, more precisely the cities from Adventure Works, ordered by name, before encountering &#34;Boston&#34;. The following SQL query is used:</p><pre><code>select distinct [City] from [Person].[Address] order by [City]
+</code></pre><p>The data is loaded by <code>ListCities()</code> method which returns an <code>IEnumerable&lt;string&gt;</code>. Here is what <code>foreach</code> looks like:</p><pre><code>foreach (var city in Program.ListCities())
+{
+    Console.Write(city + &#34; &#34;);
+
+    if (city == &#34;Boston&#34;)
+    {
+        break;
+    }
+}
+</code></pre><p>Let&#39;s rewrite it with a <code>for</code>, assuming that both are interchangeable:</p><pre><code>var cities = Program.ListCities();
+for (var i = 0; i &lt; cities.Count(); i++)
+{
+    var city = cities.ElementAt(i);
+
+    Console.Write(city + &#34; &#34;);
+
+    if (city == &#34;Boston&#34;)
+    {
+        break;
+    }
+}
+</code></pre><p>Both return the same cities, but there is a huge difference.</p><ul><li>When using <code>foreach</code>, <code>ListCities()</code> is called one time and yields 47 items.</li><li>When using <code>for</code>, <code>ListCities()</code> is called 94 times and yields 28153 items overall.</li></ul><p>What happened?</p><p><code>IEnumerable</code> is <a href="http://en.wikipedia.org/wiki/Lazy_evaluation" rel="nofollow noreferrer">lazy</a>. It means that it will do the work only at the moment when the result is needed. Lazy evaluation is a very useful concept, but has some caveats, including the fact that it&#39;s easy to miss the moment(s) where the result will be needed, especially in the cases where the result is used multiple times.</p><p>In a case of a <code>foreach</code>, the result is requested only once. <strong>In a case of a <code>for</code> <em>as implemented in the incorrectly written code above</em>, the result is requested 94 times</strong>, i.e. 47 × 2:</p><ul><li><p>Every time <code>cities.Count()</code> is called (47 times),</p></li><li><p>Every time <code>cities.ElementAt(i)</code> is called (47 times).</p></li></ul><p>Querying a database 94 times instead of one is terrible, but not the worse thing which may happen. Imagine, for example, what would happen if the <code>select</code> query would be preceded by a query which also inserts a row in the table. Right, we would have <code>for</code> which will call the database <a href="https://stackoverflow.com/a/94608/240613">2,147,483,647</a> times, unless it hopefully crashes before.</p><p>Of course, my code is biased. I deliberately used the laziness of <code>IEnumerable</code> and wrote it in a way to repeatedly call <code>ListCities()</code>. One can note that a beginner will never do that, because:</p><ul><li><p>The <code>IEnumerable&lt;T&gt;</code> doesn&#39;t have the property <code>Count</code>, but only the method <code>Count()</code>. Calling a method is scary, and one can expect its result to not be cached, and not suitable in a <code>for (; ...; )</code> block.</p></li><li><p>The indexing is unavailable for <code>IEnumerable&lt;T&gt;</code> and it&#39;s not obvious to find the <code>ElementAt</code> LINQ extension method.</p></li></ul><p>Probably most beginners would just convert the result of <code>ListCities()</code> to something they are familiar with, like a <code>List&lt;T&gt;</code>.</p><pre><code>var cities = Program.ListCities();
+var flushedCities = cities.ToList();
+for (var i = 0; i &lt; flushedCities.Count; i++)
+{
+    var city = flushedCities[i];
+
+    Console.Write(city + &#34; &#34;);
+
+    if (city == &#34;Boston&#34;)
+    {
+        break;
+    }
+}
+</code></pre><p>Still, this code is very different from the <code>foreach</code> alternative. Again, it gives the same results, and this time the <code>ListCities()</code> method is called only once, <strong>but yields 575 items, while with <code>foreach</code>, it yielded only 47 items.</strong></p><p>The difference comes from the fact that <code>ToList()</code> causes <strong>all</strong> data to be loaded from the database. While <code>foreach</code> requested only the cities before &#34;Boston&#34;, the new <code>for</code> requires all cities to be retrieved and stored in memory. With 575 short strings, it probably doesn&#39;t make much difference, but what if we were retrieving only few rows from a table containing billions of records?</p><h2>So what is <code>foreach</code>, really?</h2><p><code>foreach</code> is closer to a while loop. The code I previously used:</p><pre><code>foreach (var city in Program.ListCities())
+{
+    Console.Write(city + &#34; &#34;);
+
+    if (city == &#34;Boston&#34;)
+    {
+        break;
+    }
+}
+</code></pre><p>can be simply replaced by:</p><pre><code>using (var enumerator = Program.ListCities().GetEnumerator())
+{
+    while (enumerator.MoveNext())
+    {
+        var city = enumerator.Current;
+        Console.Write(city + &#34; &#34;);
+
+        if (city == &#34;Boston&#34;)
+        {
+            break;
+        }
+    }
+}
+</code></pre><p>Both produce the same IL. Both have the same result. Both have the same side effects. Of course, this <code>while</code> can be rewritten in a similar infinite <code>for</code>, but it would be even longer and error-prone. You&#39;re free to choose the one you find more readable.</p><p>Want to test it yourself? Here&#39;s the full code:</p><pre><code>using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Diagnostics;
+using System.Linq;
+
+public class Program
+{
+    private static int countCalls;
+
+    private static int countYieldReturns;
+
+    public static void Main()
+    {
+        Program.DisplayStatistics(&#34;for&#34;, Program.UseFor);
+        Program.DisplayStatistics(&#34;for with list&#34;, Program.UseForWithList);
+        Program.DisplayStatistics(&#34;while&#34;, Program.UseWhile);
+        Program.DisplayStatistics(&#34;foreach&#34;, Program.UseForEach);
+
+        Console.WriteLine(&#34;Press any key to continue...&#34;);
+        Console.ReadKey(true);
+    }
+
+    private static void DisplayStatistics(string name, Action action)
+    {
+        Console.WriteLine(&#34;--- &#34; + name + &#34; ---&#34;);
+
+        Program.countCalls = 0;
+        Program.countYieldReturns = 0;
+
+        var measureTime = Stopwatch.StartNew();
+        action();
+        measureTime.Stop();
+
+        Console.WriteLine();
+        Console.WriteLine();
+        Console.WriteLine(&#34;The data was called {0} time(s) and yielded {1} item(s) in {2} ms.&#34;, Program.countCalls, Program.countYieldReturns, measureTime.ElapsedMilliseconds);
+        Console.WriteLine();
+    }
+
+    private static void UseFor()
+    {
+        var cities = Program.ListCities();
+        for (var i = 0; i &lt; cities.Count(); i++)
+        {
+            var city = cities.ElementAt(i);
+
+            Console.Write(city + &#34; &#34;);
+
+            if (city == &#34;Boston&#34;)
+            {
+                break;
+            }
+        }
+    }
+
+    private static void UseForWithList()
+    {
+        var cities = Program.ListCities();
+        var flushedCities = cities.ToList();
+        for (var i = 0; i &lt; flushedCities.Count; i++)
+        {
+            var city = flushedCities[i];
+
+            Console.Write(city + &#34; &#34;);
+
+            if (city == &#34;Boston&#34;)
+            {
+                break;
+            }
+        }
+    }
+
+    private static void UseForEach()
+    {
+        foreach (var city in Program.ListCities())
+        {
+            Console.Write(city + &#34; &#34;);
+
+            if (city == &#34;Boston&#34;)
+            {
+                break;
+            }
+        }
+    }
+
+    private static void UseWhile()
+    {
+        using (var enumerator = Program.ListCities().GetEnumerator())
+        {
+            while (enumerator.MoveNext())
+            {
+                var city = enumerator.Current;
+                Console.Write(city + &#34; &#34;);
+
+                if (city == &#34;Boston&#34;)
+                {
+                    break;
+                }
+            }
+        }
+    }
+
+    private static IEnumerable&lt;string&gt; ListCities()
+    {
+        Program.countCalls++;
+        using (var connection = new SqlConnection(&#34;Data Source=mframe;Initial Catalog=AdventureWorks;Integrated Security=True&#34;))
+        {
+            connection.Open();
+
+            using (var command = new SqlCommand(&#34;select distinct [City] from [Person].[Address] order by [City]&#34;, connection))
+            {
+                using (var reader = command.ExecuteReader(CommandBehavior.SingleResult))
+                {
+                    while (reader.Read())
+                    {
+                        Program.countYieldReturns++;
+                        yield return reader[&#34;City&#34;].ToString();
+                    }
+                }
+            }
+        }
+    }
+}
+</code></pre><p>And the results:</p><blockquote><p>--- for ---<br/> Abingdon Albany Alexandria Alhambra [...] Bonn Bordeaux Boston</p><p>The data was called 94 time(s) and yielded 28153 item(s).</p><p>--- for with list ---<br/> Abingdon Albany Alexandria Alhambra [...] Bonn Bordeaux Boston</p><p>The data was called 1 time(s) and yielded 575 item(s).</p><p>--- while ---<br/> Abingdon Albany Alexandria Alhambra [...] Bonn Bordeaux Boston</p><p>The data was called 1 time(s) and yielded 47 item(s).</p><p>--- foreach ---<br/> Abingdon Albany Alexandria Alhambra [...] Bonn Bordeaux Boston</p><p>The data was called 1 time(s) and yielded 47 item(s).</p></blockquote><h2>LINQ vs. traditional way</h2><p>As for LINQ, you may want to <strong>learn functional programming</strong> (FP) - not C# FP stuff, but real FP language like Haskell. Functional languages have a specific way to express and present the code. In some situations, it is superior to non-functional paradigms.</p><p>FP is known being much superior when it comes to manipulating lists (<em>list</em> as a generic term, unrelated to <code>List&lt;T&gt;</code>). Given this fact, the ability to express C# code in a more functional way when it comes to lists is rather a good thing.</p><p>If you&#39;re not convinced, compare the readability of code written in both functional and non-functional ways in my <a href="https://softwareengineering.stackexchange.com/a/158721/6605">previous answer</a> on the subject.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-what-problem-domain-is-linq-made-for/'>C# &#8211; What problem domain is LINQ made for</a></li><li class="list-group-item"><a href='../c-is-linq-more-efficient-than-it-appears-on-the-surface/'>C# &#8211; Is linq more efficient than it appears on the surface</a></li><li class="list-group-item"><a href='../c-good-design-pattern-for-linq-to-sql/'>C# &#8211; Good design pattern for linq to sql</a></li><li class="list-group-item"><a href='../c-most-efficient-linq-result-for-contains-query/'>C# &#8211; Most efficient LINQ result for Contains() query</a></li><li class="list-group-item"><a href='../c-should-i-write-complex-linq-queries/'>C# &#8211; Should I write complex Linq queries</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

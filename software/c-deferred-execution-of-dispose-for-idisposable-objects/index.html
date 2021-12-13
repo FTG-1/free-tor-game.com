@@ -1,0 +1,207 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Deferred execution of Dispose for IDisposable objects &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1082781 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1082781" class="post-1082781 software type-software status-publish hentry category-software tag-c tag-optimization"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Deferred execution of Dispose for IDisposable objects</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">optimization</span></p><div class="entry-content"><p>I&#39;m working on an application that does lots of encryption and decryption in-application and this is probably the number-one bottleneck, so I&#39;ve been spending some time making performance tweaks to it.  A lot of this has involved simply caching things in memory (I realize there is something of a security tradeoff in doing that), but I noticed during profiling that Dispose() was a fair amount of the time doing decryption (I believe for .NET cryptography stuff it zeroes over everything so this makes sense).  So I came up with this idea:</p><p>Have a &#34;dispose pool.&#34;  Instead of using blocks, create objects, use them, return the result, and add them to the dispose pool in the finally block.  Internally, the dispose pool uses a queue and a timer and every time the timer fires it dequeues the objects and disposes them.</p><p>I tried implementing this and it seems to work and improve performance, but then again, profiling it locally is not a really realistic use case.  Is this sound?  Am I likely to run into runaway performance issues I&#39;m not currently thinking about?</p><p>I suppose I should add that this is an ASP.NET MVC application so everything revolves around requests.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>You might take a look at Microsoft&#39;s <a href="http://msdn.microsoft.com/en-us/library/system.reactive.disposables.scheduleddisposable(v=vs.103).aspx" rel="nofollow">ScheduledDisposable</a>.  I&#39;ve never used it, but it looks as though it will queue your objects for disposal on a separate thread.</p><p>But if a pool is what you&#39;re looking for, I think this will work:</p><pre><code>public interface IDisposableWrapper&lt;TDisposable&gt; : IDisposable where TDisposable : class, IDisposable
+{
+    TDisposable Reference { get; }
+}
+
+public interface IDisposableWrapperFactory&lt;TDisposable&gt; where TDisposable : class, IDisposable
+{
+    IDisposableWrapper&lt;TDisposable&gt; Create();
+}
+
+public sealed class ReusableDisposableFactory&lt;TDisposable&gt; : IDisposableWrapperFactory&lt;TDisposable&gt;, IDisposable
+    where TDisposable : class, IDisposable
+{
+    readonly object padlock = new object();
+    Func&lt;TDisposable&gt; getReference;
+    Stack&lt;TDisposable&gt; stack;
+    int capacity;
+
+    public ReusableDisposableFactory(Func&lt;TDisposable&gt; getReference, int capacity)
+    {
+        if (getReference == null)
+            throw new ArgumentNullException(&#34;getReference&#34;);
+        this.stack = new Stack&lt;TDisposable&gt;(capacity);
+        this.capacity = capacity;
+        this.getReference = getReference;
+    }
+
+    bool IsDisposed { get { return stack == null; } }
+
+    void ThrowOnDisposed()
+    {
+        if (IsDisposed)
+            throw new ObjectDisposedException(GetType().Name);
+    }
+
+    sealed class ReusableDisposableWrapper : IDisposableWrapper&lt;TDisposable&gt;
+    {
+        ReusableDisposableFactory&lt;TDisposable&gt; factory;
+        TDisposable reference;
+
+        internal ReusableDisposableWrapper(ReusableDisposableFactory&lt;TDisposable&gt; factory, TDisposable reference)
+        {
+            if (factory == null)
+                throw new ArgumentNullException(&#34;factory&#34;);
+            this.factory = factory;
+            this.reference = reference;
+        }
+
+        public bool IsDisposed { get { return reference == null; } }
+
+        #region IDisposableWrapper&lt;TDisposable&gt; Members
+
+        public TDisposable Reference
+        {
+            get { return reference; }
+            private set { reference = value; }
+        }
+
+        #endregion
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            // Dispose of unmanaged resources.
+            Dispose(true);
+            // Suppress finalization.  Since this class actually has no finalizer, this does nothing.
+            GC.SuppressFinalize(this);
+        }
+
+        void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // Free any other managed objects here.
+                var reference = Interlocked.Exchange(ref this.reference, null);
+                if (reference != null)
+                    factory.DisposeReference(reference);
+            }
+            // Free any unmanaged objects here. 
+        }
+
+        #endregion
+
+        public override string ToString()
+        {
+            var theReference = Reference;
+            if (IsDisposed || theReference == null)
+                return base.ToString() + &#34;: Disposed&#34;;
+            else
+                return base.ToString() + &#34;: &#34; + theReference.ToString();
+        }
+    }
+
+    #region IDisposableWrapperFactory&lt;TDisposable&gt; Members
+
+    public IDisposableWrapper&lt;TDisposable&gt; Create()
+    {
+        lock (padlock)
+        {
+            ThrowOnDisposed();
+            TDisposable reference;
+            if (stack.Count &gt; 0)
+            {
+                reference = stack.Pop();
+            }
+            else
+            {
+                reference = getReference();
+            }
+            return new ReusableDisposableWrapper(this, reference);
+        }
+    }
+
+    void DisposeReference(TDisposable reference)
+    {
+        lock (padlock)
+        {
+            if (reference == null)
+                return;
+            ThrowOnDisposed();
+            if (stack.Count &lt; capacity)
+            {
+                stack.Push(reference);
+            }
+            else
+            {
+                reference.Dispose();
+            }
+        }
+    }
+
+    #endregion
+
+    #region IDisposable Members
+
+    public void Dispose()
+    {
+        // Dispose of unmanaged resources.
+        Dispose(true);
+        // Suppress finalization.  Since this class actually has no finalizer, this does nothing.
+        GC.SuppressFinalize(this);
+    }
+
+    void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            lock (padlock)
+            {
+                if (!IsDisposed)
+                {
+                    while (stack.Count &gt; 0)
+                    {
+                        var reference = stack.Pop();
+                        reference.Dispose();
+                    }
+                    stack = null;
+                    getReference = null;
+                }
+            }
+        }
+        // Free any unmanaged objects here. 
+    }
+
+    #endregion
+
+    public override string ToString()
+    {
+        string str = base.ToString();
+        if (!Monitor.TryEnter(padlock))
+        {
+            // Don&#39;t block for ToString()
+            str = str + &#34;, locked.&#34;;
+        }
+        else
+        {
+            try
+            {
+                if (IsDisposed)
+                    str = str + &#34;, Disposed&#34;;
+                else
+                    str = string.Format(&#34;{0}: {1} {2} cached&#34;, str, stack.Count, typeof(TDisposable).Name);
+            }
+            finally
+            {
+                Monitor.Exit(padlock);
+            }
+        }
+        return str;
+    }
+}
+</code></pre><p>Note the factory itself is disposable.  I certainly would be reluctant to use this for finalizable objects however.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-how-to-generate-nonce-for-ajax-web-requests/'>C# &#8211; How to generate nonce for Ajax web requests</a></li><li class="list-group-item"><a href='../c-worker-object-pool-pattern/'>C# &#8211; &#8220;Worker object pool&#8221; pattern</a></li><li class="list-group-item"><a href='../c-adding-scripting-capability-to-a-net-application/'>C# &#8211; Adding scripting capability to a .NET application</a></li><li class="list-group-item"><a href='../c-stateless-web-applications-defeat-dbcontext-somehow/'>C# &#8211; Stateless Web Applications Defeat DBContext Somehow</a></li><li class="list-group-item"><a href='../c-do-i-get-valid-profiling-results-with-optimization-turned-off/'>C++ &#8211; Do I get valid profiling results with optimization turned off</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

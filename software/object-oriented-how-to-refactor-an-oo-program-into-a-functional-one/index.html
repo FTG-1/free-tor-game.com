@@ -1,0 +1,93 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Object-oriented &#8211; How to refactor an OO program into a functional one &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1068028 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1068028" class="post-1068028 software type-software status-publish hentry category-software tag-functional-programming tag-object-oriented tag-refactoring"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Object-oriented &#8211; How to refactor an OO program into a functional one</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">functional programming</span><span class="mr-2 badge badge-info">object-oriented</span><span class="mr-2 badge badge-warning">refactoring</span></p><div class="entry-content"><p>I&#39;m having difficulty finding resources on how to write programs in a functional style. The most advanced topic I could find discussed online was using structural typing to cut down on class hierarchies; most just deal with how to use map/fold/reduce/etc to replace imperative loops.</p><p>What I would really like to find is an in-depth discussion of an OOP implementation of a non-trivial program, its limitations, and how to refactor it in a functional style. Not just an algorithm or a data structure, but something with several different roles and aspects &#8211; a video game perhaps. By the way I did read Real-World Functional Programming by Tomas Petricek, but I&#39;m left wanting more.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><h1>Definition of Functional Programming</h1><p>The introduction to <a href="http://joyofclojure.com/the-book/">The Joy of Clojure</a> says the following:</p><blockquote><p>Functional programming is one of those computing terms that has a
+ amorphous definition. If you ask 100 programmers for their definition,
+ you’ll likely receive 100 different answers...</p><p>Functional programming
+ concerns and facilitates the application and composition of
+ functions...  For a language to be considered functional, its notion
+ of function must be first-class.  First-class functions can be stored,
+ passed, and returned just like any other piece of data.  Beyond this
+ core concept, [definitions of FP might include] purity, immutability,
+ recursion, laziness, and referential transparency.</p></blockquote><p><a href="http://booksites.artima.com/programming_in_scala_2ed">Programming in Scala 2nd Edition</a> p. 10 has the following definition:</p><blockquote><p>Functional programming is guided by two main ideas.  The first idea is
+ that functions are first-class values...  You can pass functions as
+ arguments to other functions, return them as results from functions,
+ or store them in variables...</p><p>The second main idea of functional programming is that the operations
+ of a program should map input values to output values rather than
+ change data in place.</p></blockquote><p>If we accept the first definition, then the only thing you need to do to make your code &#34;functional&#34; is to turn your loops inside out.  The second definition includes immutability.</p><h1>First Class Functions</h1><p>Imagine you currently get a List of Passengers from your Bus object and you iterate over it decreasing each passenger&#39;s bank account by the amount of the bus fare.  The functional way to perform this same action would be to have a method on Bus, maybe called forEachPassenger that takes a function of one argument.  Then Bus would iterate over its passengers however that is best accomplished and your client code that charges the fare for the ride would be put in a function and passed to forEachPassenger.  Voila!  You&#39;re using functional programming.</p><p>Imperative:</p><pre><code>for (Passenger p : Bus.getPassengers()) {
+    p.debit(fare);
+}
+</code></pre><p>Functional (using an anonymous function or &#34;lambda&#34; in Scala):</p><pre><code>myBus = myBus.forEachPassenger(p:Passenger -&gt; { p.debit(fare) })
+</code></pre><p>More sugary Scala version:</p><pre><code>myBus = myBus.forEachPassenger(_.debit(fare))
+</code></pre><h1>Non-first-class Functions</h1><p>If your language does not support first-class functions, this can get very ugly.  In Java 7 or earlier, You have to provide a &#34;Functional Object&#34; interface like this:</p><pre><code>// Java 8 has java.util.function.Consumer, but in earlier
+// versions you have to roll your own:
+public interface Consumer&lt;T&gt; {
+    public void accept(T t);
+}
+</code></pre><p>Then the Bus class provides an internal iterator:</p><pre><code>public void forEachPassenger(Consumer&lt;Passenger&gt; c) {
+    for (Passenger p : passengers) {
+        c.accept(p);
+    }
+}
+</code></pre><p>Finally, you pass an anonymous function object to the Bus:</p><pre><code>// Java 8 has syntactic sugar to make this look more like
+// the Scala solution, but earlier versions require manually
+// instantiating a &#34;Function Object,&#34; in this case, a
+// Consumer:
+Bus.forEachPassenger(new Consumer&lt;Passenger&gt;() {
+    @Override
+    public void accept(final Passenger p) {
+        p.debit(fare);
+    }
+}
+</code></pre><p>Java 8 allows local variables to be captured the scope of an anonymous function, but in earlier versions, any such varibales must be declared final.  To get around this you may need to make a MutableReference wrapper class.  Here&#39;s an integer-specific class that lets you add a loop counter to the above code:</p><pre><code>public static class MutableIntWrapper {
+    private int i;
+    private MutableIntWrapper(int in) { i = in; }
+    public static MutableIntWrapper ofZero() {
+        return new MutableIntWrapper(0);
+    }
+    public int value() { return i; }
+    public void increment() { i++; }
+}
+
+final MutableIntWrapper count = MutableIntWrapper.ofZero();
+Bus.forEachPassenger(new Consumer&lt;Passenger&gt;() {
+    @Override
+    public void accept(final Passenger p) {
+        p.debit(fare);
+        count.increment();
+    }
+}
+
+System.out.println(count.value());
+</code></pre><p>Even with this ugliness, it is sometimes beneficial to eliminate complicated and repeated logic from loops spread throughout your program by providing an internal iterator.</p><p>This ugliness has been fixed in Java 8, but handling checked exceptions inside a first class function is still really ugly and Java still carries the assumption of mutability in all its collections.  Which brings us to the other goals often associated with FP:</p><h1>Immutability</h1><p>Josh Bloch&#39;s Item 13 is &#34;Prefer Immutability.&#34;  Despite common trash talk to the contrary, OOP can be done with immutable objects, and doing so makes it much better.  For instance, String in Java is immutable.  StringBuffer, OTOH needs to be mutable in order to build an immutable String.  Some tasks, like working with buffers inherently require mutability.</p><h1>Purity</h1><p>Each function should at least be memoizable - if you give it the same input parameters (and it should have no input besides its actual arguments), it should produce the same output every time without causing &#34;side effects&#34; like changing global state, performing I/O, or throwing exceptions.</p><p>It has been said that in Functional Programming, &#34;some evil is usually required in order to get work done.&#34;  100% purity is generally not the goal.  Minimizing side effects is.</p><h1>Conclusion</h1><p>Really, of all the ideas above, immutability has been the biggest single win in terms of practical applications for simplifying my code - whether OOP, or FP.  Passing functions to iterators is the second biggest win.  The <a href="http://cr.openjdk.java.net/~briangoetz/lambda/lambda-state-final.html">Java 8 Lambdas documentation</a> has the best explanation of why.  Recursion is great for processing trees.  Laziness allows you to work with infinite collections.</p><p>If you like the JVM, I recommend you take a look at Scala and Clojure.  Both are insightful interpretations of Functional Programming.  Scala is type-safe with somewhat C-like syntax, though it really has as much syntax in common with Haskell as with C.  Clojure is not type-safe and it is a Lisp.  I recently posted a <a href="http://glenpeterson.blogspot.com/">comparison of Java, Scala and Clojure</a> with regard to one specific refactoring problem. <a href="http://logaan.github.io/clojure/core.typed/2013/10/02/core.typed-game-of-life.html">Logan Campbell&#39;s comparison</a> using the Game of Life includes Haskell and typed Clojure as well.</p><h1>PS</h1><p>Jimmy Hoffa pointed out that my Bus class is mutable.  Rather than fix the original, I think this will demonstrate exactly the kind of refactoring this question is about.  This can be fixed by making each method on Bus a factory to produce a new Bus, each method on Passenger a factory to produce a new Passenger.  Thus I&#39;ve added a return type to everything which means I&#39;ll copy Java 8&#39;s java.util.function.Function instead of Consumer interface:</p><pre><code>public interface Function&lt;T,R&gt; {
+    public R apply(T t);
+    // Note: I&#39;m leaving out Java 8&#39;s compose() method here for simplicity
+}
+</code></pre><p>Then on Bus:</p><pre><code>public Bus mapPassengers(Function&lt;Passenger,Passenger&gt; c) {
+    // I have to use a mutable collection internally because Java
+    // does not have immutable collections that return modified copies
+    // of themselves the way the Clojure and Scala collections do.
+    List&lt;Passenger&gt; newPassengers = new ArrayList(passengers.size());
+    for (Passenger p : passengers) {
+        newPassengers.add(c.apply(p));
+    }
+    return Bus.of(driver, Collections.unmodifiableList(passengers));
+}
+</code></pre><p>Finally, the anonymous function object returns the modified state of things (a new bus with new passengers).  This assumes that p.debit() now returns a new immutable Passenger with less money than the original:</p><pre><code>Bus b = b.mapPassengers(new Function&lt;Passenger,Passenger&gt;() {
+    @Override
+    public Passenger apply(final Passenger p) {
+        return p.debit(fare);
+    }
+}
+</code></pre><p>Hopefully you can now make your own decision about how functional you want to make your imperative language, and decide whether it would be better to redesign  your project using a functional language.  In Scala or Clojure, the collections and other APIs are designed to make functional programming easy.  Both have very good Java interop, so you can mix and match languages.  In fact, for Java interoperability, Scala compiles its first class functions to anonymous classes that are almost compatible with the Java 8 functional interfaces.  You can read about the details in <a href="http://www.manning.com/suereth/Suereth_MEAP_CH01.pdf">Scala in Depth sect. 1.3.2</a>.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../architecture-best-practice-refactor-n-tier-into-vertical-slices-architecture/'>Architecture &#8211; Best practice refactor n-tier into vertical slices architecture</a></li><li class="list-group-item"><a href='../object-oriented-what-are-some-techniques-i-can-use-to-refactor-object-oriented-code-into-functional-code/'>Object-oriented &#8211; What are some techniques I can use to refactor Object Oriented code into Functional code</a></li><li class="list-group-item"><a href='../object-oriented-how-to-refactor-a-data-class-to-not-be-one/'>Object-oriented &#8211; How to refactor a Data Class to not be one</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

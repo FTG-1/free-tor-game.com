@@ -1,0 +1,97 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Await state async &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1082948 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1082948" class="post-1082948 software type-software status-publish hentry category-software tag-async tag-c"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Await state async</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">async</span><span class="mr-2 badge badge-info">c</span></p><div class="entry-content"><p>For speed we sometimes return response to consumer before state is saved in DB. Sometimes (Mostly for our automated consumers) this can break because the want to make actions on the saved data before it is saved. I wrote this little helper</p><pre><code>public async Task&lt;TEntity&gt; GetWithRetry&lt;TEntity&gt;(Expression&lt;Func&lt;TEntity, bool&gt;&gt; predicate, string errorOnTimeout) where TEntity : class
+{
+    var stopwatch = new Stopwatch();
+    stopwatch.Start();
+
+    do
+    {
+        var entity = await _context.DbSet&lt;TEntity&gt;().FirstOrDefaultAsync(predicate);
+        if(entity == null)
+            await Task.Delay(100);
+        else
+            return entity;
+    } while(stopwatch.Elapsed &lt; TimeSpan.FromSeconds(1000));
+
+    throw new Exception(errorOnTimeout);
+}
+</code></pre><p>Used like</p><pre><code>var existingBooking = await GetWithRetry&lt;Booking&gt;(b =&gt; b.BookingKey == confirmCommand.BookingKey, &#34;Booking key not found&#34;);
+</code></pre><p>Any pitfalls? <code>Task.Delay</code> should scale well since it returns the thread to the pool, and if the data exists in DB the first time around it should not give much more overhead than an extra wrapped task?</p><p><strong>This is the current version of the code:</strong></p><pre><code>public async Task&lt;TEntity&gt; FirstAsync&lt;TEntity&gt;(Expression&lt;Func&lt;TEntity, bool&gt;&gt; predicate, string errorOnTimeout, TimeSpan? timeout = null) where TEntity : class
+{
+    var entity = await FirstAsyncOrDefault(predicate, timeout);
+    if(entity != null) return entity;
+
+    throw new Exception(errorOnTimeout);
+}
+
+public async Task&lt;TEntity&gt; FirstOrDefaultAsync&lt;TEntity&gt;(Expression&lt;Func&lt;TEntity, bool&gt;&gt; predicate, TimeSpan? timeout = null) where TEntity : class
+{
+    var stopwatch = new Stopwatch();
+    stopwatch.Start();
+
+    if(timeout == null)
+        timeout = TimeSpan.FromSeconds(1);
+
+    do
+    {
+        var entity = await DbSet&lt;TEntity&gt;().FirstOrDefaultAsync(predicate);
+        if(entity != null) return entity;
+
+        await Task.Delay(100);
+
+    } while(stopwatch.Elapsed &lt; timeout);
+
+    return null;
+}
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>If you just want retries with timeout, you can use a <code>for</code> loop instead of <code>Stopwatch</code>.</p><pre><code>const int MaxWaitTime = 1000; //ms
+const int SleepTime = 100; //ms
+
+public async Task&lt;TEntity&gt; GetWithRetry&lt;TEntity&gt;(Expression&lt;Func&lt;TEntity, bool&gt;&gt; predicate)
+    where TEntity : class
+{
+    TEntity entity = null;
+    // run while under wait time and entity is null
+    for (var i = 0; i &lt; MaxWaitTime &amp;&amp; entity == null; i += SleepTime) 
+    {
+        // only delay after first attempt
+        if (i != 0) await Task.Delay(SleepTime);
+
+        entity = await _context.DbSet&lt;TEntity&gt;().FirstOrDefaultAsync(predicate);
+    }
+    // I&#39;d let the caller decide whether to throw on null here
+    return entity;
+}
+</code></pre><h2>But</h2><p>Seems like a better solution would be to add a call for your customers that only completes when the data is written. Understanding that blocking for IO is a performance problem, don&#39;t! Try returning a <code>Task</code>, perhaps with <a href="https://msdn.microsoft.com/en-us/library/dd449174(v=vs.110).aspx" rel="nofollow"><code>TaskCompletionSource&lt;T&gt;</code></a>. Then you can run the operation asynchronously without blocking and have the server wake back up to complete the call when the <code>Task</code> completes.</p><p>Example batching scenario:</p><pre><code>// api method
+public async Task DoSomethingAsync(...)
+{
+    // using bool as dummy type, not really returning result
+    var notifySource = new TaskCompletionSource&lt;bool&gt;();
+
+    // pass into your data infrastructure
+    // returns without performing save
+    MyDatabase.AddToWriteBatch(..., notifySource);
+
+    // wait for the task to complete
+    await notifySource.Task;
+}
+</code></pre><p>When your data infrastructure gets around to saving the data, it notifies the caller(s) of completion:</p><pre><code>public void Process(Batch batch) {
+    ...
+    // call to database
+    Database.BatchWrite(batch.DataCollection);
+    foreach (var taskSource in batch.TaskSources)
+        taskSource.SetResult(true); // this will trigger Task completion
+}
+</code></pre><p>This way, you still are not blocking for IO on the API call. But you can offer the customer a way to be sure their write is committed before performing other operations.</p><h2>Or</h2><p>You could use the <code>TaskCompletionSource&lt;TEntity&gt;</code> for reads, and place the reads in the same queue with writes, so that the reads are guaranteed to occur after writes.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-backgroundworker-vs-async-await/'>C# &#8211; BackgroundWorker vs. Async/Await</a></li><li class="list-group-item"><a href='../async-controllers-in-asp-net-mvc-real-advantages-how-achieved/'>Async Controllers in ASP.NET MVC: Real Advantages / How Achieved</a></li><li class="list-group-item"><a href='../c-how-to-diagnose-async-await-deadlocks/'>C# &#8211; How to diagnose async/await deadlocks</a></li><li class="list-group-item"><a href='../c-http-async-await-task-avoid-flooding-server-with-requests/'>C# &#8211; HTTP Async/Await Task: avoid flooding server with requests</a></li><li class="list-group-item"><a href='../c-correct-usage-of-async-await-and-task-run/'>C# &#8211; Correct usage of async/await and Task.Run()</a></li><li class="list-group-item"><a href='../c-who-did-async-await-first/'>C# &#8211; Who did async/await first</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,108 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Understanding SignalR&#8217;s HubConnection from a SignalR .Net Client perspective &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1071825 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1071825" class="post-1071825 software type-software status-publish hentry category-software tag-c tag-web-api"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Understanding SignalR&#8217;s HubConnection from a SignalR .Net Client perspective</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">web-api</span></p><div class="entry-content"><p>I if may point out I don&#39;t have a code issue nor the requirement for code review, hence posting here.</p><p>I&#39;m generally looking for a better understanding on how to truly architect a <code>SignalR .Net Client</code> project to prevent multiple <code>HubConnections</code> being instantiated.</p><p>I/We have a prototype in a staging environment, which successfully passes print information from remote distribution centres to our app.</p><p>What truly baffles me is that I am instantiating a <code>HubConnection</code> every time I need to send a message accessed directly on the Hub, not an api endpoint.</p><p>Please allow me to demonstrate some code, So our system talks to a locked down api, which then talks to a hub hosted else where.</p><pre><code>    [IdentityBasicAuthentication]
+    [Authorize]
+    [RoutePrefix(&#34;api/v1&#34;)]
+    public class PrinterStatusV1Controller : ApiController
+    {
+        //logic removed
+        private HubConnection _hubConnection;
+
+        public PrinterStatusV1Controller()
+        {   
+            //logic removed
+        }
+
+        [HttpPost]
+        [Route(&#34;dummy&#34;)]
+        public async Task&lt;IHttpActionResult&gt; AddPrinterStatusAsync([FromBody]PrinterStatus printerStatus)
+        {
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+
+                var identityInstance = new IdentityInstance(identity);
+                if (identityInstance == null)
+                    return StatusCode(HttpStatusCode.Forbidden);
+
+                if (printerStatus == null)
+                    return NotFound();
+
+                IHubProxy aProxy = Create(dummy);
+
+                if(printerProxy != null)
+                    await printerProxy.Invoke(&#34;dummy&#34;, dummy);
+
+                await _printerStatusRepo.Dummy(dummy);
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return InternalServerError();
+            }
+        }
+        private IHubProxy Create(string dummy)
+        {
+            try
+            {
+                /logic removed
+                _hubConnection = new HubConnection(&#34;dummy&#34;, dictionary);
+                var hubProxy = _hubConnection.CreateHubProxy(&#34;dummy&#34;);
+                _hubConnection.Start().Wait();
+
+                _hubConnection.Closed += () =&gt; {
+                    var connected = false;
+                    while (!connected)
+                    {
+                        System.Threading.Thread.Sleep(2000);
+                        _hubConnection = new HubConnection(&#34;dummy&#34;, dictionary);
+                        hubProxy = _hubConnection.CreateHubProxy(&#34;dummy&#34;);
+                        _hubConnection.Start().Wait();
+                        connected = true;
+                    }
+                };
+
+                return hubProxy;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_hubConnection != null)
+                {
+                    _hubConnection.Stop();
+                    _hubConnection.Dispose();
+                }
+
+                //logic removed
+            }
+            base.Dispose(disposing);
+        }
+    }
+}
+</code></pre><p>I should get to the point, What is the generally the best pattern/architecture to avoid creating a <code>HubConnection</code>, every time I call an endpoint? any hints greatly appreciated. I can put many abstractions in place but theoretically it&#39;s going instantiate a new <code>HubConnection</code> each time..</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Maintain a reference to one <code>HubConnection</code> object, and re-use it for subsequent API calls.</p><p>This can be done in a number of different ways, without overly complicating your architecture.  For example, if you&#39;re using a DI container, you can tell your container to use a Singleton lifetime, so that when you ask for a <code>HubConnection</code> object, you get the same one back each time.</p><p>Instance members of <code>HubConnection</code> are not thread safe.  Treat them accordingly.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/c-net-c-remote-method-invocation-rmi-client-server-communication/'>C# &#8211; .Net C# Remote Method Invocation (RMI) (Client/Server communication)</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-client-side-javascript-business-logic-in-net-solution-stack/'>C# &#8211; Client-Side JavaScript Business Logic in .Net Solution Stack</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-understanding-a-proxy-server-and-connecting-to-a-web-api-via-basic-auth/'>C# &#8211; Understanding a proxy server and connecting to a web api via basic auth</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-best-practice-with-signalr-communication/'>C# &#8211; Best practice with SignalR communication</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

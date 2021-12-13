@@ -1,0 +1,112 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; Class becoming God Object what pattern to use &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1074902 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1074902" class="post-1074902 software type-software status-publish hentry category-software tag-android tag-code-quality tag-design-patterns tag-java tag-single-responsibility"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; Class becoming God Object what pattern to use</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">android</span><span class="mr-2 badge badge-info">code-quality</span><span class="mr-2 badge badge-warning">design-patterns</span><span class="mr-2 badge badge-primary">java</span><span class="mr-2 badge badge-danger">single-responsibility</span></p><div class="entry-content"><p>I am developing Android app and my <code>MainActivity</code> is becoming <code>God Object</code>.<br /> By the way native <code>Activity</code> class implementation is some sort of <code>God Object</code> already.<br /> The problem is that my activity class is growing and growing.<br /> Let me explain class responsibilites, for those who are not familiar with android.<br /> Activity is like a screen with it&#39;s UI, lifecycle, functionality to communicate with OS.<br /> Drawer is part of UI that brings to the activity side menu for navigation in the app.<br /> What is the problem.</p><pre><code>public abstract class MainActivity extends SingleFragmentToolBarActivity&lt;T&gt; implements Drawer.OnDrawerItemClickListener {
+    private static final int PROFILE_HEADER_IDENTIFIER = 200;
+    private float mDisplayDpWidth;
+    private float mDisplayDpHeight;
+    private Drawer.Result mNavigationDrawer;
+    private AccountHeader.Result mAccountHeader;
+    private double mDrawerWidthFactor = 0.9;
+    private double mDrawerHeaderHeightFactor = 0.3;
+    private IProfile&lt;ProfileDrawerItem&gt; mGuestProfile;
+    private IProfile&lt;ProfileDrawerItem&gt; mLoggedInProfile;
+    private boolean userIsLogged = false;
+    public Drawer.Result getNavigationDrawer() {
+        return this.mNavigationDrawer;
+    }
+    private AccountHeader.Result geAccountHeader() {
+        return this.mAccountHeader;
+    }
+    private static final int PROFILE_SETTING = 1;
+    private final AccountHeader.OnAccountHeaderSelectionViewClickListener mHeaderSelectionViewClickListener = new AccountHeader.OnAccountHeaderSelectionViewClickListener(.....);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setUpNavigationDrawer(savedInstanceState);
+    }
+
+    private void setUpNavigationDrawer(Bundle savedInstanceState) {
+        DrawerImageLoader.init(new DrawerImageLoader.IDrawerImageLoader() {
+            @Override
+            public void set(ImageView imageView, Uri uri, Drawable placeholder) {
+                Picasso.with(imageView.getContext()).load(uri).placeholder(placeholder).into(imageView);
+            }
+
+            @Override
+            public void cancel(ImageView imageView) {
+                Picasso.with(imageView.getContext()).cancelRequest(imageView);
+            }
+
+            @Override
+            public Drawable placeholder(Context ctx) {
+                return null;
+            }
+        });
+        getDisplayMetrics();
+        mGuestProfile = buildGuestProfile();
+        mAccountHeader = buildNavigationHeader(savedInstanceState);
+        mNavigationDrawer = buildDrawer(savedInstanceState);
+    }
+    protected Drawer.Result buildDrawer(Bundle savedInstanceState) {
+     Drawer drawer =  new Drawer(this)
+            .withActivity(this);
+    ........
+    }
+    protected List&lt;IProfile&gt; getProfileItemList() {
+    ......        
+    }
+    protected AccountHeader.Result buildNavigationHeader(Bundle savedInstanceState) {
+    ......
+    }
+    private ProfileDrawerItem buildGuestProfile() {
+        .......
+    }
+    private ProfileDrawerItem buildLoggedInProfile(UserBean userBean) {
+        .......
+    }
+    private void getDisplayMetrics() {
+       .....
+    }
+    @Override
+    public void onItemClick(AdapterView&lt;?&gt; adapterView, View view, int i, long l, IDrawerItem iDrawerItem) {
+     ......
+    }
+
+    protected Drawer addItemsIntoDrawer(Drawer buildDrawer) {
+        ......
+    }
+    public void setDrawerWidthFactor(double factor) {
+      ......
+    }
+    public void setDrawerHeaderHeightFactor(double factor) {
+      ......
+    }
+</code></pre><p>This is only declaration of some methods and class members.<br /> This code above is ONLY for setting navigation drawer in my MainActivity, there will be quite more code in the future here for communicating with services and so on, if to left this as it is, soon I will get class with millions line of code, tons of class members and ton of methods.</p><p>Ho to solve this problem, what pattern can be acceptable in this way.<br /> Setting drawer requires reference to the Activity.<br /> I have some ideas how to solve this problem.<br /> Use strategy pattern create interface with all these methods responsible for setting navigation drawer, but how can I pass reference to the activity into the interface implementation in this case I have to create not interface but abstract class and pass reference to the Activity into it&#39;s constructor.<br /> This will work, but I still think that it is not perfect, clean solution.</p><p>Please suggest what can I do to stop class growing.</p><p><strong>EDIT</strong></p><p>There is only small responsibility of my activity, there will be more important responsibilities in the future, so I have to get rid of writing a lot initialization code. I haven&#39;t post body of methods (300 lines of code). I have found one possible way here is to create some abstract class with basic methods and than create implementation and just use it in my activity when I need this.And in this case it will be possible to change it in runtime (before view has been inflated).</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>You could create list of classes responsible for each operation, where and when it makes sense for example,</p><pre><code>public abstract class MainActivity extends SingleFragmentToolBarActivity&lt;T&gt; implements Drawer.OnDrawerItemClickListener {
+    ....
+
+    private void setUpNavigationDrawer(Bundle savedInstanceState) {
+        NavigationDrawer drawer = new NavigationDrawer(this,savedInstanceState);  
+        drawer.setup();
+    }
+}
+</code></pre><p>Here you could move logic for each operation (in this example it&#39;s NavigationDrawer) to own class where it takes care of the operation.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/how-to-prevent-a-mediator-from-becoming-a-god-object/'>How to prevent a Mediator from becoming a God Object</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

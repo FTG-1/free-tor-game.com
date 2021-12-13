@@ -1,0 +1,132 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Javascript &#8211; Avoiding new operator in JavaScript &#8212; the better way &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1067283 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1067283" class="post-1067283 software type-software status-publish hentry category-software tag-javascript"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Javascript &#8211; Avoiding new operator in JavaScript &#8212; the better way</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">javascript</span></p><div class="entry-content"><p><em>Warning: This is a long post.</em></p><p>Let&#39;s keep it simple. I want to avoid having to prefix the new operator every time I call a constructor in JavaScript. This is because I tend to forget it, and my code screws up badly.</p><p>The simple way around this is this&#8230;</p><pre><code>function Make(x) {
+  if ( !(this instanceof arguments.callee) )
+  return new arguments.callee(x);
+
+  // do your stuff...
+}
+</code></pre><p>But, I need this to accept variable no. of arguments, like this&#8230;</p><pre><code>m1 = Make();
+m2 = Make(1,2,3);
+m3 = Make(&#39;apple&#39;, &#39;banana&#39;);
+</code></pre><p>The first immediate solution seems to be the &#39;apply&#39; method like this&#8230;</p><pre><code>function Make() {
+  if ( !(this instanceof arguments.callee) )
+    return new arguments.callee.apply(null, arguments);
+
+  // do your stuff
+}
+</code></pre><p>This is WRONG however &#8212; the new object is passed to the <code>apply</code> method and NOT to our constructor <code>arguments.callee</code>.</p><p>Now, I&#39;ve come up with three solutions. My simple question is: which one seems best. Or, if you have a better method, tell it.</p><p><strong>First</strong> – use <code>eval()</code> to dynamically create JavaScript code that calls the constructor.</p><pre><code>function Make(/* ... */) {
+  if ( !(this instanceof arguments.callee) ) {
+    // collect all the arguments
+    var arr = [];
+    for ( var i = 0; arguments[i]; i++ )
+      arr.push( &#39;arguments[&#39; + i + &#39;]&#39; );
+
+    // create code
+    var code = &#39;new arguments.callee(&#39; + arr.join(&#39;,&#39;) + &#39;);&#39;;
+
+    // call it
+    return eval( code );
+  }
+
+  // do your stuff with variable arguments...
+}
+</code></pre><p><strong>Second</strong> – Every object has <code>__proto__</code> property which is a &#39;secret&#39; link to its prototype object. Fortunately this property is writable.</p><pre><code>function Make(/* ... */) {
+  var obj = {};
+
+  // do your stuff on &#39;obj&#39; just like you&#39;d do on &#39;this&#39;
+  // use the variable arguments here
+
+  // now do the __proto__ magic
+  // by &#39;mutating&#39; obj to make it a different object
+
+  obj.__proto__ = arguments.callee.prototype;
+
+  // must return obj
+  return obj;
+}
+</code></pre><p><strong>Third</strong> – This is something similar to second solution.</p><pre><code>function Make(/* ... */) {
+  // we&#39;ll set &#39;_construct&#39; outside
+  var obj = new arguments.callee._construct();
+
+  // now do your stuff on &#39;obj&#39; just like you&#39;d do on &#39;this&#39;
+  // use the variable arguments here
+
+  // you have to return obj
+  return obj;
+}
+
+// now first set the _construct property to an empty function
+Make._construct = function() {};
+
+// and then mutate the prototype of _construct
+Make._construct.prototype = Make.prototype;
+</code></pre><hr/><ul><li><p><code>eval</code> solution seems clumsy and comes with all the problems of &#34;evil eval&#34;.</p></li><li><p><code>__proto__</code> solution is non-standard and the &#34;Great Browser of mIsERY&#34; doesn&#39;t honor it.</p></li><li><p>The third solution seems overly complicated.</p></li></ul><p>But with all the above three solutions, we can do something like this, that we can&#39;t otherwise&#8230;</p><pre><code>m1 = Make();
+m2 = Make(1,2,3);
+m3 = Make(&#39;apple&#39;, &#39;banana&#39;);
+
+m1 instanceof Make; // true
+m2 instanceof Make; // true
+m3 instanceof Make; // true
+
+Make.prototype.fire = function() {
+  // ...
+};
+
+m1.fire();
+m2.fire();
+m3.fire();
+</code></pre><p>So effectively the above solutions give us &#34;true&#34; constructors that accept variable no. of arguments and don&#39;t require <code>new</code>. What&#39;s your take on this.</p><p><strong>&#8212; UPDATE &#8212;</strong></p><p>Some have said &#34;just throw an error&#34;. My response is: we are doing a heavy app with 10+ constructors and I think it&#39;d be far more wieldy if every constructor could &#34;smartly&#34; handle that mistake without throwing error messages on the console.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Firstly <code>arguments.callee</code> is deprecated in ES5 strict so we don&#39;t use it. The real solution is rather simple.</p><p>You don&#39;t use <code>new</code> at all.</p><pre><code>var Make = function () {
+  if (Object.getPrototypeOf(this) !== Make.prototype) {
+    var o = Object.create(Make.prototype);
+    o.constructor.apply(o, arguments);
+    return o;
+  }
+  ...
+}
+</code></pre><p>That&#39;s a right pain in the ass right?</p><p>Try <code>enhance</code></p><pre><code>var Make = enhance(function () {
+  ...
+});
+
+var enhance = function (constr) {
+  return function () {
+    if (Object.getPrototypeOf(this) !== constr.prototype) {
+      var o = Object.create(constr.prototype);
+      constr.apply(o, arguments);
+      return o;
+    }
+    return constr.apply(this, arguments);
+  }
+}
+</code></pre><p>Now of course this requires ES5, but everyone uses the <a href="https://github.com/kriskowal/es5-shim">ES5-shim</a> right?</p><p>You may also be interested in <a href="http://raynos.org/blog/5/Doing-Object-Oriented-Javascript---part-2">alternative js OO patterns</a></p><p>As an aside you can replace option two with</p><pre><code>var Make = function () {
+  var that = Object.create(Make.prototype);
+  // use that 
+
+  return that;
+}
+</code></pre><p>In case you want your own ES5 <code>Object.create</code> shim then it&#39;s really easy</p><pre><code>Object.create = function (proto) {
+  var dummy = function () {};
+  dummy.prototype = proto;
+  return new dummy;
+};
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/java-why-did-memory-managed-languages-like-java-javascript-and-c-retain-the-new-keyword/'>Java &#8211; Why did memory-managed languages like Java, Javascript, and C# retain the `new` keyword</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/javascript-objects-and-crockfords-the-good-parts/'>JavaScript objects and Crockford&#8217;s The Good Parts</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/javascript-why-is-the-use-of-constructors-discouraged-when-creating-prototypes/'>Javascript &#8211; Why is the use of constructors discouraged when creating prototypes</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/object-oriented-how-come-javascript-being-a-prototype-based-language-doesnt-have-an-easy-way-to-access-the-prototype/'>Object-oriented &#8211; How come javascript, being a prototype based language, doesn&#8217;t have an easy way to access the prototype</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/javascript-child-object-calling-a-parents-function-through-a-global-variable/'>Javascript &#8211; Child object calling a parent&#8217;s function through a global variable</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

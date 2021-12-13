@@ -1,0 +1,64 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Test cases do all the work through helper method &#8212; bad practice &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1071972 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1071972" class="post-1071972 software type-software status-publish hentry category-software tag-anti-patterns tag-integration-tests tag-junit tag-testing"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Test cases do all the work through helper method &#8212; bad practice</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">anti-patterns</span><span class="mr-2 badge badge-info">integration-tests</span><span class="mr-2 badge badge-warning">junit</span><span class="mr-2 badge badge-primary">testing</span></p><div class="entry-content"><p>Consider a test suite like this:</p><pre><code>public class MyTestSuite {
+   @Test
+   public void test_something() {
+      testHelperMethod(&#34;value11&#34;, &#34;value12&#34;, &#34;value13&#34;);
+   }
+
+   @Test
+   public void test_something_else_meaningful_name() {
+      testHelperMethod(&#34;othervalue21&#34;, &#34;othervalue22&#34;, &#34;othervalue23&#34;);
+   }
+
+   // ...
+
+   private void testHelperMethod(String value1, String value2, String value3) {
+       // set up part (independent of value1, value2, value3)
+
+       // action part (dependent on values)
+
+       // assertion part (dependent on values)
+
+       // tear down part (independent of values)
+   }
+}
+</code></pre><p>In other words, all the test cases are executed via a single, parametrized helper method, which is structured according to the arrange-act-assert schema. The test cases just call this method with various parameters, according to what exactly needs to be tested.</p><p><strong>Question</strong>: what is the disadvantage, if any, of structuring the tests like this, and does this (anti?)-pattern have a common name?</p><p><strong>Remarks</strong></p><ol><li><p>I tried to Google for it for a long time, including <a href="https://stackoverflow.com/questions/333682/unit-testing-anti-patterns-catalogue?page=2&amp;tab=active#tab-top">on SO</a> and<br /> on the <a href="http://blog.james-carr.org/2006/11/03/tdd-anti-patterns/" rel="nofollow noreferrer">blog</a>, but could not find anything useful till now.</p></li><li><p>This <a href="https://softwareengineering.stackexchange.com/questions/115050/how-do-i-convince-some-one-that-test-should-do-assertion-not-assertions-and-no">question</a> is the closest I found, but the answers there address other aspects/problems, namely:</p><ul><li>assertions/setup code intermixed (not the case here, as all<br /> assertions are at the end of the helper method)</li><li>more assertions per test (also the case in my example, but I think this is an unrelated issue)</li><li>responsibility of helper method is not clear: I think in my<br /> case it <strong>is</strong> clear, just it is different from the &#39;traditional&#39; one</li></ul></li><li><p>To be more precise, the assertion part in <code>testHelperMethod</code> is also a separate utility method (called with many-many parameters), but I guess that does not matter much for the question. (I.e.: why is it bad practice to delegate testing to helper methods, if at all?)</p></li><li><p>In case this matters, this is an integration test, but I suspect that the answer would be the same for unit-tests as well.</p></li></ol><p><strong>EDIT</strong>: Changed the names of the test cases to avoid confusion (Previously, they were called <code>test1</code>, <code>test2</code>. In fact, the tests in the project in questions do have meaningful names, I had just made this simplification myself.)</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>As others have already stated: nothing wrong with breaking out a separate method to avoid duplication.</p><p>However, as others have also stated: you do want each individual test to clearly indicate what it is setting up and what it is asserting.</p><p>Test names will help with that enormously and I assume your actual code has more meaningful names than <code>Test1</code> and <code>Test2</code>.</p><p>To make the code of the individual tests more &#34;intelligible&#34; - ie make it clearer what each test is doing just by reading the code of that test, you can break up your helper method into its obvious parts.</p><p>Yes, it will &#34;duplicate&#34; what would otherwise be confined to the single helper as you will now have a number of calls in each test when you could do it with one, but it allows you to give more meaningful names to each helper method.</p><pre><code>// Arrange
+someHelper = MakeSomeDependency(arg1, arg2, arg3);
+sut = MakeSomeObjectUnderTest(someHelper);
+
+// Act
+sut.DoSomething();
+
+// Assert
+AssertCommonAsserts(sut, expectedvalue1, expectedvalue2);
+Assert.AreEqual(sut.SomeProperty, expectedValue);
+</code></pre><p>Note: I am not a fan of multiple asserts in a single test, but there are cases when a single &#34;fact&#34; can only be checked by multiple asserts and I can also think of a number of scenarios in which having some &#34;guard&#34; asserts before the actual &#34;fact&#34; being asserted can help in debugging failures.</p><p>If you use a language that supports named parameters, you can make your tests even more intelligible by using that feature so the method call doesn&#39;t just convey the values used, but also what those values are used for.</p><pre><code>// Arrange
+someHelper = MakeSomeDependency(
+    knownNames: arg1, 
+    unknownNames: arg2, 
+    lookingFor: arg3);
+sut = MakeSomeObjectUnderTest(someHelper);
+
+// Act
+sut.DoSomething();
+
+// Assert
+AssertCommonAsserts(
+    objectUnderTest: sut, 
+    numberOfItemsFound: expectedvalue1, 
+    nameOfItemFound: expectedvalue2);
+Assert.AreEqual(sut.SomeProperty, expectedValue);
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../unit-testing-single-or-multiple-files-for-unit-testing-a-single-class/'>Unit-testing &#8211; Single or multiple files for unit testing a single class</a></li><li class="list-group-item"><a href='../unit-testing-if-you-should-only-have-one-assertion-per-test-how-to-test-multiple-inputs/'>Unit-testing &#8211; If you should only have one assertion per test; how to test multiple inputs</a></li><li class="list-group-item"><a href='../unit-testing-are-database-integration-tests-bad/'>Unit-testing &#8211; Are (database) integration tests bad</a></li><li class="list-group-item"><a href='../unit-testing-how-to-test-a-complex-method-without-rewriting-it-in-the-test/'>Unit-testing &#8211; How to test a complex method (without rewriting it in the test)</a></li><li class="list-group-item"><a href='../unit-testing-in-tdd-is-it-bad-practice-to-write-helper-class-for-unit-tests/'>Unit-testing &#8211; In TDD, is it bad practice to write helper class for unit tests</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

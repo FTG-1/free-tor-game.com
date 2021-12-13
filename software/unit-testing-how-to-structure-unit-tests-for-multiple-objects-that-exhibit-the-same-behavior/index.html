@@ -1,0 +1,95 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Unit-testing &#8211; How to structure unit tests for multiple objects that exhibit the same behavior &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1079302 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1079302" class="post-1079302 software type-software status-publish hentry category-software tag-unit-testing"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Unit-testing &#8211; How to structure unit tests for multiple objects that exhibit the same behavior</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">unit testing</span></p><div class="entry-content"><p>In a lot of cases I might have an existing class with some behavior:</p><pre><code>class Lion
+{
+    public void Eat(Herbivore herbivore) { ... }
+}
+</code></pre><p>&#8230;and I have a unit test&#8230;</p><pre><code>[TestMethod]
+public void Lion_can_eat_herbivore()
+{
+    var herbivore = buildHerbivoreForEating();
+    var test = BuildLionForTest();
+    test.Eat(herbivore);
+    Assert.IsEaten(herbivore);
+}
+</code></pre><p>Now, what happens is I need to create a Tiger class with idential behavior to that of the Lion:</p><pre><code>class Tiger
+{
+    public void Eat(Herbivore herbivore) { ... }
+}
+</code></pre><p>&#8230;and since I want the same behavior, I need to run the same test, I do something like this:</p><pre><code>interface IHerbivoreEater
+{
+    void Eat(Herbivore herbivore);
+}
+</code></pre><p>&#8230;and I refactor my test:</p><pre><code>[TestMethod]
+public void Lion_can_eat_herbivore()
+{
+    IHerbivoreEater_can_eat_herbivore(BuildLionForTest);
+}
+
+
+public void IHerbivoreEater_can_eat_herbivore(Func&lt;IHerbivoreEater&gt; builder)
+{
+    var herbivore = buildHerbivoreForEating();
+    var test = builder();
+    test.Eat(herbivore);
+    Assert.IsEaten(herbivore);
+}
+</code></pre><p>&#8230;and then I add another test for my new <code>Tiger</code> class:</p><pre><code>[TestMethod]
+public void Tiger_can_eat_herbivore()
+{
+    IHerbivoreEater_can_eat_herbivore(BuildTigerForTest);
+}
+</code></pre><p>&#8230;and then I refactor my <code>Lion</code> and <code>Tiger</code> classes (usually by inheritance, but sometimes by composition):</p><pre><code>class Lion : HerbivoreEater { }
+class Tiger : HerbivoreEater { }
+
+abstract class HerbivoreEater : IHerbivoreEater
+{
+    public void Eat(Herbivore herbivore) { ... }
+}
+</code></pre><p>&#8230;and all is well.  However, since the functionality is now in the <code>HerbivoreEater</code> class, it now feels like there&#39;s something wrong with having tests for each of these behaviors on each subclass.  Yet it&#39;s the subclasses that are actually being consumed, and it&#39;s only an implementation detail that they happen to share overlapping behaviors (<code>Lions</code> and <code>Tigers</code> may have totally different end-uses, for instance).</p><p>It seems redundant to test the same code multiple times, but there are cases where the subclass can and does override the functionality of the base class (yes, it might violate the LSP, but lets face it, <code>IHerbivoreEater</code> is just a convenient testing interface &#8211; it may not matter to the end-user).  So these tests do have some value, I think.</p><p>What do other people do in this situation?  Do you just move your test to the base class, or do you test all subclasses for the expected behavior?</p><p><strong>EDIT</strong>:</p><p>Based on the answer from @pdr I think we should consider this: the <code>IHerbivoreEater</code> is just a method signature contract; it does not specify behavior.  For instance:</p><pre><code>[TestMethod]
+public void Tiger_eats_herbivore_haunches_first()
+{
+    IHerbivoreEater_eats_herbivore_haunches_first(BuildTigerForTest);
+}
+
+[TestMethod]
+public void Cheetah_eats_herbivore_haunches_first()
+{
+    IHerbivoreEater_eats_herbivore_haunches_first(BuildCheetahForTest);
+}
+
+[TestMethod]
+public void Lion_eats_herbivore_head_first()
+{
+    IHerbivoreEater_eats_herbivore_head_first(BuildLionForTest);
+}
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>This is great because it shows how tests truly drive the way you think about design. You are sensing problems in the design and asking the right questions.</p><p>There are two ways of looking at this.</p><p>IHerbivoreEater is a contract. All IHerbivoreEaters must have an Eat method which accepts a Herbivore. Now, your tests do not care how it is eaten; your Lion might start with the haunches and Tiger might start at the throat. All your test cares about is that after it calls Eat, the Herbivore is eaten.</p><p>On the other hand, part of what you&#39;re saying is that all IHerbivoreEaters eat the Herbivore in exactly the same way (hence the base class). That being the case, there is no point in having an IHerbivoreEater contract at all. It offers nothing. You may as well just inherit from HerbivoreEater.</p><p>Or maybe do away with Lion and Tiger completely.</p><p>But, if Lion and Tiger are different in every sense apart from their eating habits, then you need to start wondering if you are going to run into problems with a complex inheritance tree. What if you also want to derive both classes from Feline, or only Lion class from KingOfItsDomain (along with Shark, perhaps). This is where LSP truly comes in.</p><p>I would suggest that common code is better encapsulated.</p><pre><code>public class Lion : IHerbivoreEater
+{
+    private IHerbivoreEatingStrategy _herbivoreEatingStrategy;
+    private Lion (IHerbivoreEatingStrategy herbivoreEatingStrategy)
+    {
+        _herbivoreEatingStrategy = herbivoreEatingStrategy;
+    }
+
+    public Lion() : this(new StandardHerbivoreEatingStrategy())
+    {
+    }
+
+    public void Eat(Herbivore herbivore)
+    {
+        _herbivoreEatingStrategy.Eat(herbivore);
+    }
+}
+</code></pre><p>Same goes for Tiger.</p><p>Now, here&#39;s a beautiful thing developing (beautiful because I didn&#39;t intend it). If you just make that private constructor available to the test, you can pass in a fake IHerbivoreEatingStrategy and simply test that the message is passed on to the encapsulated object properly.</p><p>And your complex test, the one you were worrying about in the first place, only has to test the StandardHerbivoreEatingStrategy. One class, one set of tests, no duplicated code to worry about.</p><p>And if, later, you want to tell Tigers that they should eat their herbivores a different way, none of these tests have to change. You&#39;re simply creating a new HerbivoreEatingStrategy and testing that. The wiring is tested at integration-test level.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../unit-testing-gradual-approaches-to-dependency-injection/'>Unit-testing &#8211; Gradual approaches to dependency injection</a></li><li class="list-group-item"><a href='../unit-testing-using-mock-for-event-listeners-in-unit-testing/'>Unit-testing &#8211; Using Mock for event listeners in unit-testing</a></li><li class="list-group-item"><a href='../unit-testing-is-it-ok-to-avoid-testing-base-classes/'>Unit-testing &#8211; Is it ok to avoid testing base classes</a></li><li class="list-group-item"><a href='../java-should-i-unit-test-the-subclasses-or-the-abstract-parent-class/'>Java &#8211; Should I unit test the subclasses or the abstract parent class</a></li><li class="list-group-item"><a href='../unit-testing-how-to-detect-dependency-problems-with-unit-tests-when-you-use-mock-objects/'>Unit-testing &#8211; How to detect dependency problems with unit tests when you use mock objects</a></li><li class="list-group-item"><a href='../c-unit-testing-abstract-classes-with-google-mock-gmock-gtest-c/'>C++ &#8211; Unit testing abstract classes with Google mock (gmock/gtest) (C++)</a></li><li class="list-group-item"><a href='../unit-testing-is-testing-behavior-of-many-classes-in-one-test-still-unit-testing/'>Unit-testing &#8211; Is testing behavior of many classes in one test still unit testing</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

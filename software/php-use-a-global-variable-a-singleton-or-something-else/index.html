@@ -1,0 +1,99 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Php &#8211; Use a global variable, a singleton, or something else &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1077460 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1077460" class="post-1077460 software type-software status-publish hentry category-software tag-encapsulation tag-globals tag-php tag-singleton tag-static"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Php &#8211; Use a global variable, a singleton, or something else</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">encapsulation</span><span class="mr-2 badge badge-info">globals</span><span class="mr-2 badge badge-warning">PHP</span><span class="mr-2 badge badge-primary">singleton</span><span class="mr-2 badge badge-danger">static</span></p><div class="entry-content"><p><strong>Preface:</strong> I am working in PHP (<em>Abandon hope all ye who enter here</em>).</p><p><strong>Background:</strong> There exists a large set of global functions in PHP, a number of which are miscellaneous system calls, like <a href="http://www.php.net/manual/en/function.sleep.php" rel="noreferrer">sleep</a> (and others). Now, I use <code>sleep</code> (and others) in a bunch of different scripts I run in a bunch of different places, and I have found I need sleep to call <code>pcntl_signal_dispatch</code> as soon as the <code>sleep</code> finishes- but possibly not in all my scripts.</p><p><strong>A Generalization:</strong> I need to make global function do more than it currently does, hopefully without disrupting my current ecosystem too much.</p><p><strong>My Solution:</strong> I figure I could create a wrapper class that executes the correct <code>&#34;sleep&#34;</code>.</p><p><em>Singleton:</em> I could make a singleton &#34;System&#34; class that wraps the global functions. Hell, I could even make the wrappers static methods. The downside is that there would be a lot of boilerplate checking to see which version I would need to execute, either a vanilla function call or one with extra stuff.</p><p><em>Global variable:</em> I could make a generic &#34;System&#34; class that wraps the global functions. I could then extend the System class with different classes that override the wrapper functions. I create a global <code>System</code> variable within each script, dependent upon how I need the functions to behave. All my scripts have access to that global variable. The downside is I would have to make sure the global variable is declared, is never overwritten, and uses the proper <code>System</code>.</p><p><em>Something else:</em> I could create a <code>SysControl</code> class with a static <code>System</code> variable and static wrappers of the <code>System</code>&#39;s wrappers of the functions, and then swap out which <code>System</code> my <code>SysControl</code> class references. The downside is that I feel I am going overboard.</p><p>Are there any more options I should consider? Which of these methods is the best, and why? What pitfalls should I look for going forward?</p><p>EDIT: I ended up using the <em>Something else</em> solution.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><h1>Preface</h1><p>For any given project, the answer to this question will likely differ. This is simply a result of structure and overall philosophy. It may be easy and straightforward in some instances, but extremely difficult and complicated in others.</p><p><em>However</em>, if this is a difficult problem, that is a very strong code smell: something is likely quite wrong with your project. That being said, we&#39;ve all been there, and we often don&#39;t have time to rewrite the entire codebase. Still, to start: what&#39;s the <em>right</em> way to solve this?</p><h1>The Right Way</h1><p><a href="https://stackoverflow.com/questions/3058/what-is-inversion-of-control">IoC (Inversion of Control)</a> is a design pattern and principle that has steadily gained traction. It basically states that instead of objects building what they need, they request an instance of what they need from some IoC container, which can give them the appropriate &#34;thing&#34;.</p><p>In this case, we could do something like the following:</p><pre><code>interface SystemAdapterInterface
+{
+    public function sleep($duration);
+}
+
+class WakefulSystemAdapter implements SystemAdapterInterface
+{
+    public function sleep($duration)
+    {
+        sleep($duration);
+        pcntl_signal_dispatch();
+    }
+}
+
+class SleepySystemAdapter implements SystemAdapterInterface
+{
+    public function sleep($duration)
+    {
+        sleep($duration)
+    }
+}
+
+class SleepingEntity
+{
+    public function __construct(SystemAdapterInterface $system)
+    {
+        $this-&gt;system = $system
+    }
+
+    public function mayReceiveSignal()
+    {
+        $this-&gt;system-&gt;sleep(100000);
+    }
+}
+
+// Register the system and sleeping entity with the IoC Container
+// Using the LoEP Container for IoC
+$container = new League\Container\Container;
+
+$container-&gt;add(&#39;SystemAdapterInterface&#39;, &#39;WakefulSystemAdapter &#39;);
+
+$container
+    -&gt;add(&#39;SleepingEntity&#39;)
+    -&gt;withArgument(&#39;SystemAdapterInterface&#39;);
+
+//Now we can easily get an instance of sleeping entity.
+$container-&gt;get(&#39;SleepingEntity&#39;);
+</code></pre><p>In this example, we use an <code>IoC</code> container to manage what <code>System</code> <code>SleepingEntity</code> uses. My recommendation for an <code>IoC</code> is <a href="http://container.thephpleague.com/" rel="nofollow noreferrer"><code>Container</code>, from the League of Extraordinary Packages</a>.</p><p>This solution keeps our <code>SleepingEntity</code> decoupled from our <code>System</code>. Depending on where we use <code>SleepingEntity</code>, we can simply configure our <code>IoC Container</code> differently. It&#39;s nice because it&#39;s relatively simple, easy to test, and allows for expansion in the future.</p><p>Unfortunately, this doesn&#39;t work particularly well if you already have a whole lot of code with sleeps (or similar global function calls), and you need to modify their behavior. So what can we do about that?</p><h1>The Not Quite as Right Way</h1><p>Ok, so you want to do <strong>The Right Thing</strong>, but the code is poorly documented, has dependencies intertwined every which-way, and it is an incredibly heavy lift to go through and make sure you&#39;ve passed your <code>IoC</code> every which way down the tree until it is used to instantiate the right object, every time.</p><p>The best thing to do is to be forward-looking. If you want to make the codebase better, more decoupled, take the first step with this addition.</p><p>Let&#39;s say you have the following:</p><pre><code>class DoSomethingAndSleep
+{
+    public function foo($a, $b, $c)
+    {
+        $a-&gt;thing();
+        $b-&gt;thing();
+        sleep(5);
+        $c-&gt;thing();
+    }
+}
+</code></pre><p>Now let&#39;s pretend that <code>DoSomethingAndSleep</code> is used 1,000 different places by all kinds of different code. In fact, it is sometimes instantiated anonymously through an class variable, so finding those 1,000 places is hard. Really, really hard.</p><p>Fine. Let&#39;s just move the decoupling goodness into <code>DoSomethingAndSleep</code>. Hopefully you&#39;ll have time to refactor things one by one in the future.</p><pre><code>class DoSomethingAndSleep
+{
+    public function __construct(SystemAdapterInterface $system=null)
+    {
+        if ($system=== null)
+        {
+            $system = App::getIoC()-&gt;get(&#39;SystemAdapterInterface&#39;);
+        }
+        $this-&gt;system = $system;
+    }
+
+    public function foo($a, $b, $c)
+    {
+        $a-&gt;thing();
+        $b-&gt;thing();
+        $this-&gt;system-&gt;sleep(5);
+        $c-&gt;thing();
+    }
+}
+</code></pre><p>Ok, so what&#39;s going on here? Well, there is firstly a recognition that we don&#39;t have the right infrastructure to pass the the <code>IoC</code> into <code>DoSomethingAndSleep</code>, or to use it to construct the <code>DoSomethingAndSleep</code>, so instead we&#39;re going to bypass all of that and get the &#34;standard&#34; <code>IoC</code> from our <code>App</code>. This means that upon application startup, we have to:</p><ul><li>instantiate the IoC Container</li><li>register the SystemAdapterInterface with the IoC Container</li><li>register the IoC Container with the App</li></ul><p>This is acceptable. As we have a default argument in our <code>DoSomethingAndSleep</code> constructor, we can spend time moving forward refactoring things to use the <code>IoC Container</code> without breaking backwards compatibility.</p><p>We still will need to move to (hopefully) using the <code>Container</code> to manage objects and instances, but at least we&#39;re at a point where we are registering the <code>SystemAdapterInterface</code> and using the registered one instead of directly instantiating it.</p><p>If you are using the <code>League Container</code>, we can even register <code>DoSomethingAndSleep</code> with our <code>IoC Container</code> using this method, and leverage the <a href="http://container.thephpleague.com/auto-wiring/" rel="nofollow noreferrer">Auto Wiring and the Reflection Delegate</a> to take care of this new dependency for <code>DoSomethingAndSleep</code>.</p><pre><code>$container = new League\Container\Container;
+
+// register the reflection container as a delegate to enable auto wiring
+$container-&gt;delegate(
+    new League\Container\ReflectionContainer
+);
+
+$doSomethingAndSleep = $container-&gt;get(&#39;DoSomethingAndSleep&#39;);
+</code></pre><p>This should make our future refactoring go even more smoothly.</p><h1>Conclusion</h1><p>It is always difficult to figure out how to take an old, monolithic codebase and slowly make it better, more maintainable. You can&#39;t break backwards compatibility, you need to move forward with new features, and you want to make sure the additions improve things. That&#39;s tough. I think the best suggestion is this: if you can&#39;t write tests for it, you will have a terrible time maintaining it. So every time you make a change, make sure you can write a unit test against that change.</p><p>In this case, using <code>IoC</code> accomplishes this with very little effort. Even if your project isn&#39;t structured to use it, you can introduce it initially and only use it in one place, and then over time you can refactor your code until eventually everything is using <a href="https://en.wikipedia.org/wiki/Dependency_injection" rel="nofollow noreferrer">DI</a> and is pleasantly decoupled.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-how-to-create-a-manager-class-without-global-variables-nor-singletons/'>Java &#8211; How to create a manager class without global variables nor singletons</a></li><li class="list-group-item"><a href='../object-oriented-nt-a-static-class-have-an-internal-state/'>Object-oriented &#8211; n&#8217;t a static class have an internal state</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

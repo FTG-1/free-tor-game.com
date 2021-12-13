@@ -1,0 +1,150 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C++ &#8211; Is it bad practice to make an iterator that is aware of its own end &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1072740 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1072740" class="post-1072740 software type-software status-publish hentry category-software tag-c tag-design tag-iterator"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C++ &#8211; Is it bad practice to make an iterator that is aware of its own end</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">design</span><span class="mr-2 badge badge-warning">iterator</span></p><div class="entry-content"><p>For some background of why I am asking this question here is an example. In python the method <code>chain</code> chains an arbitrary number of ranges together and makes them into one without making copies. Here is a <a href="http://docs.python.org/3/library/itertools.html#itertools.chain" rel="nofollow">link</a> in case you don&#39;t understand it. I decided I would implement chain in c++ using variadic templates. As far as I can tell the only way to make an iterator for chain that will successfully go to the next container is for each iterator to to know about the end of the container (I thought of a sort of hack in where when <code>!=</code> is called against the end it will know to go to the next container, but the first way seemed easier and safer and more versatile).</p><p>My question is if there is anything inherently wrong with an iterator knowing about its own end, my code is in c++ but this can be language agnostic since many languages have iterators.</p><pre><code>#ifndef CHAIN_HPP
+#define CHAIN_HPP
+
+#include &#34;iterator_range.hpp&#34;
+
+namespace iter {
+   template &lt;typename ... Containers&gt;
+       struct chain_iter;
+   template &lt;typename Container&gt;
+       struct chain_iter&lt;Container&gt; {
+
+        private:
+           using Iterator = decltype(((Container*)nullptr)-&gt;begin());
+           Iterator begin;
+           const Iterator end;//never really used but kept it for consistency
+
+        public:
+           chain_iter(Container &amp; container, bool is_end=false) :
+               begin(container.begin()),end(container.end()) {
+                   if(is_end) begin = container.end();
+           }
+           chain_iter &amp; operator++()
+           {
+               ++begin;
+               return *this;
+           }
+           auto operator*()-&gt;decltype(*begin)
+           {
+               return *begin;
+           }
+           bool operator!=(const chain_iter &amp; rhs) const{
+               return this-&gt;begin != rhs.begin;
+           }
+       };
+   template &lt;typename Container, typename ... Containers&gt;
+       struct chain_iter&lt;Container,Containers...&gt;
+       {
+
+        private:
+           using Iterator = decltype(((Container*)nullptr)-&gt;begin());
+           Iterator begin;
+           const Iterator end;
+           bool end_reached = false;
+           chain_iter&lt;Containers...&gt; next_iter;
+
+        public:
+           chain_iter(Container &amp; container, Containers&amp; ... rest, bool is_end=false) :
+               begin(container.begin()),
+               end(container.end()),
+               next_iter(rest...,is_end) {
+                   if(is_end)
+                       begin = container.end();
+               }
+           chain_iter &amp; operator++()
+           {
+               if (begin == end) {
+                   ++next_iter;
+               }
+               else {
+                   ++begin;
+               }
+               return *this;               
+           }
+           auto operator*()-&gt;decltype(*begin)
+           {
+               if (begin == end) {
+                   return *next_iter;
+               }
+               else {
+                   return *begin;
+               }
+           }   
+           bool operator !=(const chain_iter &amp; rhs) const {
+               if (begin == end) {
+                   return this-&gt;next_iter != rhs.next_iter;
+               }
+               else
+                   return this-&gt;begin != rhs.begin;
+           }
+        };
+   template &lt;typename ... Containers&gt;
+       iterator_range&lt;chain_iter&lt;Containers...&gt;&gt; chain(Containers&amp; ... containers)
+       {
+           auto begin = 
+               chain_iter&lt;Containers...&gt;(containers...);
+           auto end =
+               chain_iter&lt;Containers...&gt;(containers...,true);
+           return 
+               iterator_range&lt;chain_iter&lt;Containers...&gt;&gt;(begin,end);
+       }
+}
+
+#endif //CHAIN_HPP
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>Been there, got burned. Creating things that look like iterator but have different or extra requirements will lead to a mess. Basically many ranges are not copyable or at least not cheaply so, but that&#39;s what one normally expects of an iterator (it is a requirement of the iterator concept).</p><p>You should <em>not</em> have <em>iterators</em> that know of their own end. But chaining works with <em>ranges</em>. There are two ways to define ranges:</p><ul><li><p>As forward-iterable &#34;containers&#34;, which you can make of simple pair of iterators. This is a C++ way (and <strong><a href="http://www.boost.org/libs/range/" rel="noreferrer">Boost.Range</a></strong><sup>1</sup> has some useful utilities for these), but sometimes it is quite a bit of extra work to make various objects that provide sequences fit the interface.</p></li><li><p>Define your interface for &#34;generators&#34;. It will probably be similar to the python one, but since exceptions are less convenient in C++ than python, it will probably have different method of detecting end. I settled for following interface for my own needs<sup>2</sup>:</p><pre><code>template &lt;typename T&gt; concept Generator {
+    bool valid();
+    void next();
+    T get();
+};
+</code></pre><p>where the iteration looks like:</p><pre><code>while(g.valid()) {
+    auto item = g.get();
+    do_anything_with(item);
+    g.next();
+}
+</code></pre><p>the generator conceptually starts on first item in the sequence, but may only be accessed after <code>valid</code> is called. I found this allows distributing the hard work between constructor, <code>valid</code> and <code>next</code> as is fit for each case and it can be easily wrapped in iterator similarly to how <a href="http://www.cplusplus.com/reference/iterator/istream_iterator/" rel="noreferrer"><code>istream_iterator</code></a> is done. Other variations of the interface are possible including following the <code>istream</code> one (but it has disadvantage that it returns default element when the iteration fails).</p></li></ul><p>Basically you should probably combine the approaches. If you use the later concept, you can adapt any such implementation to fit the (quite complex) Range concept from <a href="http://www.boost.org/libs/range/" rel="noreferrer">Boost.Range</a> e.g. using &#34;mixin&#34; and <a href="http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern" rel="noreferrer">Curiously Recurring Template Pattern</a>. Something like:</p><pre><code>template &lt;typename GeneratorT, typename ValueT&gt;
+class GeneratorIterator :
+    boost::iterator_facade&lt;GeneratorT, ValueT, boost::single_pass_traversal_tag&gt; {
+    GeneratorT *g;
+    GeneratorIterator() : g() {}
+    GeneratorIterator(GeneratorT *g) g(g) {}
+    ValueT &amp;dereference() {
+        if(!g || !g.valid())
+            throw std::runtime_error(&#34;...&#34;);
+        return g-&gt;get();
+    }
+    bool equal(GeneratorIterator const &amp;l) {
+        return g == l.g || ((!g || !g.valid()) &amp;&amp; (!l.g || !l.g.valid()));
+    }
+    void increment() {
+        if(g)
+            g.next();
+    }
+}
+
+template &lt;typename GeneratorT, typename ValueT&gt;
+class GeneratorFacade {
+  public:
+    typedef GeneratorIterator&lt;GeneratorT, ValueT&gt; iterator;
+    typedef GeneratorIterator&lt;GeneratorT, ValueT&gt; const_iterator;
+    const_iterator begin() const {
+        return const_iterator(this);
+    }
+    const_iterator end() const {
+        return const_iterator();
+    }
+}
+</code></pre><p>The advantage of the indirection is that the ranges now don&#39;t have to be copyable at all or not cheaply while the iterator is just a pointer and therefore is cheaply copyable as required. And defining generators is simple and easy to understand while they still end up conforming to the hairy standard C++ interface.</p><p>(Disclaimer: I wrote it off top of my head, not tested)</p><hr/><p><sup>1</sup> <a href="http://www.boost.org/libs/range/" rel="noreferrer">Boost.Range</a> includes concatenating ranges. Don&#39;t reinvent the wheel and reuse or at least inspire yourself.</p><p><sup>2</sup> The <a href="http://www.slideshare.net/rawwell/iteratorsmustgo" rel="noreferrer">Iterators Must Go</a> talk linked in Ylisar&#39;s answer comes up with the same interface, just different names. Note that many languages combine the <code>next</code>/<code>popFront</code> and <code>valid</code>/<code>empty</code> to one <code>next</code> that returns a boolean, but that approach is much more difficult to wrap in iterators and conceptually somewhat more complex, because then the iterators start out in special &#34;uninitialized&#34; state.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-iterators-best-practice-to-represent-end-of-range-last-or-beyond-last/'>C++ Iterators: Best practice to represent end of range &#8211; Last or Beyond-last</a></li><li class="list-group-item"><a href='../c-should-class-own-or-observe-its-dependencies/'>C++: Should class own or observe its dependencies</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

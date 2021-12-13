@@ -1,0 +1,82 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; MVC Core Repository Pattern for Multiple Lookup tables &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1077714 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1077714" class="post-1077714 software type-software status-publish hentry category-software tag-asp-net-core tag-asp-net-mvc tag-c"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; MVC Core Repository Pattern for Multiple Lookup tables</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">asp.net-core</span><span class="mr-2 badge badge-info">asp.net-mvc</span><span class="mr-2 badge badge-warning">c</span></p><div class="entry-content"><p>We have  Customer transactional table with multiple lookup tables with foreign keys. We want to create dropdown menus using these lookup tables, when CustomerService creates a Customer order transaction. If a person views the transactions later, they would see the 4 tables joined together.</p><p>Would I create</p><p>(a) 4 interfaces with 4 repositories,</p><p>(b) or 2 interfaces (1 for Customer Transaction, 1 interface for the lookup tables), with 1 Repository for Customer Transaction, and 3 repositories for lookup table interface?</p><p>We want to relay Lookup table Repository to the SelectList below. Each select list is picking certain columns. Want to be efficient in code.</p><p><strong>Models:</strong></p><pre><code>public class CustomerTransaction
+{
+    public int CustomerTransactionId{ get; set; },
+    public int ProductTypeId {get; set; }, //joins to ProductTypeTable
+    public int StatusKey {get; set; },  //joins to StatusTypeTable
+    public int CustomerTypeId {get; set; } //joins to CustomerTypeTable
+    public string DateOfPurchase{ get; set; },
+    public string PurchaseAmount { get; set; },
+}
+
+public class ProductType
+{
+    public int ProductTypeId{ get; set; }
+    public int Size { get; set; }
+    public int Weight { get; set; },
+    public string ProductName { get; set; },
+    public string ProductDescription { get; set; },
+}
+
+public class StatusType
+{
+    public int StatusKey{ get; set; }
+    public string Description{ get; set; },
+    public string Symbol { get; set; },
+}
+
+public class CustomerType
+{
+    public int KeyNumber{ get; set; },
+    public int Height{ get; set; }
+    public string HairColor{ get; set; },
+    public string NameOfPerson{ get; set; },
+    public string ResearchNotes{ get; set; },
+}
+</code></pre><p>Required fieldsin dropdown</p><pre><code>ViewData[&#34;ProductTypeId&#34;] = new SelectList(_context.ProductType, &#34;ProductName&#34;, &#34;ProductDescription&#34;);
+
+ViewData[&#34;KeyNumber&#34;] = new SelectList(_context.CustomerType , &#34;NameofPerson&#34;, &#34;Description&#34;);
+
+ViewData[&#34;StatusKey&#34;] = new SelectList(_context.StatusType, &#34;Symbol&#34;, &#34;ResearchNotes&#34;);
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>If you don&#39;t need to insert, update or delete records in the lookup tables, don&#39;t bother with interfaces or concrete repositories allowing you to do that. Instead, add methods or properties to the customer transaction interface to get records from the lookup tables. This translates to additional properties on the repository interface:</p><pre><code>public interface ICustomerTransactionRepository
+{
+    IEnumerable&lt;ProductType&gt; ProductTypes { get; }
+    IEnumerable&lt;StatusType&gt; StatusTypes { get; }
+    IEnumerable&lt;CustomerType&gt; CustomerTypes { get; }
+
+    void Save(CustomerTransaction transaction);
+    CustomerTransaction Find(int id);
+}
+</code></pre><p>You don&#39;t need 1 table per repository. A repository can provide access to all of the data relevant to a major entity in your system (or Bounded Context if you are applying Domain Driven Design principles).</p><p>By exposing <code>IEnumerable&lt;T&gt;</code> properties for the lookup tables on the customer transaction repository interface you have the ability to retrieve those records from the database to fill drop downs with options. You can also pass this 1 repository object around in your application&#39;s service layer and it is functionally complete, with regard to anything you need to do with customer transactions. Access to the lookup table data, plus CRUD operations for customer transactions, makes this &#34;functionally complete.&#34;</p><p>If you <em>really</em> wanted to separate things, you could split your repository interface into two. One for getting data, and one for modifying data:</p><pre><code>public interface ICustomerTransactionRepository
+    : IWriteOnlyCustomerTransactionRepository,
+      IReadOnlyCustomerTransactionRepository
+{
+}
+
+public interface IReadOnlyCustomerTransactionRepository
+{
+    IEnumerable&lt;ProductType&gt; ProductTypes { get; }
+    IEnumerable&lt;StatusType&gt; StatusTypes { get; }
+    IEnumerable&lt;CustomerType&gt; CustomerTypes { get; }
+
+    CustomerTransaction Find(int id);
+}
+
+public interface IWriteOnlyCustomerTransactionRepository
+{
+    void Save(CustomerTransaction transaction);
+}
+</code></pre><p>Then you can pass an interface around that is tightly focused on retrieving information or modifying it. You can still create 1 interface that inherits both, and implement this in 1 class, but at least it gives you some separation of concerns (and the &#34;I&#34; in SOLID: the Interface Segregation principal).</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../c-di-ioc-abstract-factory-galore/'>C# &#8211; DI / IoC Abstract Factory Galore</a></li><li class="list-group-item"><a href='../what-are-the-options-for-exposing-customization-settings-to-the-admin-user/'>What are the options for exposing customization settings to the admin user</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

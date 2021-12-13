@@ -1,0 +1,105 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Handling Multiple Collections in C# &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1077854 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1077854" class="post-1077854 software type-software status-publish hentry category-software tag-c tag-design tag-object-oriented"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Handling Multiple Collections in C#</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">design</span><span class="mr-2 badge badge-warning">object-oriented</span></p><div class="entry-content"><p>I&#39;m currently trying to learn C# and want to enhance my understanding of Object Oriented Programming (OOP). I&#39;m hoping to accomplish this by experimenting with a small program that keeps track of my school assignments/information. I&#39;ve constructed classes relating to my Institutions, Semesters(Terms), Courses, and Assignments. My question is whether or not I have created and implemented my classes correctly in regards to the information they represent. My thinking suggests that my classes should not inherit from one another in a parent/child like fashion because they are physically unrelated. However accessing objects through multilevel lists seems impractical (I think).. Is there a better way of doing this that doesn&#39;t force me to access object by iterating through collections, but still implements OOP best practices?</p><hr/><h2>Program Source Code</h2><h3>Entry Point / Main</h3><pre><code>static void Main(string[] args)
+{
+    List&lt;Institution&gt; Institutions = new List&lt;Institution&gt;();
+    Institutions.Add(new Institution(&#34;My college&#34;));
+    Institutions[0].AddNewTerm(&#34;2016&#34;, &#34;Spring&#34;);
+    Institutions[0].Terms[0].AddNewCourse(&#34;Math 210&#34;);
+    Institutions[0].Terms[0].Courses[0].AddNewAssignment(&#34;Chapter 1&#34;);
+    MessageBox.Show(Institutions[0].Terms[0].Courses[0].Assignments[0].Name);
+}
+</code></pre><h2>Class List</h2><h3>Institution</h3><pre><code>class Institution
+{
+    public string Name { get; set; }
+    public List&lt;Term&gt; Terms { get; set; }
+
+    public Institution(string UP_Name)
+    {
+        this.Name = UP_Name;
+        this.Terms = new List&lt;Term&gt;();
+    }
+
+    public void AddNewTerm(string NewTermYear, string NewTermSeason)
+    {
+        Terms.Add(new Term(NewTermYear, NewTermSeason));
+    }
+}
+</code></pre><h3>Term</h3><pre><code>class Term
+{
+    public string Name { get; set; }
+    public string Year { get; set; }
+    public string Season { get; set; }
+    public List&lt;Course&gt; Courses { get; set; }
+
+    public Term(string NewSeason, string NewYear)
+    {
+        this.Season = NewSeason;
+        this.Year = NewYear;
+        this.Courses = new List&lt;Course&gt;();
+        this.Name = (this.Season + &#34; &#34; + this.Year);
+
+    }
+
+    public void AddNewCourse(string NewCourseName)
+    {
+        this.Courses.Add(new Course(NewCourseName));
+    }
+}
+</code></pre><h3>Course</h3><pre><code>class Course
+{
+    public string Name { get; set; }
+
+    public List&lt;Assignment&gt; Assignments { get; set; }
+
+    public Course(string UP_Name)
+    {
+        this.Name = UP_Name;
+        this.Assignments = new List&lt;Assignment&gt;();
+    }
+
+    public void AddNewAssignment(string NewAssignmentName)
+    {
+        Assignments.Add(new Assignment(NewAssignmentName));
+    }
+
+}
+</code></pre><h3>Assignment</h3><pre><code>class Assignment
+{
+    public string Name { get; set; }
+
+    public Assignment(string UP_Name)
+    {
+        this.Name = UP_Name;
+    }
+}
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>It&#39;s not bad for a newbie.  You&#39;re right to be concerned about accessing objects through multilevel lists.  Also, hard coding the indexes will hurt you eventually (but it&#39;s OK for now).</p><p>You might try changing <code>AddNewxxx()</code> to return what was added.  For example, if you change Term&#39;s AddNewClass to</p><pre><code>public Course AddNewCourse(string NewCourseName)
+{
+    Course result = new Course(NewCourseName);
+    this.Courses.Add(result);
+    return result;
+}
+</code></pre><p>in your <code>Main()</code> function you&#39;ll be able to do something like</p><pre><code>var mathCourse = Institutions[0].Terms[0].AddNewCourse(&#34;Math 210&#34;);
+mathCourse.AddNewAssignment(&#34;Chapter 1&#34;);
+mathCourse.AddNewAssignment(&#34;Chapter 2&#34;);
+</code></pre><p>and so on.</p><p>Be patient; there is a lot to learn.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/c-class-architecture-for-rest-services/'>C# class architecture for REST services</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/java-use-decorator-and-factory-together-to-extend-objects/'>Java &#8211; Use decorator and factory together to extend objects</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-how-to-add-properties-to-subclasses-and-access-them-without-casting-from-a-superclass/'>C# &#8211; How to add properties to subclasses and access them without casting from a superclass</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-how-to-argue-against-this-completely-public-mindset-of-business-object-class-design/'>C# &#8211; How to argue against this &#8220;completely public&#8221; mindset of business object class design</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

@@ -1,0 +1,234 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Should I use: One event multiple subscribers or multiple events multiple subscribers &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1065875 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1065875" class="post-1065875 software type-software status-publish hentry category-software tag-c tag-event-programming"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Should I use: One event multiple subscribers or multiple events multiple subscribers</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">event-programming</span></p><div class="entry-content"><p>I am writing a data acquisition application. I wondering whether I should use one event multiple subscribers or multiple events multiple subscribers. I am worried about performance. Also could I improve performance by offloading the subscribers to a different thread?</p><p>Here is an example of what I mean by multiple events Multiple subscribers.</p><pre><code>public delegate void EventChannelUpdated(object sender, EventArgsChannelUpdated e);
+
+public class EventArgsChannelUpdated : EventArgs
+{
+    public chCell chCell;
+}
+
+public delegate void EventLimitExceeded(object sender, EventArgsLimitExceeded args);
+
+public class EventArgsLimitExceeded : EventArgs
+{
+}
+
+class Example
+{
+    public List&lt;Channel&gt; AllChannels;
+}
+
+public class Saver_allChannels
+{
+    private Example example;
+
+    public event EventChannelUpdated eventChannelUpdated;
+
+    public void DataAdded()
+    {
+
+        //** this part is pseudo code as I have simplified some of the hwObjs structure
+        for (int i = 0; i &lt; hwObjs.Count; i++)
+        {
+            example.ListOfchannels[i].addSamples(hwObjs[i].Reading);
+        }
+    }
+}
+
+public class Channel 
+{
+    public List&lt;chCell&gt; column { get; set; }
+
+    public string label { get; set; }
+
+    public event EventChannelUpdated eventChannelUpdated;
+
+    public double multipler { get; set; }
+
+    public void addSamples(double unScaledValue)
+    {
+        chCell temp = new chCell() {channel = this, scaledValue = unScaledValue*multipler};
+        column.Add(temp);
+        eventChannelUpdated(this,new EventArgsChannelUpdated(){chCell = temp});
+    }
+}
+
+public class chCell
+{
+    public double scaledValue { get; set; }
+
+    public Channel channel { get; set; } //** parent Channel List
+}
+
+public class Monitor
+{
+    public double Limit;
+
+    public event EventLimitExceeded eventLimitExceed;
+
+    public void Handle_EventChannelUpdated(object sender, EventArgsChannelUpdated args)
+    {
+        if (args.chCell.scaledValue &gt; Limit)
+        {
+            eventLimitExceed(this, new EventArgsLimitExceeded());
+        }
+    }
+}
+</code></pre><p>Here is an example of what I mean by one event multiple subscribers</p><pre><code>public delegate void EventChannelUpdated(object sender, EventArgsChannelsUpdated e);
+
+public class EventArgsChannelsUpdated : EventArgs
+{
+    public List&lt;chCell&gt; RowOfchCells;
+}
+
+public delegate void EventLimitExceeded(object sender, EventArgsLimitExceeded args);
+
+public class EventArgsLimitExceeded : EventArgs
+{
+}
+
+class Example
+{
+    public List&lt;Channel&gt; ListOfchannels;
+}
+
+
+public class Saver_allChannels
+{
+    Example example;
+
+    public event EventChannelUpdated eventChannelUpdated;
+
+    public void DataAdded()
+    {
+
+        List&lt;chCell&gt; LastRow = new List&lt;chCell&gt;();
+
+        //** this part is pseudo code as I have simplified some of the hwObjs structure
+        for (int i = 0; i &lt; hwObjs.Count; i++)
+        {               
+            example.ListOfchannels[i].addSamples(hwObjs[i].Reading);
+            LastRow.Add(new chCell() {channel = example.ListOfchannels[i], Value = hwObjs[i].Reading});
+        }
+
+        eventChannelUpdated(this, new EventArgsChannelsUpdated() { RowOfchCells = LastRow });
+
+    }
+}
+
+public class Channel 
+{
+    public List&lt;chCell&gt; column { get; set; }
+
+    public string label { get; set; }
+
+    public double multipler { get; set; }
+
+    public void addSamples(double unScaledValue)
+    {
+        chCell temp = new chCell() {channel = this, scaledValue = unScaledValue*multipler};
+        column.Add(temp);
+    }
+}
+
+public class chCell
+{
+    public double scaledValue { get; set; }
+
+    public Channel channel { get; set; } //** parent Channel List
+}
+
+public class Monitor
+{
+    public double Limit;
+
+    public Channel subbedChannel;
+
+    public event EventLimitExceeded eventLimitExceed;
+
+    public void Handle_EventChannelUpdated(object sender, EventArgsChannelsUpdated args)
+    {
+        double value = (args.RowOfchCells.FirstOrDefault(x =&gt; x.channel == subbedChannel)).scaledValue;
+        //** do something with value
+    }
+}
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>If you get these items in batches, then it obviously makes sense to use events that notify  about changes once per batch:</p><pre><code>public class AllChannelsSaver
+{
+    public void Add(IEnumerable&lt;ChCell&gt; cells)
+    {
+        this.m_cells.Add(cells);
+
+        this.OnCellsAdded(cells);
+    }
+
+    public event EventHandler&lt;MultipleCellsAddedEventArgs&gt; CellsAdded;
+
+    private void OnCellsAdded(IEnumerable&lt;ChCell&gt; cells)
+    {
+        var cellsAddedDelegate = this.CellsAdded;
+
+        if (cellsAddedDelegate == null)
+            return;
+
+        cellsAddedDelegate(this, new MultipleCellsAddedEventArgs(cells));
+    }
+}
+</code></pre><p>Taking into account that you operate over collections it even makes sense to consider standard <a href="https://msdn.microsoft.com/en-us/library/System.Collections.Specialized.INotifyCollectionChanged.aspx" rel="nofollow">INotifyCollectionChanged</a> interface with its <code>CollectionChanged</code> event, depending on whether it suits the domain logic or a more appropriately named event will fit better.</p><hr/><h2>But it is also important to think about two things:</h2><ol><li>Who is (or should be) responsible for adding items and notifying? Is it all channels object, or is it an individual Channel who is responsible? Do all channels get all cells, or each individual channel gets specific cell?</li><li>Ease of use. Your second example&#39;s <code>Handle_EventChannelUpdated</code> uses search over the items to get the required item by some condition. If it is not just some example, but a usual usage scenario, then it is obviously something that needs to be reconsidered. Searching each time for a single item, that can be obtained directly is not the best architecture.</li></ol><p>If you are not sure what is better from these two points of view, then you can just try to cater to both scenarios - use events on both the global <code>AllChannels</code> aggregator and the individual channels. Just try not to handle the same item twice (perhaps, use some additional <code>Handled</code> flag in <code>EventArgs</code> if it is possible).</p><hr/><h2>Offloading subscribers to different threads</h2><p>You can do it. The most simple and less error-prone way is to use <a href="https://msdn.microsoft.com/en-us/library/dd537609(v=vs.110).aspx" rel="nofollow">TPL</a> with <a href="https://msdn.microsoft.com/en-us/library/dd460720(v=vs.110).aspx" rel="nofollow">Parallel.ForEach</a> over the delegates you get from <a href="https://msdn.microsoft.com/en-us/library/system.delegate.getinvocationlist(v=vs.110).aspx" rel="nofollow">Delegate.GetInvocationList</a> call:</p><pre><code>public static void Execute(object sender, EventArgs args, Int32 number, Int32 delayMs)
+{
+    Console.WriteLine(&#34;Entering {0}&#34;, number);
+
+    Console.WriteLine(&#34;Sender = {0}; EventArgs = {1}&#34;,
+        sender,
+        args);
+
+    Thread.Sleep(delayMs);
+
+    Console.WriteLine(&#34;Exiting {0}&#34;, number);
+}
+
+public static void Main()
+{
+    var eventHandler = new EventHandler((sender, args) =&gt;
+        Execute(sender, args, 0, 1000));
+
+    eventHandler += (sender, args) =&gt;
+        Execute(sender, args, 1, 1000);
+
+    eventHandler += (sender, args) =&gt;
+        Execute(sender, args, 2, 2000);
+
+    var senderArg = typeof(Program);
+    var eventArgs = new EventArgs();
+
+    Parallel
+        .ForEach(
+            eventHandler
+                .GetInvocationList()
+                .Cast&lt;EventHandler&gt;(),
+            (handler) =&gt;
+                handler(senderArg, eventArgs));
+
+    Console.WriteLine(&#34;All is done. Press any key.&#34;);
+    Console.ReadKey(false);
+}
+</code></pre><p>Just make sure that your handlers are not(or make them so) dependent on being raised on the same thread (like handlers modifying UI).</p><p>It is also a possible idea to reconsider responsibilies once more - make handlers responsible for offloading. So the handlers themselves offload long-performing job to other threads. But you will have to be very careful, because it will probably violate the invariant that after raising the event all changes have been already handled(because some thread may still continue to process them even after OnEvent returns).</p><p><strong>P.S.:</strong> While it is not directly related to your question, I&#39;d like to add some points:</p><ol><li>Try not to create your specific new delegate classes. While they may add some degree of type-safety, in most cases it is better to use some of the standard generic delegate classes like <a href="https://msdn.microsoft.com/en-us/library/db0etb8x(v=vs.110).aspx" rel="nofollow">EventHandler</a> or <code>Action&lt;...&gt;</code> with <code>Func&lt;...&gt;</code>.</li><li>I do not want to look like someone who forces you to use a preferred naming convention, but it is still a good idea for you to look into <a href="https://msdn.microsoft.com/en-us/library/ms229002(v=vs.110).aspx" rel="nofollow">C# naming guidelines on MSDN</a>. Most languages have some more or less widespread, or even standardized way of naming. And such conventions(when you become accustomed to them) can make reading and sharing of programs much easier.</li></ol></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/c-passing-data-between-concrete-states/'>C# &#8211; Passing data between concrete states</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-combining-multiple-events-into-one-action-defer-refreshing/'>C# &#8211; Combining multiple events into one action/ Defer refreshing</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-manager-container-class-vs-static-class-methods/'>C# &#8211; Manager/Container class vs static class methods</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-benefits-of-using-net-style-delegates-compared-to-custom-ones/'>C# &#8211; Benefits of using .NET style delegates compared to custom ones</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-how-to-argue-against-this-completely-public-mindset-of-business-object-class-design/'>C# &#8211; How to argue against this &#8220;completely public&#8221; mindset of business object class design</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-recreating-complex-aggregates-from-a-persistance-source/'>C# &#8211; Recreating complex aggregates from a persistance source</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/designing-events-in-an-event-driven-event-sourced-architecture-and-managing-duplication/'>Designing events in an event-driven (event sourced) architecture and managing duplication</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/c-updating-sub-properties-via-entity-framework/'>C# &#8211; Updating sub-properties via Entity Framework</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

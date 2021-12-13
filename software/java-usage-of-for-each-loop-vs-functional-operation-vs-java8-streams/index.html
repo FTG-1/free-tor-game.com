@@ -1,0 +1,69 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Java &#8211; Usage of For-each loop vs functional operation vs Java8 streams &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1076545 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1076545" class="post-1076545 software type-software status-publish hentry category-software tag-java tag-java8 tag-stream-processing"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Java &#8211; Usage of For-each loop vs functional operation vs Java8 streams</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">java</span><span class="mr-2 badge badge-info">java8</span><span class="mr-2 badge badge-warning">stream-processing</span></p><div class="entry-content"><p>What are the gains in actual computing speed (verbosity of code being put aside) and for which case would each be recommended for, as a good design pattern?<br /> I would like to know the above in general but also if it helps in the context of the following which can re-written in all 3 ways</p><pre><code>static void parallelTestsExecution(String name,Runnable ... runnables){
+    ArrayList&lt;BaseTestThread&gt; list = new ArrayList();
+    int counter =0; // use local variable counter to name threads accordingly
+    for(Runnable runnable : runnables){//runnable contains test logic
+        counter++;
+        BaseTestThread t = new BaseTestThread(runnable);
+        t.setName(name+&#34; #&#34;+counter);
+        list.add(t);
+    }
+
+    for(BaseTestThread thread : list ){//must first start all threads
+        thread.start();
+    }
+
+    for(BaseTestThread thread : list ){//start joins only after all have started
+        try {
+            thread.join();
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(&#34;Interrupted - This should normally not happen.&#34;);
+        }
+    }
+
+    for(BaseTestThread thread : list ){
+        assertTrue(&#34;Thread: &#34;+thread.getName() , thread.isSuccessfull());
+    }
+
+}
+</code></pre><p>vs</p><pre><code> static void parallelTestsExecution(String name,Runnable ... runnables){
+    ArrayList&lt;BaseTestThread&gt; list = new ArrayList();
+    int counter =0; // use local variable counter to name threads accordingly
+    for(Runnable runnable : runnables){
+        counter++;
+        BaseTestThread t = new BaseTestThread(runnable);//BaseTestThread extends thread
+        t.setName(name+&#34; #&#34;+counter);
+        list.add(t);
+    }
+
+    list.forEach((thread) -&gt; {
+        thread.start();
+    });
+
+    list.forEach((thread) -&gt; {
+        try {
+            thread.join();
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(&#34;Interrupted - This should normally not happen.&#34;);
+        }
+    });
+
+    list.forEach((thread) -&gt; {
+        assertTrue(&#34;Thread: &#34;+thread.getName() , thread.isSuccessfull());
+    });
+
+}
+</code></pre><p>vs<br /> Populating the list with threads each associated with a runnable and using<br /> list.Stream()&#8230; etc (currently not confident enough with this one to post something more concrete)</p><p>I am specifically interested in learning how each of those different mechanisms work and what are their strength/weaknesses to apply my better judgment whenever its needed to decide what to use as a best practice. Question isnt about micro-optimisation in general and  the importance of it.</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><h1>Performance</h1><p>In your example, I can hardly imagine any significant performance difference between the different styles, as in both cases, the work is done in N parallel Threads. Creating and managing the threads will vastly dominate the run time, even if the threads themself do nothing.</p><p>The different styles only apply in how you create the threads, start the threads, and wait for the threads to finish.</p><h1>Similarities</h1><p>Both styles have the basic way of iterating in common. Both the Java5 loop style and the (default implementation of the) Java8 lambda style use the iterator() of the array/list/collection and its next() and hasNext() methods.</p><h1>Differences</h1><p>What&#39;s different is the way the body gets executed.</p><p>The Java5 style loop immediately uses your code as the loop body (inside your parallelTestsExecution() method), while the Java8 lambda style encapsulates the functionality into the accept() method of an anonymous Acceptor object that gets called for each iteration. [Have a look at the class files created from your source. With the second style, there will be some xxx$1 and similar classes for the aforementioned Acceptors.]</p><p>So, there is an overhead when using the Java8 lambda style, but I guess the Hotspot compiler can optimize this to run as fast as a normal loop.</p><p>But this style affects the accessibility of local variables residing outside of the loop body. With Java5 loops, they are fully accessible, read and write, because they are in the same method. With Java8 lambdas, you can only read locals, and only if they are declared final [* see below] - your loop body resides in a different class, and accessing variables from your parallelTestsExecution() method is impossible for the JVM. The trick that the compiler uses, is to pass the value of your variable into the hidden constructor of the anonymous Acceptor class, and have the Acceptor class store this copy as an instance field. So, you can&#39;t transform your first loop to lambda style because you modify the &#34;counter&#34; variable inside which is impossible from an anonymous class.</p><p>It also affects debugging. Suppose you set a breakpoint at your line &#34;thread.start();&#34;. In the first approach, you&#39;ll find yourself immediately in your parallelTestsExecution() method. With lambdas, you&#39;ll see an accept() method inside a forEach() method inside your parallelTestsExecution() method, maybe with some more intermediate glue.</p><p>[*] Remark on &#34;final&#34;: As Jules correctly commented, the &#34;final&#34; declaration is no longer necessary. If you use a local variable inside of a lambda, it still has to be effectively final. That doesn&#39;t give you any more possibilities, just saves you typing the word &#34;final&#34;.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-is-collection-stream-filter-foreach-inefficient-compared-to-a-standard-for-each-loop/'>Java &#8211; Is Collection.stream().filter().forEach() inefficient compared to a standard for each loop</a></li><li class="list-group-item"><a href='../java-8-good-practice-to-pass-streams-around-in-apis-for-lazy-operations/'>Java 8: Good practice to pass Streams around in APIs for lazy operations</a></li><li class="list-group-item"><a href='../java-use-functional-operations-instead-of-a-for-loop/'>Java &#8211;  use &#8220;functional operations&#8221; instead of a for loop</a></li><li class="list-group-item"><a href='../usage-of-interface-super-print-in-java8/'>Usage of interface.super.print() in java8</a></li><li class="list-group-item"><a href='../java-for-loop-over-an-antlr-context/'>Java &#8211; For-loop over an ANTLR context</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

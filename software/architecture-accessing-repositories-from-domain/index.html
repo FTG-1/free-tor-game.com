@@ -1,0 +1,122 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Architecture &#8211; Accessing Repositories from Domain &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1069078 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1069078" class="post-1069078 software type-software status-publish hentry category-software tag-architecture tag-domain-driven-design tag-domain-model tag-entity tag-repository"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Architecture &#8211; Accessing Repositories from Domain</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">Architecture</span><span class="mr-2 badge badge-info">domain-driven-design</span><span class="mr-2 badge badge-warning">domain-model</span><span class="mr-2 badge badge-primary">entity</span><span class="mr-2 badge badge-danger">repository</span></p><div class="entry-content"><p>Say we have a task logging system, when a task is logged, the user specifies a category and the task defaults to a status of &#39;Outstanding&#39;. Assume in this instance that Category and Status have to be implemented as entities. Normally I would do this:</p><p><strong>Application Layer:</strong></p><pre><code>public class TaskService
+{
+    //...
+
+    public void Add(Guid categoryId, string description)
+    {
+        var category = _categoryRepository.GetById(categoryId);
+        var status = _statusRepository.GetById(Constants.Status.OutstandingId);
+        var task = Task.Create(category, status, description);
+        _taskRepository.Save(task);
+    }
+}
+</code></pre><p><strong>Entity:</strong></p><pre><code>public class Task
+{
+    //...
+
+    public static void Create(Category category, Status status, string description)
+    {
+        return new Task
+        {
+            Category = category,
+            Status = status,
+            Description = descrtiption
+        };
+    }
+}
+</code></pre><p>I do it like this because I am consistently told that entities should not access the repositories, but it would make much more sense to me if I did this:</p><p><strong>Entity:</strong></p><pre><code>public class Task
+{
+    //...
+
+    public static void Create(Category category, string description)
+    {
+        return new Task
+        {
+            Category = category,
+            Status = _statusRepository.GetById(Constants.Status.OutstandingId),
+            Description = descrtiption
+        };
+    }
+}
+</code></pre><p>The status repository is dependecy injected anyway, so there is no real dependency, and this feels more to me thike it is the domain that is making thedecision that a task defaults to outstanding. The previous version feels like it is the application layeer making that decision. Any why are repository contracts often in the domain if this should not be a posibility?</p><p>Here is a more extreme example, here the domain decides urgency:</p><p><strong>Entity:</strong></p><pre><code>public class Task
+{
+    //...
+
+    public static void Create(Category category, string description)
+    {
+        var task = new Task
+        {
+            Category = category,
+            Status = _statusRepository.GetById(Constants.Status.OutstandingId),
+            Description = descrtiption
+        };
+
+        if(someCondition)
+        {
+            if(someValue &gt; anotherValue)
+            {
+                task.Urgency = _urgencyRepository.GetById
+                    (Constants.Urgency.UrgentId);
+            }
+            else
+            {
+                task.Urgency = _urgencyRepository.GetById
+                    (Constants.Urgency.SemiUrgentId);
+            }
+        }
+        else
+        {
+            task.Urgency = _urgencyRepository.GetById
+                (Constants.Urgency.NotId);
+        }
+
+        return task;
+    }
+}
+</code></pre><p>There is no way you would want to pass in all possible versions of Urgency, and no way you would want to calculate this business logic in the application layer, so surely this would be the most appropriate way?</p><p>So is this a valid reason to access repositories from the domain?</p><p><strong>EDIT: This could also be the case on non static methods:</strong></p><pre><code>public class Task
+{
+    //...
+
+    public void Update(Category category, string description)
+    {
+        Category = category,
+        Status = _statusRepository.GetById(Constants.Status.OutstandingId),
+        Description = descrtiption
+
+        if(someCondition)
+        {
+            if(someValue &gt; anotherValue)
+            {
+                Urgency = _urgencyRepository.GetById
+                    (Constants.Urgency.UrgentId);
+            }
+            else
+            {
+                Urgency = _urgencyRepository.GetById
+                    (Constants.Urgency.SemiUrgentId);
+            }
+        }
+        else
+        {
+            Urgency = _urgencyRepository.GetById
+                (Constants.Urgency.NotId);
+        }
+
+        return task;
+    }
+}
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>You are intermixing</p><blockquote><p>entities should not access the repositories</p></blockquote><p>(which is a good suggestion)</p><p>and</p><blockquote><p>the domain layer should not access the repositories</p></blockquote><p>(which might be bad suggestion as long as your repositories are part of the domain layer, not the application layer). Actually, your examples show no case where an entity accesses a repository, since you are using <em>static</em> methods which don&#39;t belong to any entity.</p><p>If you don&#39;t want to put that creation logic into a static method of the entity class, you can introduce separate factory classes (as part of the domain layer!) and put the creation logic there.</p><p>EDIT: to your <code>Update</code> example: given that <code>_urgencyRepository</code> and <code>statusRepository</code> are members of the class <code>Task</code>, defined as some kind of interface, you now need to inject them into any <code>Task</code> entity before you can use <code>Update</code> now  (for example in the Task constructor). Or you define them as static members, but beware, that could easily cause  multi threading problems, or just problems when you need different repositories for different Task entities at the same time.</p><p>This design makes it a little bit harder to create <code>Task</code> entities in isolation, thus harder to write unit tests for <code>Task</code> entities, harder to write automatic tests depending on Task entities, and you produce a little bit more memory overhead, since every Task entity now needs to hold that two references to the reposities. Of course, that may be tolerable in your case. On the other hand, creating a separate utility class <code>TaskUpdater</code> which keeps the references to the right repositories may be often or at least sometimes a better solution.</p><p>The important part is: <code>TaskUpdater</code> will be still part of the domain layer! Just because you put that update or creation code in a separate class does not mean you have to switch to another layer.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../ddd-with-orm-where-should-the-business-logic-go/'>DDD with ORM where should the business logic go</a></li><li class="list-group-item"><a href='../how-to-formulate-the-domain-model-in-domain-driven-design-properly-bounded-contexts-domains/'>How to formulate the Domain Model in Domain Driven Design properly (Bounded Contexts, Domains)</a></li><li class="list-group-item"><a href='../php-how-to-define-domain-objects-and-repositories-when-dealing-with-multiple-database-tables/'>Php &#8211; How to define Domain Objects and Repositories, when dealing with multiple database tables</a></li><li class="list-group-item"><a href='../separation-of-application-logic-and-domain-logic-in-clean-architecture/'>Separation of application logic and domain logic in Clean Architecture</a></li><li class="list-group-item"><a href='../how-do-entities-dto-doa-work-together-and-whats-their-role-within-a-system/'>How do entities, DTO, DOA work together and what’s their role within a system</a></li><li class="list-group-item"><a href='../architecture-what-kind-of-logic-can-domain-objects-realistically-contain/'>Architecture &#8211; What kind of logic can Domain Objects realistically contain</a></li><li class="list-group-item"><a href='../domain-driven-design-updating-and-persisting-aggregates/'>Domain Driven Design &#8211; Updating and persisting aggregates</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

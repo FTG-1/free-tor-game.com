@@ -1,0 +1,164 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="https://free-tor-game.com/wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Process to generate hierarchical structure based on relational data &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js?ver=11.2.0' id='highlight-js'></script>     <script>( function( w, d, s, l, i ) {
+				w[l] = w[l] || [];
+				w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+				var f = d.getElementsByTagName( s )[0],
+					j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore( j, f );
+			} )( window, document, 'script', 'dataLayer', ' ' );</script>      <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1067260 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="https://free-tor-game.com/3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="https://free-tor-game.com/contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1067260" class="post-1067260 software type-software status-publish hentry category-software tag-algorithms tag-data-structures tag-parsing"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Process to generate hierarchical structure based on relational data</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">algorithms</span><span class="mr-2 badge badge-info">data structures</span><span class="mr-2 badge badge-warning">parsing</span></p><div class="entry-content"><p>I have a csv of employee ids, names, and a reference column with the id of their direct manager, say something like this</p><pre><code> emp_id, emp_name, mgr_id
+1,The Boss,,
+2,Manager Joe,1
+3,Manager Sally,1
+4,Peon Frank,2
+5,Peon Jill,2
+6,Peon Rodger,3
+7,Peon Ralph,3
+</code></pre><p>I would like to be able to generate a (json) object representing this structure, something along the lines of</p><pre><code>DATA = {
+  &#34;parent&#34;: &#34;The Boss&#34;,
+  &#34;children: [
+    {
+      &#34;parent&#34;: &#34;Manager Joe&#34;,
+      &#34;children&#34;: [ {&#34;parent&#34;: &#34;Peon Frank&#34;}, {&#34;parent&#34;: &#34;Peon Jill&#34;} ]
+    },
+    {
+      &#34;parent&#34;: &#34;Manager Sally&#34;,
+      &#34;children&#34;: [ {&#34;parent&#34;: &#34;Peon Rodger&#34;}, {&#34;parent&#34;: &#34;Peon Ralph&#34; } ]
+    }]
+}
+</code></pre><p>So from the data, an entry with no mgr_id represents something like the CEO or Leader.</p><p>So just collecting some thoughts.. I know this could be represented by some tree data structure with the tree traversal generating the correct output. The parser would have to be responsible for inserting into the tree. Maybe the number of children would give you a weight? Just gathering thoughts. Not sure how I would pivot around the fact that multiple objects can be constructed with children.</p><p>Is there an algorithm defined that can parse this structure I am not thinking of? Descending down into the children seems relatively straightforward. I am not seeing this in my head, and could use some help. Thank you</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>There are several ways to create structure
+from flatland. Recursion is one of the best.
+This
+program uses it, with a preliminary step of figuring
+out which items are parents.</p><p>While the strategy is language-agnostic, every language
+has different details of data structures and 
+building blocks. I&#39;ve rendered the approach in Python.</p><p>NB, about half this code is for display and demonstration purposes, so you can follow along and see how the algorithm is working. For production, fee free to remove those parts.</p><p>Oh...and I changed the labels from &#39;parent&#39; to &#39;name&#39; and &#39;children&#39; to &#39;reports&#39; because I found that more agreeable. You can, of course, choose whatever you like.</p><pre class="lang-py prettyprint-override"><code>from pprint import pprint
+from random import shuffle
+from collections import defaultdict
+import json
+
+def show_val(title, val):
+    &#34;&#34;&#34;
+    Debugging print helpler.
+    &#34;&#34;&#34;
+    sep = &#39;-&#39; * len(title)
+    print &#34;\n{0}\n{1}\n{2}\n&#34;.format(sep, title, sep)
+    pprint(val)
+
+
+# ORIGINAL NAMES:   emp_id, emp_name, mgr_id
+# SIMPLIFIED NAMES: eid,    name,     mid
+text = &#34;&#34;&#34;
+323,The Boss,
+4444,Manager Joe,323
+3,Manager Sally,323
+4,Peon Frank,4444
+33,Peon Dave,3
+5,Peon Jill,4444
+6,Peon Rodger,3
+7,Peon Ralph,3
+233,Clerk Jane,99
+99,Supervisor Henri,3
+&#34;&#34;&#34;
+
+# parse text into lines
+lines = [ l.strip() for l in text.strip().splitlines() ]
+
+# construct list of people tuples
+people = [ tuple(l.split(&#39;,&#39;)) for l in lines ]
+
+# for demonstration and testing only, shuffle the results
+shuffle(people)
+show_val(&#34;randomized people&#34;, people)
+
+# contstruct list of parents
+parents = defaultdict(list)
+for p in people:
+    parents[p[2]].append(p)
+show_val(&#34;parents&#34;, parents)
+
+def buildtree(t=None, parent_eid=&#39;&#39;):
+    &#34;&#34;&#34;
+    Given a parents lookup structure, construct
+    a data hierarchy.
+    &#34;&#34;&#34;
+    parent = parents.get(parent_eid, None)
+    if parent is None:
+        return t
+    for eid, name, mid in parent:
+        report = { &#39;name&#39;: name }
+        if t is None:
+            t = report
+        else:
+            reports = t.setdefault(&#39;reports&#39;, [])
+            reports.append(report)
+        buildtree(report, eid)
+    return t
+
+data = buildtree()
+show_val(&#34;data&#34;, data)
+
+show_val(&#34;JSON&#34;, json.dumps(data))
+</code></pre><p>Running this shows the following output:</p><pre><code>-----------------
+randomized people
+-----------------
+
+[(&#39;233&#39;, &#39;Clerk Jane&#39;, &#39;99&#39;),
+ (&#39;4444&#39;, &#39;Manager Joe&#39;, &#39;323&#39;),
+ (&#39;33&#39;, &#39;Peon Dave&#39;, &#39;3&#39;),
+ (&#39;6&#39;, &#39;Peon Rodger&#39;, &#39;3&#39;),
+ (&#39;99&#39;, &#39;Supervisor Henri&#39;, &#39;3&#39;),
+ (&#39;3&#39;, &#39;Manager Sally&#39;, &#39;323&#39;),
+ (&#39;5&#39;, &#39;Peon Jill&#39;, &#39;4444&#39;),
+ (&#39;323&#39;, &#39;The Boss&#39;, &#39;&#39;),
+ (&#39;4&#39;, &#39;Peon Frank&#39;, &#39;4444&#39;),
+ (&#39;7&#39;, &#39;Peon Ralph&#39;, &#39;3&#39;)]
+
+-------
+parents
+-------
+
+defaultdict(&lt;type &#39;list&#39;&gt;, {&#39;99&#39;: [(&#39;233&#39;, &#39;Clerk Jane&#39;, &#39;99&#39;)], &#39;323&#39;: [(&#39;4444&#39;, &#39;Manager Joe&#39;, &#39;323&#39;), (&#39;3&#39;, &#39;Manager Sally&#39;, &#39;323&#39;)], &#39;3&#39;: [(&#39;33&#39;, &#39;Peon Dave&#39;, &#39;3&#39;), (&#39;6&#39;, &#39;Peon Rodger&#39;, &#39;3&#39;), (&#39;99&#39;, &#39;Supervisor Henri&#39;, &#39;3&#39;), (&#39;7&#39;, &#39;Peon Ralph&#39;, &#39;3&#39;)], &#39;4444&#39;: [(&#39;5&#39;, &#39;Peon Jill&#39;, &#39;4444&#39;), (&#39;4&#39;, &#39;Peon Frank&#39;, &#39;4444&#39;)], &#39;&#39;: [(&#39;323&#39;, &#39;The Boss&#39;, &#39;&#39;)]})
+
+----
+data
+----
+
+{&#39;name&#39;: &#39;The Boss&#39;,
+ &#39;reports&#39;: [{&#39;name&#39;: &#39;Manager Joe&#39;,
+              &#39;reports&#39;: [{&#39;name&#39;: &#39;Peon Jill&#39;}, {&#39;name&#39;: &#39;Peon Frank&#39;}]},
+             {&#39;name&#39;: &#39;Manager Sally&#39;,
+              &#39;reports&#39;: [{&#39;name&#39;: &#39;Peon Dave&#39;},
+                          {&#39;name&#39;: &#39;Peon Rodger&#39;},
+                          {&#39;name&#39;: &#39;Supervisor Henri&#39;,
+                           &#39;reports&#39;: [{&#39;name&#39;: &#39;Clerk Jane&#39;}]},
+                          {&#39;name&#39;: &#39;Peon Ralph&#39;}]}]}
+
+----
+JSON
+----
+
+&#39;{&#34;name&#34;: &#34;The Boss&#34;, &#34;reports&#34;: [{&#34;name&#34;: &#34;Manager Joe&#34;, &#34;reports&#34;: [{&#34;name&#34;: &#34;Peon Jill&#34;}, {&#34;name&#34;: &#34;Peon Frank&#34;}]}, {&#34;name&#34;: &#34;Manager Sally&#34;, &#34;reports&#34;: [{&#34;name&#34;: &#34;Peon Dave&#34;}, {&#34;name&#34;: &#34;Peon Rodger&#34;}, {&#34;name&#34;: &#34;Supervisor Henri&#34;, &#34;reports&#34;: [{&#34;name&#34;: &#34;Clerk Jane&#34;}]}, {&#34;name&#34;: &#34;Peon Ralph&#34;}]}]}&#39;
+</code></pre><p>Some preliminaries: It also uses <code>print</code> to help show nested data
+structures. We&#39;d normally get data through a database
+connection, here we just parse it out of static text.
+Finally, while the data you presented is beautifully ordered, with the
+bosses at the top and with the lowest employeed id numbers (simplifying the)
+problem, I&#39;d like to confirm that the code works in any order. So I&#39;ve modified
+some of the id numbers to reflect a non-sequential allocation, and brought in <code>random.shuffle</code> to randomize the order of data. You wouldn&#39;t do this in
+production, but as a part of testing, it increases confidence the logic is
+working by design, not accident.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='https://free-tor-game.com/software/this-domain-of-study/'>This domain of study</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/storing-in-text-metadata-in-a-discrete-data-structure/'>Storing in-text metadata in a discrete data structure</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/data-structures-and-algorithms-for-a-directed-rooted-tree-with-inherited-properties/'>Data structures and algorithms for a directed rooted tree with inherited properties</a></li><li class="list-group-item"><a href='https://free-tor-game.com/software/optimal-way-of-storing-sorted-tree-in-memory/'>Optimal way of storing sorted tree in memory</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='http://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="https://free-tor-game.com/wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

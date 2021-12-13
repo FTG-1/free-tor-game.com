@@ -1,0 +1,76 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>Object-oriented &#8211; Design pattern for similar classes that require different implementations &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1074884 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1074884" class="post-1074884 software type-software status-publish hentry category-software tag-design-patterns tag-object-oriented tag-object-oriented-design tag-python"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">Object-oriented &#8211; Design pattern for similar classes that require different implementations</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">design-patterns</span><span class="mr-2 badge badge-info">object-oriented</span><span class="mr-2 badge badge-warning">object-oriented-design</span><span class="mr-2 badge badge-primary">python</span></p><div class="entry-content"><p><strong>Edited: Update is at the bottom</strong></p><p>There could be a common or best practice for this scenario, but I am unfamiliar with it. However, it could very easily be a matter of subjective opinion on how one wants to implement their classes. Either way I am hopefuly to get some opinion from the spectrum of class designers here.</p><p>I am currently working on a project that allows users to generate files for data visualization.</p><p>The library will support two file types that are formatted differently (binary and XML). Due to this, I am left with a dilemma on how I want to control class instantiation and API access:</p><ol><li>Create a separate class for each file type and visualization type</li><li>Create a separate class for each visualization type and load with methods for each file type</li><li>(Not demonstrated) The inverse of Option 2</li></ol><p><strong>Option 1:</strong></p><pre><code>class Base:
+    # Stuff
+class F1V1(Base):
+    # Methods specific to file and visualization type one
+class F1V2(Base):
+    # Methods specific to file type one and visualization type two
+class F1V3(Base):
+    # Methods specific to file type one and visualization type three
+class F2V1(Base):
+    # Same logic as before but for file type two
+class F2V2(Base):
+    # ...
+class F2V3(Base):
+    # ...
+</code></pre><p>Here a user of the library would call their direct class to perform operations specific to it without the need of setting keyword parameters to determine what it does (e.g. <code>fv = F1V2()</code>)</p><p>What is great about this way is that its explicit, a user knows exactly what file and visualization type they are working with. But I think its cumbersome and not extensible in the event I want to add more file or visualization types; forcing me to write a new class for each possible combination.</p><p><strong>Option 2:</strong></p><pre><code>class Base:
+    # Stuff
+class V1(Base):
+    def __init__(self, ftype_1=True)
+        self.ftype_1 = ftype_1
+    def write(self):
+        if self.ftype_1:
+            # Write method specific to file type one
+        # Write method specific to file type two
+    # Assume 3 methods for each operation
+    # One method such as `write()`
+    # One method for each of the file types
+class V2(Base):
+    # Same logic as before
+class V3(Base):
+    # ...
+</code></pre><p>What I don&#39;t like about this method is that I now have to define multiple methods for each class that execute based upon keywords provided at construction (i.e. <code>fv = V2(ftype_1=False)</code>). Ideally, what I would like is to supply a keyword argument that then determines which of the methods should belong to that class. For example:</p><pre><code>fv = V2() # Only contains methods to file type one operations
+fv = V2(ftype_1=False) # Only contains methods to file type two operations
+</code></pre><p>As shown, there is nothing that prevents the following:</p><pre><code>fv = V2() # Set for file type one
+fv.write_ftype_2() # Will produce an invalid file type formatting
+</code></pre><p>I am not sure of a way where I can dynamically bind/remove methods based upon keyword arguments. It would be great if I could simply write all the methods for each file type within each visualization type, then remove methods that are not relevant to the class anymore. Im not sure if this is even advisable, I can already think of a scenario like so:</p><pre><code>def write(self):
+    if self.ftype_1:
+        # Write method specific to file type one
+    elif self.type_2:
+        # ...
+    else:
+        # ...
+</code></pre><p>If I dynamically removed methods from a class based upon keyword arguments, what would the point of the conditions be if say the first one held?</p><p><strong>Summary:</strong></p><p>So which is a common or best practice? Which can be improved? Or am I missing another way?</p><p>An ideal example would be (in my mind):</p><pre><code>fv = Hexagons(ftype=&#39;.abc&#39;, flat=True, area=3)
+fv.insert(data)
+fv.write(data) # Specifically writes for file types of &#39;.abc&#39;
+</code></pre><p>I suppose I could make <code>Hexagons()</code> return a subclass via <code>__new__</code> but I think that might be unclear as to what is happening. To call <code>Hexagons()</code> but receive a <code>ABCHexagons</code> object could lead to confusion when users inspect the code base.</p><p>A factory method is <em>ideal</em> for this, but that is simply class instantiation. But each visualization type may have a variety of different keyword parameters that may not apply to the others. Rather, my issue lies with how to define them in the code base which ultimately leads to solving how to expose them to users.</p><p><strong>Update:</strong></p><p>After @Mihai and @Ewan gave suggestions, it is clear that having a writer class for each file type is the best way to go and inheritence is not. Now I need to examine if composition is a better strategy and I would like to clarify some details.</p><ol><li>Each file type contains data that is formatted to represent a grid of shapes</li><li>A visualizer class is not used to display any data a user inputs</li><li>A visualizer class is used solely to determine how the write class writes</li></ol><p>For example:</p><pre><code>class binaryWriter:
+    # Writes only binary files
+class xmlWriter:
+    # Writes only XML files
+class Hexagons:
+    # Contains methods for determining geometry
+class Triangles:
+    # Same as Hexagons
+</code></pre><p>Suppose I wanted to write a binary file containing an array of hexagon tiles. Once the visualizer (i.e. the hexagonal grid) is selected, operations within the writer and visualizer class work together to determine how the write class writes to a file on disk. Lets say I want to insert a point in my grid and figure out which hexagon it belongs to, I would do:</p><pre><code>w = binaryWriter(shape=&#39;hexagon&#39;)
+w.insert(1, 2) # Some point of x, y
+# Repeat insertions
+w.save() # Write to file on disk
+</code></pre></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>As you correctly noticed, using inheritance to solve this problem, in the way you presented, is not a good idea. You should look into using composition instead and I would suggest looking at the broader concept of <a href="https://en.wikipedia.org/wiki/Composition_over_inheritance" rel="nofollow noreferrer">composition over inheritance</a>. To name a more specific design pattern, I think what you need is <a href="https://en.wikipedia.org/wiki/Strategy_pattern" rel="nofollow noreferrer">Strategy</a>.</p><p>In this particular case, what I would do is:</p><ul><li>have a group of similar classes for reading the data; they all look and behave the same, only their internal implementation is different (one reads binary, one reads XML).</li><li>have an internal contract of how the data looks like once it has been read. This is important in order to guarantee compatibility for all the possible reader-visualisation combinations. All readers output the data in the same format, all visualisations know how to read data from that single format.</li><li>have a group of similar classes for the visualisations; they all look and behave the same; they receive the data in the internal &#34;universal&#34; format and do something with it.</li></ul><p>Then you only need to dynamically combine one instance of the data reading class with one instance of the visualisation and pass the data between them, at run time. The decisions on which data read class and which visualisation class to use will be yours to take (and code). 
+A very simple flow would look like this:</p><pre><code>reader = binaryDataReader()
+data = reader.readData()
+visualisation = prettyColorsVisualisation()
+visualisation.display(data)
+</code></pre></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../object-oriented-dealing-with-similar-objects-with-different-method-signatures/'>Object-oriented &#8211; Dealing with similar objects with different method signatures</a></li><li class="list-group-item"><a href='../php-design-pattern-a-single-class-with-multiple-purposes-or-multiple-extended-classes-each-with-their-own-purpose-in-php/'>Php &#8211; Design Pattern: A single class with multiple purposes, or multiple extended classes each with their own purpose in PHP</a></li><li class="list-group-item"><a href='../object-oriented-one-boilerplate-class-or-many-similar-classes/'>Object-oriented &#8211; One boilerplate class or many similar classes</a></li><li class="list-group-item"><a href='../java-design-pattern-for-processing-a-huge-csv-file-java/'>Java &#8211; Design pattern for processing a huge CSV file &#8212; Java</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>

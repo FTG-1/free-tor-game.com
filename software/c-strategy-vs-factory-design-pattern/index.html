@@ -1,0 +1,66 @@
+<!doctype html><html lang="en-US"><!--  --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- / -->
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">  <link media="all" href="../../wp-content/cache/autoptimize/4/css/autoptimize_dc56928889f08ceb40a4520f8ece953b.css" rel="stylesheet" /><title>C# &#8211; Strategy vs Factory design pattern &#8211; free-tor-game.com</title> <script>MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']], 
+    processEscapes: true
+  },
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore|editor-rich-text'
+  }
+};</script> <link rel='dns-prefetch' href='http://cdn.jsdelivr.net/' /><link rel='dns-prefetch' href='http://cdnjs.cloudflare.com/' /><link rel='dns-prefetch' href='http://stackpath.bootstrapcdn.com/' /><link rel='dns-prefetch' href='http://s.w.org/' /><link rel='stylesheet' id='highlight-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min40df.css?ver=5.6' type='text/css' media='all' /><link rel='stylesheet' id='bootstrap-css'  href='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.mina352.css?ver=4.1.3' type='text/css' media='all' /><link rel='stylesheet' id='icons-css'  href='../../../stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min40df.css?ver=5.6' type='text/css' media='all' /> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.minb8ff.js?ver=1.12.4' id='jquery-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.minc9a3.js?ver=11.2.0' id='highlight-js'></script>            <script>hljs.highlightAll();</script> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1731162805004860" crossorigin="anonymous"></script></head><body class="software-template-default single single-software postid-1070496 no-sidebar"><div id="page" class="site"> <a class="skip-link screen-reader-text" href="#content">Skip to content</a><header id="topnav" class="sticky-top"><nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation"> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-primary" aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="#">free-tor-game.com</a><div id="navbar-primary" class="collapse navbar-collapse"><ul id="menu-primary-top-menu" class="nav navbar-nav"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-192" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children dropdown menu-item-192 nav-item"><a title="Tools" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-192">Tools</a><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-192" role="menu"><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-193 nav-item"><a title="ARFCN-Frequency Converter" href="../../3gpp-arfcn-frequency-converter/" class="dropdown-item">ARFCN-Frequency Converter</a></li></ul></li><li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-2301" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2301 nav-item"><a title="Contact Us" href="../../contact/" class="nav-link">Contact Us</a></li></ul></div></nav></header><div id="content" class="site-content"><div id="primary" class="content-area"><main id="main" class="site-main"><div id="main-container" class="container"><div id="main-row" class="row"><div id="main-col" class="col-12"><article id="post-1070496" class="post-1070496 software type-software status-publish hentry category-software tag-c tag-design-patterns tag-factory-method tag-strategy-pattern"><div class="row"><div class="col-12 col-md-8"><header class="entry-header"><h1 class="entry-title text-danger">C# &#8211; Strategy vs Factory design pattern</h1></header><p style='font-size:1.2em'><span class="mr-2 badge badge-success">c</span><span class="mr-2 badge badge-info">design-patterns</span><span class="mr-2 badge badge-warning">factory-method</span><span class="mr-2 badge badge-primary">strategy-pattern</span></p><div class="entry-content"><p>I am new to design patterns and working my way through the Factory Method and Strategy patterns. I understand that Factory is a creational pattern and Strategy is behavioral but I struggle to understand when to use which one. For example, I have the following classes that updates client details based on the company specified:</p><pre class="lang-cs prettyprint-override"><code>    public interface IUpdateDetails { void UpdateDetails(); }
+
+    public class UPSUpdateDetails : IUpdateDetails
+    {
+        public void UpdateDetails() =&gt; Console.WriteLine(&#34;Call web service to update details for UPS...&#34;);
+    }
+
+    public class FedExUpdateDetails : IUpdateDetails
+    {
+        public void UpdateDetails() =&gt; Console.WriteLine(&#34;Update database for FedEx...&#34;);
+    }
+
+    public class DHLUpdateDetails : IUpdateDetails
+    {
+        public void UpdateDetails() =&gt; Console.WriteLine(&#34;Send Email for DHL...&#34;);
+    }
+</code></pre><p>I can create a Factory to return the correct class:</p><pre class="lang-cs prettyprint-override"><code>    public class UpdateDetailsFactory
+    {
+        public static IUpdateDetails Create(string type)
+        {
+            switch (type)
+            {
+                case &#34;UPS&#34;:
+                    return new UPSUpdateDetails();
+                case &#34;DHL&#34;:
+                    return new DHLUpdateDetails();
+                case &#34;FedEx&#34;:
+                    return new FedExUpdateDetails();
+                default:
+                    throw new ArgumentException();
+            }
+        }
+    }
+</code></pre><p>and implement it as follows:</p><pre class="lang-cs prettyprint-override"><code>    // Using Factory
+    string company = &#34;UPS&#34;; // Get company from database
+    IUpdateDetails updateDetails = UpdateDetailsFactory.Create(company);
+    updateDetails.UpdateDetails();
+    Console.ReadLine();
+</code></pre><p>or I can use the Strategy pattern:</p><pre class="lang-cs prettyprint-override"><code>    public class UpdateDetailsContext
+    {
+        private IUpdateDetails strategy;
+
+        public void SetStrategy(IUpdateDetails updateDetails) =&gt; strategy = updateDetails;
+
+        public void Update() =&gt; strategy.UpdateDetails();
+    }
+</code></pre><p>and implement it as follows:</p><pre class="lang-cs prettyprint-override"><code>    // Using Strategy
+    UpdateDetailsContext context = new UpdateDetailsContext();
+    context.SetStrategy(UpdateDetailsFactory.Create(company));
+    context.Update();
+    Console.ReadLine();
+</code></pre><p>My question is &#8211; am I understanding the patterns correctly? What is the difference between using the one over the other?</p></div>     <div id="comments" class="comments-area"><div class="row"><div class="col-12"><div class="mt-3 border-bottom border-success"><h4 class="text-success"><i class='fa fa-check-circle text-success mr-3'></i><span>Best Answer</span></h4></div><div class='bg-transparent mb-3'><p>You are correct that these have a lot of similarities.  As mentioned in other answers, the difference is about goals.</p><p>The Strategy pattern is often misunderstood but it&#39;s also one of them most valuable patterns for simplifying code.  The key to the pattern is that it allows you to have objects that change their behavior at runtime.  To think of a good example of this, consider a video game where you are in some sort of battle with a non-player enemy.  At some point, when you have reduced the enemy&#39;s &#39;health&#39; to a certain level, the enemy will change from a &#39;fight&#39; to a &#39;flight&#39; mode.  Now, you could put a bazillion if statements all over the place to check which mode it&#39;s in but that&#39;s a huge mess.  Instead, you use a strategy pattern and have a set of different behavior definitions represented as objects.  Depending on the &#39;health&#39; level, the correct behavior is used.</p><p>This doesn&#39;t just apply to video games.  Let&#39;s say you have an ordering system and you&#39;ve been given requirements to fall back to a secondary cloud provider (more expensive but more reliable, let&#39;s say.)  You could use the strategy pattern to keep that sane.</p><p>The factory method pattern is a nice replacement for a constructor.  A great example of this is something like an Integer factory that returns the same object every time you pass in the value 0 or 1.</p><p>The thing is that you can actually put these together in lots of interesting ways.  For example, you could create a factory method that uses a strategy pattern to determine what objects to create.  For example, you might use it in the above ordering system example to return a different DB connection objects depending on the circumstances.</p><p>A common saw is &#34;patterns are descriptive, not prescriptive.&#34;  In other words, these are ways to describe a design approach, not recipes.  A common mistake is trying to use them like legos to build a solution.</p></div></div><div class="col-4"></div></div></div></div><div class="col-12 col-md-4"> <ins class="adsbygoogle"
+ style="display:block"
+ data-ad-client="ca-pub-1731162805004860"
+ data-ad-slot="1340983829"
+ data-ad-format="auto"
+ data-full-width-responsive="true"></ins>   <div class='mt-3 ml-4 border-bottom border-success'><h6><span>Related Question</span></h6></div><ul class='list-group list-group-flush'><li class="list-group-item"><a href='../java-modified-strategy-design-pattern/'>Java &#8211; Modified Strategy Design Pattern</a></li><li class="list-group-item"><a href='../c-confusion-with-factory-pattern-regarding-liskovs-substitution-principle-code-maintainability-and-unit-testing/'>C# &#8211; Confusion with Factory pattern regarding Liskov&#8217;s Substitution Principle, code maintainability and Unit Testing</a></li><li class="list-group-item"><a href='../factory-method-vs-factory-method-design-pattern/'>Factory Method vs. Factory Method design pattern</a></li><li class="list-group-item"><a href='../client-vs-creator-in-factory-method-and-abstract-factory-patterns/'>Client vs Creator in Factory Method and Abstract Factory patterns</a></li><li class="list-group-item"><a href='../c-am-i-using-the-factory-method-design-pattern-correctly-or-which-creational-pattern-should-i-use/'>C# &#8211; Am I using the factory method design pattern correctly, or which creational pattern should I use</a></li><li class="list-group-item"><a href='../design-build-an-object-from-two-data-sources-which-design-pattern-would-be-suitable/'>Design &#8211; Build an object from two data sources &#8211; Which design pattern would be suitable</a></li></ul></div></div><footer class="entry-footer"></footer></article></div></div></div></main></div></div><footer id="colophon" class="site-footer"><div class="site-info"></div></footer></div>    <script type='text/javascript' src='../../../cdn.jsdelivr.net/npm/mathjax%403/es5/tex-chtml40df.js?ver=5.6' id='mathjax-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min43d3.js?ver=1.14.7' id='popper-js'></script> <script type='text/javascript' src='../../../cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min5b31.js?ver=4.3.1' id='bootstrap4-js'></script> <script type='text/javascript' id='itectec-common-js-extra'>var globalObject = {"homeUrl":"https:\/\/free-tor-game.com\/"};</script> <script defer src="../../wp-content/cache/autoptimize/4/js/autoptimize_63b39f43631847816e6b0e70ea726624.js"></script></body></html>
